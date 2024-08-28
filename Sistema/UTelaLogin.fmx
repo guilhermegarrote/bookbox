@@ -1,0 +1,14 @@
+object FrmLogin: TFrmLogin
+  Left = 0
+  Top = 0
+  Border.Styling = False
+  BorderIcons = []
+  BorderStyle = None
+  ClientHeight = 600
+  ClientWidth = 870
+  Position = ScreenCenter
+  FormFactor.Width = 320
+  FormFactor.Height = 480
+  FormFactor.Devices = [Desktop]
+  DesignerMasterStyle = 0
+end
