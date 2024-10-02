@@ -127,6 +127,7 @@ object FrmLogin: TFrmLogin
           StyledSettings = [Family, Style, FontColor]
           ParentShowHint = False
           ShowHint = False
+          OnKeyDown = EdtNomeKeyDown
         end
       end
       object RctSenha: TRectangle
