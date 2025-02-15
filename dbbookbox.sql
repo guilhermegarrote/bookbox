@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Tempo de geração: 25/08/2024 às 02:51
+-- Tempo de geração: 15/02/2025 às 15:48
 -- Versão do servidor: 10.4.32-MariaDB
 -- Versão do PHP: 8.2.12
 
@@ -114,8 +114,15 @@ CREATE TABLE `tbsalas` (
 CREATE TABLE `tbusuarios` (
   `usuId` int(11) NOT NULL,
   `usuNome` varchar(150) NOT NULL,
-  `usuSenha` varchar(32) NOT NULL
+  `usuSenha` varchar(60) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Despejando dados para a tabela `tbusuarios`
+--
+
+INSERT INTO `tbusuarios` (`usuId`, `usuNome`, `usuSenha`) VALUES
+(883, 'teste', '$2y$10$lXXW54.HvkIfu6gzLi9kdO957Ys0XpH6MCK1MphgeES6lYe9NoUuW');
 
 --
 -- Índices para tabelas despejadas
@@ -215,7 +222,7 @@ ALTER TABLE `tbsalas`
 -- AUTO_INCREMENT de tabela `tbusuarios`
 --
 ALTER TABLE `tbusuarios`
-  MODIFY `usuId` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `usuId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=884;
 
 --
 -- Restrições para tabelas despejadas
