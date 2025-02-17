@@ -3,7 +3,7 @@ require_once __DIR__ . '/../app/Controllers/UsuarioController.php';
 
 $usuarioController = new UsuarioController();
 
-$basePath = '/Bookbox';
+$basePath = '/bookbox';
 
 $requestUri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 $url = str_replace($basePath, '', $requestUri);
@@ -20,14 +20,14 @@ switch ($url) {
     case '/':
     case '/painel':
         if (!isset($_SESSION['usuario_logado']) || $_SESSION['usuario_logado'] !== true) {
-            header("Location: /Bookbox/login");
+            header("Location: /bookbox/login");
             exit();
         }
         require_once __DIR__ . '/../resources/views/pages/painel.php';
         break;
     case '/logout':
         session_destroy();
-        header("Location: /Bookbox/login");
+        header("Location: /bookbox/login");
         exit();
     default:
         http_response_code(404);

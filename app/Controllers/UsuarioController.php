@@ -42,11 +42,11 @@ class UsuarioController
                 $_SESSION['usuario_id'] = $usuario['usuId'];
                 $_SESSION['usuario_nome'] = $usuario['usuNome'];
 
-                header("Location: /Bookbox/painel");
+                header("Location: /bookbox/painel");
                 exit();
             } else {
                 $_SESSION['erro_login'] = 'Usuário ou senha incorretos!';
-                header("Location: /Bookbox/login");
+                header("Location: /bookbox/login");
                 exit();
             }
         } else {

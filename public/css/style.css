@@ -7,15 +7,15 @@ h1 {
     color: #333;
 }
 
-  /* Reset básico */
-  * {
+/* Reset básico */
+* {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
 /* Estilo da navbar */
-nav{
+nav {
     padding: 10px 15px;
     background-color: #ffffff;
     display: flex;
@@ -31,13 +31,9 @@ nav{
     max-width: 1500px;
 }
 
-
 .logo {
-    
     margin: 10px 50px 10px 50px;
     max-height: 30px;
-    
-    
 }
 
 /* 🔹 Retângulo */
@@ -47,21 +43,20 @@ nav{
     background-color: #191919;
     padding: 8px 15px;
     border-radius: 8px;
-    
+
 }
 
 /* Barra de pesquisa */
 .search-box {
     background-color: #4e4e4e;
-    color: white; 
+    color: white;
     flex: 1;
     padding: 8px;
     border-radius: 5px;
     margin-right: 10px;
-    width: 300px; /* Tamanho fixo para pesquisa */
+    width: 300px;
+    /* Tamanho fixo para pesquisa */
 }
-
-
 
 /* Botões dentro do retângulo */
 .nav-btn {
@@ -73,8 +68,10 @@ nav{
     cursor: pointer;
     margin-left: 10px;
     width: 150px;
-    transition: background-color 0.3s ease-in-out; /* Efeito suave */
-    margin-left: 40px; /* Adiciona espaço entre os botões */
+    transition: background-color 0.3s ease-in-out;
+    /* Efeito suave */
+    margin-left: 40px;
+    /* Adiciona espaço entre os botões */
 }
 
 .nav-btn:hover {
@@ -107,8 +104,8 @@ nav{
     border: none;
     padding: 8px 12px;
     cursor: pointer;
-  border-radius: 5px;
-  left: 50px;
+    border-radius: 5px;
+    left: 50px;
 }
 
 .search-btn:hover {
@@ -119,19 +116,25 @@ nav{
 .search-box {
     padding: 8px;
     border: 1px solid #2d2d2d;
-    border-right: none; /* Remove a borda direita para colar no botão */
-    border-radius: 5px 0 0 5px; /* Mantém só a borda arredondada do lado esquerdo */
+    border-right: none;
+    /* Remove a borda direita para colar no botão */
+    border-radius: 5px 0 0 5px;
+    /* Mantém só a borda arredondada do lado esquerdo */
     width: 300px;
-    margin-right: 0; /* Remove qualquer espaço extra */
+    margin-right: 0;
+    /* Remove qualquer espaço extra */
 }
 
 /* 🔹 Botão de pesquisa colado */
 .search-btn {
     background-color: #3d3d3d;
     color: white;
-    border: 1px solid #2d2d2d; /* Mantém a mesma borda do input */
-    border-left: none; /* Remove a borda entre input e botão */
-    border-radius: 0 5px 5px 0; /* Mantém só a borda arredondada do lado direito */
+    border: 1px solid #2d2d2d;
+    /* Mantém a mesma borda do input */
+    border-left: none;
+    /* Remove a borda entre input e botão */
+    border-radius: 0 5px 5px 0;
+    /* Mantém só a borda arredondada do lado direito */
     padding: 8px 12px;
     cursor: pointer;
 }
