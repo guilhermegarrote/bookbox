@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Tempo de geração: 15/02/2025 às 15:48
+-- Tempo de geração: 18/02/2025 às 01:29
 -- Versão do servidor: 10.4.32-MariaDB
 -- Versão do PHP: 8.2.12
 
@@ -58,7 +58,6 @@ CREATE TABLE `tbemprestimos` (
   `empId` int(11) NOT NULL,
   `empData_Inicial` date DEFAULT curdate(),
   `empData_Final` date NOT NULL,
-  `empDias_Atraso` int(11) NOT NULL,
   `fkAlunoId` int(11) NOT NULL,
   `fkLivroId` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
