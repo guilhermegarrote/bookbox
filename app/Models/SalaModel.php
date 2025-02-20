@@ -15,7 +15,7 @@ class SalaModel
         $this->db = $db;
     }
 
-/**
+    /**
      * Método responsável por cadastrar nova sala.
      * @param string $serieModulo
      * @param string $curId
@@ -78,5 +78,4 @@ class SalaModel
         $stmt->bindParam(":id", $id);
         return $stmt->execute();
     }
-
 }
