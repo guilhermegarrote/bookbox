@@ -15,7 +15,6 @@ class LivroModel
         $this->db = $db;
     }
 
-
     /**
      * Método responsável por cadastrar novo livro. 	
      * @param int $cod
@@ -45,8 +44,6 @@ class LivroModel
         return $stmt->execute();
     }
 
-
-
     /**
      * Método responsável por editar usuário.
      * $cod, $titulo, $subtitulo,$autor,$editora, $exemplar, $disponibilidade , $generoId
@@ -68,28 +65,24 @@ class LivroModel
         if ($cod) {
             $query .= "livCod = :cod, ";
         }
-
         if ($titulo) {
             $query .= "livTitulo = :titulo, ";
         }
         if ($subtitulo) {
             $query .= "livSubtitulo = :subtitulo, ";
         }
-
         if ($autor) {
             $query .= "livAutor = :autor, ";
         }
         if ($editora) {
             $query .= "livEditora = :editora, ";
         }
-
         if ($exemplar) {
             $query .= "ivExemplar = :exemplar, ";
         }
         if ($disponibilidade) {
             $query .= "livDisponibilidade = :disponibilidade, ";
         }
-
         if ($generoId) {
             $query .= "fkGeneroId = :generoId, ";
         }
@@ -101,33 +94,29 @@ class LivroModel
         if ($cod) {
             $stmt->bindParam(":cod", $cod);
         }
-
         if ($titulo) {
             $stmt->bindParam(":titulo", $titulo);
         }
         if ($subtitulo) {
             $stmt->bindParam(":subtitulo", $subtitulo);
         }
-
         if ($autor) {
             $stmt->bindParam(":autor", $autor);
         }
         if ($editora) {
             $stmt->bindParam(":editora", $editora);
         }
-
         if ($exemplar) {
             $stmt->bindParam(":exemplar", $exemplar);
         }
         if ($disponibilidade) {
             $stmt->bindParam(":disponibilidade", $disponibilidade);
         }
-
         if ($generoId) {
             $stmt->bindParam(":generoId", $generoId);
         }
 
-        $stmt->bindParam(":id", $id , PDO::PARAM_INT);
+        $stmt->bindParam(":id", $id, PDO::PARAM_INT);
 
         return $stmt->execute();
     }
@@ -159,7 +148,4 @@ class LivroModel
         $stmt->bindParam(":id", $id);
         return $stmt->execute();
     }
-
-
-
 }
