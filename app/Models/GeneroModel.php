@@ -15,7 +15,6 @@ class GeneroModel
         $this->db = $db;
     }
 
-
     /**
      * Método responsável por adiconar novo genêro.
      * @param string $nome
@@ -29,41 +28,41 @@ class GeneroModel
         $stmt->bindParam(":nome", $nome);
         $stmt->bindParam(":cor", $cor);
         return $stmt->execute();
-    }    
-
-/**
- * Método responsável por editar gênero.
- * @param int $id
- * @param string|null $nome
- * @param string|null $cor
- * @return bool
- */
-public function editar($id, $nome, $cor)
-{
-    $query = "UPDATE tbgeneros SET ";
-
-    if ($nome) {
-        $query .= "genNome = :nome";
     }
 
-    if ($cor) {
-        $query .= "genCor = :cor";
+    /**
+     * Método responsável por editar gênero.
+     * @param int $id
+     * @param string|null $nome
+     * @param string|null $cor
+     * @return bool
+     */
+    public function editar($id, $nome, $cor)
+    {
+        $query = "UPDATE tbgeneros SET ";
+
+        if ($nome) {
+            $query .= "genNome = :nome";
+        }
+
+        if ($cor) {
+            $query .= "genCor = :cor";
+        }
+
+        $query .= " WHERE genId = :id";
+        $stmt = $this->db->prepare($query);
+
+        if ($nome) {
+            $stmt->bindParam(":nome", $nome);
+        }
+
+        if ($cor) {
+            $stmt->bindParam(":cor", $cor);
+        }
+
+        $stmt->bindParam(":id", $id, PDO::PARAM_INT);
+        return $stmt->execute();
     }
-
-    $query .= " WHERE genId = :id";
-    $stmt = $this->db->prepare($query);
-
-    if ($nome) {
-        $stmt->bindParam(":nome", $nome);
-    }
-
-    if ($cor) {
-        $stmt->bindParam(":cor", $cor);
-    }
-
-    $stmt->bindParam(":id", $id, PDO::PARAM_INT);
-    return $stmt->execute();
-}
 
     /**
      * Método responsável por excluir genêro.
@@ -76,4 +75,5 @@ public function editar($id, $nome, $cor)
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(":id", $id);
         return $stmt->execute();
-    }}
+    }
+}
