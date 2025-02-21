@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Tempo de geração: 18/02/2025 às 01:29
+-- Tempo de geração: 22/02/2025 às 00:47
 -- Versão do servidor: 10.4.32-MariaDB
 -- Versão do PHP: 8.2.12
 
@@ -39,10 +39,10 @@ CREATE TABLE `tbalunos` (
 -- --------------------------------------------------------
 
 --
--- Estrutura para tabela `tbcurso`
+-- Estrutura para tabela `tbcursos`
 --
 
-CREATE TABLE `tbcurso` (
+CREATE TABLE `tbcursos` (
   `curId` int(11) NOT NULL,
   `curNome` varchar(150) NOT NULL,
   `curPeriodo` varchar(25) NOT NULL
@@ -137,9 +137,9 @@ ALTER TABLE `tbalunos`
   ADD KEY `fkSalaId` (`fkSalaId`);
 
 --
--- Índices de tabela `tbcurso`
+-- Índices de tabela `tbcursos`
 --
-ALTER TABLE `tbcurso`
+ALTER TABLE `tbcursos`
   ADD PRIMARY KEY (`curId`);
 
 --
@@ -188,9 +188,9 @@ ALTER TABLE `tbalunos`
   MODIFY `aluId` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT de tabela `tbcurso`
+-- AUTO_INCREMENT de tabela `tbcursos`
 --
-ALTER TABLE `tbcurso`
+ALTER TABLE `tbcursos`
   MODIFY `curId` int(11) NOT NULL AUTO_INCREMENT;
 
 --
@@ -250,7 +250,7 @@ ALTER TABLE `tblivros`
 -- Restrições para tabelas `tbsalas`
 --
 ALTER TABLE `tbsalas`
-  ADD CONSTRAINT `tbsalas_ibfk_1` FOREIGN KEY (`fkCurId`) REFERENCES `tbcurso` (`curId`);
+  ADD CONSTRAINT `tbsalas_ibfk_1` FOREIGN KEY (`fkCurId`) REFERENCES `tbcursos` (`curId`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
