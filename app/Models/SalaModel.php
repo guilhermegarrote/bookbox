@@ -37,7 +37,7 @@ class SalaModel
      * @param string|null $curId
      * @return bool
      */
-    public function editar($id, $serieModulo, $fkCurId)
+    public function editar($id, $serieModulo, $curId)
     {
         $query = "UPDATE tbsalas SET ";
 
