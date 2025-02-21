@@ -23,11 +23,10 @@ class LivroModel
      * @param string $autor
      * @param string $editora
      * @param string $exemplar
-     * @param bool  $disponibilidade
      * @param string $generoId
      * @return bool
      */
-    public function cadastrar($cod, $titulo, $subtitulo, $autor, $editora, $exemplar, $disponibilidade, $generoId)
+    public function cadastrar($cod, $titulo, $subtitulo, $autor, $editora, $exemplar, $generoId)
     {
         $query = "INSERT INTO tblivros (livCod, livTitulo, livSubtitulo, livAutor, livEditora,
         livExemplar, livDisponibilidade, fkGeneroId) VALUES (:cod, :titulo, :subtitulo, :autor, :editora, :exemplar, 
@@ -39,7 +38,6 @@ class LivroModel
         $stmt->bindParam(":autor", $autor);
         $stmt->bindParam(":editora", $editora);
         $stmt->bindParam(":exemplar", $exemplar);
-        $stmt->bindParam(":disponibilidade", $disponibilidade);
         $stmt->bindParam(":generoId", $generoId);
         return $stmt->execute();
     }
@@ -78,7 +76,7 @@ class LivroModel
             $query .= "livEditora = :editora, ";
         }
         if ($exemplar) {
-            $query .= "ivExemplar = :exemplar, ";
+            $query .= "livExemplar = :exemplar, ";
         }
         if ($disponibilidade) {
             $query .= "livDisponibilidade = :disponibilidade, ";
@@ -118,21 +116,6 @@ class LivroModel
 
         $stmt->bindParam(":id", $id, PDO::PARAM_INT);
 
-        return $stmt->execute();
-    }
-
-    /**
-     * Método responsável por mudar a disponibilidade do livro.
-     * @param int $id
-     * @param bool $disponibilidade
-     * @return bool
-     */
-    public function mudarDisponibilidade($id, $disponibilidade)
-    {
-        $query = "UPDATE tblivros SET livDisponibilidade = :disponibilidade WHERE livId = :id";
-        $stmt = $this->db->prepare($query);
-        $stmt->bindParam(":disponibilidade", $disponibilidade, PDO::PARAM_BOOL);
-        $stmt->bindParam(":id", $id, PDO::PARAM_INT);
         return $stmt->execute();
     }
 
