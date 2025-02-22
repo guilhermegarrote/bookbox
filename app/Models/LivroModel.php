@@ -23,7 +23,7 @@ class LivroModel
      * @param string $autor
      * @param string $editora
      * @param string $exemplar
-     * @param string $generoId
+     * @param int $generoId
      * @return bool
      */
     public function cadastrar($cod, $titulo, $subtitulo, $autor, $editora, $exemplar, $generoId)
@@ -43,7 +43,7 @@ class LivroModel
     }
 
     /**
-     * Método responsável por editar usuário.
+     * Método responsável por editar livro.
      * $cod, $titulo, $subtitulo,$autor,$editora, $exemplar, $disponibilidade , $generoId
      * @param int $id
      * @param int|null $cod
