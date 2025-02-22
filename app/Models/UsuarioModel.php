@@ -70,7 +70,6 @@ class UsuarioModel
         if ($nome) {
             $query .= "usuNome = :nome, ";
         }
-
         if ($senha) {
             $senhaHash = password_hash($senha, PASSWORD_DEFAULT);
             $query .= "usuSenha = :senha, ";
@@ -83,7 +82,6 @@ class UsuarioModel
         if ($nome) {
             $stmt->bindParam(":nome", $nome);
         }
-
         if ($senha) {
             $stmt->bindParam(":senha", $senhaHash);
         }
