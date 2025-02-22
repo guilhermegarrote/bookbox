@@ -28,9 +28,8 @@ class LivroModel
      */
     public function cadastrar($cod, $titulo, $subtitulo, $autor, $editora, $exemplar, $generoId)
     {
-        $query = "INSERT INTO tblivros (livCod, livTitulo, livSubtitulo, livAutor, livEditora,
-        livExemplar, livDisponibilidade, fkGeneroId) VALUES (:cod, :titulo, :subtitulo, :autor, :editora, :exemplar, 
-        :disponibilidade, :generoId)";
+        $query = "INSERT INTO tblivros (livCod, livTitulo, livSubtitulo, livAutor, livEditora, livExemplar, livDisponibilidade, fkGeneroId) 
+        VALUES (:cod, :titulo, :subtitulo, :autor, :editora, :exemplar, :disponibilidade, :generoId)";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(":cod", $cod);
         $stmt->bindParam(":titulo", $titulo);
@@ -44,7 +43,6 @@ class LivroModel
 
     /**
      * Método responsável por editar livro.
-     * $cod, $titulo, $subtitulo,$autor,$editora, $exemplar, $disponibilidade , $generoId
      * @param int $id
      * @param int|null $cod
      * @param string|null $titulo
