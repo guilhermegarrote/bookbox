@@ -44,7 +44,6 @@ class SalaModel
         if ($serieModulo) {
             $query .= "salSerieModulo = :serieModulo, ";
         }
-
         if ($curId) {
             $query .= "fkCurId = :curId, ";
         }
@@ -56,7 +55,6 @@ class SalaModel
         if ($serieModulo) {
             $stmt->bindParam(":serieModulo", $serieModulo);
         }
-
         if ($curId) {
             $stmt->bindParam(":curId", $curId);
         }
