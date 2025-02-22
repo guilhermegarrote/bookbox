@@ -44,7 +44,6 @@ class GeneroModel
         if ($nome) {
             $query .= "genNome = :nome";
         }
-
         if ($cor) {
             $query .= "genCor = :cor";
         }
@@ -55,7 +54,6 @@ class GeneroModel
         if ($nome) {
             $stmt->bindParam(":nome", $nome);
         }
-
         if ($cor) {
             $stmt->bindParam(":cor", $cor);
         }
