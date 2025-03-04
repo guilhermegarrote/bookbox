@@ -8,13 +8,23 @@ $basePath = '/bookbox';
 $requestUri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 $url = str_replace($basePath, '', $requestUri);
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && $url === '/login') {
-    $usuarioController->login();
-    exit();
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    switch ($url) {
+        case '/login':
+            $usuarioController->login();
+            exit();
+        case '/cadastro':
+            $usuarioController->cadastro();
+            exit();
+    }
 }
 
 switch ($url) {
     case '/login':
+        if (!$usuarioController->existeUsuarios()) {
+            header("Location: /bookbox/cadastro");
+            exit();
+        }
         require_once __DIR__ . '/../resources/views/pages/login.php';
         break;
     case '/':
@@ -25,6 +35,9 @@ switch ($url) {
         }
         require_once __DIR__ . '/../resources/views/pages/painel.php';
         break;
+    case '/cadastro':
+        require_once __DIR__ . '/../resources/views/pages/cadastro.php';
+        break;
     case '/logout':
         session_destroy();
         header("Location: /bookbox/login");
@@ -34,4 +47,3 @@ switch ($url) {
         echo "Página não encontrada";
         break;
 }
-?>
