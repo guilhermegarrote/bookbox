@@ -4,7 +4,7 @@ require_once __DIR__ . '/../../config/database.php';
 
 class GeneroModel
 {
-    private $db;
+    private PDO $db;
 
     /**
      * Construtor da classe, responsável por estabelecer a conexão com o banco de dados.
