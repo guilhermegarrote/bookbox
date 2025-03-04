@@ -1,258 +1,168 @@
--- phpMyAdmin SQL Dump
--- version 5.2.1
--- https://www.phpmyadmin.net/
+-- MySQL dump 10.13  Distrib 8.0.41, for Win64 (x86_64)
 --
--- Host: 127.0.0.1
--- Tempo de geração: 22/02/2025 às 00:47
--- Versão do servidor: 10.4.32-MariaDB
--- Versão do PHP: 8.2.12
-
-SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
-START TRANSACTION;
-SET time_zone = "+00:00";
-
+-- Host: localhost    Database: dbbookbox
+-- ------------------------------------------------------
+-- Server version	5.5.5-10.4.32-MariaDB
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8mb4 */;
+/*!50503 SET NAMES utf8 */;
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Banco de dados: `dbbookbox`
+-- Table structure for table `tbalunos`
 --
 
--- --------------------------------------------------------
-
---
--- Estrutura para tabela `tbalunos`
---
-
+DROP TABLE IF EXISTS `tbalunos`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `tbalunos` (
-  `aluId` int(11) NOT NULL,
-  `aluNome` varchar(150) NOT NULL,
-  `aluEmail` varchar(255) NOT NULL,
+  `aluId` binary(16) NOT NULL,
+  `aluNome` varchar(100) NOT NULL,
+  `aluCpf` varchar(11) DEFAULT NULL,
+  `aluEmail` varchar(319) NOT NULL,
   `aluTelefone` varchar(20) NOT NULL,
-  `aluStatus` tinyint(1) DEFAULT 1,
-  `fkSalaId` int(11) NOT NULL
+  `fkTurId` binary(16) NOT NULL,
+  `aluBloqueado` tinyint(1) DEFAULT 0,
+  PRIMARY KEY (`aluId`),
+  UNIQUE KEY `aluCPF` (`aluCpf`),
+  UNIQUE KEY `aluEmail` (`aluEmail`),
+  UNIQUE KEY `aluTelefone` (`aluTelefone`),
+  KEY `fkTurId` (`fkTurId`),
+  CONSTRAINT `fkTurId` FOREIGN KEY (`fkTurId`) REFERENCES `tbturmas` (`turId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- --------------------------------------------------------
-
---
--- Estrutura para tabela `tbcursos`
---
-
-CREATE TABLE `tbcursos` (
-  `curId` int(11) NOT NULL,
-  `curNome` varchar(150) NOT NULL,
-  `curPeriodo` varchar(25) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- --------------------------------------------------------
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Estrutura para tabela `tbemprestimos`
+-- Table structure for table `tbemprestimos`
 --
 
+DROP TABLE IF EXISTS `tbemprestimos`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `tbemprestimos` (
-  `empId` int(11) NOT NULL,
-  `empData_Inicial` date DEFAULT curdate(),
-  `empData_Final` date NOT NULL,
-  `fkAlunoId` int(11) NOT NULL,
-  `fkLivroId` int(11) NOT NULL
+  `empId` binary(16) NOT NULL,
+  `fkAluId` binary(16) NOT NULL,
+  `fkExId` binary(16) NOT NULL,
+  `empDataInicio` date DEFAULT curdate(),
+  `empDataFim` date NOT NULL,
+  `empDataDevolucao` date DEFAULT NULL,
+  `empAtivo` tinyint(1) DEFAULT 1,
+  PRIMARY KEY (`empId`),
+  KEY `fkAluId` (`fkAluId`),
+  KEY `fkExId` (`fkExId`),
+  CONSTRAINT `fkAluId` FOREIGN KEY (`fkAluId`) REFERENCES `tbalunos` (`aluId`),
+  CONSTRAINT `fkExId` FOREIGN KEY (`fkExId`) REFERENCES `tbexemplares` (`exId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- --------------------------------------------------------
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Estrutura para tabela `tbgeneros`
+-- Table structure for table `tbexemplares`
 --
 
+DROP TABLE IF EXISTS `tbexemplares`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `tbexemplares` (
+  `exId` binary(16) NOT NULL,
+  `fkLivId` binary(16) NOT NULL,
+  `exNumero` int(11) NOT NULL,
+  `exDisponibilidade` tinyint(1) DEFAULT 1,
+  PRIMARY KEY (`exId`),
+  KEY `fkLivId` (`fkLivId`),
+  CONSTRAINT `fkLivId` FOREIGN KEY (`fkLivId`) REFERENCES `tblivros` (`livId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `tbgeneros`
+--
+
+DROP TABLE IF EXISTS `tbgeneros`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `tbgeneros` (
-  `genId` int(11) NOT NULL,
+  `genId` binary(16) NOT NULL,
   `genNome` varchar(100) NOT NULL,
-  `genCor` varchar(7) NOT NULL
+  `genCorHex` char(7) NOT NULL,
+  PRIMARY KEY (`genId`),
+  UNIQUE KEY `genNome` (`genNome`),
+  UNIQUE KEY `genCorHex` (`genCorHex`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- --------------------------------------------------------
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Estrutura para tabela `tblivros`
+-- Table structure for table `tblivros`
 --
 
+DROP TABLE IF EXISTS `tblivros`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `tblivros` (
-  `livId` int(11) NOT NULL,
-  `livCod` int(11) NOT NULL,
+  `livId` binary(16) NOT NULL,
+  `livIBSN` varchar(13) NOT NULL,
   `livTitulo` varchar(255) NOT NULL,
-  `livSubtitulo` varchar(255) DEFAULT NULL,
-  `livAutor` varchar(200) NOT NULL,
+  `livAutor` varchar(300) NOT NULL,
+  `fkGenId` binary(16) NOT NULL,
   `livEditora` varchar(150) NOT NULL,
-  `livExemplar` int(11) NOT NULL,
-  `livDisponibilidade` tinyint(1) DEFAULT 1,
-  `fkGeneroId` int(11) NOT NULL
+  PRIMARY KEY (`livId`),
+  UNIQUE KEY `livIBSN` (`livIBSN`),
+  KEY `fkGeneroId` (`fkGenId`),
+  CONSTRAINT `fkGeneroId` FOREIGN KEY (`fkGenId`) REFERENCES `tbgeneros` (`genId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- --------------------------------------------------------
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Estrutura para tabela `tbsalas`
+-- Table structure for table `tbturmas`
 --
 
-CREATE TABLE `tbsalas` (
-  `salId` int(11) NOT NULL,
-  `salSerieModulo` int(11) NOT NULL,
-  `fkCurId` int(11) NOT NULL
+DROP TABLE IF EXISTS `tbturmas`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `tbturmas` (
+  `turId` binary(16) NOT NULL,
+  `turPeriodo` int(11) NOT NULL,
+  `turCurso` varchar(150) NOT NULL,
+  `turHorario` enum('Matutino','Vespertino','Noturno') NOT NULL,
+  `turRegime` enum('Anual','Semestral') NOT NULL,
+  `turDataInicio` date NOT NULL,
+  `turDataFim` date NOT NULL,
+  PRIMARY KEY (`turId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- --------------------------------------------------------
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Estrutura para tabela `tbusuarios`
+-- Table structure for table `tbusuarios`
 --
 
+DROP TABLE IF EXISTS `tbusuarios`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `tbusuarios` (
-  `usuId` int(11) NOT NULL,
-  `usuNome` varchar(150) NOT NULL,
-  `usuSenha` varchar(60) NOT NULL
+  `usuId` binary(16) NOT NULL,
+  `usuNome` varchar(100) NOT NULL,
+  `usuEmail` varchar(512) NOT NULL,
+  `usuSenha` varchar(60) NOT NULL,
+  PRIMARY KEY (`usuId`),
+  UNIQUE KEY `usuEmail` (`usuEmail`),
+  UNIQUE KEY `usuEmail_2` (`usuEmail`),
+  UNIQUE KEY `usuEmail_3` (`usuEmail`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
---
--- Despejando dados para a tabela `tbusuarios`
---
-
-INSERT INTO `tbusuarios` (`usuId`, `usuNome`, `usuSenha`) VALUES
-(883, 'teste', '$2y$10$lXXW54.HvkIfu6gzLi9kdO957Ys0XpH6MCK1MphgeES6lYe9NoUuW');
-
---
--- Índices para tabelas despejadas
---
-
---
--- Índices de tabela `tbalunos`
---
-ALTER TABLE `tbalunos`
-  ADD PRIMARY KEY (`aluId`),
-  ADD UNIQUE KEY `aluEmail` (`aluEmail`),
-  ADD UNIQUE KEY `aluTelefone` (`aluTelefone`),
-  ADD KEY `fkSalaId` (`fkSalaId`);
-
---
--- Índices de tabela `tbcursos`
---
-ALTER TABLE `tbcursos`
-  ADD PRIMARY KEY (`curId`);
-
---
--- Índices de tabela `tbemprestimos`
---
-ALTER TABLE `tbemprestimos`
-  ADD PRIMARY KEY (`empId`),
-  ADD UNIQUE KEY `fkLivroId` (`fkLivroId`),
-  ADD KEY `fkAlunoId` (`fkAlunoId`);
-
---
--- Índices de tabela `tbgeneros`
---
-ALTER TABLE `tbgeneros`
-  ADD PRIMARY KEY (`genId`);
-
---
--- Índices de tabela `tblivros`
---
-ALTER TABLE `tblivros`
-  ADD PRIMARY KEY (`livId`),
-  ADD UNIQUE KEY `livCod` (`livCod`),
-  ADD KEY `fkGeneroId` (`fkGeneroId`);
-
---
--- Índices de tabela `tbsalas`
---
-ALTER TABLE `tbsalas`
-  ADD PRIMARY KEY (`salId`),
-  ADD KEY `fkCurId` (`fkCurId`);
-
---
--- Índices de tabela `tbusuarios`
---
-ALTER TABLE `tbusuarios`
-  ADD PRIMARY KEY (`usuId`);
-
---
--- AUTO_INCREMENT para tabelas despejadas
---
-
---
--- AUTO_INCREMENT de tabela `tbalunos`
---
-ALTER TABLE `tbalunos`
-  MODIFY `aluId` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT de tabela `tbcursos`
---
-ALTER TABLE `tbcursos`
-  MODIFY `curId` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT de tabela `tbemprestimos`
---
-ALTER TABLE `tbemprestimos`
-  MODIFY `empId` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT de tabela `tbgeneros`
---
-ALTER TABLE `tbgeneros`
-  MODIFY `genId` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT de tabela `tblivros`
---
-ALTER TABLE `tblivros`
-  MODIFY `livId` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT de tabela `tbsalas`
---
-ALTER TABLE `tbsalas`
-  MODIFY `salId` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT de tabela `tbusuarios`
---
-ALTER TABLE `tbusuarios`
-  MODIFY `usuId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=884;
-
---
--- Restrições para tabelas despejadas
---
-
---
--- Restrições para tabelas `tbalunos`
---
-ALTER TABLE `tbalunos`
-  ADD CONSTRAINT `tbalunos_ibfk_1` FOREIGN KEY (`fkSalaId`) REFERENCES `tbsalas` (`salId`);
-
---
--- Restrições para tabelas `tbemprestimos`
---
-ALTER TABLE `tbemprestimos`
-  ADD CONSTRAINT `tbemprestimos_ibfk_1` FOREIGN KEY (`fkAlunoId`) REFERENCES `tbalunos` (`aluId`),
-  ADD CONSTRAINT `tbemprestimos_ibfk_2` FOREIGN KEY (`fkLivroId`) REFERENCES `tblivros` (`livId`);
-
---
--- Restrições para tabelas `tblivros`
---
-ALTER TABLE `tblivros`
-  ADD CONSTRAINT `tblivros_ibfk_1` FOREIGN KEY (`fkGeneroId`) REFERENCES `tbgeneros` (`genId`);
-
---
--- Restrições para tabelas `tbsalas`
---
-ALTER TABLE `tbsalas`
-  ADD CONSTRAINT `tbsalas_ibfk_1` FOREIGN KEY (`fkCurId`) REFERENCES `tbcursos` (`curId`);
-COMMIT;
-
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+-- Dump completed on 2025-03-04 19:32:56
