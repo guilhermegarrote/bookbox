@@ -12,6 +12,7 @@ h1 {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    font-family: Arial, sans-serif;
 }
 
 /* Estilo da navbar */
@@ -146,4 +147,128 @@ nav {
 
 .search-btn:hover {
     background-color: #bbb;
+}
+
+/* TABELAS */
+
+.containerTI {
+    display: flex;
+    flex-direction: row;
+    min-height: 100vh;
+    width: 100%;
+}
+
+.sidebarTI {
+    width: 300px;
+    background-color: #f9f9f9;
+    padding: 20px;
+    border-right: 1px solid #ccc;
+}
+
+.titleTI {
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+    text-transform: capitalize;
+}
+
+.cardTI {
+    display: flex;
+    flex-direction: column;
+    background-color: #fff;
+    border-radius: 5px;
+    margin-bottom: 15px;
+    padding: 10px;
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.1);
+}
+
+.cardTI h3 {
+    font-size: 1rem;
+    margin-bottom: 5px;
+}
+
+.cardTI p {
+    font-size: 0.9rem;
+    color: #555;
+}
+
+.cardRedTI {
+    border-left: 8px solid red;
+}
+
+.cardOrangeTI {
+    border-left: 8px solid orange;
+}
+
+.cardGreenTI {
+    border-left: 8px solid green;
+}
+
+.contentTI {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+}
+
+.navBarTI {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+.searchBarTI input {
+    padding: 8px 35px 8px 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.menuTI a {
+    text-decoration: none;
+    color: #333;
+    font-weight: bold;
+    font-size: 0.95rem;
+}
+
+.tableContainerTI {
+    overflow-x: auto;
+    margin-bottom: 20px;
+}
+
+.tableTI {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.tableTI th,
+.tableTI td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+.buttonsTI {
+    display: flex;
+    gap: 10px;
+    margin-top: auto;
+}
+
+.btnTI {
+    background-color: #fff;
+    border: 1px solid #ccc;
+    padding: 10px 20px;
+    border-radius: 4px;
+}
+
+@media (max-width: 768px) {
+    .containerTI {
+        flex-direction: column;
+    }
+
+    .sidebarTI {
+        width: 100%;
+        border-bottom: 1px solid #ccc;
+    }
 }
