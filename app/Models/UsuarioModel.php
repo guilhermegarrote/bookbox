@@ -1,14 +1,13 @@
 <?php
 
-require_once __DIR__ . '/../../config/database.php';
+require_once __DIR__ . '/../../config/Database.php';
 
 class UsuarioModel
 {
-    private $db;
+    private PDO $db;
 
     /**
-     * Construtor da classe, responsável por estabelecer a conexão com o banco de dados.
-     * @return void
+     * Construtor que estabelece a conexão automaticamente.
      */
     public function __construct($db)
     {
@@ -16,42 +15,24 @@ class UsuarioModel
     }
 
     /**
-     * Método responsável por retornar todos os usuários.
-     * @return void
-     */
-    public function listarTodos()
-    {
-        $query = "SELECT usuId, usuNome FROM tbusuarios";
-        $stmt = $this->db->query($query);
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
-
-    /**
-     * Método responsável por buscar o usuario com o id passado por parâmetro.
-     * @param int $id
-     * @return array|false
-     */
-    public function buscarPorId($id)
-    {
-        $query = "SELECT usuId, usuNome FROM tbusuarios WHERE usuId = :id";
-        $stmt = $this->db->prepare($query);
-        $stmt->bindParam(":id", $id, PDO::PARAM_INT);
-        $stmt->execute();
-        return $stmt->fetch(PDO::FETCH_ASSOC);
-    }
-
-    /**
      * Método responsável por cadastrar novo usuário.
      * @param string $nome
+     * @param string $email
      * @param string $senha
-     * @return bool
+     * @return bool $resultado
      */
-    public function cadastrar($nome, $senha)
+    public function cadastrar($nome, $email, $senha)
     {
+        $uuidBin = hex2bin(str_replace('-', '', gerarUuid()));
+        $email = criptografar($email);
         $senhaHash = password_hash($senha, PASSWORD_DEFAULT);
-        $query = "INSERT INTO tbusuarios (usuNome, usuSenha) VALUES (:nome, :senha)";
+
+        $query = "INSERT INTO tbusuarios (usuId, usuNome, usuEmail, usuSenha) 
+                  VALUES (:uuid, :nome, :email, :senha)";
         $stmt = $this->db->prepare($query);
+        $stmt->bindParam(":uuid", $uuidBin, PDO::PARAM_LOB);
         $stmt->bindParam(":nome", $nome);
+        $stmt->bindParam(":email", $email);
         $stmt->bindParam(":senha", $senhaHash);
         return $stmt->execute();
     }
@@ -60,15 +41,20 @@ class UsuarioModel
      * Método responsável por editar usuário.
      * @param int $id
      * @param string|null $nome
+     * @param string|null $email
      * @param string|null $senha
-     * @return bool
+     * @return bool $resultado
      */
-    public function editar($id, $nome, $senha)
+    public function editar($id, $nome, $email, $senha)
     {
         $query = "UPDATE tbusuarios SET ";
 
         if ($nome) {
             $query .= "usuNome = :nome, ";
+        }
+        if ($nome) {
+            $email = criptografar($email);
+            $query .= "usuEmail = :email, ";
         }
         if ($senha) {
             $senhaHash = password_hash($senha, PASSWORD_DEFAULT);
@@ -82,6 +68,9 @@ class UsuarioModel
         if ($nome) {
             $stmt->bindParam(":nome", $nome);
         }
+        if ($email) {
+            $stmt->bindParam(":email", $email);
+        }
         if ($senha) {
             $stmt->bindParam(":senha", $senhaHash);
         }
@@ -94,7 +83,7 @@ class UsuarioModel
     /**
      * Método responsável por excluir usuário.
      * @param int $id
-     * @return bool
+     * @return bool $resultado
      */
     public function excluir($id)
     {
@@ -106,15 +95,17 @@ class UsuarioModel
 
     /**
      * Método responsável por verificar login.
-     * @param string $nome
+     * @param string $email
      * @param string $senha
-     * @return array/false
+     * @return array/false $usuario
      */
-    public function verificarLogin($nome, $senha)
+    public function verificarLogin($email, $senha)
     {
-        $query = "SELECT usuId, usuNome, usuSenha FROM tbusuarios WHERE usuNome = :nome";
+        $email = criptografar($email);
+
+        $query = "SELECT usuNome, usuEmail, usuSenha FROM tbusuarios WHERE usuEmail = :email";
         $stmt = $this->db->prepare($query);
-        $stmt->bindParam(":nome", $nome);
+        $stmt->bindParam(":email", $email);
         $stmt->execute();
         $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -123,5 +114,19 @@ class UsuarioModel
         }
 
         return false;
+    }
+
+    /**
+     * Método responsável por verificar se existem usuarios cadastrados
+     * @return boolean $resultado
+     */
+    public function existeUsuarios()
+    {
+        $query = "SELECT COUNT(usuId) FROM tbusuarios;";
+        $stmt = $this->db->prepare($query);
+        $stmt->execute();
+        $quantidade = $stmt->fetchColumn();
+
+        return $quantidade > 0;
     }
 }
