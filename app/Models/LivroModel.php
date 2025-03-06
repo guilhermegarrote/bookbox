@@ -14,103 +14,87 @@ class LivroModel
     {
         $this->db = $db;
     }
-
     /**
      * Método responsável por cadastrar novo livro. 	
-     * @param int $cod
+     * @param string $id
+     * @param string $Ibsn
      * @param string $titulo
-     * @param string $subtitulo
      * @param string $autor
-     * @param string $editora
-     * @param string $exemplar
      * @param int $generoId
+     * @param string $editora
      * @return bool
      */
-    public function cadastrar($cod, $titulo, $subtitulo, $autor, $editora, $exemplar, $generoId)
+    public function cadastrar($id, $Ibsn, $titulo,  $autor,$generoId, $editora )
     {
-        $query = "INSERT INTO tblivros (livCod, livTitulo, livSubtitulo, livAutor, livEditora, livExemplar, livDisponibilidade, fkGeneroId) 
-        VALUES (:cod, :titulo, :subtitulo, :autor, :editora, :exemplar, :disponibilidade, :generoId)";
+        $query = "INSERT INTO tblivros (livId, livIBSN, livTitulo, livAutor, fkGeneroId, livEditora) 
+        VALUES (:id,:Ibsn, :titulo, :autor,:generoId, :editora )";
         $stmt = $this->db->prepare($query);
-        $stmt->bindParam(":cod", $cod);
+        $stmt->bindParam(":id", $id);
+        $stmt->bindParam(":Ibsn", $Ibsn);
         $stmt->bindParam(":titulo", $titulo);
-        $stmt->bindParam(":subtitulo", $subtitulo);
         $stmt->bindParam(":autor", $autor);
-        $stmt->bindParam(":editora", $editora);
-        $stmt->bindParam(":exemplar", $exemplar);
         $stmt->bindParam(":generoId", $generoId);
+        $stmt->bindParam(":editora", $editora);
         return $stmt->execute();
     }
 
     /**
      * Método responsável por editar livro.
-     * @param int $id
-     * @param int|null $cod
+     * @param string $id
+     * @param string|null $Ibsn
      * @param string|null $titulo
-     * @param string|null $subtitulo
      * @param string|null $autor
      * @param string|null $editora
-     * @param string|null $exemplar
-     * @param bool|null $disponibilidade
      * @param string|null $generoId
      * @return bool
      */
-    public function editar($id, $cod, $titulo, $subtitulo, $autor, $editora, $exemplar, $disponibilidade, $generoId)
+    public function editar($id, $Ibsn, $titulo,$autor,$generoId, $editora)
     {
         $query = "UPDATE tblivros SET ";
 
-        if ($cod) {
-            $query .= "livCod = :cod, ";
+        if ($id) {
+            $query .= "livId = :id, ";
+        }
+        if ($Ibsn) {
+            $query .= "livIBSN = :Ibsn, ";
         }
         if ($titulo) {
             $query .= "livTitulo = :titulo, ";
         }
-        if ($subtitulo) {
-            $query .= "livSubtitulo = :subtitulo, ";
-        }
         if ($autor) {
             $query .= "livAutor = :autor, ";
-        }
-        if ($editora) {
-            $query .= "livEditora = :editora, ";
-        }
-        if ($exemplar) {
-            $query .= "livExemplar = :exemplar, ";
-        }
-        if ($disponibilidade) {
-            $query .= "livDisponibilidade = :disponibilidade, ";
         }
         if ($generoId) {
             $query .= "fkGeneroId = :generoId, ";
         }
+        if ($editora) {
+            $query .= "livEditora = :editora, ";
+        }
+
 
         $query .= " WHERE livId = :id";
 
         $stmt = $this->db->prepare($query);
 
-        if ($cod) {
-            $stmt->bindParam(":cod", $cod);
+        if ($id) {
+            $stmt->bindParam(":id", $id);
+        }
+        if ($Ibsn) {
+            $stmt->bindParam(":Ibsn", $Ibsn);
         }
         if ($titulo) {
             $stmt->bindParam(":titulo", $titulo);
         }
-        if ($subtitulo) {
-            $stmt->bindParam(":subtitulo", $subtitulo);
-        }
         if ($autor) {
             $stmt->bindParam(":autor", $autor);
-        }
-        if ($editora) {
-            $stmt->bindParam(":editora", $editora);
-        }
-        if ($exemplar) {
-            $stmt->bindParam(":exemplar", $exemplar);
-        }
-        if ($disponibilidade) {
-            $stmt->bindParam(":disponibilidade", $disponibilidade);
         }
         if ($generoId) {
             $stmt->bindParam(":generoId", $generoId);
         }
+        if ($editora) {
+            $stmt->bindParam(":editora", $editora);
+        }
+
 
         $stmt->bindParam(":id", $id, PDO::PARAM_INT);
 
@@ -119,7 +103,7 @@ class LivroModel
 
     /**
      * Método responsável por excluir livro.
-     * @param int $id
+     * @param int $string
      * @return bool
      */
     public function excluir($id)
