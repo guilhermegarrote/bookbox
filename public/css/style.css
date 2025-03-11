@@ -15,139 +15,551 @@ h1 {
     font-family: Arial, sans-serif;
 }
 
-/* Estilo da navbar */
-nav {
-    padding: 10px 15px;
-    background-color: #ffffff;
-    display: flex;
-    justify-content: center;
-}
-
-/* 🔹 Container principal da navbar */
-.nav-container {
+.menusuperior {
+    position: relative;
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: space-between; /* Distribui os itens entre a esquerda e a direita */
     width: 100%;
-    max-width: 1500px;
+    background-color: #ffffff;
+    padding: 15px 25px;
+    height: 70px;
+    border-radius: 0px;
 }
 
 .logo {
-    margin: 10px 50px 10px 50px;
-    max-height: 30px;
+    max-width: 240px;  /* Define o tamanho máximo da logo */
+    height: auto;      /* Mantém a proporção da logo */
+    margin-left: 40px; /* Ajuste da margem para a logo */
+
 }
 
-/* 🔹 Retângulo */
+
 .retangulo {
+    position: relative;
     display: flex;
     align-items: center;
-    background-color: #191919;
-    padding: 8px 15px;
-    border-radius: 8px;
-
+    gap: 0px;
+    background-color: #333;
+    padding: 7px 10px;
+    border-radius: 10px;
+    width: 1000px; /* Define uma largura fixa para o retângulo */
+    height: 50px;
+    margin-left: auto; /* Alinha o retângulo à direita */
+    margin-right: 30px; /* Se necessário, adicione uma margem à direita */
 }
 
-/* Barra de pesquisa */
-.search-box {
-    background-color: #4e4e4e;
-    color: white;
-    flex: 1;
-    padding: 8px;
+.barradepesquisa{
+    padding: 5px;
+    font-size: 14px;
+    width: 250px;
+    height: 35px; 
     border-radius: 5px;
-    margin-right: 10px;
-    width: 300px;
-    /* Tamanho fixo para pesquisa */
+    border: 1px solid #ccc;
+    background-color: #535353;
+    color: #ffffff;
+    border: none; /* Remove a borda padrão */
+    outline: none; /* Remove a borda azul ao clicar */
+    border-top-left-radius: 5px; 
+    border-top-right-radius: 0; 
+    border-bottom-left-radius: 5px; 
+    border-bottom-right-radius: 0px; 
+
 }
 
-/* Botões dentro do retângulo */
-.nav-btn {
-    background-color: #191919;
-    color: rgb(255, 255, 255);
+.btnfiltro{
+    padding: 5px 10px;
+    font-size: 14px;
+    border-radius: 5px;
     border: none;
-    padding: 6px 10px;
-    border-radius: 5px;
+    background-color: #454545; /* Cor de fundo para o botão */
+    color: white;
     cursor: pointer;
-    margin-left: 10px;
-    width: 150px;
-    transition: background-color 0.3s ease-in-out;
-    /* Efeito suave */
-    margin-left: 40px;
-    /* Adiciona espaço entre os botões */
+    display: flex; /* Usado para alinhar a imagem corretamente */
+    align-items: center; /* Alinha verticalmente a imagem */
+    justify-content: center; /* Centraliza a imagem horizontalmente */
+    width: 35px; /* Ajuste o tamanho do botão */
+    height: 35px; /* Ajuste a altura do botão */
+    border-top-left-radius:0; 
+    border-top-right-radius: 4px; 
+    border-bottom-left-radius: 0px; 
+    border-bottom-right-radius: 4px;
+    margin-right: 100px;
 }
 
-.nav-btn:hover {
-    background-color: #454545;
+.btnfiltro img {
+    width: 140%; /* Ajusta o tamanho da imagem dentro do botão */
+    height: auto; /* Mantém a proporção da imagem */
 }
 
-/* 🔹 Quadrado com três pontinhos */
-.menu-btn {
-    width: 30px;
-    height: 30px;
-    background-color: #3d3d3d;
+.btnfiltro:hover{
+    background-color: #949393;
+}
+
+.botoes {
+    display: flex;
+    gap: 50px; 
+    align-items: center;
+}
+
+.botaoemprestimo{
+    padding: 9px 30px;
+    font-size: 14px;
+    border-radius: 5px;
+    background-color: #333;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+.botaoemprestimo::after{
+    content: "";
+    position: absolute;
+    left: 467px;
+    bottom: 13px;
+    width: 0;
+    height: 2px;
+    background: white;
+    transition: width 0.3s ease, left 0.3s ease;
+    transform: translateX(-50%); /* Centraliza a linha no texto */
+}
+
+.botaoemprestimo:hover::after{
+    width: 85px; /* Faz a linha aparecer */
+     
+}
+
+
+.botaolivros {
+    padding: 9px 30px;
+    font-size: 14px;
+    border-radius: 5px;
+    background-color: #333;
+    color: white;
+    border: none;
+    cursor: pointer;
+    
+}
+
+.botaolivros::after{
+    content: "";
+    position: absolute;
+    left: 636px;
+    bottom: 13px;
+    width: 0;
+    height: 2px;
+    background: white;
+    transition: width 0.3s ease, left 0.3s ease;
+    transform: translateX(-50%); /* Centraliza a linha no texto */
+
+}
+
+.botaolivros:hover::after{
+    width: 43px; /* Faz a linha aparecer */
+     
+}
+
+.botaoalunos {
+    padding: 9px 30px;
+    font-size: 14px;
+    border-radius: 5px;
+    background-color: #333;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+.botaoalunos::after{
+    content: "";
+    position: absolute;
+    left: 786px;
+    bottom: 13px;
+    width: 0;
+    height: 2px;
+    background: white;
+    transition: width 0.3s ease, left 0.3s ease;
+    transform: translateX(-50%); /* Centraliza a linha no texto */
+
+}
+
+.botaoalunos:hover::after{
+    width: 50px; /* Faz a linha aparecer */
+     
+}
+
+
+.trespontinhos{
+    position: absolute;
+    right: 10px; /* Ajuste conforme necessário */
+    top: 50%;
+    height: 35px;
+    width: 35px;
+    border-radius: 5px;
+    transform: translateY(-50%);
+    background:#454545;
+    border: none;
+    font-size: 26px;
+    cursor: pointer;
+    color: #ffffff; /* Cor dos três pontinhos */
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 5px;
-    cursor: pointer;
-    margin-left: 10px;
-    font-size: 20px;
-    font-weight: bold;
 }
 
-.menu-btn:hover {
-    background-color: #bbb;
+.trespontinhos:hover{
+    color:#454545;
+    background:#ffffff ;
 }
 
-/* 🔹 Botão da pesquisa colado ao input */
-.search-btn {
-    background-color: #191919;
-    color: white;
-    border: none;
-    padding: 8px 12px;
-    cursor: pointer;
-    border-radius: 5px;
-    left: 50px;
+
+
+@media (max-width: 1230px){
+    .menusuperior {
+        flex-direction: column; /* Muda a direção dos itens para coluna em telas pequenas */
+        padding: 3px 15px; /* Ajusta o padding */
+        height: auto; /* Deixa a altura se ajustar ao conteúdo */
+    }
+
+    .logo {
+        max-width: 180px; /* Diminui o tamanho da logo em telas menores */
+        margin-left: 0; /* Remove a margem esquerda */
+        margin-bottom: 10px; /* Adiciona um espaçamento entre a logo e o conteúdo abaixo */
+    }
+
+    .retangulo{
+        flex-direction: row;
+        width: 1000px;
+        height:50px;
+        margin-right: 5px;
+        margin-left: 5px;
+        margin-bottom: 20px;
+    }
+
+    
 }
 
-.search-btn:hover {
-    background-color: #454545;
+@media (max-width: 1025px){
+    .menusuperior {
+        flex-direction: column; /* Muda a direção dos itens para coluna em telas pequenas */
+        padding: 10px 15px; /* Ajusta o padding */
+        height: auto; /* Deixa a altura se ajustar ao conteúdo */
+    }
+
+    .logo {
+        max-width: 180px; /* Diminui o tamanho da logo em telas menores */
+        margin-left: 0; /* Remove a margem esquerda */
+        margin-bottom: 10px; /* Adiciona um espaçamento entre a logo e o conteúdo abaixo */
+    }
+
+    .retangulo{
+        flex-direction: row;
+        width: 900px;
+        height:50px;
+        margin-right: 5px;
+        margin-left: 5px;
+        margin-bottom: 20px;
+    }
+
 }
 
-/* 🔹 Deixa o botão colado na barra de pesquisa */
-.search-box {
-    padding: 8px;
-    border: 1px solid #2d2d2d;
-    border-right: none;
-    /* Remove a borda direita para colar no botão */
-    border-radius: 5px 0 0 5px;
-    /* Mantém só a borda arredondada do lado esquerdo */
-    width: 300px;
-    margin-right: 0;
-    /* Remove qualquer espaço extra */
+/* Responsividade para telas menores */
+@media (max-width: 768px) {
+    .menusuperior {
+        flex-direction: column; /* Muda a direção dos itens para coluna em telas pequenas */
+        padding: 10px 15px; /* Ajusta o padding */
+        height: auto; /* Deixa a altura se ajustar ao conteúdo */
+    }
+
+    .logo {
+        max-width: 180px; /* Diminui o tamanho da logo em telas menores */
+        margin-left: 0; /* Remove a margem esquerda */
+        margin-bottom: 10px; /* Adiciona um espaçamento entre a logo e o conteúdo abaixo */
+    }
+
+    .retangulo{
+        flex-direction: row;
+        width: 700px;
+        height:50px;
+        margin-right: 15px;
+        margin-left: 5;
+        margin-bottom: 20px;
+    }
+
+    .barradepesquisa{
+        position: absolute;
+        margin-right: 140px;
+        width: 180px;
+        height: 35px;
+       
+
+    }
+
+    .btnfiltro{
+        position: absolute;
+        width: 40px;
+        height: 35px; 
+        margin-left: 180px;
+    }
+
+    .btnfiltro img {
+        width: 120%; 
+        height: auto; 
+    }
+
+    .botoes {
+        position: absolute;
+        display: flex;
+        gap: 20px; 
+        align-items: center;
+        left: 280px;
+    }
+
+    .botaoemprestimo {
+        
+        padding: 9px 20px;
+        font-size: 14px;
+        border-radius: 5px;
+        border: none;
+        cursor: pointer;
+        
+    }
+
+    .botaoemprestimo::after{
+        content: "";
+        position: absolute;
+        left: 62px;
+        bottom: 8px;
+        width: 0;
+        height: 2px;
+        background: white;
+        transition: width 0.3s ease, left 0.3s ease;
+        transform: translateX(-50%); /* Centraliza a linha no texto */
+    }
+    
+    .botaoemprestimo:hover::after{
+        width: 85px; /* Faz a linha aparecer */
+         
+    }
+
+    .botaolivros {
+        
+        padding: 9px 20px;
+        font-size: 14px;
+        border-radius: 5px;
+        border: none;
+        cursor: pointer;
+        
+    }
+    
+    .botaolivros::after{
+        content: "";
+        position: absolute;
+        left: 180px;
+        bottom: 8px;
+        width: 0;
+        height: 2px;
+        background: white;
+        transition: width 0.3s ease, left 0.3s ease;
+        transform: translateX(-50%); /* Centraliza a linha no texto */
+    }
+    
+    .botaolivros:hover::after{
+        width: 45px; /* Faz a linha aparecer */
+         
+    }
+
+    .botaoalunos {
+        
+        padding: 9px 20px;
+        font-size: 14px;
+        border-radius: 5px;
+        border: none;
+        cursor: pointer;
+        
+    }
+
+    .botaoalunos::after{
+        content: "";
+        position: absolute;
+        left: 280px;
+        bottom: 8px;
+        width: 0;
+        height: 2px;
+        background: white;
+        transition: width 0.3s ease, left 0.3s ease;
+        transform: translateX(-50%); /* Centraliza a linha no texto */
+    }
+    
+    .botaoalunos:hover::after{
+        width: 50px; /* Faz a linha aparecer */
+         
+    }
+
+    .trespontinhos{
+        position: relative;
+        left: 35px;
+        height: 36px;
+        width: 36px;
+        top: 18px;
+        border-radius: 5px;
+        transform: translateY(-50%);
+        background:#454545;
+        border: none;
+        font-size: 26px;
+        cursor: pointer;
+        color: #ffffff; 
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+        
+
 }
 
-/* 🔹 Botão de pesquisa colado */
-.search-btn {
-    background-color: #3d3d3d;
-    color: white;
-    border: 1px solid #2d2d2d;
-    /* Mantém a mesma borda do input */
-    border-left: none;
-    /* Remove a borda entre input e botão */
-    border-radius: 0 5px 5px 0;
-    /* Mantém só a borda arredondada do lado direito */
-    padding: 8px 12px;
-    cursor: pointer;
+/* Responsividade para telas muito pequenas (celulares) */
+@media (max-width: 400px) {
+    .menusuperior {
+        flex-direction: column;
+        padding: 10px 15px; 
+        height: auto; /* A altura se ajusta automaticamente */
+    }
+
+    .logo {
+        max-width: 150px; 
+        margin-left: 0; /* Remove a margem esquerda */
+        margin-bottom: 5px; /* Reduz o espaçamento em telas menores */
+    }
+
+    .retangulo{
+        flex-direction: column;
+        width: 340px;
+        height: 80px;
+        margin-right: 5px;
+        margin-left: 5px;
+        margin-bottom: 10px;
+    }
+
+    .barradepesquisa{
+        position: relative;
+        right: 10px;
+        width: 160px;
+        height: 27px;
+        bottom: 0px;
+
+    }
+
+    .btnfiltro{
+        position: absolute;
+        bottom: 46px;
+        width: 25px;
+        height: 27px; 
+        right: 47px;
+    }
+
+    .btnfiltro img {
+        width: 300%; /* Ajusta o tamanho da imagem dentro do botão */
+        height: auto; /* Mantém a proporção da imagem */
+    }
+
+    .botoes {
+        position: absolute;
+        display: flex;
+        gap: 30px; 
+        align-items: center;
+        top: 40px;
+        left: 7px;
+    }
+    
+    .botaoemprestimo  {
+        padding: 7px 13px;
+        font-size: 14px;
+        border-radius: 5px;
+        border: none;
+        cursor: pointer;
+        
+    }
+
+    .botaoemprestimo::after{
+        content: "";
+        position: absolute;
+        left: 53px;
+        bottom: 6px;
+        width: 0;
+        height: 2px;
+        background: white;
+        transition: width 0.3s ease, left 0.3s ease;
+        transform: translateX(-50%); /* Centraliza a linha no texto */
+    }
+    
+    .botaoemprestimo:hover::after{
+        width: 80px; /* Faz a linha aparecer */
+         
+    }
+
+    .botaolivros  {
+        padding: 7px 15px;
+        font-size: 14px;
+        border-radius: 5px;
+        border: none;
+        cursor: pointer;
+    }
+
+    .botaolivros::after{
+        content: "";
+        position: absolute;
+        left: 170px;
+        bottom: 6px;
+        width: 0;
+        height: 2px;
+        background: white;
+        transition: width 0.3s ease, left 0.3s ease;
+        transform: translateX(-50%); /* Centraliza a linha no texto */
+    }
+    
+    .botaolivros:hover::after{
+        width: 40px; /* Faz a linha aparecer */
+         
+    }
+
+    .botaoalunos  {
+        padding: 7px 15px;
+        font-size: 14px;
+        border-radius: 5px;
+        border: none;
+        cursor: pointer;
+        
+    }
+
+    .botaoalunos::after{
+        content: "";
+        position: absolute;
+        left: 270px;
+        bottom: 6px;
+        width: 0;
+        height: 2px;
+        background: white;
+        transition: width 0.3s ease, left 0.3s ease;
+        transform: translateX(-50%); /* Centraliza a linha no texto */
+    }
+    
+    .botaoalunos:hover::after{
+        width: 50px; /* Faz a linha aparecer */
+         
+    }
+
+    .trespontinhos{
+        position: absolute;
+        top: 50%; /* Ajuste conforme necessário */
+        transform: translateY(-160%);
+        left:  290px;
+        height: 30px;
+        width: 30px;
+        
+
+    }
 }
 
-.buscar {
-    width: 13px;
-    height: 13px;
-}
 
-.search-btn:hover {
-    background-color: #bbb;
-}
 
 /* TABELAS */
 

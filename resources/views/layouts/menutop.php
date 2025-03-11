@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>]Bookbox</title>
+    <title>Bookbox</title>
 
     <link rel="stylesheet" href="/bookbox/public/css/style.css">
 </head>
@@ -12,19 +12,25 @@
 <body>
     <header>
         <nav>
-            <div class="nav-container">
-                <img class="logo" src="/bookbox/public/images/logo.png" alt="logo">
-
+          <div class="menusuperior"> 
+              <img class="logo" src="/Bookbox/public/images/logo.png" alt="logo">
                 <div class="retangulo">
-                    <input type="text" class="search-box" placeholder="Pesquisar...">
-                    <button class="search-btn"><img class="buscar" src="\bookbox\public\images\Filtro.png" alt="buscar"></button>>
-                    <button class="nav-btn">Emprestimos</button>
-                    <button class="nav-btn">Livros</button>
-                    <button class="nav-btn">Alunos</button>
+                          
+                      <input type="text" class="barradepesquisa" placeholder="Pesquisar..."> 
+                      <button class="btnfiltro"><img class="filtrar"src="\bookbox\public\images\Filtro.png" alt="filtrar"></button>
+                               
+                        <div class="botoes">
+                            <button class="botaoemprestimo">Emprestimos</button>
+                            <button class="botaolivros">Livros</button>
+                            <button class="botaoalunos">Alunos</button>
+                            <button class="trespontinhos">
+                              &#x22EE; <!-- Código Unicode para três pontinhos verticais -->
+                            </button>
+                        </div>
+                          
 
-                    <div class="menu-btn" onclick="toggleMenu()">⋮</div>
                 </div>
-            </div>
+          </div> 
         </nav>
     </header>
 </body>
