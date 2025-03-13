@@ -25,7 +25,7 @@ class AlunoModel
      * @param bool $bloqueio
      * @return bool
      */
-    public function cadastrar($nome, $email, $telefone, $turmaId, $bloqueio)
+    public function cadastrar($nome, $cpf, $email, $telefone, $turmaId, $bloqueio)
     {
 
         $uuidBin = hex2bin(str_replace('-', '', gerarUuid()));
@@ -64,7 +64,7 @@ class AlunoModel
             $query .= "aluCpf = :cpf, ";
         }
         if ($email) {
-            $query .= "aluEmail = :Email, ";
+            $query .= "aluEmail = email, ";
         }
         if ($telefone) {
             $query .= "aluTelefone = :telefone, ";
