@@ -16,20 +16,22 @@ class LivroModel
     }
     /**
      * Método responsável por cadastrar novo livro. 	
-     * @param string $id
      * @param string $Ibsn
      * @param string $titulo
      * @param string $autor
-     * @param int $generoId
+     * @param string $generoId
      * @param string $editora
      * @return bool
      */
-    public function cadastrar($id, $Ibsn, $titulo,  $autor,$generoId, $editora )
+    public function cadastrar($Ibsn, $titulo, $autor, $generoId, $editora)
     {
-        $query = "INSERT INTO tblivros (livId, livIBSN, livTitulo, livAutor, fkGeneroId, livEditora) 
-        VALUES (:id,:Ibsn, :titulo, :autor,:generoId, :editora )";
+
+        $uuidBin = hex2bin(str_replace('-', '', gerarUuid()));
+
+        $query = "INSERT INTO tblivros (livIBSN, livTitulo, livAutor, fkGenId, livEditora) 
+        VALUES (:Ibsn, :titulo, :autor,:generoId, :editora )";
         $stmt = $this->db->prepare($query);
-        $stmt->bindParam(":id", $id);
+        $stmt->bindParam(":uuid", $uuidBin, PDO::PARAM_LOB);
         $stmt->bindParam(":Ibsn", $Ibsn);
         $stmt->bindParam(":titulo", $titulo);
         $stmt->bindParam(":autor", $autor);
@@ -48,13 +50,10 @@ class LivroModel
      * @param string|null $generoId
      * @return bool
      */
-    public function editar($id, $Ibsn, $titulo,$autor,$generoId, $editora)
+    public function editar($Ibsn, $titulo, $autor, $generoId, $editora)
     {
         $query = "UPDATE tblivros SET ";
 
-        if ($id) {
-            $query .= "livId = :id, ";
-        }
         if ($Ibsn) {
             $query .= "livIBSN = :Ibsn, ";
         }
@@ -76,9 +75,6 @@ class LivroModel
 
         $stmt = $this->db->prepare($query);
 
-        if ($id) {
-            $stmt->bindParam(":id", $id);
-        }
         if ($Ibsn) {
             $stmt->bindParam(":Ibsn", $Ibsn);
         }
@@ -95,7 +91,6 @@ class LivroModel
             $stmt->bindParam(":editora", $editora);
         }
 
-
         $stmt->bindParam(":id", $id, PDO::PARAM_INT);
 
         return $stmt->execute();
@@ -103,7 +98,7 @@ class LivroModel
 
     /**
      * Método responsável por excluir livro.
-     * @param int $string
+     * @param string $id
      * @return bool
      */
     public function excluir($id)

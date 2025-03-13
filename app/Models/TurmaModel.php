@@ -18,7 +18,6 @@ class TurmaModel
 
     /**
      * Método responsável por cadastrar nova turma. 	
-     * @param string $id
      * @param int $periodo
      * @param string $curso
      * @param string  $horario
@@ -27,12 +26,15 @@ class TurmaModel
      * @param string $dataFim
      * @return bool
      */
-    public function cadastrar($id, $periodo, $curso, $horario, $regime, $dataInicio, $dataFim)
+    public function cadastrar($periodo, $curso, $horario, $regime, $dataInicio, $dataFim)
     {
-        $query = "INSERT INTO tbturmas (turId, turPeriodo, turCurso, turHorario, turRegime, turDataInicio, turDataFim) 
+
+        $uuidBin = hex2bin(str_replace('-', '', gerarUuid()));
+
+        $query = "INSERT INTO tbturmas (turPeriodo, turCurso, turHorario, turRegime, turDataInicio, turDataFim) 
         VALUES (:id,:periodo,:curso, :horario, :regime,:dataInicio, :dataFim )";
         $stmt = $this->db->prepare($query);
-        $stmt->bindParam(":id", $id);
+        $stmt->bindParam(":uuid", $uuidBin, PDO::PARAM_LOB);
         $stmt->bindParam(":periodo", $periodo);
         $stmt->bindParam(":curso", $curso);
         $stmt->bindParam(":horario", $horario);
@@ -54,13 +56,10 @@ class TurmaModel
      * @return bool
      */
 
-    public function editar($id, $periodo, $curso, $horario, $regime, $dataInicio, $dataFim)
+    public function editar($periodo, $curso, $horario, $regime, $dataInicio, $dataFim)
     {
         $query = "UPDATE tbturmas SET ";
 
-        if ($id) {
-            $query .= "turId = :id, ";
-        }
         if ($periodo) {
             $query .= "turPeriodo = :periodo, ";
         }
@@ -83,9 +82,6 @@ class TurmaModel
 
         $stmt = $this->db->prepare($query);
 
-        if ($id) {
-            $stmt->bindParam(":id", $id);
-        }
         if ($periodo) {
             $stmt->bindParam(":periodo", $periodo);
         }
@@ -112,7 +108,7 @@ class TurmaModel
 
     /**
      * Método responsável por excluir turma.
-     * @param int $string
+     * @param string $id
      * @return bool
      */
     public function excluir($id)

@@ -17,17 +17,19 @@ class ExemplarModel
 
     /**
      * Método responsável por cadastrar novo exemplar. 	
-     * @param string $id
      * @param string $livId
      * @param int $numero
      * @return bool
      */
-    public function cadastrar($id, $livId, $numero, $disponibilidade)
+    public function cadastrar($livId, $numero)
     {
-        $query = "INSERT INTO tbexemplares (exId, fkLivId, exNumero) 
-        VALUES (:id,:livId,:numero)";
+
+        $uuidBin = hex2bin(str_replace('-', '', gerarUuid()));
+
+        $query = "INSERT INTO tbexemplares (fkLivId, exNumero) 
+        VALUES (:livId, :numero)";
         $stmt = $this->db->prepare($query);
-        $stmt->bindParam(":id", $id);
+        $stmt->bindParam(":uuid", $uuidBin, PDO::PARAM_LOB);
         $stmt->bindParam(":livId", $livId);
         $stmt->bindParam(":numero", $numero);
         return $stmt->execute();
@@ -38,41 +40,29 @@ class ExemplarModel
      * @param string $id
      * @param string $livId
      * @param int $numero
-     * @param string  $disponibilidade
      * @return bool
      * @return bool
      */
 
-    public function editar($id, $livId, $numero, $disponibilidade)
+    public function editar($id, $livId, $numero)
     {
         $query = "UPDATE tbexemplares SET ";
-        if ($id) {
-            $query .= "exId = :id, ";
-        }
+
         if ($livId) {
             $query .= "fkLivId = :livId, ";
         }
         if ($numero) {
             $query .= "exNumero = :numero, ";
         }
-        if ($disponibilidade) {
-            $query .= "exDisponibilidade = :disponibilidade, ";
-        }
         $query .= " WHERE exId = :id";
 
         $stmt = $this->db->prepare($query);
 
-        if ($id) {
-            $stmt->bindParam(":id", $id);
-        }
         if ($livId) {
             $stmt->bindParam(":livId", $livId);
         }
         if ($numero) {
             $stmt->bindParam(":numero", $numero);
-        }
-        if ($disponibilidade) {
-            $stmt->bindParam(":disponibilidade", $disponibilidade);
         }
         $stmt->bindParam(":id", $id, PDO::PARAM_INT);
 
@@ -81,7 +71,7 @@ class ExemplarModel
 
     /**
      * Método responsável por excluir exemplar.
-     * @param int $id
+     * @param string $id
      * @return bool
      */
     public function excluir($id)
