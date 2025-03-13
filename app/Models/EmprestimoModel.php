@@ -18,82 +18,32 @@ class CursoModel
 
     /**
      * Método responsável por cadastrar empréstimo
-     * @param string $dtInicial
-     * @param string $dtFinal
-     * @param int $alunoId
-     * @param int $livroId
+     * @param string $alunoId
+     * @param string $exemplarId
      * @return bool
      */
-
-    public function cadastrar($dtInicial, $dtFinal, $alunoId, $livroId)
+    public function cadastrar($alunoId, $exemplarId)
     {
-        $query = "INSERT INTO tbEmprestimos (empDataInicial, empDataFinal, fkAlunoId, fkLivroId) VALUES (:dtInicial, :dtFinal, :alunoId, livroId)";
+
+        $uuidBin = hex2bin(str_replace('-', '', gerarUuid()));
+
+        $query = "INSERT INTO tbemprestimos (fkAluId, fkExId, empDataDevolucao) VALUES (:alunoId, :exemplarId, curdate() + 7)";
         $stmt = $this->db->prepare($query);
-        $stmt->bindParam(":dtInicial", $dtInicial);
-        $stmt->bindParam(":dtFinal", $dtFinal);
+        $stmt->bindParam(":uuid", $uuidBin, PDO::PARAM_LOB);
         $stmt->bindParam(":alunoId", $alunoId);
-        $stmt->bindParam(":livroId", $livroId);
+        $stmt->bindParam(":exemplarId", $exemplarId);
         return $stmt->execute();
     }
 
-    /**
-     * Método responsável por editar empréstimo.
-     * @param int $id
-     * @param string|null $dtInicial
-     * @param string|null $dtFinal
-     * @param string|null $alunoId
-     * @param string|null $livroId
-     * @return bool
-     */
-
-    public function editar($id, $dtInicial, $dtFinal, $alunoId, $livroId)
-    {
-        $query = "UPDATE tbEmprestimos SET ";
-
-        if ($dtInicial) {
-            $query .= "dtInicial = :dtInicial, ";
-        }
-        if ($dtFinal) {
-            $query .= "dtFinal = :dtFinal, ";
-        }
-        if ($alunoId) {
-            $query .= "alunoId = :alunoId, ";
-        }
-        if ($livroId) {
-            $query .= "livroId = :livroId, ";
-        }
-
-        $query .= " WHERE  empId= :id";
-
-        $stmt = $this->db->prepare($query);
-
-        if ($dtInicial) {
-            $stmt->bindParam(":dtInicial", $dtInicial);
-        }
-        if ($dtFinal) {
-            $stmt->bindParam(":dtFinal", $dtFinal);
-        }
-        if ($alunoId) {
-            $stmt->bindParam(":alunoId", $alunoId);
-        }
-        if ($livroId) {
-            $stmt->bindParam(":livroId", $livroId);
-        }
-
-        $stmt->bindParam(":id", $id, PDO::PARAM_INT);
-
-        return $stmt->execute();
-    }
 
     /**
-     * Método responsável por excluir empréstimo.
-     * @param int $id
+     * Método responsável por finalizar empréstimo.
+     * @param string $id
      * @return bool
      */
-
-    public function excluir($id)
+    public function finalizar($id)
     {
-        $query = "DELETE FROM tbEmprestimos WHERE empId = :id";
+        $query = "UPDATE tbemprestimos SET empDataDevolucao = curdate() + 7, empAtivo = FALSE";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(":id", $id);
         return $stmt->execute();

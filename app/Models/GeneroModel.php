@@ -21,10 +21,14 @@ class GeneroModel
      * @param string $cor
      * @return bool
      */
-    public function adicionar($nome, $cor)
+    public function cadastrar($nome, $cor)
     {
-        $query = "INSERT INTO tbgeneros (genNome, genCor) VALUES (:nome, :cor)";
+
+        $uuidBin = hex2bin(str_replace('-', '', gerarUuid()));
+
+        $query = "INSERT INTO tbgeneros (genNome, genCorHex) VALUES (:nome, :cor)";
         $stmt = $this->db->prepare($query);
+        $stmt->bindParam(":uuid", $uuidBin, PDO::PARAM_LOB);
         $stmt->bindParam(":nome", $nome);
         $stmt->bindParam(":cor", $cor);
         return $stmt->execute();
@@ -32,12 +36,12 @@ class GeneroModel
 
     /**
      * Método responsável por editar gênero.
-     * @param int $id
+     * @param string $id
      * @param string|null $nome
      * @param string|null $cor
      * @return bool
      */
-    public function editar($id, $nome, $cor)
+    public function editar($nome, $cor)
     {
         $query = "UPDATE tbgeneros SET ";
 
@@ -45,7 +49,7 @@ class GeneroModel
             $query .= "genNome = :nome";
         }
         if ($cor) {
-            $query .= "genCor = :cor";
+            $query .= "genCorHex = :cor";
         }
 
         $query .= " WHERE genId = :id";
@@ -64,7 +68,7 @@ class GeneroModel
 
     /**
      * Método responsável por excluir genêro.
-     * @param int $id
+     * @param string $id
      * @return bool
      */
     public function excluir($id)

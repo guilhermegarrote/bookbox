@@ -18,22 +18,27 @@ class AlunoModel
     /**
      * Método responsável por cadastrar novo aluno.
      * @param string $nome
+     * @param string $cpf
      * @param string $email
      * @param string $telefone
-     * @param bool $statusAluno
-     * @param int $salaId
+     * @param string $turmaId
+     * @param bool $bloqueio
      * @return bool
      */
-
-    public function cadastrar($nome, $email, $telefone, $satus, $salaId)
+    public function cadastrar($nome, $email, $telefone, $turmaId, $bloqueio)
     {
-        $query = "INSERT INTO tbAlunos (aluNome, aluEmail, aluTelefone, aluStatus, fdSalaId) VALUES (:nome, :email, :telefone, :statusAluno, :salaId)";
+
+        $uuidBin = hex2bin(str_replace('-', '', gerarUuid()));
+
+        $query = "INSERT INTO tbalunos (aluNome, aluCpf, aluEmail, aluTelefone, fkTurId, aluBloqueio) VALUES (:nome, :cpf, :email, :telefone, :turmaId, :bloqueio)";
         $stmt = $this->db->prepare($query);
+        $stmt->bindParam(":uuid", $uuidBin, PDO::PARAM_LOB);
         $stmt->bindParam(":nome", $nome);
+        $stmt->bindParam(":cpf", $cpf);
         $stmt->bindParam(":email", $email);
         $stmt->bindParam(":telefone", $telefone);
-        $stmt->bindParam(":statusAluno", $statusAluno);
-        $stmt->bindParam(":salaId", $salaId);
+        $stmt->bindParam(":turmaId", $turmaId);
+        $stmt->bindParam(":bloqueio", $bloqueio);
         return $stmt->execute();
     }
 
@@ -41,19 +46,22 @@ class AlunoModel
      * Método responsável por editar aluno.
      * @param int $id
      * @param string|null $nome
+     * @param string|null $cpf
      * @param string|null $email
      * @param string|null $telefone
-     * @param string|null $statusAluno
-     * @param string|null $salaId
+     * @param string|null $turmaId
+     * @param string|null $bloqueio
      * @return bool
      */
-
-    public function editar($id, $nome, $email, $telefone, $statusAluno, $salaId)
+    public function editar($id, $nome, $cpf, $email, $telefone, $turmaId, $bloqueio)
     {
-        $query = "UPDATE tbAlunos SET ";
+        $query = "UPDATE tbalunos SET ";
 
         if ($nome) {
             $query .= "aluNome = :nome, ";
+        }
+        if ($cpf) {
+            $query .= "aluCpf = :cpf, ";
         }
         if ($email) {
             $query .= "aluEmail = :Email, ";
@@ -61,11 +69,11 @@ class AlunoModel
         if ($telefone) {
             $query .= "aluTelefone = :telefone, ";
         }
-        if ($statusAluno) {
-            $query .= "aluStatus = :statusAluno, ";
+        if ($turmaId) {
+            $query .= "fkTurId = :turmaId, ";
         }
-        if ($salaId) {
-            $query .= "fkSalaId = :salaId ";
+        if ($bloqueio) {
+            $query .= "aluBloqueio = :bloqueio ";
         }
 
         $query .= " WHERE aluId= :id";
@@ -75,17 +83,20 @@ class AlunoModel
         if ($nome) {
             $stmt->bindParam(":nome", $nome);
         }
+        if ($cpf) {
+            $stmt->bindParam(":cpf", $cpf);
+        }
         if ($email) {
             $stmt->bindParam(":email", $email);
         }
         if ($telefone) {
             $stmt->bindParam(":telefone", $telefone);
         }
-        if ($statusAluno) {
-            $stmt->bindParam(":statusAluno", $statusAluno);
+        if ($turmaId) {
+            $stmt->bindParam(":turmaId", $turmaId);
         }
-        if ($salaId) {
-            $stmt->bindParam(":salaId", $salaId);
+        if ($bloqueio) {
+            $stmt->bindParam(":bloqueio", $bloqueio);
         }
 
         $stmt->bindParam(":id", $id, PDO::PARAM_INT);
@@ -95,13 +106,12 @@ class AlunoModel
 
     /**
      * Método responsável por excluir aluno.
-     * @param int $id
+     * @param string $id
      * @return bool
      */
-
     public function excluir($id)
     {
-        $query = "DELETE FROM tbAlunos WHERE aluId = :id";
+        $query = "DELETE FROM tbalunos WHERE aluId = :id";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(":id", $id);
         return $stmt->execute();
