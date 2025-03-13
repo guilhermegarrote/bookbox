@@ -27,15 +27,31 @@ CREATE TABLE `tbalunos` (
   `aluNome` varchar(100) NOT NULL,
   `aluCpf` varchar(11) DEFAULT NULL,
   `aluEmail` varchar(319) NOT NULL,
-  `aluTelefone` varchar(20) NOT NULL,
-  `fkTurId` binary(16) NOT NULL,
+  `aluTelefone` varchar(20) DEFAULT NULL,
   `aluBloqueado` tinyint(1) DEFAULT 0,
   PRIMARY KEY (`aluId`),
   UNIQUE KEY `aluCPF` (`aluCpf`),
   UNIQUE KEY `aluEmail` (`aluEmail`),
-  UNIQUE KEY `aluTelefone` (`aluTelefone`),
+  UNIQUE KEY `aluTelefone` (`aluTelefone`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `tbalunos_turmas`
+--
+
+DROP TABLE IF EXISTS `tbalunos_turmas`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `tbalunos_turmas` (
+  `aluTurId` binary(16) NOT NULL,
+  `fkAluId` binary(16) NOT NULL,
+  `fkTurId` binary(16) NOT NULL,
+  PRIMARY KEY (`aluTurId`),
+  KEY `fkAluId` (`fkAluId`),
   KEY `fkTurId` (`fkTurId`),
-  CONSTRAINT `fkTurId` FOREIGN KEY (`fkTurId`) REFERENCES `tbturmas` (`turId`)
+  CONSTRAINT `tbalunos_turmas_ibfk_1` FOREIGN KEY (`fkAluId`) REFERENCES `tbalunos` (`aluId`),
+  CONSTRAINT `tbalunos_turmas_ibfk_2` FOREIGN KEY (`fkTurId`) REFERENCES `tbturmas` (`turId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -55,8 +71,8 @@ CREATE TABLE `tbemprestimos` (
   `empDataDevolucao` date DEFAULT NULL,
   `empAtivo` tinyint(1) DEFAULT 1,
   PRIMARY KEY (`empId`),
+  UNIQUE KEY `fkExId` (`fkExId`),
   KEY `fkAluId` (`fkAluId`),
-  KEY `fkExId` (`fkExId`),
   CONSTRAINT `fkAluId` FOREIGN KEY (`fkAluId`) REFERENCES `tbalunos` (`aluId`),
   CONSTRAINT `fkExId` FOREIGN KEY (`fkExId`) REFERENCES `tbexemplares` (`exId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -106,13 +122,13 @@ DROP TABLE IF EXISTS `tblivros`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `tblivros` (
   `livId` binary(16) NOT NULL,
-  `livIBSN` varchar(13) NOT NULL,
+  `livIbsn` varchar(13) DEFAULT NULL,
   `livTitulo` varchar(255) NOT NULL,
   `livAutor` varchar(300) NOT NULL,
   `fkGenId` binary(16) NOT NULL,
   `livEditora` varchar(150) NOT NULL,
   PRIMARY KEY (`livId`),
-  UNIQUE KEY `livIBSN` (`livIBSN`),
+  UNIQUE KEY `livIBSN` (`livIbsn`),
   KEY `fkGeneroId` (`fkGenId`),
   CONSTRAINT `fkGeneroId` FOREIGN KEY (`fkGenId`) REFERENCES `tbgeneros` (`genId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -165,4 +181,4 @@ CREATE TABLE `tbusuarios` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-03-04 19:32:56
+-- Dump completed on 2025-03-13 19:07:49
