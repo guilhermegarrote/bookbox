@@ -12,25 +12,24 @@
 <body>
     <header>
         <nav>
-          <div class="menusuperior"> 
-              <img class="logo" src="/Bookbox/public/images/logo.png" alt="logo">
+            <div class="menusuperior">
+                <img class="logo" src="/Bookbox/public/images/logo.png" alt="logo">
                 <div class="retangulo">
-                          
-                      <input type="text" class="barradepesquisa" placeholder="Pesquisar..."> 
-                      <button class="btnfiltro"><img class="filtrar"src="\bookbox\public\images\Filtro.png" alt="filtrar"></button>
-                               
-                        <div class="botoes">
-                            <button class="botaoemprestimo">Emprestimos</button>
-                            <button class="botaolivros">Livros</button>
-                            <button class="botaoalunos">Alunos</button>
-                            <button class="trespontinhos">
-                              &#x22EE; <!-- Código Unicode para três pontinhos verticais -->
-                            </button>
-                        </div>
-                          
 
+                    <input type="text" class="barradepesquisa" placeholder="Pesquisar...">
+                    <button class="btnfiltro"><img class="filtrar" src="\bookbox\public\images\filtro.png"
+                            alt="filtrar"></button>
+
+                    <div class="botoes">
+                        <button class="botaoemprestimo">Emprestimos</button>
+                        <button class="botaolivros">Livros</button>
+                        <button class="botaoalunos">Alunos</button>
+                        <button class="trespontinhos">
+                            &#x22EE; <!-- Código Unicode para três pontinhos verticais -->
+                        </button>
+                    </div>
                 </div>
-          </div> 
+            </div>
         </nav>
     </header>
 </body>
