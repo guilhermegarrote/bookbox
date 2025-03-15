@@ -1,35 +1,47 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
-
     <link rel="stylesheet" href="/bookbox/public/css/style.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Sancreek&family=Sedgwick+Ave+Display&family=Urbanist:ital,wght@0,100..900;1,100..900&display=swap');
+    </style>
 </head>
 
-<body>
-    <h2>Login</h2>
-    
-    <!--Verifica se o login deu errado, caso tenha dado vai mostrar essa mensagem, caso você queira fazer algo por exemplo mudar o contorno da label quando der errado o login. Então caso queira fazer algo quando der errado só fazer dentro desse if--> 
-    <?php
-    if (isset($_SESSION['erro_login'])) {
-        echo '<p style="color: red;">' . $_SESSION['erro_login'] . '</p>';
-        unset($_SESSION['erro_login']);
-    }
-    ?>
+<body class="login-container">
+    <div class="login-box">
+        <!-- 🔹 Lado esquerdo (formulário) -->
+        <div class="login-form font-urbanist">
+            <h2>Login</h2>
 
-    <!--<form action="login" method="POST"> faz que quando o botão for clicado ele faça o metodo post que executa la no controller o login--> 
-    <!-- mantenha os mesmos name=".." pois é a referência para pegar esses dados lá no back-->
-    <form action="login" method="POST">
-        <label>Usuário:</label>
-        <input type="text" name="usuNome" required>
+            <!-- Formulário de login -->
+            <form action="login" method="POST">
+                <label class="login-label font-urbanist">Usuário:</label>
+                <input type="text" name="usuNome" class="login-input font-urbanist" required>
 
-        <label>Senha:</label>
-        <input type="password" name="usuSenha" required>
+                <label class="login-label font-urbanist">Senha:</label>
+                <input type="password" name="usuSenha" class="login-input font-urbanist" required>
 
-        <button type="submit">Entrar</button>
-    </form>
+                <!-- Mensagem de erro -->
+                <?php if (isset($_SESSION['erro_login'])): ?>
+                    <p class="login-error font-urbanist"><?= $_SESSION['erro_login']; ?></p>
+                    <?php unset($_SESSION['erro_login']); ?>
+                <?php endif; ?>
+
+                <button type="submit" class="login-button">→</button>
+            </form>
+        </div>
+
+        <!-- 🔹 Lado direito (bem-vindo) -->
+        <div class="login-right">
+            <div class="login-logo font-urbanist"><img src="\bookbox\public\images\logo.png" alt="logo"></div>
+            <h1>Bem-vindo</h1>
+            <p>ao sistema da biblioteca!</p>
+        </div>
+    </div>
 </body>
 
 </html>

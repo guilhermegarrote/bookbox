@@ -1,3 +1,22 @@
+@font-face {
+    font-family: 'Urbanist';
+    src: url('public/fonts/Urbanist.ttf') format('ttf');
+}
+
+.font-urbanist {
+    font-family: 'Urbanist';
+}
+
+:root {
+    --branco: #FFFFFF;
+    --cinza-escuro: #252525;
+    --cinza: #fbfbfb;
+    --cinza-claro: #dadada;
+    --vermelho: #E44242;
+    --verde: #98E55C;
+    --laranja: #F8944C;
+}
+
 body {
     font-family: Arial, sans-serif;
     background-color: #f4f4f4;
@@ -19,7 +38,8 @@ h1 {
     position: relative;
     display: flex;
     align-items: center;
-    justify-content: space-between; /* Distribui os itens entre a esquerda e a direita */
+    justify-content: space-between;
+    /* Distribui os itens entre a esquerda e a direita */
     width: 100%;
     background-color: #ffffff;
     padding: 15px 25px;
@@ -28,9 +48,12 @@ h1 {
 }
 
 .logo {
-    max-width: 240px;  /* Define o tamanho máximo da logo */
-    height: auto;      /* Mantém a proporção da logo */
-    margin-left: 40px; /* Ajuste da margem para a logo */
+    max-width: 240px;
+    /* Define o tamanho máximo da logo */
+    height: auto;
+    /* Mantém a proporção da logo */
+    margin-left: 40px;
+    /* Ajuste da margem para a logo */
 
 }
 
@@ -43,66 +66,79 @@ h1 {
     background-color: #333;
     padding: 7px 10px;
     border-radius: 10px;
-    width: 1000px; /* Define uma largura fixa para o retângulo */
+    width: 1000px;
+    /* Define uma largura fixa para o retângulo */
     height: 50px;
-    margin-left: auto; /* Alinha o retângulo à direita */
-    margin-right: 30px; /* Se necessário, adicione uma margem à direita */
+    margin-left: auto;
+    /* Alinha o retângulo à direita */
+    margin-right: 30px;
+    /* Se necessário, adicione uma margem à direita */
 }
 
-.barradepesquisa{
+.barradepesquisa {
     padding: 5px;
     font-size: 14px;
     width: 250px;
-    height: 35px; 
+    height: 35px;
     border-radius: 5px;
     border: 1px solid #ccc;
     background-color: #535353;
     color: #ffffff;
-    border: none; /* Remove a borda padrão */
-    outline: none; /* Remove a borda azul ao clicar */
-    border-top-left-radius: 5px; 
-    border-top-right-radius: 0; 
-    border-bottom-left-radius: 5px; 
-    border-bottom-right-radius: 0px; 
+    border: none;
+    /* Remove a borda padrão */
+    outline: none;
+    /* Remove a borda azul ao clicar */
+    border-top-left-radius: 5px;
+    border-top-right-radius: 0;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 0px;
 
 }
 
-.btnfiltro{
+.btnfiltro {
     padding: 5px 10px;
     font-size: 14px;
     border-radius: 5px;
     border: none;
-    background-color: #454545; /* Cor de fundo para o botão */
+    background-color: #454545;
+    /* Cor de fundo para o botão */
     color: white;
     cursor: pointer;
-    display: flex; /* Usado para alinhar a imagem corretamente */
-    align-items: center; /* Alinha verticalmente a imagem */
-    justify-content: center; /* Centraliza a imagem horizontalmente */
-    width: 35px; /* Ajuste o tamanho do botão */
-    height: 35px; /* Ajuste a altura do botão */
-    border-top-left-radius:0; 
-    border-top-right-radius: 4px; 
-    border-bottom-left-radius: 0px; 
+    display: flex;
+    /* Usado para alinhar a imagem corretamente */
+    align-items: center;
+    /* Alinha verticalmente a imagem */
+    justify-content: center;
+    /* Centraliza a imagem horizontalmente */
+    width: 35px;
+    /* Ajuste o tamanho do botão */
+    height: 35px;
+    /* Ajuste a altura do botão */
+    border-top-left-radius: 0;
+    border-top-right-radius: 4px;
+    border-bottom-left-radius: 0px;
     border-bottom-right-radius: 4px;
     margin-right: 100px;
 }
 
 .btnfiltro img {
-    width: 140%; /* Ajusta o tamanho da imagem dentro do botão */
-    height: auto; /* Mantém a proporção da imagem */
+    width: 140%;
+    /* Ajusta o tamanho da imagem dentro do botão */
+    height: auto;
+    /* Mantém a proporção da imagem */
 }
 
-.btnfiltro:hover{
+.btnfiltro:hover {
     background-color: #949393;
 }
 
 .botoes {
     display: flex;
-    gap: 50px; 
+    gap: 50px;
     align-items: center;
 }
 
-.botaoemprestimo{
+.botaoemprestimo {
     padding: 9px 30px;
     font-size: 14px;
     border-radius: 5px;
@@ -112,7 +148,7 @@ h1 {
     cursor: pointer;
 }
 
-.botaoemprestimo::after{
+.botaoemprestimo::after {
     content: "";
     position: absolute;
     left: 467px;
@@ -121,12 +157,14 @@ h1 {
     height: 2px;
     background: white;
     transition: width 0.3s ease, left 0.3s ease;
-    transform: translateX(-50%); /* Centraliza a linha no texto */
+    transform: translateX(-50%);
+    /* Centraliza a linha no texto */
 }
 
-.botaoemprestimo:hover::after{
-    width: 85px; /* Faz a linha aparecer */
-     
+.botaoemprestimo:hover::after {
+    width: 85px;
+    /* Faz a linha aparecer */
+
 }
 
 
@@ -138,10 +176,10 @@ h1 {
     color: white;
     border: none;
     cursor: pointer;
-    
+
 }
 
-.botaolivros::after{
+.botaolivros::after {
     content: "";
     position: absolute;
     left: 636px;
@@ -150,13 +188,15 @@ h1 {
     height: 2px;
     background: white;
     transition: width 0.3s ease, left 0.3s ease;
-    transform: translateX(-50%); /* Centraliza a linha no texto */
+    transform: translateX(-50%);
+    /* Centraliza a linha no texto */
 
 }
 
-.botaolivros:hover::after{
-    width: 43px; /* Faz a linha aparecer */
-     
+.botaolivros:hover::after {
+    width: 43px;
+    /* Faz a linha aparecer */
+
 }
 
 .botaoalunos {
@@ -169,7 +209,7 @@ h1 {
     cursor: pointer;
 }
 
-.botaoalunos::after{
+.botaoalunos::after {
     content: "";
     position: absolute;
     left: 786px;
@@ -178,83 +218,99 @@ h1 {
     height: 2px;
     background: white;
     transition: width 0.3s ease, left 0.3s ease;
-    transform: translateX(-50%); /* Centraliza a linha no texto */
+    transform: translateX(-50%);
+    /* Centraliza a linha no texto */
 
 }
 
-.botaoalunos:hover::after{
-    width: 50px; /* Faz a linha aparecer */
-     
+.botaoalunos:hover::after {
+    width: 50px;
+    /* Faz a linha aparecer */
+
 }
 
 
-.trespontinhos{
+.trespontinhos {
     position: absolute;
-    right: 10px; /* Ajuste conforme necessário */
+    right: 10px;
+    /* Ajuste conforme necessário */
     top: 50%;
     height: 35px;
     width: 35px;
     border-radius: 5px;
     transform: translateY(-50%);
-    background:#454545;
+    background: #454545;
     border: none;
     font-size: 26px;
     cursor: pointer;
-    color: #ffffff; /* Cor dos três pontinhos */
+    color: #ffffff;
+    /* Cor dos três pontinhos */
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
-.trespontinhos:hover{
-    color:#454545;
-    background:#ffffff ;
+.trespontinhos:hover {
+    color: #454545;
+    background: #ffffff;
 }
 
 
 
-@media (max-width: 1230px){
+@media (max-width: 1230px) {
     .menusuperior {
-        flex-direction: column; /* Muda a direção dos itens para coluna em telas pequenas */
-        padding: 3px 15px; /* Ajusta o padding */
-        height: auto; /* Deixa a altura se ajustar ao conteúdo */
+        flex-direction: column;
+        /* Muda a direção dos itens para coluna em telas pequenas */
+        padding: 3px 15px;
+        /* Ajusta o padding */
+        height: auto;
+        /* Deixa a altura se ajustar ao conteúdo */
     }
 
     .logo {
-        max-width: 180px; /* Diminui o tamanho da logo em telas menores */
-        margin-left: 0; /* Remove a margem esquerda */
-        margin-bottom: 10px; /* Adiciona um espaçamento entre a logo e o conteúdo abaixo */
+        max-width: 180px;
+        /* Diminui o tamanho da logo em telas menores */
+        margin-left: 0;
+        /* Remove a margem esquerda */
+        margin-bottom: 10px;
+        /* Adiciona um espaçamento entre a logo e o conteúdo abaixo */
     }
 
-    .retangulo{
+    .retangulo {
         flex-direction: row;
         width: 1000px;
-        height:50px;
+        height: 50px;
         margin-right: 5px;
         margin-left: 5px;
         margin-bottom: 20px;
     }
 
-    
+
 }
 
-@media (max-width: 1025px){
+@media (max-width: 1025px) {
     .menusuperior {
-        flex-direction: column; /* Muda a direção dos itens para coluna em telas pequenas */
-        padding: 10px 15px; /* Ajusta o padding */
-        height: auto; /* Deixa a altura se ajustar ao conteúdo */
+        flex-direction: column;
+        /* Muda a direção dos itens para coluna em telas pequenas */
+        padding: 10px 15px;
+        /* Ajusta o padding */
+        height: auto;
+        /* Deixa a altura se ajustar ao conteúdo */
     }
 
     .logo {
-        max-width: 180px; /* Diminui o tamanho da logo em telas menores */
-        margin-left: 0; /* Remove a margem esquerda */
-        margin-bottom: 10px; /* Adiciona um espaçamento entre a logo e o conteúdo abaixo */
+        max-width: 180px;
+        /* Diminui o tamanho da logo em telas menores */
+        margin-left: 0;
+        /* Remove a margem esquerda */
+        margin-bottom: 10px;
+        /* Adiciona um espaçamento entre a logo e o conteúdo abaixo */
     }
 
-    .retangulo{
+    .retangulo {
         flex-direction: row;
         width: 900px;
-        height:50px;
+        height: 50px;
         margin-right: 5px;
         margin-left: 5px;
         margin-bottom: 20px;
@@ -265,66 +321,72 @@ h1 {
 /* Responsividade para telas menores */
 @media (max-width: 768px) {
     .menusuperior {
-        flex-direction: column; /* Muda a direção dos itens para coluna em telas pequenas */
-        padding: 10px 15px; /* Ajusta o padding */
-        height: auto; /* Deixa a altura se ajustar ao conteúdo */
+        flex-direction: column;
+        /* Muda a direção dos itens para coluna em telas pequenas */
+        padding: 10px 15px;
+        /* Ajusta o padding */
+        height: auto;
+        /* Deixa a altura se ajustar ao conteúdo */
     }
 
     .logo {
-        max-width: 180px; /* Diminui o tamanho da logo em telas menores */
-        margin-left: 0; /* Remove a margem esquerda */
-        margin-bottom: 10px; /* Adiciona um espaçamento entre a logo e o conteúdo abaixo */
+        max-width: 180px;
+        /* Diminui o tamanho da logo em telas menores */
+        margin-left: 0;
+        /* Remove a margem esquerda */
+        margin-bottom: 10px;
+        /* Adiciona um espaçamento entre a logo e o conteúdo abaixo */
     }
 
-    .retangulo{
+    .retangulo {
         flex-direction: row;
         width: 700px;
-        height:50px;
+        height: 50px;
         margin-right: 15px;
         margin-left: 5;
         margin-bottom: 20px;
     }
 
-    .barradepesquisa{
+    .barradepesquisa {
         position: absolute;
         margin-right: 140px;
         width: 180px;
         height: 35px;
-       
+
 
     }
 
-    .btnfiltro{
+    .btnfiltro {
         position: absolute;
         width: 40px;
-        height: 35px; 
+        height: 35px;
         margin-left: 180px;
     }
 
     .btnfiltro img {
-        width: 120%; 
-        height: auto; 
+        width: 120%;
+        height: auto;
     }
 
     .botoes {
         position: absolute;
         display: flex;
-        gap: 20px; 
+        gap: 20px;
         align-items: center;
         left: 280px;
     }
 
     .botaoemprestimo {
-        
+
         padding: 9px 20px;
         font-size: 14px;
         border-radius: 5px;
         border: none;
         cursor: pointer;
-        
+
     }
 
-    .botaoemprestimo::after{
+    .botaoemprestimo::after {
         content: "";
         position: absolute;
         left: 62px;
@@ -333,25 +395,27 @@ h1 {
         height: 2px;
         background: white;
         transition: width 0.3s ease, left 0.3s ease;
-        transform: translateX(-50%); /* Centraliza a linha no texto */
+        transform: translateX(-50%);
+        /* Centraliza a linha no texto */
     }
-    
-    .botaoemprestimo:hover::after{
-        width: 85px; /* Faz a linha aparecer */
-         
+
+    .botaoemprestimo:hover::after {
+        width: 85px;
+        /* Faz a linha aparecer */
+
     }
 
     .botaolivros {
-        
+
         padding: 9px 20px;
         font-size: 14px;
         border-radius: 5px;
         border: none;
         cursor: pointer;
-        
+
     }
-    
-    .botaolivros::after{
+
+    .botaolivros::after {
         content: "";
         position: absolute;
         left: 180px;
@@ -360,25 +424,27 @@ h1 {
         height: 2px;
         background: white;
         transition: width 0.3s ease, left 0.3s ease;
-        transform: translateX(-50%); /* Centraliza a linha no texto */
+        transform: translateX(-50%);
+        /* Centraliza a linha no texto */
     }
-    
-    .botaolivros:hover::after{
-        width: 45px; /* Faz a linha aparecer */
-         
+
+    .botaolivros:hover::after {
+        width: 45px;
+        /* Faz a linha aparecer */
+
     }
 
     .botaoalunos {
-        
+
         padding: 9px 20px;
         font-size: 14px;
         border-radius: 5px;
         border: none;
         cursor: pointer;
-        
+
     }
 
-    .botaoalunos::after{
+    .botaoalunos::after {
         content: "";
         position: absolute;
         left: 280px;
@@ -387,15 +453,17 @@ h1 {
         height: 2px;
         background: white;
         transition: width 0.3s ease, left 0.3s ease;
-        transform: translateX(-50%); /* Centraliza a linha no texto */
-    }
-    
-    .botaoalunos:hover::after{
-        width: 50px; /* Faz a linha aparecer */
-         
+        transform: translateX(-50%);
+        /* Centraliza a linha no texto */
     }
 
-    .trespontinhos{
+    .botaoalunos:hover::after {
+        width: 50px;
+        /* Faz a linha aparecer */
+
+    }
+
+    .trespontinhos {
         position: relative;
         left: 35px;
         height: 36px;
@@ -403,16 +471,16 @@ h1 {
         top: 18px;
         border-radius: 5px;
         transform: translateY(-50%);
-        background:#454545;
+        background: #454545;
         border: none;
         font-size: 26px;
         cursor: pointer;
-        color: #ffffff; 
+        color: #ffffff;
         display: flex;
         align-items: center;
         justify-content: center;
     }
-        
+
 
 }
 
@@ -420,17 +488,20 @@ h1 {
 @media (max-width: 400px) {
     .menusuperior {
         flex-direction: column;
-        padding: 10px 15px; 
-        height: auto; /* A altura se ajusta automaticamente */
+        padding: 10px 15px;
+        height: auto;
+        /* A altura se ajusta automaticamente */
     }
 
     .logo {
-        max-width: 150px; 
-        margin-left: 0; /* Remove a margem esquerda */
-        margin-bottom: 5px; /* Reduz o espaçamento em telas menores */
+        max-width: 150px;
+        margin-left: 0;
+        /* Remove a margem esquerda */
+        margin-bottom: 5px;
+        /* Reduz o espaçamento em telas menores */
     }
 
-    .retangulo{
+    .retangulo {
         flex-direction: column;
         width: 340px;
         height: 80px;
@@ -439,7 +510,7 @@ h1 {
         margin-bottom: 10px;
     }
 
-    .barradepesquisa{
+    .barradepesquisa {
         position: relative;
         right: 10px;
         width: 160px;
@@ -448,38 +519,40 @@ h1 {
 
     }
 
-    .btnfiltro{
+    .btnfiltro {
         position: absolute;
         bottom: 46px;
         width: 25px;
-        height: 27px; 
+        height: 27px;
         right: 47px;
     }
 
     .btnfiltro img {
-        width: 300%; /* Ajusta o tamanho da imagem dentro do botão */
-        height: auto; /* Mantém a proporção da imagem */
+        width: 300%;
+        /* Ajusta o tamanho da imagem dentro do botão */
+        height: auto;
+        /* Mantém a proporção da imagem */
     }
 
     .botoes {
         position: absolute;
         display: flex;
-        gap: 30px; 
+        gap: 30px;
         align-items: center;
         top: 40px;
         left: 7px;
     }
-    
-    .botaoemprestimo  {
+
+    .botaoemprestimo {
         padding: 7px 13px;
         font-size: 14px;
         border-radius: 5px;
         border: none;
         cursor: pointer;
-        
+
     }
 
-    .botaoemprestimo::after{
+    .botaoemprestimo::after {
         content: "";
         position: absolute;
         left: 53px;
@@ -488,15 +561,17 @@ h1 {
         height: 2px;
         background: white;
         transition: width 0.3s ease, left 0.3s ease;
-        transform: translateX(-50%); /* Centraliza a linha no texto */
-    }
-    
-    .botaoemprestimo:hover::after{
-        width: 80px; /* Faz a linha aparecer */
-         
+        transform: translateX(-50%);
+        /* Centraliza a linha no texto */
     }
 
-    .botaolivros  {
+    .botaoemprestimo:hover::after {
+        width: 80px;
+        /* Faz a linha aparecer */
+
+    }
+
+    .botaolivros {
         padding: 7px 15px;
         font-size: 14px;
         border-radius: 5px;
@@ -504,7 +579,7 @@ h1 {
         cursor: pointer;
     }
 
-    .botaolivros::after{
+    .botaolivros::after {
         content: "";
         position: absolute;
         left: 170px;
@@ -513,24 +588,26 @@ h1 {
         height: 2px;
         background: white;
         transition: width 0.3s ease, left 0.3s ease;
-        transform: translateX(-50%); /* Centraliza a linha no texto */
-    }
-    
-    .botaolivros:hover::after{
-        width: 40px; /* Faz a linha aparecer */
-         
+        transform: translateX(-50%);
+        /* Centraliza a linha no texto */
     }
 
-    .botaoalunos  {
+    .botaolivros:hover::after {
+        width: 40px;
+        /* Faz a linha aparecer */
+
+    }
+
+    .botaoalunos {
         padding: 7px 15px;
         font-size: 14px;
         border-radius: 5px;
         border: none;
         cursor: pointer;
-        
+
     }
 
-    .botaoalunos::after{
+    .botaoalunos::after {
         content: "";
         position: absolute;
         left: 270px;
@@ -539,22 +616,25 @@ h1 {
         height: 2px;
         background: white;
         transition: width 0.3s ease, left 0.3s ease;
-        transform: translateX(-50%); /* Centraliza a linha no texto */
-    }
-    
-    .botaoalunos:hover::after{
-        width: 50px; /* Faz a linha aparecer */
-         
+        transform: translateX(-50%);
+        /* Centraliza a linha no texto */
     }
 
-    .trespontinhos{
+    .botaoalunos:hover::after {
+        width: 50px;
+        /* Faz a linha aparecer */
+
+    }
+
+    .trespontinhos {
         position: absolute;
-        top: 50%; /* Ajuste conforme necessário */
+        top: 50%;
+        /* Ajuste conforme necessário */
         transform: translateY(-160%);
-        left:  290px;
+        left: 290px;
         height: 30px;
         width: 30px;
-        
+
 
     }
 }
@@ -683,4 +763,142 @@ h1 {
         width: 100%;
         border-bottom: 1px solid #ccc;
     }
+}
+
+.search-btn:hover {
+    background-color: #bbb;
+}
+
+/* 🔹 Estilo específico para a tela de login */
+
+.login-container {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--branco);
+    margin: 0;
+    font-family: Arial, sans-serif;
+}
+
+.login-box {
+    display: flex;
+    width: 800px;
+    height: 600px;
+    border-radius: 20px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    background-color: var(--cinza-escuro);
+}
+
+/* 🔹 Lado esquerdo (formulário) */
+.login-form {
+    width: 50%;
+    border-radius: 20px;
+    background-color: var(--branco);
+    padding: 50px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.login-form h2 {
+    font-size: 32px;
+    font-weight: bold;
+    margin-bottom: 30px;
+    color: #000;
+    text-align: center;
+}
+
+.login-label {
+    font-weight: bold;
+    font-size: 14px;
+    color: var(--cinza-escuro);
+    margin-bottom: 5px;
+    display: block;
+}
+
+.login-input {
+    width: 100%;
+    padding: 15px;
+    margin-bottom: 20px;
+    background-color: var(--cinza);
+    border: 1px solid var(--cinza-claro);
+    border-radius: 10px;
+    font-size: 20px;
+    outline: none;
+    transition: border-color 0.3s;
+}
+
+.login-input:focus {
+    border-color: var(--cinza-escuro);
+}
+
+/* 🔹 Botão de login (seta) */
+.login-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    height: 50px;
+    margin: 20px auto 0;
+    border: 1px solid var(--cinza-claro);
+    border-radius: 16%;
+    background-color: var(--cinza);
+    color: var(--cinza-escuro);
+    font-size: 18px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.login-button:hover {
+    background-color: var(--cinza-escuro);
+    color: var(--branco);
+}
+
+/* 🔹 Lado direito (bem-vindo) */
+.login-right {
+    width: 50%;
+    background-color: var(--cinza-escuro);
+    color: var(--branco);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    padding-bottom: 35px;
+    text-align: center;
+}
+
+.login-right h1 {
+    font-family: 'Urbanist';
+    font-weight: 700;
+    font-size: 36px;
+    margin-bottom: 0px;
+    color: var(--branco);
+}
+
+.login-right p {
+    font-family: 'Urbanist';
+    font-size: 16px;
+    color: var(--cinza-claro);
+    margin-bottom: 30px;
+}
+
+/* 🔹 Estilo do ícone "B" */
+.login-logo img {
+    width: 100px;
+    /* Ajuste o tamanho conforme desejado */
+    height: auto;
+    margin-top: 20px;
+    padding-bottom: 10px;
+}
+
+
+/* 🔹 Estilo de erro */
+.login-error {
+    color: var(--vermelho);
+    text-align: center;
+    margin-top: 10px;
 }
