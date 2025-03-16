@@ -16,19 +16,18 @@
         <!-- 🔹 Lado esquerdo (formulário) -->
         <div class="login-form font-urbanist">
             <h2>Login</h2>
-
             <!-- Formulário de login -->
             <form action="login" method="POST">
-                <label class="login-label font-urbanist">Usuário:</label>
-                <input type="text" name="usuNome" class="login-input font-urbanist" required>
+                <label class="login-label font-urbanist">Email:</label>
+                <input type="text" name="email" class="login-input font-urbanist" required>
 
                 <label class="login-label font-urbanist">Senha:</label>
-                <input type="password" name="usuSenha" class="login-input font-urbanist" required>
+                <input type="password" name="senha" class="login-input font-urbanist" required>
 
                 <!-- Mensagem de erro -->
-                <?php if (isset($_SESSION['erro_login'])): ?>
-                    <p class="login-error font-urbanist"><?= $_SESSION['erro_login']; ?></p>
-                    <?php unset($_SESSION['erro_login']); ?>
+                <?php if (isset($_SESSION['errors'])): ?>
+                    <p class="login-error font-urbanist"><?= $_SESSION['errors']; ?></p>
+                    <?php unset($_SESSION['errors']); ?>
                 <?php endif; ?>
 
                 <button type="submit" class="login-button">→</button>
