@@ -25,10 +25,9 @@ DROP TABLE IF EXISTS `tbalunos`;
 CREATE TABLE `tbalunos` (
   `aluId` binary(16) NOT NULL,
   `aluNome` varchar(100) NOT NULL,
-  `aluCpf` varchar(11) DEFAULT NULL,
+  `aluCpf` varchar(11) NOT NULL,
   `aluEmail` varchar(319) NOT NULL,
   `aluTelefone` varchar(20) DEFAULT NULL,
-  `aluBloqueado` tinyint(1) DEFAULT 0,
   PRIMARY KEY (`aluId`),
   UNIQUE KEY `aluCPF` (`aluCpf`),
   UNIQUE KEY `aluEmail` (`aluEmail`),
@@ -48,10 +47,26 @@ CREATE TABLE `tbalunos_turmas` (
   `fkAluId` binary(16) NOT NULL,
   `fkTurId` binary(16) NOT NULL,
   PRIMARY KEY (`aluTurId`),
-  KEY `fkAluId` (`fkAluId`),
+  UNIQUE KEY `fkAluId` (`fkAluId`,`fkTurId`),
   KEY `fkTurId` (`fkTurId`),
   CONSTRAINT `tbalunos_turmas_ibfk_1` FOREIGN KEY (`fkAluId`) REFERENCES `tbalunos` (`aluId`),
   CONSTRAINT `tbalunos_turmas_ibfk_2` FOREIGN KEY (`fkTurId`) REFERENCES `tbturmas` (`turId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `tbconfiguracoes`
+--
+
+DROP TABLE IF EXISTS `tbconfiguracoes`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `tbconfiguracoes` (
+  `conId` binary(16) NOT NULL,
+  `conChave` varchar(255) NOT NULL,
+  `conValor` varchar(255) NOT NULL,
+  PRIMARY KEY (`conId`),
+  UNIQUE KEY `conChave` (`conChave`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -66,10 +81,10 @@ CREATE TABLE `tbemprestimos` (
   `empId` binary(16) NOT NULL,
   `fkAluId` binary(16) NOT NULL,
   `fkExId` binary(16) NOT NULL,
-  `empDataInicio` date DEFAULT curdate(),
+  `empDataInicio` date NOT NULL DEFAULT curdate(),
   `empDataFim` date NOT NULL,
   `empDataDevolucao` date DEFAULT NULL,
-  `empAtivo` tinyint(1) DEFAULT 1,
+  `empAtivo` tinyint(1) NOT NULL DEFAULT 1,
   PRIMARY KEY (`empId`),
   UNIQUE KEY `fkExId` (`fkExId`),
   KEY `fkAluId` (`fkAluId`),
@@ -89,9 +104,9 @@ CREATE TABLE `tbexemplares` (
   `exId` binary(16) NOT NULL,
   `fkLivId` binary(16) NOT NULL,
   `exNumero` int(11) NOT NULL,
-  `exDisponibilidade` tinyint(1) DEFAULT 1,
+  `exDisponibilidade` tinyint(1) NOT NULL DEFAULT 1,
   PRIMARY KEY (`exId`),
-  KEY `fkLivId` (`fkLivId`),
+  UNIQUE KEY `fkLivId` (`fkLivId`,`exNumero`),
   CONSTRAINT `fkLivId` FOREIGN KEY (`fkLivId`) REFERENCES `tblivros` (`livId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -122,13 +137,14 @@ DROP TABLE IF EXISTS `tblivros`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `tblivros` (
   `livId` binary(16) NOT NULL,
-  `livIbsn` varchar(13) DEFAULT NULL,
+  `livIbsn` varchar(13) NOT NULL,
   `livTitulo` varchar(255) NOT NULL,
   `livAutor` varchar(300) NOT NULL,
   `fkGenId` binary(16) NOT NULL,
   `livEditora` varchar(150) NOT NULL,
   PRIMARY KEY (`livId`),
-  UNIQUE KEY `livIBSN` (`livIbsn`),
+  UNIQUE KEY `livIbsn` (`livIbsn`),
+  UNIQUE KEY `livTitulo` (`livTitulo`,`livAutor`,`livEditora`),
   KEY `fkGeneroId` (`fkGenId`),
   CONSTRAINT `fkGeneroId` FOREIGN KEY (`fkGenId`) REFERENCES `tbgeneros` (`genId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -143,7 +159,6 @@ DROP TABLE IF EXISTS `tbturmas`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `tbturmas` (
   `turId` binary(16) NOT NULL,
-  `turPeriodo` int(11) NOT NULL,
   `turCurso` varchar(150) NOT NULL,
   `turHorario` enum('Matutino','Vespertino','Noturno') NOT NULL,
   `turRegime` enum('Anual','Semestral') NOT NULL,
@@ -171,6 +186,79 @@ CREATE TABLE `tbusuarios` (
   UNIQUE KEY `usuEmail_3` (`usuEmail`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Temporary view structure for view `vwalunos`
+--
+
+DROP TABLE IF EXISTS `vwalunos`;
+/*!50001 DROP VIEW IF EXISTS `vwalunos`*/;
+SET @saved_cs_client     = @@character_set_client;
+/*!50503 SET character_set_client = utf8mb4 */;
+/*!50001 CREATE VIEW `vwalunos` AS SELECT 
+ 1 AS `aluId`,
+ 1 AS `aluNome`,
+ 1 AS `podeEmprestar`,
+ 1 AS `turId`,
+ 1 AS `turCurso`,
+ 1 AS `turHorario`,
+ 1 AS `turRegime`,
+ 1 AS `TurPeriodo`*/;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Temporary view structure for view `vwturmas`
+--
+
+DROP TABLE IF EXISTS `vwturmas`;
+/*!50001 DROP VIEW IF EXISTS `vwturmas`*/;
+SET @saved_cs_client     = @@character_set_client;
+/*!50503 SET character_set_client = utf8mb4 */;
+/*!50001 CREATE VIEW `vwturmas` AS SELECT 
+ 1 AS `turId`,
+ 1 AS `turCurso`,
+ 1 AS `turHorario`,
+ 1 AS `turRegime`,
+ 1 AS `turDataInicio`,
+ 1 AS `turDataFim`,
+ 1 AS `turPeriodo`*/;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Final view structure for view `vwalunos`
+--
+
+/*!50001 DROP VIEW IF EXISTS `vwalunos`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = utf8mb4 */;
+/*!50001 SET character_set_results     = utf8mb4 */;
+/*!50001 SET collation_connection      = utf8mb4_general_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
+/*!50001 VIEW `vwalunos` AS select `tbalunos`.`aluId` AS `aluId`,`tbalunos`.`aluNome` AS `aluNome`,case when count(distinct `tbemprestimos`.`empId`) < (select `tbconfiguracoes`.`conValor` from `tbconfiguracoes` where `tbconfiguracoes`.`conChave` = 'livrosMaximosEmprestimo' limit 1) and !exists(select 1 from `tbemprestimos` where `tbemprestimos`.`fkAluId` = `tbalunos`.`aluId` and `tbemprestimos`.`empAtivo` is true and `tbemprestimos`.`empDataDevolucao` < curdate() limit 1) then 1 else 0 end AS `podeEmprestar`,`vwturmas`.`turId` AS `turId`,`vwturmas`.`turCurso` AS `turCurso`,`vwturmas`.`turHorario` AS `turHorario`,`vwturmas`.`turRegime` AS `turRegime`,`vwturmas`.`turPeriodo` AS `TurPeriodo` from (((`tbalunos` left join `tbemprestimos` on(`tbemprestimos`.`fkAluId` = `tbalunos`.`aluId` and `tbemprestimos`.`empAtivo` is true)) left join `tbalunos_turmas` on(`tbalunos_turmas`.`fkAluId` = `tbalunos`.`aluId`)) left join `vwturmas` on(`vwturmas`.`turId` = `tbalunos_turmas`.`fkTurId`)) group by `tbalunos`.`aluId`,`tbalunos`.`aluNome`,`tbalunos`.`aluEmail`,`tbalunos`.`aluTelefone`,`vwturmas`.`turId`,`vwturmas`.`turCurso`,`vwturmas`.`turHorario`,`vwturmas`.`turRegime`,`vwturmas`.`turPeriodo` */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
+
+--
+-- Final view structure for view `vwturmas`
+--
+
+/*!50001 DROP VIEW IF EXISTS `vwturmas`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = utf8mb4 */;
+/*!50001 SET character_set_results     = utf8mb4 */;
+/*!50001 SET collation_connection      = utf8mb4_general_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
+/*!50001 VIEW `vwturmas` AS select `tbturmas`.`turId` AS `turId`,`tbturmas`.`turCurso` AS `turCurso`,`tbturmas`.`turHorario` AS `turHorario`,`tbturmas`.`turRegime` AS `turRegime`,`tbturmas`.`turDataInicio` AS `turDataInicio`,`tbturmas`.`turDataFim` AS `turDataFim`,case when `tbturmas`.`turRegime` = 'Anual' then timestampdiff(YEAR,`tbturmas`.`turDataInicio`,curdate()) when `tbturmas`.`turRegime` = 'Semestral' then timestampdiff(MONTH,`tbturmas`.`turDataInicio`,curdate()) DIV 6 else NULL end AS `turPeriodo` from `tbturmas` */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -181,4 +269,4 @@ CREATE TABLE `tbusuarios` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-03-13 19:07:49
+-- Dump completed on 2025-03-15 21:41:11
