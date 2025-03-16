@@ -13,12 +13,10 @@
     <header>
         <nav>
             <div class="menusuperior">
-                <img class="logo" src="/Bookbox/public/images/logo.png" alt="logo">
+                <img class="logo" src="/bookbox/public/images/logomarca.png" alt="logomarca">
                 <div class="retangulo">
-
                     <input type="text" class="barradepesquisa" placeholder="Pesquisar...">
-                    <button class="btnfiltro"><img class="filtrar" src="\bookbox\public\images\filtro.png"
-                            alt="filtrar"></button>
+                    <button class="btnfiltro"><img class="filtrar" src="\bookbox\public\images\filtro.png" alt="filtrar"></button>
 
                     <div class="botoes">
                         <button class="botaoemprestimo">Emprestimos</button>
