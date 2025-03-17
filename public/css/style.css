@@ -138,7 +138,8 @@ h1 {
     align-items: center;
 }
 
-.botaoemprestimo {
+.menu-top-btn {
+    position: relative; /* Necessário para que ::after se posicione corretamente */
     padding: 9px 30px;
     font-size: 14px;
     border-radius: 5px;
@@ -146,89 +147,24 @@ h1 {
     color: white;
     border: none;
     cursor: pointer;
+    overflow: hidden;
 }
 
-.botaoemprestimo::after {
+.menu-top-btn::after {
     content: "";
     position: absolute;
-    left: 467px;
-    bottom: 13px;
+    left: 50%;
+    bottom: 5px;
     width: 0;
     height: 2px;
     background: white;
-    transition: width 0.3s ease, left 0.3s ease;
+    transition: width 0.3s ease;
     transform: translateX(-50%);
-    /* Centraliza a linha no texto */
 }
 
-.botaoemprestimo:hover::after {
-    width: 85px;
-    /* Faz a linha aparecer */
-
+.menu-top-btn:hover::after {
+    width: 75%;
 }
-
-
-.botaolivros {
-    padding: 9px 30px;
-    font-size: 14px;
-    border-radius: 5px;
-    background-color: #333;
-    color: white;
-    border: none;
-    cursor: pointer;
-
-}
-
-.botaolivros::after {
-    content: "";
-    position: absolute;
-    left: 636px;
-    bottom: 13px;
-    width: 0;
-    height: 2px;
-    background: white;
-    transition: width 0.3s ease, left 0.3s ease;
-    transform: translateX(-50%);
-    /* Centraliza a linha no texto */
-
-}
-
-.botaolivros:hover::after {
-    width: 43px;
-    /* Faz a linha aparecer */
-
-}
-
-.botaoalunos {
-    padding: 9px 30px;
-    font-size: 14px;
-    border-radius: 5px;
-    background-color: #333;
-    color: white;
-    border: none;
-    cursor: pointer;
-}
-
-.botaoalunos::after {
-    content: "";
-    position: absolute;
-    left: 786px;
-    bottom: 13px;
-    width: 0;
-    height: 2px;
-    background: white;
-    transition: width 0.3s ease, left 0.3s ease;
-    transform: translateX(-50%);
-    /* Centraliza a linha no texto */
-
-}
-
-.botaoalunos:hover::after {
-    width: 50px;
-    /* Faz a linha aparecer */
-
-}
-
 
 .trespontinhos {
     position: absolute;
