@@ -25,6 +25,10 @@ switch ($url) {
             header("Location: /bookbox/cadastro");
             exit();
         }
+        if (isset($_SESSION['usuario_logado']) && $_SESSION['usuario_logado'] === true) {
+            header("Location: /bookbox/painel");
+            exit();
+        }
         require_once __DIR__ . '/../resources/views/pages/login.php';
         break;
     case '/':
