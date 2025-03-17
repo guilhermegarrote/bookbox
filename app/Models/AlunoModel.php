@@ -20,25 +20,21 @@ class AlunoModel
      * @param string $nome
      * @param string $cpf
      * @param string $email
-     * @param string $telefone
-     * @param string $turmaId
-     * @param bool $bloqueio
+     * @param string|null $telefone
      * @return bool
      */
-    public function cadastrar($nome, $cpf, $email, $telefone, $turmaId, $bloqueio)
+    public function cadastrar($nome, $cpf, $email, $telefone)
     {
 
         $uuidBin = hex2bin(str_replace('-', '', gerarUuid()));
 
-        $query = "INSERT INTO tbalunos (aluNome, aluCpf, aluEmail, aluTelefone, fkTurId, aluBloqueio) VALUES (:nome, :cpf, :email, :telefone, :turmaId, :bloqueio)";
+        $query = "INSERT INTO tbalunos (aluNome, aluCpf, aluEmail, aluTelefone) VALUES (:nome, :cpf, :email, :telefone)";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(":uuid", $uuidBin, PDO::PARAM_LOB);
         $stmt->bindParam(":nome", $nome);
         $stmt->bindParam(":cpf", $cpf);
         $stmt->bindParam(":email", $email);
-        $stmt->bindParam(":telefone", $telefone);
-        $stmt->bindParam(":turmaId", $turmaId);
-        $stmt->bindParam(":bloqueio", $bloqueio);
+        $stmt->bindParam(":telefone", $telefone, $telefone ? PDO::PARAM_STR : PDO::PARAM_NULL);
         return $stmt->execute();
     }
 
@@ -49,11 +45,9 @@ class AlunoModel
      * @param string|null $cpf
      * @param string|null $email
      * @param string|null $telefone
-     * @param string|null $turmaId
-     * @param string|null $bloqueio
      * @return bool
      */
-    public function editar($id, $nome, $cpf, $email, $telefone, $turmaId, $bloqueio)
+    public function editar($id, $nome, $cpf, $email, $telefone)
     {
         $query = "UPDATE tbalunos SET ";
 
@@ -66,15 +60,9 @@ class AlunoModel
         if ($email) {
             $query .= "aluEmail = email, ";
         }
-        if ($telefone) {
+        if ($telefone !== null) {
             $query .= "aluTelefone = :telefone, ";
-        }
-        if ($turmaId) {
-            $query .= "fkTurId = :turmaId, ";
-        }
-        if ($bloqueio) {
-            $query .= "aluBloqueio = :bloqueio ";
-        }
+        }        
 
         $query .= " WHERE aluId= :id";
 
@@ -89,16 +77,11 @@ class AlunoModel
         if ($email) {
             $stmt->bindParam(":email", $email);
         }
-        if ($telefone) {
-            $stmt->bindParam(":telefone", $telefone);
+        if ($telefone !== null) {
+            $stmt->bindParam(":telefone", $telefone, PDO::PARAM_STR);
+        } else {
+            $stmt->bindValue(":telefone", null, PDO::PARAM_NULL);
         }
-        if ($turmaId) {
-            $stmt->bindParam(":turmaId", $turmaId);
-        }
-        if ($bloqueio) {
-            $stmt->bindParam(":bloqueio", $bloqueio);
-        }
-
         $stmt->bindParam(":id", $id, PDO::PARAM_INT);
 
         return $stmt->execute();
@@ -115,5 +98,21 @@ class AlunoModel
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(":id", $id);
         return $stmt->execute();
+    }
+
+  /**
+     * Método responsável por buscar o ID de um aluno pelo CPF.
+     * @param string $cpf
+     * @return int|false 
+     */
+    public function buscaAlunoPorCpf($cpf)
+    {
+        
+        $query = "SELECT aluId FROM tbalunos WHERE aluCpf = :cpf";
+        $stmt = $this->db->prepare($query);
+        $stmt->bindParam(":cpf", $cpf, PDO::PARAM_STR);
+        $stmt->execute();
+        $resultado = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $resultado ? (int) $resultado['aluId'] : false;
     }
 }
