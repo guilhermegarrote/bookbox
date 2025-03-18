@@ -18,9 +18,8 @@ class TurmaModel
 
     /**
      * Método responsável por cadastrar nova turma. 	
-     * @param int $periodo
      * @param string $curso
-     * @param string  $horario
+     * @param string $horario
      * @param string $regime
      * @param string $dataInicio
      * @param string $dataFim
@@ -31,11 +30,10 @@ class TurmaModel
 
         $uuidBin = hex2bin(str_replace('-', '', gerarUuid()));
 
-        $query = "INSERT INTO tbturmas (turPeriodo, turCurso, turHorario, turRegime, turDataInicio, turDataFim) 
-        VALUES (:id,:periodo,:curso, :horario, :regime,:dataInicio, :dataFim )";
+        $query = "INSERT INTO tbturmas (turId, turCurso, turHorario, turRegime, turDataInicio, turDataFim) 
+        VALUES (:uuid ,:periodo,:curso, :horario, :regime, :dataInicio, :dataFim )";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(":uuid", $uuidBin, PDO::PARAM_LOB);
-        $stmt->bindParam(":periodo", $periodo);
         $stmt->bindParam(":curso", $curso);
         $stmt->bindParam(":horario", $horario);
         $stmt->bindParam(":regime", $regime);
@@ -47,7 +45,6 @@ class TurmaModel
     /**
      * Método responsável por editar turma.
      * @param string $id
-     * @param int|null $periodo
      * @param string|null $curso
      * @param string|null $horario
      * @param string|null $regime
@@ -55,18 +52,14 @@ class TurmaModel
      * @param string|null $dataFim
      * @return bool
      */
-
-    public function editar($periodo, $curso, $horario, $regime, $dataInicio, $dataFim)
+    public function editar($id, $periodo, $curso, $horario, $regime, $dataInicio, $dataFim)
     {
         $query = "UPDATE tbturmas SET ";
 
-        if ($periodo) {
-            $query .= "turPeriodo = :periodo, ";
-        }
         if ($curso) {
             $query .= "turCurso = :curso, ";
         }
-        if ($horar) {
+        if ($horario) {
             $query .= "turHorario = :horario, ";
         }
         if ($regime) {
@@ -82,9 +75,6 @@ class TurmaModel
 
         $stmt = $this->db->prepare($query);
 
-        if ($periodo) {
-            $stmt->bindParam(":periodo", $periodo);
-        }
         if ($curso) {
             $stmt->bindParam(":curso", $curso);
         }
