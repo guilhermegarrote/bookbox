@@ -26,7 +26,7 @@ class GeneroModel
 
         $uuidBin = hex2bin(str_replace('-', '', gerarUuid()));
 
-        $query = "INSERT INTO tbgeneros (genNome, genCorHex) VALUES (:nome, :cor)";
+        $query = "INSERT INTO tbgeneros (genId, genNome, genCorHex) VALUES (:uuid, :nome, :cor)";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(":uuid", $uuidBin, PDO::PARAM_LOB);
         $stmt->bindParam(":nome", $nome);
