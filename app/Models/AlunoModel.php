@@ -115,4 +115,4 @@ class AlunoModel
         $resultado = $stmt->fetch(PDO::FETCH_ASSOC);
         return $resultado ? (int) $resultado['aluId'] : false;
     }
-}
+} 
