@@ -28,7 +28,7 @@ class AlunoModel
 
         $uuidBin = hex2bin(str_replace('-', '', gerarUuid()));
 
-        $query = "INSERT INTO tbalunos (aluNome, aluCpf, aluEmail, aluTelefone) VALUES (:nome, :cpf, :email, :telefone)";
+        $query = "INSERT INTO tbalunos (aluId, aluNome, aluCpf, aluEmail, aluTelefone) VALUES (:uuid, :nome, :cpf, :email, :telefone)";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(":uuid", $uuidBin, PDO::PARAM_LOB);
         $stmt->bindParam(":nome", $nome);
@@ -58,7 +58,7 @@ class AlunoModel
             $query .= "aluCpf = :cpf, ";
         }
         if ($email) {
-            $query .= "aluEmail = email, ";
+            $query .= "aluEmail = :email, ";
         }
         if ($telefone !== null) {
             $query .= "aluTelefone = :telefone, ";
@@ -100,19 +100,19 @@ class AlunoModel
         return $stmt->execute();
     }
 
-  /**
-     * Método responsável por buscar o ID de um aluno pelo CPF.
-     * @param string $cpf
-     * @return int|false 
-     */
-    public function buscaAlunoPorCpf($cpf)
-    {
-        
-        $query = "SELECT aluId FROM tbalunos WHERE aluCpf = :cpf";
-        $stmt = $this->db->prepare($query);
-        $stmt->bindParam(":cpf", $cpf, PDO::PARAM_STR);
-        $stmt->execute();
-        $resultado = $stmt->fetch(PDO::FETCH_ASSOC);
-        return $resultado ? (int) $resultado['aluId'] : false;
-    }
-} 
+/**
+ * Método responsável por buscar todas as informações de um aluno pelo CPF.
+ * @param string $cpf
+ * @return array|false 
+ */
+public function buscaAlunoPorCpf($cpf)
+{
+    $query = "SELECT * FROM tbalunos WHERE aluCpf = :cpf";
+    $stmt = $this->db->prepare($query);
+    $stmt->bindParam(":cpf", $cpf, PDO::PARAM_STR);
+    $stmt->execute();
+    $resultado = $stmt->fetch(PDO::FETCH_ASSOC);
+    
+    return $resultado ? $resultado : false;
+}
+}
