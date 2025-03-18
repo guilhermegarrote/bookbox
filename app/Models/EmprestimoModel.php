@@ -2,7 +2,7 @@
 
 require_once __DIR__ . '/../../config/database.php';
 
-class CursoModel
+class EmprestimoModel
 {
     private PDO $db;
 
@@ -27,14 +27,29 @@ class CursoModel
 
         $uuidBin = hex2bin(str_replace('-', '', gerarUuid()));
 
-        $query = "INSERT INTO tbemprestimos (fkAluId, fkExId, empDataDevolucao) VALUES (:alunoId, :exemplarId, curdate() + 7)";
-        $stmt = $this->db->prepare($query);
+        $query = "INSERT INTO tbemprestimos (empId, fkAluId, fkExId, empDataDevolucao) VALUES (:uuid, :alunoId, :exemplarId, curdate() + 14)";
+        $stmt = $this->db->prepare(query: $query);
         $stmt->bindParam(":uuid", $uuidBin, PDO::PARAM_LOB);
         $stmt->bindParam(":alunoId", $alunoId);
         $stmt->bindParam(":exemplarId", $exemplarId);
-        return $stmt->execute();
     }
 
+    /**
+     * Método responsável por prolongar empréstimo.
+     * @param string $id
+     * @return bool
+     */
+    public function prolongarEmprestimo($id)
+    {
+        $query = "UPDATE tbemprestimos 
+                  SET empDataDevolucao = CURDATE() + 14 , empAtivo = TRUE 
+                  WHERE empId = :id";
+        
+        $stmt = $this->db->prepare($query);
+        $stmt->bindParam(":id", $id, PDO::PARAM_STR);
+
+        return $stmt->execute();
+    }
 
     /**
      * Método responsável por finalizar empréstimo.
@@ -43,9 +58,10 @@ class CursoModel
      */
     public function finalizar($id)
     {
-        $query = "UPDATE tbemprestimos SET empDataDevolucao = curdate() + 7, empAtivo = FALSE";
+        $query = "UPDATE tbemprestimos SET empAtivo = FALSE WHERE empId = :id";
         $stmt = $this->db->prepare($query);
-        $stmt->bindParam(":id", $id);
+        $stmt->bindParam(":id", $id, PDO::PARAM_STR);
+
         return $stmt->execute();
     }
 }
