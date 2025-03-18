@@ -14,6 +14,7 @@ class LivroModel
     {
         $this->db = $db;
     }
+
     /**
      * Método responsável por cadastrar novo livro. 	
      * @param string $Ibsn
@@ -25,11 +26,10 @@ class LivroModel
      */
     public function cadastrar($Ibsn, $titulo, $autor, $generoId, $editora)
     {
-
         $uuidBin = hex2bin(str_replace('-', '', gerarUuid()));
 
-        $query = "INSERT INTO tblivros (livIBSN, livTitulo, livAutor, fkGenId, livEditora) 
-        VALUES (:Ibsn, :titulo, :autor,:generoId, :editora )";
+        $query = "INSERT INTO tblivros (livId, livIBSN, livTitulo, livAutor, fkGenId, livEditora) 
+        VALUES (:uuid, :Ibsn, :titulo, :autor,:generoId, :editora )";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(":uuid", $uuidBin, PDO::PARAM_LOB);
         $stmt->bindParam(":Ibsn", $Ibsn);
@@ -50,7 +50,7 @@ class LivroModel
      * @param string|null $generoId
      * @return bool
      */
-    public function editar($Ibsn, $titulo, $autor, $generoId, $editora)
+    public function editar($id, $Ibsn, $titulo, $autor, $generoId, $editora)
     {
         $query = "UPDATE tblivros SET ";
 
