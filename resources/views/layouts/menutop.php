@@ -10,7 +10,7 @@
                     <button class="menu-top-btn" data-pagina="emprestimos">Empréstimos</button>
                     <button class="menu-top-btn" data-pagina="livros">Livros</button>
                     <button class="menu-top-btn" data-pagina="alunos">Alunos</button>
-                    <button class="trespontinhos">&#x22EE;</button>
+                    <button class="trespontinhos" onclick="logout()">&#x22EE;</button>
                 </div>
             </div>
         </div>
