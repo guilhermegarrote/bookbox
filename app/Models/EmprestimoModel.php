@@ -15,7 +15,6 @@ class EmprestimoModel
         $this->db = $db;
     }
 
-
     /**
      * Método responsável por cadastrar empréstimo
      * @param string $alunoId
@@ -24,11 +23,10 @@ class EmprestimoModel
      */
     public function cadastrar($alunoId, $exemplarId)
     {
-
         $uuidBin = hex2bin(str_replace('-', '', gerarUuid()));
 
-        $query = "INSERT INTO tbemprestimos (empId, fkAluId, fkExId, empDataDevolucao) VALUES (:uuid, :alunoId, :exemplarId, curdate() + 14)";
-        $stmt = $this->db->prepare(query: $query);
+        $query = "INSERT INTO tbemprestimos (empId, fkAluId, fkExId, empDataFim) VALUES (:uuid, :alunoId, :exemplarId, curdate() + 14)";
+        $stmt = $this->db->prepare($query);
         $stmt->bindParam(":uuid", $uuidBin, PDO::PARAM_LOB);
         $stmt->bindParam(":alunoId", $alunoId);
         $stmt->bindParam(":exemplarId", $exemplarId);
@@ -41,10 +39,7 @@ class EmprestimoModel
      */
     public function prolongarEmprestimo($id)
     {
-        $query = "UPDATE tbemprestimos 
-                  SET empDataDevolucao = CURDATE() + 14 , empAtivo = TRUE 
-                  WHERE empId = :id";
-        
+        $query = "UPDATE tbemprestimos SET empDataDevolucao = CURDATE() + 7 WHERE empId = :id";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(":id", $id, PDO::PARAM_STR);
 
