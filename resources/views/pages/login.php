@@ -13,18 +13,15 @@
 
 <body class="login-container">
     <div class="login-box">
-        <!-- 🔹 Lado esquerdo (formulário) -->
         <div class="login-form font-urbanist">
             <h2>Login</h2>
-            <!-- Formulário de login -->
-            <form action="login" method="POST">
+            <form id="login-form">
                 <label class="login-label font-urbanist">Email:</label>
                 <input type="text" name="email" class="login-input font-urbanist" required>
 
                 <label class="login-label font-urbanist">Senha:</label>
                 <input type="password" name="senha" class="login-input font-urbanist" required>
 
-                <!-- Mensagem de erro -->
                 <?php if (isset($_SESSION['errors'])): ?>
                     <p class="login-error font-urbanist"><?= $_SESSION['errors']; ?></p>
                     <?php unset($_SESSION['errors']); ?>
@@ -34,13 +31,15 @@
             </form>
         </div>
 
-        <!-- 🔹 Lado direito (bem-vindo) -->
         <div class="login-right">
             <div class="login-logo font-urbanist"><img src="\bookbox\public\images\logo.png" alt="logo"></div>
             <h1>Bem-vindo</h1>
             <p>ao sistema da biblioteca!</p>
         </div>
     </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="/bookbox/public/js/login.js"></script>
 </body>
 
 </html>
