@@ -23,7 +23,6 @@ class GeneroModel
      */
     public function cadastrar($nome, $cor)
     {
-
         $uuidBin = hex2bin(str_replace('-', '', gerarUuid()));
 
         $query = "INSERT INTO tbgeneros (genId, genNome, genCorHex) VALUES (:uuid, :nome, :cor)";
@@ -45,20 +44,20 @@ class GeneroModel
     {
         $query = "UPDATE tbgeneros SET ";
 
-        if ($nome) {
+        if ($nome !== null) {
             $query .= "genNome = :nome";
         }
-        if ($cor) {
+        if ($cor !== null) {
             $query .= "genCorHex = :cor";
         }
 
         $query .= " WHERE genId = :id";
         $stmt = $this->db->prepare($query);
 
-        if ($nome) {
+        if ($nome !== null) {
             $stmt->bindParam(":nome", $nome);
         }
-        if ($cor) {
+        if ($cor !== null) {
             $stmt->bindParam(":cor", $cor);
         }
 
