@@ -24,42 +24,54 @@ class UsuarioController
     public function cadastro()
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $nome = $_POST['nome'];
-            $email = $_POST['email'];
-            $senha = $_POST['senha'];
-            $senhaConfirmada = $_POST['senhaConfirmada'];
+            header('Content-Type: application/json');
+
+            $nome = isset($_POST['nome']) ? trim($_POST['nome']) : '';
+            $email = isset($_POST['email']) ? trim($_POST['email']) : '';
+            $senha = isset($_POST['senha']) ? $_POST['senha'] : '';
+            $senhaConfirmada = isset($_POST['senhaConfirmada']) ? $_POST['senhaConfirmada'] : '';
+
+            $erros = [];
 
             if (!$this->validarEstruturaNome($nome)) {
-                adicionarMensagemSessao('nome', 'O nome não é valido. Por favor, tente novamente.');
+                $erros['nome'] = 'O nome não é válido. Por favor, tente novamente.';
             }
 
             if (!$this->validarEstruturaSenha($senha)) {
-                adicionarMensagemSessao('senha', 'A senha não atende os requisitos. Deve ter de 8 a 16 caracteres, no minimo 1 numero, 1 caracter especial, não deve conter espaços em branco.');
+                $erros['senha'] = 'A senha deve ter de 8 a 16 caracteres, no mínimo 1 número, 1 caractere especial e não deve conter espaços.';
             }
 
             if ($senha !== $senhaConfirmada) {
-                adicionarMensagemSessao('senha', 'As senhas não coincidem. Por favor, tente novamente.');
+                $erros['senhaConfirmada'] = 'As senhas não coincidem. Por favor, tente novamente.';
             }
 
             if (!$this->validarEstruturaEmail($email)) {
-                adicionarMensagemSessao('email', 'O e-mail fornecido não é válido. Por favor, tente novamente.');
+                $erros['email'] = 'O e-mail fornecido não é válido. Por favor, tente novamente.';
             }
 
-            if (empty($_SESSION['errors'])) {
-                $cadastroDeuCerto = $this->model->cadastrar($nome, $email, $senha);
-                if ($cadastroDeuCerto) {
-                    header("Location: /bookbox/login");
-                    exit();
-                } else {
-                    adicionarMensagemSessao('geral', 'Erro ao cadastrar usuário. Tente novamente.');
-                }
+            if (!empty($erros)) {
+                echo json_encode(["erro" => $erros]);
+                http_response_code(400);
+                exit();
             }
 
-            header("Location: /bookbox/cadastro");
-            exit();
-        } else {
-            require_once __DIR__ . '/../resources/views/usuarios/cadastro.php';
+            $cadastroDeuCerto = $this->model->cadastrar($nome, $email, $senha);
+
+            if ($cadastroDeuCerto) {
+                echo json_encode([
+                    "mensagem" => "Cadastro realizado com sucesso!",
+                    "redirecionar" => "/bookbox/login"
+                ]);
+                exit();
+            } else {
+                echo json_encode(["erro" => "Erro ao cadastrar usuário. Tente novamente."]);
+                http_response_code(500);
+                exit();
+            }
         }
+
+        http_response_code(405);
+        echo json_encode(["erro" => "Método não permitido."]);
     }
 
     /**
@@ -69,37 +81,49 @@ class UsuarioController
     public function login()
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            header('Content-Type: application/json');
+
             $email = isset($_POST['email']) ? trim($_POST['email']) : '';
             $senha = isset($_POST['senha']) ? $_POST['senha'] : '';
 
-            if (empty($email)) {
-                adicionarMensagemSessao('email', 'O email é obrigatório.');
-            }
+            $erros = [];
 
-            if (!$this->validarEstruturaEmail($email)) {
-                adicionarMensagemSessao('email', 'Email inválido.');
+            if (empty($email)) {
+                $erros['email'] = 'O email é obrigatório.';
+            } elseif (!$this->validarEstruturaEmail($email)) {
+                $erros['email'] = 'Email inválido.';
             }
 
             if (empty($senha)) {
-                adicionarMensagemSessao('senha', 'A senha é obrigatória.');
-            } else {
-                $usuario = $this->model->verificarLogin($email, $senha);
-
-                if ($usuario) {
-                    $_SESSION['usuario_logado'] = true;
-                    $_SESSION['usuario_nome'] = $usuario['usuNome'];
-                    header("Location: /bookbox/painel");
-                    exit();
-                } else {
-                    adicionarMensagemSessao('senha', 'Email ou senha inválidos.');
-                }
+                $erros['senha'] = 'A senha é obrigatória.';
             }
 
-            header("Location: /bookbox/login");
-            exit();
-        } else {
-            require_once __DIR__ . '/../resources/views/usuarios/login.php';
+            if (!empty($erros)) {
+                echo json_encode(["erro" => $erros]);
+                http_response_code(400);
+                exit();
+            }
+
+            $usuario = $this->model->verificarLogin($email, $senha);
+
+            if ($usuario) {
+                $_SESSION['usuario_logado'] = true;
+                $_SESSION['usuario_nome'] = $usuario['usuNome'];
+
+                echo json_encode([
+                    "mensagem" => "Login realizado com sucesso!",
+                    "redirecionar" => "/bookbox/painel"
+                ]);
+                exit();
+            } else {
+                echo json_encode(["erro" => "Email ou senha incorretos."]);
+                http_response_code(401);
+                exit();
+            }
         }
+
+        http_response_code(405);
+        echo json_encode(["erro" => "Método não permitido."]);
     }
 
     /**
@@ -120,6 +144,7 @@ class UsuarioController
     {
         if (preg_match("/^[A-Za-zÀ-ÖØ-öø-ÿ' -]+$/", trim($nome))) {
             $palavras = explode(" ", trim($nome));
+
             if (count($palavras) >= 2 && strlen($nome) >= 3 && strlen($nome) <= 100) {
                 return true;
             }
@@ -135,11 +160,7 @@ class UsuarioController
      */
     private static function validarEstruturaEmail($email)
     {
-        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            adicionarMensagemSessao('email', 'O e-mail fornecido tem formato inválido.');
-            return false;
-        }
-        return true;
+        return filter_var($email, FILTER_VALIDATE_EMAIL);
     }
 
     /**

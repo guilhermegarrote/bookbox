@@ -33,37 +33,50 @@ class EmprestimoController
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $cpf = $_POST['cpf'];
             $exemplarId = $_POST['exemplarId'];
+    
+            $erros = [];
 
             if (empty($cpf)) {
-                adicionarMensagemSessao('cpf', 'O campo "CPF do Estudante" é obrigatório.');
+                $erros['cpf'] = 'O campo "CPF do Estudante" é obrigatório.';
             }
-
+    
             if (empty($exemplarId)) {
-                adicionarMensagemSessao('exemplarId', 'O campo "Exemplar" é obrigatório.');
+                $erros['exemplarId'] = 'O campo "Exemplar" é obrigatório.';
             }
-            if (!empty($_SESSION['errors'])) {
+    
+            if (!empty($erros)) {
+                echo json_encode(["erro" => $erros]);
+                http_response_code(400);
                 exit();
             }
-
-
-            $alunoId = $this->alunoModel->buscaAlunoPorCpf($cpf);
+    
+            $alunoId = $this->alunoModel->buscarAlunoPorCpf($cpf);
             if (!$alunoId) {
-                adicionarMensagemSessao('cpf', 'O aluno informado não está cadastrado. Verifique e tente novamente.');
+                $erros['cpf'] = 'O aluno informado não está cadastrado. Verifique e tente novamente.';
+                echo json_encode(["erro" => $erros]);
+                http_response_code(400);
                 exit();
             }
-
+    
             $exemplarExiste = $this->exemplarModel->buscaExemplar($exemplarId);
             if (!$exemplarExiste) {
-                adicionarMensagemSessao('exemplarId', 'O exemplar informado não está cadastrado. Por favor, verifique e tente novamente.');
+                $erros['exemplarId'] = 'O exemplar informado não está cadastrado. Por favor, verifique e tente novamente.';
+                echo json_encode(["erro" => $erros]);
+                http_response_code(400);
                 exit();
             }
-            
+    
             $cadastroDeuCerto = $this->emprestimoModel->cadastrar($alunoId, $exemplarId);
             if ($cadastroDeuCerto) {
-                header("Location: /bookbox/emprestimos");
+                echo json_encode([
+                    "mensagem" => "Empréstimo realizado com sucesso!",
+                    "redirecionar" => "/bookbox/emprestimos"
+                ]);
                 exit();
             } else {
-                adicionarMensagemSessao('geral', 'Erro ao cadastrar empréstimo. Tente novamente.');
+                $erros['geral'] = 'Erro ao cadastrar empréstimo. Tente novamente.';
+                echo json_encode(["erro" => $erros]);
+                http_response_code(500);
                 exit();
             }
         } else {
