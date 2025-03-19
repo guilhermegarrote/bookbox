@@ -34,6 +34,230 @@ h1 {
     font-family: Arial, sans-serif;
 }
 
+/*  TELA DE CADASTRO */
+.cadastro-container {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #f8f8f8;
+    margin: 0;
+    font-family: Arial, sans-serif;
+}
+
+/* Caixa do formulário */
+.cadastro-box {
+    width: 400px;
+    padding: 40px;
+    border-radius: 10px;
+    background-color: white;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+}
+
+/* Formulário */
+.cadastro-form {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+}
+
+/* Título */
+.cadastro-form h2 {
+    font-family: 'Urbanist';
+    font-weight: 700;
+    font-size: 28px;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+/* Labels */
+.cadastro-label {
+    font-family: 'Urbanist';
+    font-weight: 700;
+    font-size: 14px;
+    color: #333;
+    margin-bottom: 5px;
+    text-align: left;
+    display: block;
+}
+
+/* Campos de entrada */
+.cadastro-input {
+    font-family: 'Urbanist';
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 16px;
+    outline: none;
+    transition: border-color 0.3s;
+}
+
+.cadastro-input:focus {
+    border-color: #555;
+}
+
+/* Botão */
+.cadastro-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    height: 50px;
+    margin: 20px auto 0;
+    border: 1px solid var(--cinza-claro);
+    border-radius: 16%;
+    background-color: var(--cinza);
+    color: var(--cinza-escuro);
+    font-size: 18px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.cadastro-button:hover {
+    background-color: #444;
+    color: #ffffff;
+}
+
+
+/* TELA DE LOGIN */
+.login-container {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--branco);
+    margin: 0;
+    font-family: Arial, sans-serif;
+}
+
+.login-box {
+    display: flex;
+    width: 800px;
+    height: 600px;
+    border-radius: 20px;
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.22);
+    background-color: var(--cinza-escuro);
+}
+
+/* 🔹 Lado esquerdo (formulário) */
+.login-form {
+    width: 50%;
+    border-radius: 20px;
+    background-color: var(--branco);
+    padding: 50px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border: 20px solid white;
+    margin-left: -5px;
+    margin-right: 5px;
+}
+
+.login-form h2 {
+    font-size: 32px;
+    font-weight: bold;
+    margin-bottom: 30px;
+    color: #000;
+    text-align: center;
+}
+
+.login-label {
+    font-weight: bold;
+    font-size: 14px;
+    color: var(--cinza-escuro);
+    margin-bottom: 5px;
+    display: block;
+}
+
+.login-input {
+    width: 100%;
+    padding: 15px;
+    margin-bottom: 20px;
+    background-color: var(--cinza);
+    border: 1px solid var(--cinza-claro);
+    border-radius: 10px;
+    font-size: 20px;
+    outline: none;
+    transition: border-color 0.3s;
+}
+
+.login-input:focus {
+    border-color: var(--cinza-escuro);
+}
+
+/* 🔹 Botão de login (seta) */
+.login-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    height: 50px;
+    margin: 20px auto 0;
+    border: 1px solid var(--cinza-claro);
+    border-radius: 16%;
+    background-color: var(--cinza);
+    color: var(--cinza-escuro);
+    font-size: 18px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.login-button:hover {
+    background-color: var(--cinza-escuro);
+    color: var(--branco);
+}
+
+/* 🔹 Lado direito (bem-vindo) */
+.login-right {
+    width: 50%;
+    background-color: var(--cinza-escuro);
+    color: var(--branco);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    padding-bottom: 35px;
+    text-align: center;
+    border-radius: 20px;
+}
+
+.login-right h1 {
+    font-family: 'Urbanist';
+    font-weight: 700;
+    font-size: 36px;
+    margin-bottom: 0px;
+    color: var(--branco);
+}
+
+.login-right p {
+    font-family: 'Urbanist';
+    font-size: 16px;
+    color: var(--cinza-claro);
+    margin-bottom: 30px;
+}
+
+/* Estilo do ícone "B" */
+.login-logo img {
+    width: 100px;
+    /* Ajuste o tamanho conforme desejado */
+    height: auto;
+    margin-top: 20px;
+    padding-bottom: 10px;
+}
+
+
+/* Estilo de erro */
+.login-error {
+    color: var(--vermelho);
+    text-align: center;
+    margin-top: 10px;
+}
+
+
 .menusuperior {
     position: relative;
     display: flex;
@@ -139,7 +363,8 @@ h1 {
 }
 
 .menu-top-btn {
-    position: relative; /* Necessário para que ::after se posicione corretamente */
+    position: relative;
+    /* Necessário para que ::after se posicione corretamente */
     padding: 9px 30px;
     font-size: 14px;
     border-radius: 5px;
@@ -703,138 +928,4 @@ h1 {
 
 .search-btn:hover {
     background-color: #bbb;
-}
-
-/* 🔹 Estilo específico para a tela de login */
-
-.login-container {
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: var(--branco);
-    margin: 0;
-    font-family: Arial, sans-serif;
-}
-
-.login-box {
-    display: flex;
-    width: 800px;
-    height: 600px;
-    border-radius: 20px;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-    overflow: hidden;
-    background-color: var(--cinza-escuro);
-}
-
-/* 🔹 Lado esquerdo (formulário) */
-.login-form {
-    width: 50%;
-    border-radius: 20px;
-    background-color: var(--branco);
-    padding: 50px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-}
-
-.login-form h2 {
-    font-size: 32px;
-    font-weight: bold;
-    margin-bottom: 30px;
-    color: #000;
-    text-align: center;
-}
-
-.login-label {
-    font-weight: bold;
-    font-size: 14px;
-    color: var(--cinza-escuro);
-    margin-bottom: 5px;
-    display: block;
-}
-
-.login-input {
-    width: 100%;
-    padding: 15px;
-    margin-bottom: 20px;
-    background-color: var(--cinza);
-    border: 1px solid var(--cinza-claro);
-    border-radius: 10px;
-    font-size: 20px;
-    outline: none;
-    transition: border-color 0.3s;
-}
-
-.login-input:focus {
-    border-color: var(--cinza-escuro);
-}
-
-/* 🔹 Botão de login (seta) */
-.login-button {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 50px;
-    height: 50px;
-    margin: 20px auto 0;
-    border: 1px solid var(--cinza-claro);
-    border-radius: 16%;
-    background-color: var(--cinza);
-    color: var(--cinza-escuro);
-    font-size: 18px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-.login-button:hover {
-    background-color: var(--cinza-escuro);
-    color: var(--branco);
-}
-
-/* 🔹 Lado direito (bem-vindo) */
-.login-right {
-    width: 50%;
-    background-color: var(--cinza-escuro);
-    color: var(--branco);
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    padding: 20px;
-    padding-bottom: 35px;
-    text-align: center;
-}
-
-.login-right h1 {
-    font-family: 'Urbanist';
-    font-weight: 700;
-    font-size: 36px;
-    margin-bottom: 0px;
-    color: var(--branco);
-}
-
-.login-right p {
-    font-family: 'Urbanist';
-    font-size: 16px;
-    color: var(--cinza-claro);
-    margin-bottom: 30px;
-}
-
-/* 🔹 Estilo do ícone "B" */
-.login-logo img {
-    width: 100px;
-    /* Ajuste o tamanho conforme desejado */
-    height: auto;
-    margin-top: 20px;
-    padding-bottom: 10px;
-}
-
-
-/* 🔹 Estilo de erro */
-.login-error {
-    color: var(--vermelho);
-    text-align: center;
-    margin-top: 10px;
 }
