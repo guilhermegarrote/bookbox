@@ -27,8 +27,7 @@ class UsuarioModel
         $email = criptografar($email);
         $senhaHash = password_hash($senha, PASSWORD_DEFAULT);
 
-        $query = "INSERT INTO tbusuarios (usuId, usuNome, usuEmail, usuSenha) 
-                  VALUES (:uuid, :nome, :email, :senha)";
+        $query = "INSERT INTO tbusuarios (usuId, usuNome, usuEmail, usuSenha) VALUES (:uuid, :nome, :email, :senha)";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(":uuid", $uuidBin, PDO::PARAM_LOB);
         $stmt->bindParam(":nome", $nome);
@@ -52,11 +51,11 @@ class UsuarioModel
         if ($nome) {
             $query .= "usuNome = :nome, ";
         }
-        if ($nome) {
+        if ($email !== null) {
             $email = criptografar($email);
             $query .= "usuEmail = :email, ";
         }
-        if ($senha) {
+        if ($senha !== null) {
             $senhaHash = password_hash($senha, PASSWORD_DEFAULT);
             $query .= "usuSenha = :senha, ";
         }
@@ -65,13 +64,13 @@ class UsuarioModel
 
         $stmt = $this->db->prepare($query);
 
-        if ($nome) {
+        if ($nome !== null) {
             $stmt->bindParam(":nome", $nome);
         }
-        if ($email) {
+        if ($email !== null) {
             $stmt->bindParam(":email", $email);
         }
-        if ($senha) {
+        if ($senha !== null) {
             $stmt->bindParam(":senha", $senhaHash);
         }
 
