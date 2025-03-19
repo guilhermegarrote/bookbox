@@ -32,5 +32,7 @@ switch ($pagina) {
     <div id="painel"></div>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="public/js/logout.js"></script>
     <script src="public/js/painel.js"></script>
+    <script src="public/js/modal.js"></script>
 </body>
