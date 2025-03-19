@@ -28,8 +28,8 @@ class LivroModel
     {
         $uuidBin = hex2bin(str_replace('-', '', gerarUuid()));
 
-        $query = "INSERT INTO tblivros (livId, livIBSN, livTitulo, livAutor, fkGenId, livEditora) 
-        VALUES (:uuid, :Ibsn, :titulo, :autor,:generoId, :editora )";
+        $query = "INSERT INTO tblivros (livId, livIbsn, livTitulo, livAutor, fkGenId, livEditora) 
+        VALUES (:uuid, :Ibsn, :titulo, :autor, :generoId, :editora)";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(":uuid", $uuidBin, PDO::PARAM_LOB);
         $stmt->bindParam(":Ibsn", $Ibsn);
@@ -54,40 +54,39 @@ class LivroModel
     {
         $query = "UPDATE tblivros SET ";
 
-        if ($Ibsn) {
+        if ($Ibsn !== null) {
             $query .= "livIBSN = :Ibsn, ";
         }
-        if ($titulo) {
+        if ($titulo !== null) {
             $query .= "livTitulo = :titulo, ";
         }
-        if ($autor) {
+        if ($autor !== null) {
             $query .= "livAutor = :autor, ";
         }
-        if ($generoId) {
+        if ($generoId !== null) {
             $query .= "fkGeneroId = :generoId, ";
         }
-        if ($editora) {
+        if ($editora !== null) {
             $query .= "livEditora = :editora, ";
         }
-
 
         $query .= " WHERE livId = :id";
 
         $stmt = $this->db->prepare($query);
 
-        if ($Ibsn) {
+        if ($Ibsn !== null) {
             $stmt->bindParam(":Ibsn", $Ibsn);
         }
-        if ($titulo) {
+        if ($titulo !== null) {
             $stmt->bindParam(":titulo", $titulo);
         }
-        if ($autor) {
+        if ($autor !== null) {
             $stmt->bindParam(":autor", $autor);
         }
-        if ($generoId) {
+        if ($generoId !== null) {
             $stmt->bindParam(":generoId", $generoId);
         }
-        if ($editora) {
+        if ($editora !== null) {
             $stmt->bindParam(":editora", $editora);
         }
 
