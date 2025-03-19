@@ -13,20 +13,32 @@ class ExemplarModel
     public function __construct($db)
     {
         $this->db = $db;
-    }	
+    }
+
+    /**
+     * Método responsável por pesquisar exemplar por id.
+     * @param string $id
+     * @return bool
+     */
+    public function pesquisar($id)
+    {
+        $query = "SELECT * FROM tbexemplares WHERE exId = :id";
+        $stmt = $this->db->prepare($query);
+        $stmt->bindParam(":id", $id);
+        return $stmt->execute();
+    }
 
     /**
      * Método responsável por cadastrar novo exemplar. 	
      * @param string $livId
      * @return bool
      */
-    public function cadastrar($livId, $numero)
+    public function cadastrar($livId)
     {
-
         $uuidBin = hex2bin(str_replace('-', '', gerarUuid()));
 
         $query = "INSERT INTO tbexemplares (exId, exfkLivId, exNumero) 
-        VALUES (:uuid, :livId, COALESCE(MAX(exNumero), 0) + 1)"
+        VALUES (:uuid, :livId, COALESCE(MAX(exNumero), 0) + 1)";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(":uuid", $uuidBin, PDO::PARAM_LOB);
         $stmt->bindParam(":livId", $livId);
@@ -45,19 +57,4 @@ class ExemplarModel
         $stmt->bindParam(":id", $id);
         return $stmt->execute();
     }
-
-   /**
-     * Método responsável por pesquisar exemplar.
-     * @param string $id
-     * @return bool
-     */ 
-    public function pesquisar($id)
-    {
-        $query = "SELECT * FROM tbExemplares WHERE exId";
-        $stmt = $this->db->prepare($query);
-        $stmt->bindParam(":id", $id);
-        return $stmt->execute();
-
-    }
-
 }
