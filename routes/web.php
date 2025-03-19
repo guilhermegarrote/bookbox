@@ -16,17 +16,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         case '/cadastro':
             $usuarioController->cadastro();
             exit();
+        case '/logout':
+            session_destroy();
+            exit();
     }
 }
 
 switch ($url) {
     case '/login':
         if (!$usuarioController->existeUsuarios()) {
-            header("Location: /bookbox/cadastro");
+            header('Location: /bookbox/cadastro');
             exit();
         }
         if (isset($_SESSION['usuario_logado']) && $_SESSION['usuario_logado'] === true) {
-            header("Location: /bookbox/painel");
+            header('Location: /bookbox/painel');
             exit();
         }
         require_once __DIR__ . '/../resources/views/pages/login.php';
@@ -34,20 +37,23 @@ switch ($url) {
     case '/':
     case '/painel':
         if (!isset($_SESSION['usuario_logado']) || $_SESSION['usuario_logado'] !== true) {
-            header("Location: /bookbox/login");
+            header('Location: /bookbox/login');
             exit();
         }
         require_once __DIR__ . '/../resources/views/pages/painel.php';
         break;
     case '/cadastro':
+        if ($usuarioController->existeUsuarios()) {
+            header('Location: /bookbox/login');
+            exit();
+        }
         require_once __DIR__ . '/../resources/views/pages/cadastro.php';
         break;
-    case '/logout':
-        session_destroy();
-        header("Location: /bookbox/login");
-        exit();
+    case '/modals/cadastro_emprestimo':
+        require_once __DIR__ . '/../resources/views/modals/cadastro_emprestimo.php';
+        break;
     default:
         http_response_code(404);
-        echo "Página não encontrada";
+        echo json_encode(["erro" => "Página não encontrada"]);
         break;
 }
