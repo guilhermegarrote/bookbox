@@ -15,7 +15,6 @@ class TurmaModel
         $this->db = $db;
     }
 
-
     /**
      * Método responsável por cadastrar nova turma. 	
      * @param string $curso
@@ -25,13 +24,12 @@ class TurmaModel
      * @param string $dataFim
      * @return bool
      */
-    public function cadastrar($periodo, $curso, $horario, $regime, $dataInicio, $dataFim)
+    public function cadastrar($curso, $horario, $regime, $dataInicio, $dataFim)
     {
-
         $uuidBin = hex2bin(str_replace('-', '', gerarUuid()));
 
         $query = "INSERT INTO tbturmas (turId, turCurso, turHorario, turRegime, turDataInicio, turDataFim) 
-        VALUES (:uuid ,:periodo,:curso, :horario, :regime, :dataInicio, :dataFim )";
+        VALUES (:uuid, :curso, :horario, :regime, :dataInicio, :dataFim)";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(":uuid", $uuidBin, PDO::PARAM_LOB);
         $stmt->bindParam(":curso", $curso);
@@ -52,42 +50,42 @@ class TurmaModel
      * @param string|null $dataFim
      * @return bool
      */
-    public function editar($id, $periodo, $curso, $horario, $regime, $dataInicio, $dataFim)
+    public function editar($id, $curso, $horario, $regime, $dataInicio, $dataFim)
     {
         $query = "UPDATE tbturmas SET ";
 
-        if ($curso) {
+        if ($curso !== null) {
             $query .= "turCurso = :curso, ";
         }
-        if ($horario) {
+        if ($horario !== null) {
             $query .= "turHorario = :horario, ";
         }
-        if ($regime) {
+        if ($regime !== null) {
             $query .= "turRegime = :regime, ";
         }
-        if ($dataInicio) {
+        if ($dataInicio !== null) {
             $query .= "turDataInicio = :dataInicio, ";
         }
-        if ($dataFim) {
+        if ($dataFim !== null) {
             $query .= "turDataFim = :dataFim, ";
         }
         $query .= " WHERE turId = :id";
 
         $stmt = $this->db->prepare($query);
 
-        if ($curso) {
+        if ($curso !== null) {
             $stmt->bindParam(":curso", $curso);
         }
-        if ($horario) {
+        if ($horario !== null) {
             $stmt->bindParam(":horario", $horario);
         }
-        if ($regime) {
+        if ($regime !== null) {
             $stmt->bindParam(":regime", $regime);
         }
-        if ($dataInicio) {
+        if ($dataInicio !== null) {
             $stmt->bindParam(":dataInicio", $dataInicio);
         }
-        if ($dataFim) {
+        if ($dataFim !== null) {
             $stmt->bindParam(":dataFim", $dataFim);
         }
 
