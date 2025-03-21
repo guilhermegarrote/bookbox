@@ -13,8 +13,8 @@
 
 <body class="login-container">
     <div class="login-box">
-        <div class="login-form font-urbanist">
-            <h2>Login</h2>
+        <div class="login-form">
+            <h2 class="font-urbanist">Login</h2>
             <form id="login-form">
                 <label class="login-label font-urbanist">Email:</label>
                 <input type="text" name="email" class="login-input font-urbanist" required>
