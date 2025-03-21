@@ -14,11 +14,9 @@
 
 <body class="cadastro-container">
     <div class="cadastro-box">
-        <!-- 🔹 Formulário de cadastro -->
         <div class="cadastro-form">
             <h2>Cadastro</h2>
-
-            <form action="cadastro" method="POST">
+            <form id="cadastro-form">
                 <label class="cadastro-label">Nome e sobrenome:</label>
                 <input type="text" name="nome" class="cadastro-input" required>
 
@@ -35,6 +33,8 @@
             </form>
         </div>
     </div>
+
+    <script src="/bookbox/public/js/cadastro.js"></script>
 </body>
 
 </html>
