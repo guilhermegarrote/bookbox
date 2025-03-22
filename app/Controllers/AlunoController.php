@@ -21,7 +21,7 @@ class AlunoController
      * Método responsável por cadastrar aluno.
      * @return void
      */
-    public function cadastro()
+    public function validaCamposInvalidos() 
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $nome = $_POST['nome'];
@@ -32,11 +32,11 @@ class AlunoController
             $erros = [];
 
             if (!$this->validarEstruturaNome($nome)) {
-                $erros['nome'] = 'O nome não é válido. Por favor, tente novamente.';
+                $erros['nome'] = 'O nome fornecido não é válido. Por favor, tente novamente.';
             }
 
             if (!$this->validarEstruturaCpf($cpf)) {
-                $erros['cpf'] = 'O CPF não atende os requisitos. Tente novamente.';
+                $erros['cpf'] = 'O CPF fornecido não é válido. Por favor, tente novamente.';
             }
 
             if (!$this->validarEstruturaEmail($email)) {
