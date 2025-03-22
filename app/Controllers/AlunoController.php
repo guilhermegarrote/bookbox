@@ -21,7 +21,7 @@ class AlunoController
      * Método responsável por cadastrar aluno.
      * @return void
      */
-    public function validaCamposInvalidos() 
+    public function cadastro() 
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $nome = $_POST['nome'];
@@ -31,19 +31,27 @@ class AlunoController
 
             $erros = [];
 
-            if (!$this->validarEstruturaNome($nome)) {
+            if (empty($nome)) {
+                $erros['nome'] = 'O nome é obrigatório.';
+            } elseif (!$this->validarEstruturaNome($nome)) {
                 $erros['nome'] = 'O nome fornecido não é válido. Por favor, tente novamente.';
             }
 
-            if (!$this->validarEstruturaCpf($cpf)) {
+           if (empty($cpf)) {
+                $erros['cpf'] = 'O cpf é obrigatório.';
+             }elseif (!$this->validarEstruturaCpf($cpf)) {
                 $erros['cpf'] = 'O CPF fornecido não é válido. Por favor, tente novamente.';
             }
 
-            if (!$this->validarEstruturaEmail($email)) {
+            if (empty($email)) {
+                $erros['email'] = 'O email é obrigatório.';
+            }elseif (!$this->validarEstruturaEmail($email)) {
                 $erros['email'] = 'O e-mail fornecido não é válido. Por favor, tente novamente.';
             }
 
-            if (!$this->validarEstruturaTelefone($telefone)) {
+            if (empty($telefone)) {
+                $erros['telefone'] = 'O telefone é obrigatório.';
+            }elseif (!$this->validarEstruturaTelefone($telefone)) {
                 $erros['telefone'] = 'O telefone fornecido não é válido. Por favor, tente novamente.';
             }
 
