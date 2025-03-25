@@ -65,6 +65,14 @@ class EmprestimoController
                 http_response_code(400);
                 exit();
             }
+
+            $quantidadeLivrosEmprestados = $this->emprestimoModel->contarEmprestimosPorAluno($alunoId);
+            if ($quantidadeLivrosEmprestados >= 3) {
+                echo "Você não pode emprestar mais de 3 livros.";
+                echo json_encode(["erro" => $erros]);
+                http_response_code(400);
+                exit();
+            }
     
             $cadastroDeuCerto = $this->emprestimoModel->cadastrar($alunoId, $exemplarId);
             if ($cadastroDeuCerto) {
