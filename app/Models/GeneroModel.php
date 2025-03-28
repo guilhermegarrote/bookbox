@@ -77,4 +77,17 @@ class GeneroModel
         $stmt->bindParam(":id", $id);
         return $stmt->execute();
     }
+
+    /**
+     * Método responsável por pesquisar gênero por id.
+     * @param string $id
+     * @return bool
+     */
+    public function pesquisar($id)
+    {
+        $query = "SELECT * FROM tbgeneros WHERE genId = :id";
+        $stmt = $this->db->prepare($query);
+        $stmt->bindParam(":id", $id);
+        return $stmt->execute();
+    }
 }
