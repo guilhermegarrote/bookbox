@@ -117,7 +117,7 @@ class AlunoModel
      */
     public function buscarAlunoPorCpf($cpf)
     {
-        $query = "SELECT * FROM tbalunos WHERE aluCpf = :cpf";
+        $query = "SELECT * FROM vwalunos WHERE aluCpf = :cpf";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(":cpf", $cpf, PDO::PARAM_STR);
         $stmt->execute();
