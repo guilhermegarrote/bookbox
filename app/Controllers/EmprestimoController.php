@@ -33,7 +33,9 @@ class EmprestimoController
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $cpf = $_POST['cpf'];
             $exemplarId = $_POST['exemplarId'];
-    
+            $isbn = $_POST['isbn'];
+            $numeroExemplar = $_POST['numeroExemplar'];
+
             $erros = [];
 
             if (empty($cpf)) {
@@ -49,32 +51,38 @@ class EmprestimoController
                 http_response_code(400);
                 exit();
             }
-    
-            $alunoId = $this->alunoModel->buscarAlunoPorCpf($cpf);
-            if (!$alunoId) {
+
+
+            $aluno = $this->alunoModel->buscarAlunoPorCpf($cpf);
+            if (!$aluno) {
                 $erros['cpf'] = 'O aluno informado não está cadastrado. Verifique e tente novamente.';
                 echo json_encode(["erro" => $erros]);
                 http_response_code(400);
                 exit();
-            }
-    
-            $exemplarExiste = $this->exemplarModel->buscaExemplar($exemplarId);
-            if (!$exemplarExiste) {
-                $erros['exemplarId'] = 'O exemplar informado não está cadastrado. Por favor, verifique e tente novamente.';
+            } elseif (!$aluno['podeEmprestar']) {
+                $erros['pode_emprestar'] = 'O aluno não pode realizar o empréstimo. Verifique e tente novamente.';
                 echo json_encode(["erro" => $erros]);
                 http_response_code(400);
                 exit();
             }
 
-            $quantidadeLivrosEmprestados = $this->emprestimoModel->contarEmprestimosPorAluno($alunoId);
-            if ($quantidadeLivrosEmprestados >= 3) {
-                echo "Você não pode emprestar mais de 3 livros.";
+            $livId = $this->exemplarModel->pesquisaLivroPorIsbn($isbn);
+            if (!$livId) {
+                $erros['isbn'] = 'O livro com o ISBN informado não está cadastrado. Verifique o ISBN e tente novamente.';
                 echo json_encode(["erro" => $erros]);
-                http_response_code(400);
+                http_response_code(400); 
                 exit();
             }
-    
-            $cadastroDeuCerto = $this->emprestimoModel->cadastrar($alunoId, $exemplarId);
+            
+            $exemplarExiste = $this->exemplarModel->pesquisarExemplar($numeroExemplar, $livId);
+        if (!$exemplarExiste) {
+            $erros['exemplarId'] = 'O exemplar informado não está cadastrado. Verifique o número do exemplar e tente novamente.';
+            echo json_encode(["erro" => $erros]);
+            http_response_code(400); 
+            exit();
+            } 
+
+            $cadastroDeuCerto = $this->emprestimoModel->cadastrar($aluno, $numeroExemplar);
             if ($cadastroDeuCerto) {
                 echo json_encode([
                     "mensagem" => "Empréstimo realizado com sucesso!",
