@@ -15,18 +15,42 @@ class ExemplarModel
         $this->db = $db;
     }
 
-    /**
-     * Método responsável por pesquisar exemplar por id.
-     * @param string $id
-     * @return bool
-     */
-    public function pesquisar($id)
-    {
-        $query = "SELECT * FROM tbexemplares WHERE exId = :id";
-        $stmt = $this->db->prepare($query);
-        $stmt->bindParam(":id", $id);
-        return $stmt->execute();
+/**
+ * Método responsável por pesquisar o livro pelo ISBN e retornar o ID do livro.
+ * @param string $isbn
+ * @return int|false
+ */
+public function pesquisaLivroPorIsbn($isbn)
+{
+    $query = "SELECT livId FROM tblivros WHERE livIbsn = :isbn";
+    $stmt = $this->db->prepare($query);
+    $stmt->bindParam(":isbn", $isbn);
+    $stmt->execute();
+
+    if ($stmt->rowCount() > 0) {
+        $livro = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $livro['livId'];  
     }
+
+    return false;  
+}
+
+/**
+ * Método responsável por verificar se o exemplar existe.
+ * @param int $numeroExemplar
+ * @param int $livId
+ * @return bool 
+ */
+public function pesquisarExemplar($numeroExemplar, $livId)
+{
+    $queryExemplar = "SELECT * FROM tbexemplares WHERE exNumero = :numeroExemplar AND livId = :livId";
+    $stmtExemplar = $this->db->prepare($queryExemplar);
+    $stmtExemplar->bindParam(":numeroExemplar", $numeroExemplar);
+    $stmtExemplar->bindParam(":livId", $livId);
+    
+    return $stmtExemplar->execute() && $stmtExemplar->rowCount() > 0;
+}
+
 
     /**
      * Método responsável por cadastrar novo exemplar. 	
