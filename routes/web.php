@@ -55,6 +55,9 @@ switch ($url) {
     case '/modals/cadastro_aluno':
         require_once __DIR__ . '/../resources/views/modals/cadastro_aluno.php';
         break;
+    case '/modals/cadastro_livro':
+        require_once __DIR__ . '/../resources/views/modals/cadastro_livro.php';
+        break;
     default:
         http_response_code(404);
         echo json_encode(["erro" => "Página não encontrada"]);
