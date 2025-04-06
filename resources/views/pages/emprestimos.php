@@ -19,7 +19,7 @@
             </table>
         </div>
 
-        <div id="overlay" class="overlay">
+        <div id="overlay" style="justify-content: center;">
             <div id="modal-container"></div>
         </div>
 

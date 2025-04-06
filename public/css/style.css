@@ -1,10 +1,6 @@
 @font-face {
     font-family: 'Urbanist';
-    src: url('public/fonts/Urbanist.ttf') format('ttf');
-}
-
-.font-urbanist {
-    font-family: 'Urbanist';
+    src: url('../fonts/Urbanist/Urbanist-VariableFont_wght.ttf');
 }
 
 :root {
@@ -290,9 +286,9 @@ h1 {
     background-color: #333;
     padding: 7px 10px;
     border-radius: 10px;
-    width: 1000px;
+    width: 1050px;
     /* Define uma largura fixa para o retângulo */
-    height: 50px;
+    height: 55px;
     margin-left: auto;
     /* Alinha o retângulo à direita */
     margin-right: 30px;
@@ -302,7 +298,7 @@ h1 {
 .barradepesquisa {
     padding: 5px;
     font-size: 14px;
-    width: 250px;
+    width: 280px;
     height: 35px;
     border-radius: 5px;
     border: 1px solid #ccc;
@@ -342,7 +338,7 @@ h1 {
     border-top-right-radius: 4px;
     border-bottom-left-radius: 0px;
     border-bottom-right-radius: 4px;
-    margin-right: 100px;
+    margin-right: 60px;
 }
 
 .btnfiltro img {
@@ -363,10 +359,11 @@ h1 {
 }
 
 .menu-top-btn {
+    font-family: 'Urbanist';
+    font-size: 20px;
     position: relative;
     /* Necessário para que ::after se posicione corretamente */
     padding: 9px 30px;
-    font-size: 14px;
     border-radius: 5px;
     background-color: #333;
     color: white;
@@ -396,13 +393,13 @@ h1 {
     right: 10px;
     /* Ajuste conforme necessário */
     top: 50%;
-    height: 35px;
-    width: 35px;
-    border-radius: 5px;
+    height: 40px;
+    width: 40px;
+    border-radius: 10px;
     transform: translateY(-50%);
     background: #454545;
     border: none;
-    font-size: 26px;
+    font-size: 30px;
     cursor: pointer;
     color: #ffffff;
     /* Cor dos três pontinhos */
@@ -931,86 +928,121 @@ h1 {
 }
 
 /* CLASSES MODALS*/
-.overlay {
-    display: none;
-    /* Inicialmente oculto */
-    align-items: center;
-    justify-content: center;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-}
-
 .modal {
-    background: white;
-    padding: 20px;
-    width: 400px;
-    border: 1px solid black;
+    background: #fff;
+    width: 650px;
     position: relative;
-    border-radius: 8px;
-}
-.modal {
-    background: white;
-    padding: 20px;
-    width: 400px;
-    border: 1px solid black;
-    position: relative;
-    border-radius: 8px;
+    border-radius: 6px;
 }
 
 .modal-header {
+    background: #333;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    height: 45px;
+    border-radius: 10px 10px 0 0;
+    padding: 0 15px;
 }
 
 .modal-title {
-    margin: 0;
+    color: white;
     font-size: 1.5em;
+    text-align: center;
+    flex-grow: 1;
 }
 
 .modal-close {
+    color: white;
     font-size: 1.2em;
-    background: none;
+    width: 30px;
+    height: 30px;
     border: none;
+    background: red;
+    border-radius: 50%;
     cursor: pointer;
 }
 
-.modal-body {
-    margin-top: 20px;
+.modal-close:hover {
+    background: rgba(255, 0, 0, 0.526);
+    transition: 1s ease;
 }
 
-.modal-label {
-    display: block;
-    margin-bottom: 5px;
+.modal-body {
+    width: 100%;
+    padding: 15px;
 }
 
 .modal-input {
-    width: 100%;
+    height: 35px;
     padding: 8px;
-    margin-bottom: 15px;
     border: 1px solid #ccc;
-    border-radius: 4px;
+    border-radius: 6px;
+    background-color: transparent;
+    outline: none;
+    font-size: 1em;
+    transition: 0.1s ease;
+}
+
+.labelline {
+    position: absolute;
+    font-size: 1em;
+    color: #6e6e6e;
+    background: #ffffff;
+    padding: 0 5px;
+    transition: 0.2s ease;
+    top: 50%;
+    left: 10px;
+    transform: translateY(-50%);
+}
+
+.modal-input:focus,
+.modal-input:valid {
+    border: 2px solid #000;
+}
+
+.modal-input:focus + .labelline,
+.modal-input:valid + .labelline {
+    color: #000000;
+    top: 0px;
+    left: 10px;
+    transform: translatey(-50%) scale(0.8);
+    transform-origin: left center;
+}
+
+.entryarea {
+    position: relative;
+    height: 35px;
+    margin-bottom: 15px;
+}
+
+.rec-inputs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: space-between;
 }
 
 .modal-footer {
     display: flex;
-    justify-content: space-between;
-    margin-top: 20px;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 10px;
+    margin-bottom: 10px;
 }
 
 .modal-button {
     padding: 10px 20px;
-    background-color: #007bff;
-    color: white;
-    border: none;
+    background: #fff;
+    color: #000;
+    border: 1px solid #000;
     border-radius: 4px;
     cursor: pointer;
 }
 
 .modal-button:hover {
-    background-color: #0056b3;
+    background: #282828;
+    color: #fff;
+    border: 1px solid #fff;
+    transition: 1s ease;
 }
