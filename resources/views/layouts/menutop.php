@@ -1,9 +1,13 @@
 <header>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Sancreek&family=Sedgwick+Ave+Display&family=Urbanist:ital,wght@0,100..900;1,100..900&display=swap');
+    </style>
     <nav>
         <div class="menusuperior">
             <img class="logo" src="/bookbox/public/images/logomarca.png" alt="logomarca">
+
             <div class="retangulo">
-                <input type="text" class="barradepesquisa" placeholder="Pesquisar...">
+                <input type="text" class="barradepesquisa" placeholder="Pesquisar">
                 <button class="btnfiltro"><img class="filtrar" src="\bookbox\public\images\filtro.png" alt="filtrar"></button>
 
                 <div class="botoes">
