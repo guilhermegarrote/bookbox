@@ -14,9 +14,13 @@
                         <th>Atraso</th>
                     </tr>
                 </thead>
-                <tbody id="emprestimos-body">
-                </tbody>
             </table>
+            <div style="overflow: auto; height: 65vh;">
+                <table class="tableTI">
+                    <tbody id="emprestimos-body">
+                    </tbody>
+                </table>
+            </div>
         </div>
 
         <div id="overlay" style="justify-content: center;">

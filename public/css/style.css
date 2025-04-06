@@ -16,6 +16,8 @@
 body {
     font-family: Arial, sans-serif;
     background-color: #f4f4f4;
+    overflow-y: hidden;
+    overflow-x: hidden;
 }
 
 h1 {
@@ -259,7 +261,6 @@ h1 {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    /* Distribui os itens entre a esquerda e a direita */
     width: 100%;
     background-color: #ffffff;
     padding: 15px 25px;
@@ -269,12 +270,8 @@ h1 {
 
 .logo {
     max-width: 240px;
-    /* Define o tamanho máximo da logo */
     height: auto;
-    /* Mantém a proporção da logo */
     margin-left: 40px;
-    /* Ajuste da margem para a logo */
-
 }
 
 
@@ -287,12 +284,9 @@ h1 {
     padding: 7px 10px;
     border-radius: 10px;
     width: 1050px;
-    /* Define uma largura fixa para o retângulo */
     height: 55px;
     margin-left: auto;
-    /* Alinha o retângulo à direita */
     margin-right: 30px;
-    /* Se necessário, adicione uma margem à direita */
 }
 
 .barradepesquisa {
@@ -305,14 +299,11 @@ h1 {
     background-color: #535353;
     color: #ffffff;
     border: none;
-    /* Remove a borda padrão */
     outline: none;
-    /* Remove a borda azul ao clicar */
     border-top-left-radius: 5px;
     border-top-right-radius: 0;
     border-bottom-left-radius: 5px;
     border-bottom-right-radius: 0px;
-
 }
 
 .btnfiltro {
@@ -798,13 +789,10 @@ h1 {
 }
 
 
-
 /* TABELAS */
-
 .containerTI {
     display: flex;
     flex-direction: row;
-    min-height: 100vh;
     width: 100%;
 }
 
@@ -856,8 +844,7 @@ h1 {
 
 .contentTI {
     flex: 1;
-    display: flex;
-    flex-direction: column;
+    display: inline;
     padding: 20px;
 }
 
@@ -884,7 +871,6 @@ h1 {
 
 .tableContainerTI {
     overflow-x: auto;
-    margin-bottom: 20px;
 }
 
 .tableTI {
@@ -901,8 +887,9 @@ h1 {
 
 .buttonsTI {
     display: flex;
+    justify-content: center;
     gap: 10px;
-    margin-top: auto;
+    margin-top: 20px;
 }
 
 .btnTI {
@@ -1001,8 +988,8 @@ h1 {
     border: 2px solid #000;
 }
 
-.modal-input:focus + .labelline,
-.modal-input:valid + .labelline {
+.modal-input:focus+.labelline,
+.modal-input:valid+.labelline {
     color: #000000;
     top: 0px;
     left: 10px;

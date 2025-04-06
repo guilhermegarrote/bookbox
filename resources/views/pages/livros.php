@@ -13,19 +13,23 @@
                         <th>Gênero</th>
                     </tr>
                 </thead>
-                <tbody id="livros-body">
-                </tbody>
             </table>
-        </div>
-
-        <div id="overlay" style="justify-content: center;">
-            <div id="modal-container"></div>
+            <div style="overflow: auto; height: 65vh;">
+                <table class="tableTI">
+                    <tbody id="livros-body">
+                    </tbody>
+                </table>
+            </div>
         </div>
 
         <div class="buttonsTI">
             <button class="btnTI" onclick="abrirModal('cadastro_livro')">Cadastrar</button>
             <button class="btnTI">Editar</button>
             <button class="btnTI">Gerar Etiqueta</button>
+        </div>
+
+        <div id="overlay" style="justify-content: center;">
+            <div id="modal-container"></div>
         </div>
     </div>
 </div>
