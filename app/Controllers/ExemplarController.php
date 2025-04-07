@@ -21,7 +21,7 @@ class ExemplarController
             $numeroExemplar = $_POST['numeroExemplar'];
             $disponibilidade = $_POST['disponibilidade'];
 
-            $erros = $this->validarDadosExemplar($isbn, $numeroExemplar, $disponibilidade);
+            $erros = $this->validarDadosExemplar($isbn);
 
             if (!empty($erros)) {
                 echo json_encode(["erro" => $erros]);
@@ -100,7 +100,7 @@ class ExemplarController
         }
     }
 
-    private function validarDadosExemplar($isbn, $numeroExemplar, $disponibilidade)
+    private function validarDadosExemplar($isbn)
     {
         $erros = [];
 
@@ -108,16 +108,6 @@ class ExemplarController
             $erros['isbn'] = 'O campo "ISBN" é obrigatório.';
         } elseif (!preg_match("/^\d{9}(\d{3})?$/", $isbn)) {
             $erros['isbn'] = 'O ISBN informado é inválido.';
-        }
-
-        if (empty($numeroExemplar)) {
-            $erros['numeroExemplar'] = 'O campo "Número do Exemplar" é obrigatório.';
-        } elseif (!preg_match("/^\d+$/", $numeroExemplar) || (int)$numeroExemplar <= 0) {
-            $erros['numeroExemplar'] = 'O número do exemplar deve ser um número inteiro válido e maior que zero.';
-        }
-
-        if (!preg_match("/^[01]$/", $disponibilidade)) {
-            $erros['disponibilidade'] = 'O campo "Disponibilidade" deve ser 0 ou 1.';
         }
 
         if (!empty($erros)) {
