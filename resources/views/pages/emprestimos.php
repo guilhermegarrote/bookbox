@@ -22,14 +22,15 @@
                 </table>
             </div>
         </div>
-
-        <div id="overlay" style="justify-content: center;">
-            <div id="modal-container"></div>
-        </div>
-
+        
         <div class="buttonsTI">
             <button class="btnTI" onclick="abrirModal('cadastro_emprestimo')">Cadastrar</button>
             <button class="btnTI">Finalizar</button>
+        </div>
+        
+        <div id="overlay">
+            <div id="modal-container">
+            </div>
         </div>
     </div>
 </div>

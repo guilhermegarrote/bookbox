@@ -28,8 +28,9 @@
             <button class="btnTI">Gerar Etiqueta</button>
         </div>
 
-        <div id="overlay" style="justify-content: center;">
-            <div id="modal-container"></div>
+        <div id="overlay">
+            <div id="modal-container">
+            </div>
         </div>
     </div>
 </div>
