@@ -800,6 +800,7 @@ h1 {
 }
 
 .tableTI {
+    table-layout: fixed;
     width: 100%;
     border-collapse: collapse;
 }

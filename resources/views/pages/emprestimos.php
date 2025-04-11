@@ -4,14 +4,14 @@
             <table class="tableTI">
                 <thead>
                     <tr>
-                        <th><input type="checkbox" id="select-all" onclick="selecionarTodos()"></th>
-                        <th>Aluno</th>
-                        <th>Sala</th>
-                        <th>Livro</th>
-                        <th>Exemplar</th>
-                        <th>Data de Empréstimo</th>
-                        <th>Data de Devolução</th>
-                        <th>Atraso</th>
+                        <th style="width: 5%"><input type="checkbox" id="select-all" onclick="selecionarTodos()"></th>
+                        <th style="width: 18%;">Aluno</th>
+                        <th style="width: 10%;">Sala</th>
+                        <th style="width: 25%;">Livro</th>
+                        <th style="width: 10%;">Exemplar</th>
+                        <th style="width: 15%;">Empréstimo</th>
+                        <th style="width: 15%;">Devolução</th>
+                        <th style="width: 7%;">Atraso</th>
                     </tr>
                 </thead>
             </table>
@@ -22,12 +22,12 @@
                 </table>
             </div>
         </div>
-        
+
         <div class="buttonsTI">
             <button class="btnTI" onclick="abrirModal('cadastro_emprestimo')">Cadastrar</button>
             <button class="btnTI">Finalizar</button>
         </div>
-        
+
         <div id="overlay">
             <div id="modal-container">
             </div>
