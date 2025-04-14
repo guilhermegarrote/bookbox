@@ -20,7 +20,7 @@ class AlunosTurmasModel
     public function cadastrar($fkAluId, $fkTurId)
     {
 
-        $query = "INSERT INTO tbalunos_turmas  (fkAluId, fkTurId) 
+        $query = "INSERT INTO tbalunos_turmas (fkAluId, fkTurId) 
                   VALUES (:fkAluId, :fkTurId)";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':fkAluId', $fkAluId, PDO::PARAM_LOB);
