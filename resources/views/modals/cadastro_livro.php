@@ -6,46 +6,32 @@
     <div class="modal-body">
         <div class="rec-inputs">
             <div class="entryarea">
-                <input type="text" id="" class="modal-input" style="width: 450px;" readonly required>
-                <label class="labelline" for="nomeEstudante"></label>
+                <input type="text" id="codigo-ibns" class="modal-input" style="width:170px;"  required>
+                <label class="labelline" for="codigo-ibns">Código IBSN</label>
             </div>
             <div class="entryarea">
-                <input type="text" id="" class="modal-input" style="width: 140px;" readonly required>
-                <label class="labelline" for=""></label>
+                <input type="text" id="titulo" class="modal-input" style="width:420px;" required>
+                <label class="labelline" for="titulo">Título</label>
             </div>
 
             <div class="entryarea" >
-                <input type="text" id="" class="modal-input" style="width:140px;"required>
-                <label class="labelline" for=""></label>
+                <input type="text" id="editora" class="modal-input" style="width:340px;"required>
+                <label class="labelline" for="editora">Editora</label>
             </div>
             <div class="entryarea">
-                <input type="text" id="" class="modal-input" style="width:123px;" readonly required>
-                <label class="labelline" for=""></label>
+                <input type="text" id="autor" class="modal-input" style="width:250px;"  required>
+                <label class="labelline" for="autor">Autor</label>
             </div>
-            <div class="entryarea ">
-                <input type="text" id="" class="modal-input"  style="width:300px;" readonly required>
-                <label class="labelline" for=""></label>
+            <div class="entryarea" style=" width:175px;">
+                <input type="text" id="genero" class="modal-input"  style="width:150px;"  required>
+                <label class="labelline" for="genero">Gênero</label>
+
+                <div style=" position: absolute; width: 35px; height: 35px;  top: 60%; left: 84.8%; border: 1px solid #ccc; border-radius: 6px;  transform: translateY(-60%); background-color: blue;"></div>
             </div>
 
-            <div class="entryarea">
-                <input type="text" id="" class="modal-input" style="width:170px;" required>
-                <label class="labelline" for=""></label>
-            </div>
-            <div class="entryarea">
-                <input type="text" id="" class="modal-input" style="width:420px;" readonly required>
-                <label class="labelline" for=""></label>
-            </div>
-            <div class="entryarea">
-                <input type="text" id="" class="modal-input" style="width:140px;" readonly required>
-                <label class="labelline" for=""></label>
-            </div>
-            <div class="entryarea" style="right:8%;">
-                <input type="text" id="" class="modal-input" style="width:140px;" readonly required>
-                <label class="labelline" for=""></label>
-            </div>
-            <div class="entryarea" style="right:16%;">
-                <input type="text" id="" class="modal-input" style="width:170px;" readonly required>
-                <label class="labelline" for=""></label>
+            <div class="entryarea" style="right:25%;">
+                <input type="text" id="quantidade de exemplares" class="modal-input" style="width:230px;" required>
+                <label class="labelline" for="quantidade de exemplares">Quantidade de exemplares</label>
             </div>
         </div>
 

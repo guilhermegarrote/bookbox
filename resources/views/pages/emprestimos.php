@@ -15,12 +15,14 @@
                     </tr>
                 </thead>
             </table>
+
             <div style="overflow: auto; height: 65vh;">
                 <table class="tableTI">
                     <tbody id="emprestimos-body">
                     </tbody>
                 </table>
             </div>
+
         </div>
 
         <div class="buttonsTI">

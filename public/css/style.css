@@ -846,13 +846,8 @@ h1 {
 .modal {
     background: #fff;
     width: 650px;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    border-radius: 10px;
-    box-shadow: 0px 5px 25px rgba(0, 0, 0, 0.3);
-    z-index: 1000;
+    position: relative;
+    border-radius: 6px;
 }
 
 .modal-header {
@@ -861,7 +856,7 @@ h1 {
     justify-content: space-between;
     align-items: center;
     height: 45px;
-    border-radius: 10px 10px 0 0;
+    border-radius: 6px 6px 0 0;
     padding: 0 15px;
 }
 
@@ -902,6 +897,7 @@ h1 {
     outline: none;
     font-size: 1em;
     transition: 0.1s ease;
+    
 }
 
 .labelline {
@@ -918,16 +914,20 @@ h1 {
 
 .modal-input:focus,
 .modal-input:valid {
+    position: relative;
     border: 2px solid #000;
+    z-index: 2;
 }
 
-.modal-input:focus+.labelline,
-.modal-input:valid+.labelline {
+.modal-input:focus + .labelline,
+.modal-input:valid + .labelline {
+    position: absolute;
     color: #000000;
     top: 0px;
     left: 10px;
     transform: translatey(-50%) scale(0.8);
     transform-origin: left center;
+    z-index: 4;
 }
 
 .entryarea {
@@ -956,7 +956,7 @@ h1 {
     background: #fff;
     color: #000;
     border: 1px solid #000;
-    border-radius: 4px;
+    border-radius: 8px;
     cursor: pointer;
 }
 
@@ -965,6 +965,7 @@ h1 {
     color: #fff;
     border: 1px solid #fff;
     transition: 1s ease;
+
 }
 
 #overlay {
@@ -982,4 +983,6 @@ h1 {
 
 #modal-container {
     position: relative;
+
+
 }
