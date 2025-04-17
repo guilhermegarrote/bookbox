@@ -484,96 +484,6 @@ h1 {
         align-items: center;
         left: 280px;
     }
-
-    .botaoemprestimo {
-        padding: 9px 20px;
-        font-size: 14px;
-        border-radius: 5px;
-        border: none;
-        cursor: pointer;
-    }
-
-    .botaoemprestimo::after {
-        content: "";
-        position: absolute;
-        left: 62px;
-        bottom: 8px;
-        width: 0;
-        height: 2px;
-        background: white;
-        transition: width 0.3s ease, left 0.3s ease;
-        transform: translateX(-50%);
-    }
-
-    .botaoemprestimo:hover::after {
-        width: 85px;
-    }
-
-    .botaolivros {
-        padding: 9px 20px;
-        font-size: 14px;
-        border-radius: 5px;
-        border: none;
-        cursor: pointer;
-    }
-
-    .botaolivros::after {
-        content: "";
-        position: absolute;
-        left: 180px;
-        bottom: 8px;
-        width: 0;
-        height: 2px;
-        background: white;
-        transition: width 0.3s ease, left 0.3s ease;
-        transform: translateX(-50%);
-    }
-
-    .botaolivros:hover::after {
-        width: 45px;
-    }
-
-    .botaoalunos {
-        padding: 9px 20px;
-        font-size: 14px;
-        border-radius: 5px;
-        border: none;
-        cursor: pointer;
-    }
-
-    .botaoalunos::after {
-        content: "";
-        position: absolute;
-        left: 280px;
-        bottom: 8px;
-        width: 0;
-        height: 2px;
-        background: white;
-        transition: width 0.3s ease, left 0.3s ease;
-        transform: translateX(-50%);
-    }
-
-    .botaoalunos:hover::after {
-        width: 50px;
-    }
-
-    .trespontinhos {
-        position: relative;
-        left: 35px;
-        height: 36px;
-        width: 36px;
-        top: 18px;
-        border-radius: 5px;
-        transform: translateY(-50%);
-        background: #454545;
-        border: none;
-        font-size: 26px;
-        cursor: pointer;
-        color: #ffffff;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
 }
 
 /* Responsividade para telas muito pequenas (celulares) */
@@ -618,9 +528,7 @@ h1 {
 
     .btnfiltro img {
         width: 300%;
-        /* Ajusta o tamanho da imagem dentro do botão */
         height: auto;
-        /* Mantém a proporção da imagem */
     }
 
     .botoes {
@@ -876,6 +784,8 @@ h1 {
     background: red;
     border-radius: 50%;
     cursor: pointer;
+    position: absolute;
+    right: 2%;
 }
 
 .modal-close:hover {
@@ -897,7 +807,7 @@ h1 {
     outline: none;
     font-size: 1em;
     transition: 0.1s ease;
-    
+
 }
 
 .labelline {
@@ -919,8 +829,8 @@ h1 {
     z-index: 2;
 }
 
-.modal-input:focus + .labelline,
-.modal-input:valid + .labelline {
+.modal-input:focus+.labelline,
+.modal-input:valid+.labelline {
     position: absolute;
     color: #000000;
     top: 0px;
@@ -933,7 +843,23 @@ h1 {
 .entryarea {
     position: relative;
     height: 35px;
-    margin-bottom: 15px;
+    margin-bottom: 10px;
+}
+
+.modal-input.preenchido {
+    position: relative;
+    border: 2px solid #000;
+    z-index: 2;
+}
+
+.modal-input.preenchido + .labelline {
+    position: absolute;
+    color: #000000;
+    top: 0px;
+    left: 10px;
+    transform: translateY(-50%) scale(0.8);
+    transform-origin: left center;
+    z-index: 4;
 }
 
 .rec-inputs {
@@ -983,6 +909,4 @@ h1 {
 
 #modal-container {
     position: relative;
-
-
 }
