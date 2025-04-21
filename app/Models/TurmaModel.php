@@ -106,4 +106,18 @@ class TurmaModel
         $stmt->bindParam(":id", $id);
         return $stmt->execute();
     }
+
+    /**
+     * Método responsável por pesquisar curso.
+     * @param string $curso
+     * @return bool
+     */
+    public function pesquisar($curso)
+    {
+        $query = "SELECT * FROM tbturmas WHERE turCurso = :curso";
+        $stmt = $this->db->prepare($query);
+        $stmt->bindParam(":curso", $curso);
+        return $stmt->execute();
+    }
+
 }
