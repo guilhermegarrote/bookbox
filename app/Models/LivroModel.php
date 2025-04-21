@@ -107,4 +107,33 @@ class LivroModel
         $stmt->bindParam(":id", $id);
         return $stmt->execute();
     }
+
+    /**
+     * Método responsável por pesquisar livro pelo IBSN.
+     * @param string $ibsn
+     * @return bool
+     */
+    public function pesquisar($ibsn)
+    {
+        $query = "SELECT * FROM tblivros WHERE livIbsn = :ibsn";
+        $stmt = $this->db->prepare($query);
+        $stmt->bindParam(":ibsn", $ibsn);
+        return $stmt->execute();
+    }
+
+    /**
+     * Método responsável por pesquisar livro já cadastrado.
+     * @param string $id
+     * @param string $titulo
+     * @param string $autor
+     * @param string $editora
+     * @return bool
+     */
+    public function pesquisar($titulo, $autor, $editora)
+    {
+        $query = "SELECT livTitulo, livAutor, livEditora FROM tblivros WHERE livId = :id";
+        $stmt = $this->db->prepare($query);
+        $stmt->bindParam(":id", $id);
+        return $stmt->execute();
+    }
 }
