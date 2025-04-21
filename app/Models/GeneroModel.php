@@ -79,15 +79,15 @@ class GeneroModel
     }
 
     /**
-     * Método responsável por pesquisar gênero por id.
-     * @param string $id
+     * Método responsável por pesquisar gênero por nome.
+     * @param string $genero
      * @return bool
      */
-    public function pesquisar($id)
+    public function pesquisar($genero)
     {
-        $query = "SELECT * FROM tbgeneros WHERE genId = :id";
+        $query = "SELECT * FROM tbgeneros WHERE genNome = :genero";
         $stmt = $this->db->prepare($query);
-        $stmt->bindParam(":id", $id);
+        $stmt->bindParam(":genero", $genero);
         return $stmt->execute();
     }
 }
