@@ -6,7 +6,7 @@ require_once __DIR__ . '/../Models/GeneroModel.php';
 require_once __DIR__ . '/../Models/ExemplarModel.php';
 require_once __DIR__ . '/../Utils/utils.php';
 
-class EmprestimoController
+class LivroController
 {
     private $livroModel;
     private $generoModel;
@@ -58,7 +58,9 @@ class EmprestimoController
             }
 
             if (empty($generoId)) {
-                $erros['generoId'] = 'O ID do gênero é obrigatório.';
+                $erros['generoId'] = 'O gênero é obrigatório.';
+            }elseif (!$this->validarEstruturaGenero($generoId)) {
+                $erros['generoId'] = 'O gênero fornecido não é válido. Por favor, tente novamente.';
             }
 
             if (empty($editora)) {
@@ -73,9 +75,17 @@ class EmprestimoController
                 exit();
             }
 
-            $generoExiste = $this->generoModel->buscaExemplar($generoId);
-            if (!$generoExiste) {
-                $erros['generoId'] = 'O gênero informado não está cadastrado. Por favor, verifique e tente novamente.';
+            $ibsnExiste = $this->livroModel->buscaIbsn($Ibsn);
+            if (!$IbsnExiste) {
+                $erros['Ibsn'] = 'O IBSN informado não está cadastrado. Por favor, verifique e tente novamente.';
+                echo json_encode(["erro" => $erros]);
+                http_response_code(400);
+                exit();
+            }
+
+            $livroExiste = $this->livroModel->buscaLivro($titulo, $autor, $editora);
+            if (!$livroExiste) {
+                $erros['Ibsn'] = 'O livro informado já está cadastrado. Por favor, verifique.';
                 echo json_encode(["erro" => $erros]);
                 http_response_code(400);
                 exit();
@@ -122,7 +132,7 @@ class EmprestimoController
     {
         if (preg_match("/^[\p{L}\p{N}\p{P}\p{Zs}]+$/", trim($titulo))) {
             $palavras = explode(" ", trim($titulo));
-            if (count($palavras) >= 2 && strlen($titulo) >= 3 && strlen($titulo) <= 100) {
+            if (count($palavras) >= 2 && strlen($titulo) >= 3 && strlen($titulo) <= 255) {
                 return true;
             }
         }
@@ -139,7 +149,7 @@ class EmprestimoController
     {
         if (preg_match("/^[A-Za-zÀ-ÖØ-öø-ÿ' -]+$/", trim($autor))) {
             $palavras = explode(" ", trim($autor));
-            if (count($palavras) >= 2 && strlen($autor) >= 3 && strlen($autor) <= 100) {
+            if (count($palavras) >= 2 && strlen($autor) >= 3 && strlen($autor) <= 300) {
                 return true;
             }
         }
@@ -156,7 +166,7 @@ class EmprestimoController
     {
         if (preg_match("/^[A-Za-z0-9\s\.\-]+$/", trim($editora))) {
             $palavras = explode(" ", trim($editora));
-            if (count($palavras) >= 2 && strlen($editora) >= 3 && strlen($editora) <= 100) {
+            if (count($palavras) >= 2 && strlen($editora) >= 3 && strlen($editora) <= 300) {
                 return true;
             }
         }
