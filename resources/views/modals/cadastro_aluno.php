@@ -6,46 +6,31 @@
     <div class="modal-body">
         <div class="rec-inputs">
             <div class="entryarea">
-                <input type="text" id="" class="modal-input" style="width: 450px;" readonly required>
-                <label class="labelline" for="nomeEstudante"></label>
+                <input type="text" id="" class="modal-input" style="width: 460px;" required>
+                <label class="labelline" for="nomeEstudante">Nome do Estudante</label>
             </div>
             <div class="entryarea">
-                <input type="text" id="" class="modal-input" style="width: 140px;" readonly required>
-                <label class="labelline" for=""></label>
+                <input type="text" id="" class="modal-input" style="width:140px;" required>
+                <label class="labelline" for="">Período</label>
             </div>
 
             <div class="entryarea" >
-                <input type="text" id="" class="modal-input" style="width:140px;"required>
-                <label class="labelline" for=""></label>
+                <input type="text" id="" class="modal-input" style="width:300px;"required>
+                <label class="labelline" for="">Curso</label>
             </div>
             <div class="entryarea">
-                <input type="text" id="" class="modal-input" style="width:123px;" readonly required>
-                <label class="labelline" for=""></label>
+                <input type="text" id="" class="modal-input" style="width:140px;" required>
+                <label class="labelline" for="">Telefone</label>
             </div>
             <div class="entryarea ">
-                <input type="text" id="" class="modal-input"  style="width:300px;" readonly required>
-                <label class="labelline" for=""></label>
+                <input type="text" id="" class="modal-input"  style="width:140px;" required>
+                <label class="labelline" for="">Cpf</label>
             </div>
 
             <div class="entryarea">
-                <input type="text" id="" class="modal-input" style="width:170px;" required>
-                <label class="labelline" for=""></label>
+                <input type="text" id="" class="modal-input" style="width:460px;" required>
+                <label class="labelline" for="">Email</label>
             </div>
-            <div class="entryarea">
-                <input type="text" id="" class="modal-input" style="width:420px;" readonly required>
-                <label class="labelline" for=""></label>
-            </div>
-            <div class="entryarea">
-                <input type="text" id="" class="modal-input" style="width:140px;" readonly required>
-                <label class="labelline" for=""></label>
-            </div>
-            <div class="entryarea" style="right:8%;">
-                <input type="text" id="" class="modal-input" style="width:140px;" readonly required>
-                <label class="labelline" for=""></label>
-            </div>
-            <div class="entryarea" style="right:16%;">
-                <input type="text" id="" class="modal-input" style="width:170px;" readonly required>
-                <label class="labelline" for=""></label>
             </div>
         </div>
 
