@@ -1,22 +1,31 @@
-document.getElementById('cadastro-form').addEventListener('submit', async function(event) {
+document.getElementById('cadastro-form').addEventListener('submit', async function (event) {
     event.preventDefault();
 
     const formData = new FormData(this);
+    const formObject = Object.fromEntries(formData);
 
     try {
-        const response = await fetch('/bookbox/cadastro', {
+        const response = await fetch('/bookbox/api/usuarios', {
             method: 'POST',
-            body: formData
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(formObject)
         });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            const erros = Object.values(errorData.erro).join("\n");
+            console.log(erros);
+            return;
+        }
 
         const data = await response.json();
 
-        if (response.ok) {
+        if (data.redirecionar) {
             window.location.href = data.redirecionar;
-        } else {
-            let erros = Object.values(data.erro).join("\n");
-            alert(erros);
         }
+
     } catch (error) {
         console.error("Erro ao cadastrar usuário:", error);
     }
