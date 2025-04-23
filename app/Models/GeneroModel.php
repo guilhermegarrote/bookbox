@@ -83,7 +83,7 @@ class GeneroModel
      * @param string $genero
      * @return bool
      */
-    public function pesquisar($genero)
+    public function buscaGenero($genero)
     {
         $query = "SELECT * FROM tbgeneros WHERE genNome = :genero";
         $stmt = $this->db->prepare($query);
