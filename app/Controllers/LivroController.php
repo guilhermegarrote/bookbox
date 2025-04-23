@@ -59,8 +59,6 @@ class LivroController
 
             if (empty($generoId)) {
                 $erros['generoId'] = 'O gênero é obrigatório.';
-            }elseif (!$this->validarEstruturaGenero($generoId)) {
-                $erros['generoId'] = 'O gênero fornecido não é válido. Por favor, tente novamente.';
             }
 
             if (empty($editora)) {
@@ -76,7 +74,7 @@ class LivroController
             }
 
             $ibsnExiste = $this->livroModel->buscaIbsn($Ibsn);
-            if (!$IbsnExiste) {
+            if (!$ibsnExiste) {
                 $erros['Ibsn'] = 'O IBSN informado não está cadastrado. Por favor, verifique e tente novamente.';
                 echo json_encode(["erro" => $erros]);
                 http_response_code(400);
@@ -106,6 +104,78 @@ class LivroController
             }
         } else {
             require_once __DIR__ . '/../resources/views/alunos/cadastro.php';
+        }
+    }
+
+    /**
+     * Método responsável por editar livro.
+     * @return void
+     */
+    public function editar()
+    {
+        header('Content-Type: application/json');
+
+        $data = json_decode(file_get_contents('php://input'), true);
+
+        if (!$data) {
+            echo json_encode(["erro" => "Dados inválidos."]);
+            http_response_code(400);
+            exit();
+        }
+
+        $id = $data['id'] ?? null;
+        $Ibsn = $data['Ibsn'] ?? null;
+        $titulo = $data['titulo'] ?? null;
+        $autor = $data['autor'] ?? null;
+        $generoId = $data['generoId'] ?? null;
+        $editora = $data['editora'] ?? null;
+        
+
+        $erros = [];
+
+        if (empty($id)) {
+            $erros['id'] = 'O ID do livro é obrigatório.';
+        }
+
+        if ($Ibsn !== null && !$this->validarEstruturaIbsn($Ibsn)) {
+            $erros['Ibsn'] = 'O IBSN fornecido não é válido. Por favor, tente novamente.';
+        }
+
+        if ($titulo !== null && !$this->validarEstruturaTitulo($titulo)) {
+            $erros['titulo'] = 'O título fornecido não é válido. Por favor, tente novamente.';
+        }
+
+        if ($autor !== null && !$this->validarEstruturaAutor($autor)) {
+            $erros['autor'] = 'O Autor fornecido não é válido. Por favor, tente novamente.';
+        }
+
+        if ($generoId !== null && !$this->$generoId) {
+            $erros['generoId'] = 'O gênero fornecido não é válido. Por favor, tente novamente.';
+        }
+
+        if ($editora !== null && !$this->validarEstruturaEditora($editora)) {
+            $erros['editora'] = 'A editora fornecida não é válida. Por favor, tente novamente.';
+        }
+
+
+        if (!empty($erros)) {
+            echo json_encode(["erro" => $erros]);
+            http_response_code(400);
+            exit();
+        }
+
+        $sucesso = $this->livroModel->editar($id, $Ibsn, $titulo, $autor, $generoId, $editora);
+        if ($sucesso) {
+            echo json_encode([
+                "mensagem" => "Livro atualizado com sucesso!",
+                "redirecionar" => "/bookbox/genero"
+            ]);
+            exit();
+        } else {
+            $erros['geral'] = 'Erro ao atualizar os dados do livro. Tente novamente.';
+            echo json_encode(["erro" => $erros]);
+            http_response_code(500);
+            exit();
         }
     }
 
