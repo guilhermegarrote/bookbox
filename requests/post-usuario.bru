@@ -1,0 +1,24 @@
+meta {
+  name: post-usuario
+  type: http
+  seq: 2
+}
+
+post {
+  url: http://localhost/bookbox/api/usuarios
+  body: json
+  auth: inherit
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "nome": "Guilherme Garrote",
+    "email": "teste@gmail.com",
+    "senha": "Teste123@",
+    "senhaConfirmada": "Teste123@"
+  }
+}
