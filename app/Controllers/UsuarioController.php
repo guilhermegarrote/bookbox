@@ -23,55 +23,58 @@ class UsuarioController
      */
     public function cadastro()
     {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            header('Content-Type: application/json');
+        header('Content-Type: application/json');
 
-            $nome = isset($_POST['nome']) ? trim($_POST['nome']) : '';
-            $email = isset($_POST['email']) ? trim($_POST['email']) : '';
-            $senha = isset($_POST['senha']) ? $_POST['senha'] : '';
-            $senhaConfirmada = isset($_POST['senhaConfirmada']) ? $_POST['senhaConfirmada'] : '';
+        $data = json_decode(file_get_contents('php://input'), true);
 
-            $erros = [];
-
-            if (!$this->validarEstruturaNome($nome)) {
-                $erros['nome'] = 'O nome não é válido. Por favor, tente novamente.';
-            }
-
-            if (!$this->validarEstruturaSenha($senha)) {
-                $erros['senha'] = 'A senha deve ter de 8 a 16 caracteres, no mínimo 1 número, 1 caractere especial e não deve conter espaços.';
-            }
-
-            if ($senha !== $senhaConfirmada) {
-                $erros['senhaConfirmada'] = 'As senhas não coincidem. Por favor, tente novamente.';
-            }
-
-            if (!$this->validarEstruturaEmail($email)) {
-                $erros['email'] = 'O e-mail fornecido não é válido. Por favor, tente novamente.';
-            }
-
-            if (!empty($erros)) {
-                echo json_encode(["erro" => $erros]);
-                http_response_code(400);
-                exit();
-            }
-
-            $cadastroDeuCerto = $this->model->cadastrar($nome, $email, $senha);
-
-            if ($cadastroDeuCerto) {
-                echo json_encode([
-                    "mensagem" => "Cadastro realizado com sucesso!",
-                    "redirecionar" => "/bookbox/login"
-                ]);
-                exit();
-            } else {
-                echo json_encode(["erro" => "Erro ao cadastrar usuário. Tente novamente."]);
-                http_response_code(500);
-                exit();
-            }
+        if (!$data) {
+            echo json_encode(["erro" => "Dados inválidos."]);
+            http_response_code(400);
+            exit();
         }
 
-        http_response_code(405);
-        echo json_encode(["erro" => "Método não permitido."]);
+        $nome = isset($data['nome']) ? trim($data['nome']) : '';
+        $email = isset($data['email']) ? trim($data['email']) : '';
+        $senha = isset($data['senha']) ? $data['senha'] : '';
+        $senhaConfirmada = isset($data['senhaConfirmada']) ? $data['senhaConfirmada'] : '';
+
+        $erros = [];
+
+        if (!$this->validarEstruturaNome($nome)) {
+            $erros['nome'] = 'O nome não é válido. Por favor, tente novamente.';
+        }
+
+        if (!$this->validarEstruturaSenha($senha)) {
+            $erros['senha'] = 'A senha deve ter de 8 a 16 caracteres, no mínimo 1 número, 1 caractere especial e não deve conter espaços.';
+        }
+
+        if ($senha !== $senhaConfirmada) {
+            $erros['senhaConfirmada'] = 'As senhas não coincidem. Por favor, tente novamente.';
+        }
+
+        if (!$this->validarEstruturaEmail($email)) {
+            $erros['email'] = 'O e-mail fornecido não é válido. Por favor, tente novamente.';
+        }
+
+        if (!empty($erros)) {
+            echo json_encode(["erro" => $erros]);
+            http_response_code(400);
+            exit();
+        }
+
+        $cadastroDeuCerto = $this->model->cadastrar($nome, $email, $senha);
+
+        if ($cadastroDeuCerto) {
+            echo json_encode([
+                "mensagem" => "Cadastro realizado com sucesso!",
+                "redirecionar" => "/bookbox/login"
+            ]);
+            exit();
+        } else {
+            echo json_encode(["erro" => "Erro ao cadastrar usuário. Tente novamente."]);
+            http_response_code(500);
+            exit();
+        }
     }
 
     /**
@@ -80,50 +83,53 @@ class UsuarioController
      */
     public function login()
     {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            header('Content-Type: application/json');
+        header('Content-Type: application/json');
 
-            $email = isset($_POST['email']) ? trim($_POST['email']) : '';
-            $senha = isset($_POST['senha']) ? $_POST['senha'] : '';
+        $data = json_decode(file_get_contents('php://input'), true);
 
-            $erros = [];
-
-            if (empty($email)) {
-                $erros['email'] = 'O email é obrigatório.';
-            } elseif (!$this->validarEstruturaEmail($email)) {
-                $erros['email'] = 'Email inválido.';
-            }
-
-            if (empty($senha)) {
-                $erros['senha'] = 'A senha é obrigatória.';
-            }
-
-            if (!empty($erros)) {
-                echo json_encode(["erro" => $erros]);
-                http_response_code(400);
-                exit();
-            }
-
-            $usuario = $this->model->verificarLogin($email, $senha);
-
-            if ($usuario) {
-                $_SESSION['usuario_logado'] = true;
-                $_SESSION['usuario_nome'] = $usuario['usuNome'];
-
-                echo json_encode([
-                    "mensagem" => "Login realizado com sucesso!",
-                    "redirecionar" => "/bookbox/painel"
-                ]);
-                exit();
-            } else {
-                echo json_encode(["erro" => "Email ou senha incorretos."]);
-                http_response_code(401);
-                exit();
-            }
+        if (!$data) {
+            echo json_encode(["erro" => "Dados inválidos."]);
+            http_response_code(400);
+            exit();
         }
 
-        http_response_code(405);
-        echo json_encode(["erro" => "Método não permitido."]);
+        $email = isset($data['email']) ? trim($data['email']) : '';
+        $senha = isset($data['senha']) ? $data['senha'] : '';
+
+        $erros = [];
+
+        if (empty($email)) {
+            $erros['email'] = 'O email é obrigatório.';
+        } elseif (!$this->validarEstruturaEmail($email)) {
+            $erros['email'] = 'Email inválido.';
+        }
+
+        if (empty($senha)) {
+            $erros['senha'] = 'A senha é obrigatória.';
+        }
+
+        if (!empty($erros)) {
+            echo json_encode(["erro" => $erros]);
+            http_response_code(400);
+            exit();
+        }
+
+        $usuario = $this->model->verificarLogin($email, $senha);
+
+        if ($usuario) {
+            $_SESSION['usuario_logado'] = true;
+            $_SESSION['usuario_nome'] = $usuario['usuNome'];
+
+            echo json_encode([
+                "mensagem" => "Login realizado com sucesso!",
+                "redirecionar" => "/bookbox/painel"
+            ]);
+            exit();
+        } else {
+            echo json_encode(["erro" => "Email ou senha incorretos."]);
+            http_response_code(401);
+            exit();
+        }
     }
 
     /**
