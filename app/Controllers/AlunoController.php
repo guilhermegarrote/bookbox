@@ -63,14 +63,10 @@ class AlunoController
 
             if (empty($periodo)) {
                 $erros['periodo'] = 'O período é obrigatório.';
-            }elseif (!$this->validarEstruturaPeriodo($periodo)) {
-                $erros['periodo'] = 'O periodo fornecido não é válido. Por favor, tente novamente.';
             }
 
             if (empty($curso)) {
                 $erros['curso'] = 'O curso é obrigatório.';
-            }elseif (!$this->validarEstruturaCurso($curso)) {
-                $erros['curso'] = 'O curso fornecido não é válido. Por favor, tente novamente.';
             }
 
             if (!empty($erros)) {
@@ -79,7 +75,7 @@ class AlunoController
                 exit();
             }
 
-            $cursoExiste = $this->turmaModel->buscaCurso($curso);
+            $cursoExiste = $this->TurmaModel->buscaCurso($curso);
             if (!$cursoExiste) {
                 $erros['curso'] = 'O curso informado não está cadastrado. Por favor, verifique e tente novamente.';
                 echo json_encode(["erro" => $erros]);
@@ -87,7 +83,7 @@ class AlunoController
                 exit();
             }
 
-            $cadastroDeuCerto = $this->model->cadastrar($nome, $cpf, $email, $telefone, $periodo, $curso);
+            $cadastroDeuCerto = $this->AlunoModel->cadastrar($nome, $cpf, $email, $telefone, $periodo, $curso);
             if ($cadastroDeuCerto) {
                 echo json_encode([
                     "mensagem" => "Aluno cadastrado com sucesso!",
@@ -100,7 +96,13 @@ class AlunoController
                 http_response_code(500);
                 exit();
             }
+        }
+    } 
 
+    /**
+     * Método responsável por editar aluno.
+     * @return void
+     */
     public function editar()
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -134,11 +136,11 @@ class AlunoController
                 $erros['telefone'] = 'O telefone fornecido não é válido. Por favor, tente novamente.';
             }
 
-            if ($periodo !== null && !$this->validarEstruturaPeriodo($periodo)) {
-                $erros['periodo'] = 'O periodo fornecido não é válido. Por favor, tente novamente.';
+            if ($periodo !== null && !$this->$periodo) {
+                $erros['período'] = 'O período fornecido não é válido. Por favor, tente novamente.';
             }
 
-            if ($curso !== null && !$this->validarEstruturaCurso($curso)) {
+            if ($curso !== null && !$this->$curso) {
                 $erros['curso'] = 'O curso fornecido não é válido. Por favor, tente novamente.';
             }
 
@@ -148,7 +150,7 @@ class AlunoController
                 exit();
             }
 
-            $sucesso = $this->alunoModel>editar($nome, $cpf, $email, $telefone, $periodo, $curso);
+            $sucesso = $this->AlunoModel->editar($nome, $cpf, $email, $telefone, $periodo, $curso);
             if ($sucesso) {
                 echo json_encode([
                     "mensagem" => "Dados do aluno atualizados com sucesso!",
@@ -162,12 +164,8 @@ class AlunoController
                 exit();
             }
         }
-    }
-
-        } else {
-            require_once __DIR__ . '/../resources/views/alunos/cadastro.php';
-        }
-    }
+    }    
+    
 
     /**
      * Método responsável por verificar se o nome segue os requisitos mínimos.
@@ -226,4 +224,5 @@ class AlunoController
         }
         return true;
     }
+
 }
