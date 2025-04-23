@@ -2,64 +2,75 @@
 require_once __DIR__ . '/../app/Controllers/UsuarioController.php';
 
 $usuarioController = new UsuarioController();
+$caminhoBase = '/bookbox';
 
-$basePath = '/bookbox';
+$uriRequisicao = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+$caminho = str_replace($caminhoBase, '', $uriRequisicao);
+$metodo = $_SERVER['REQUEST_METHOD'];
 
-$requestUri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-$url = str_replace($basePath, '', $requestUri);
+rotear($caminho, $metodo, $usuarioController);
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    switch ($url) {
-        case '/login':
-            $usuarioController->login();
-            exit();
-        case '/cadastro':
-            $usuarioController->cadastro();
-            exit();
-        case '/logout':
-            session_destroy();
-            exit();
+function rotear($caminho, $metodo, $usuarioController)
+{
+    $rotas = [
+        'POST' => [
+            '/api/usuarios' => fn() => $usuarioController->cadastro(),
+            '/api/login' => fn() => $usuarioController->login(),
+            '/logout' => fn() => session_destroy(),
+        ],
+        'GET' => [
+            '/login' => function () use ($usuarioController) {
+                if (!$usuarioController->existeUsuarios()) {
+                    redirecionar('/bookbox/cadastro');
+                }
+                if (!empty($_SESSION['usuario_logado'])) {
+                    redirecionar('/bookbox/painel');
+                }
+                carregarPagina('pages/login');
+            },
+            '/' => function () {
+                exigeAutenticacao();
+                carregarPagina('pages/painel');
+            },
+            '/painel' => function () {
+                exigeAutenticacao();
+                carregarPagina('pages/painel');
+            },
+            '/cadastro' => function () use ($usuarioController) {
+                if ($usuarioController->existeUsuarios()) {
+                    redirecionar('/bookbox/login');
+                }
+                carregarPagina('pages/cadastro');
+            },
+            '/modals/cadastro_emprestimo' => fn() => carregarPagina('modals/cadastro_emprestimo'),
+            '/modals/cadastro_aluno' => fn() => carregarPagina('modals/cadastro_aluno'),
+            '/modals/cadastro_livro' => fn() => carregarPagina('modals/cadastro_livro'),
+        ]
+    ];
+
+    if (isset($rotas[$metodo][$caminho])) {
+        $rotas[$metodo][$caminho]();
+    } else {
+        http_response_code(404);
+        echo json_encode(["erro" => "Página não encontrada"]);
     }
 }
 
-switch ($url) {
-    case '/login':
-        if (!$usuarioController->existeUsuarios()) {
-            header('Location: /bookbox/cadastro');
-            exit();
-        }
-        if (isset($_SESSION['usuario_logado']) && $_SESSION['usuario_logado'] === true) {
-            header('Location: /bookbox/painel');
-            exit();
-        }
-        require_once __DIR__ . '/../resources/views/pages/login.php';
-        break;
-    case '/':
-    case '/painel':
-        if (!isset($_SESSION['usuario_logado']) || $_SESSION['usuario_logado'] !== true) {
-            header('Location: /bookbox/login');
-            exit();
-        }
-        require_once __DIR__ . '/../resources/views/pages/painel.php';
-        break;
-    case '/cadastro':
-        if ($usuarioController->existeUsuarios()) {
-            header('Location: /bookbox/login');
-            exit();
-        }
-        require_once __DIR__ . '/../resources/views/pages/cadastro.php';
-        break;
-    case '/modals/cadastro_emprestimo':
-        require_once __DIR__ . '/../resources/views/modals/cadastro_emprestimo.php';
-        break;
-    case '/modals/cadastro_aluno':
-        require_once __DIR__ . '/../resources/views/modals/cadastro_aluno.php';
-        break;
-    case '/modals/cadastro_livro':
-        require_once __DIR__ . '/../resources/views/modals/cadastro_livro.php';
-        break;
-    default:
-        http_response_code(404);
-        echo json_encode(["erro" => "Página não encontrada"]);
-        break;
+function redirecionar(string $destino)
+{
+    header("Location: $destino");
+    exit();
+}
+
+function carregarPagina(string $caminhoView)
+{
+    require_once __DIR__ . "/../resources/views/$caminhoView.php";
+    exit();
+}
+
+function exigeAutenticacao()
+{
+    if (empty($_SESSION['usuario_logado']) || $_SESSION['usuario_logado'] !== true) {
+        redirecionar('/bookbox/login');
+    }
 }
