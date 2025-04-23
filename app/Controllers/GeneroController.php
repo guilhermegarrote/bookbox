@@ -52,7 +52,7 @@ class GeneroController
                 exit();
             }
 
-            $cadastroDeuCerto = $this->Generomodel->cadastrar($nome, $cor);
+            $cadastroDeuCerto = $this->GeneroModel->cadastrar($nome, $cor);
 
             if ($cadastroDeuCerto) {
                 echo json_encode([
@@ -65,6 +65,62 @@ class GeneroController
                 http_response_code(500);
                 exit();
             }
+        }
+    }
+
+    /**
+     * Método responsável por editar gênero.
+     * @return void
+     */
+    public function editar()
+    {
+        header('Content-Type: application/json');
+
+        $data = json_decode(file_get_contents('php://input'), true);
+
+        if (!$data) {
+            echo json_encode(["erro" => "Dados inválidos."]);
+            http_response_code(400);
+            exit();
+        }
+
+        $id = $data['id'] ?? null;
+        $nome = $data['nome'] ?? null;
+        $cor = $data['cor'] ?? null;
+
+        $erros = [];
+
+        if (empty($id)) {
+            $erros['id'] = 'O ID do gênero é obrigatório.';
+        }
+
+        if ($nome !== null && !$this->validarEstruturaNome($nome)) {
+            $erros['nome'] = 'O gênero fornecido não é válido. Por favor, tente novamente.';
+        }
+
+        if ($cor !== null && !$this->validarEstruturaCor($cor)) {
+            $erros['cor'] = 'A cor fornecida não é válida. Por favor, tente novamente.';
+        }
+
+
+        if (!empty($erros)) {
+            echo json_encode(["erro" => $erros]);
+            http_response_code(400);
+            exit();
+        }
+
+        $sucesso = $this->GeneroModel->editar($id, $nome, $cor);
+        if ($sucesso) {
+            echo json_encode([
+                "mensagem" => "Gênero atualizado com sucesso!",
+                "redirecionar" => "/bookbox/genero"
+            ]);
+            exit();
+        } else {
+            $erros['geral'] = 'Erro ao atualizar o gênero. Tente novamente.';
+            echo json_encode(["erro" => $erros]);
+            http_response_code(500);
+            exit();
         }
     }
 
