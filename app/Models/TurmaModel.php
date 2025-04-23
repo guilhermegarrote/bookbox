@@ -112,7 +112,7 @@ class TurmaModel
      * @param string $curso
      * @return bool
      */
-    public function pesquisar($curso)
+    public function buscaCurso($curso)
     {
         $query = "SELECT * FROM tbturmas WHERE turCurso = :curso";
         $stmt = $this->db->prepare($query);
