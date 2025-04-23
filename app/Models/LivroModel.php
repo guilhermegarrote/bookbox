@@ -113,7 +113,7 @@ class LivroModel
      * @param string $ibsn
      * @return bool
      */
-    public function pesquisar($ibsn)
+    public function buscaIbsn($ibsn)
     {
         $query = "SELECT * FROM tblivros WHERE livIbsn = :ibsn";
         $stmt = $this->db->prepare($query);
@@ -129,7 +129,7 @@ class LivroModel
      * @param string $editora
      * @return bool
      */
-    public function pesquisar($titulo, $autor, $editora)
+    public function buscaLivro($titulo, $autor, $editora)
     {
         $query = "SELECT livTitulo, livAutor, livEditora FROM tblivros WHERE livId = :id";
         $stmt = $this->db->prepare($query);
