@@ -8,9 +8,9 @@ require_once __DIR__ . '/../Utils/utils.php';
 
 class LivroController
 {
-    private $livroModel;
-    private $generoModel;
-    private $exemplarModel;
+    private $LivroModel;
+    private $GeneroModel;
+    private $ExemplarModel;
 
     /**
      * Construtor da classe, responsável por inicializar os modelos e estabelecer a conexão com o banco de dados.
@@ -19,9 +19,9 @@ class LivroController
     public function __construct()
     {
         $db = Database::conectar();
-        $this->livroModel = new LivroModel($db);
-        $this->generoModel = new GeneroModel($db);
-        $this->exemplarModel = new ExemplarModel($db);
+        $this->LivroModel = new LivroModel($db);
+        $this->GeneroModel = new GeneroModel($db);
+        $this->ExemplarModel = new ExemplarModel($db);
     }
 
     /**
@@ -73,7 +73,7 @@ class LivroController
                 exit();
             }
 
-            $ibsnExiste = $this->livroModel->buscaIbsn($Ibsn);
+            $ibsnExiste = $this->LivroModel->buscaIbsn($Ibsn);
             if (!$ibsnExiste) {
                 $erros['Ibsn'] = 'O IBSN informado não está cadastrado. Por favor, verifique e tente novamente.';
                 echo json_encode(["erro" => $erros]);
@@ -81,7 +81,7 @@ class LivroController
                 exit();
             }
 
-            $livroExiste = $this->livroModel->buscaLivro($titulo, $autor, $editora);
+            $livroExiste = $this->LivroModel->buscaLivro($titulo, $autor, $editora);
             if (!$livroExiste) {
                 $erros['Ibsn'] = 'O livro informado já está cadastrado. Por favor, verifique.';
                 echo json_encode(["erro" => $erros]);
@@ -89,7 +89,7 @@ class LivroController
                 exit();
             }
 
-            $cadastroDeuCerto = $this->livroModel->cadastrar($Ibsn, $titulo, $autor, $generoId, $editora);
+            $cadastroDeuCerto = $this->LivroModel->cadastrar($Ibsn, $titulo, $autor, $generoId, $editora);
             if ($cadastroDeuCerto) {
                 echo json_encode([
                     "mensagem" => "Livro cadastrado com sucesso!",
@@ -164,7 +164,7 @@ class LivroController
             exit();
         }
 
-        $sucesso = $this->livroModel->editar($id, $Ibsn, $titulo, $autor, $generoId, $editora);
+        $sucesso = $this->LivroModel->editar($id, $Ibsn, $titulo, $autor, $generoId, $editora);
         if ($sucesso) {
             echo json_encode([
                 "mensagem" => "Livro atualizado com sucesso!",
