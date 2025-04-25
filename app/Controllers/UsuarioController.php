@@ -77,6 +77,10 @@ class UsuarioController
         }
     }
 
+    public function redefinirSenha(){
+        
+    }
+
     /**
      * Método responsável por verificar o login.
      * @return void
