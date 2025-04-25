@@ -1,23 +1,20 @@
 <?php
 require_once __DIR__ . '/../app/Controllers/UsuarioController.php';
+require_once __DIR__ . '/../app/Controllers/TurmaController.php';
 
 $usuarioController = new UsuarioController();
+$turmaController = new TurmaController();
 $caminhoBase = '/bookbox';
 
 $uriRequisicao = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 $caminho = str_replace($caminhoBase, '', $uriRequisicao);
 $metodo = $_SERVER['REQUEST_METHOD'];
 
-rotear($caminho, $metodo, $usuarioController);
+rotear($caminho, $metodo, $usuarioController, $turmaController);
 
-function rotear($caminho, $metodo, $usuarioController)
+function rotear($caminho, $metodo, $usuarioController, $turmaController)
 {
     $rotas = [
-        'POST' => [
-            '/api/usuarios' => fn() => $usuarioController->cadastro(),
-            '/api/login' => fn() => $usuarioController->login(),
-            '/logout' => fn() => session_destroy(),
-        ],
         'GET' => [
             '/login' => function () use ($usuarioController) {
                 if (!$usuarioController->existeUsuarios()) {
@@ -45,7 +42,17 @@ function rotear($caminho, $metodo, $usuarioController)
             '/modals/cadastro_emprestimo' => fn() => carregarPagina('modals/cadastro_emprestimo'),
             '/modals/cadastro_aluno' => fn() => carregarPagina('modals/cadastro_aluno'),
             '/modals/cadastro_livro' => fn() => carregarPagina('modals/cadastro_livro'),
-        ]
+        ],
+        'POST' => [
+            '/api/login' => fn() => $usuarioController->login(),
+            '/api/usuarios/cadastrar' => fn() => $usuarioController->cadastro(),
+            '/api/turmas/cadastrar' => fn() => $turmaController->cadastrar(),
+            '/logout' => fn() => session_destroy(),
+        ],
+        'PUT' => [
+            '/api/turmas/editar' => fn() => $turmaController->editar()
+        ],
+        'DELETE' => []
     ];
 
     if (isset($rotas[$metodo][$caminho])) {
