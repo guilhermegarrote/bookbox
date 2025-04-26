@@ -7,6 +7,7 @@
     <title>Bookbox</title>
 
     <link rel="stylesheet" href="public/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 </head>
 
 <body>
@@ -30,7 +31,10 @@
     ?>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
     <script src="public/js/logout.js"></script>
-    <script src="public/js/painel.js"></script>
+    <script src="public/js/menu-top.js"></script>
+    <script src="public/js/tabela.js"></script>
     <script src="public/js/modal.js"></script>
+    <script src="public/js/mascaras.js"></script>
 </body>

@@ -21,8 +21,8 @@
         </div>
 
         <div class="buttonsTI">
-            <button class="btnTI" onclick="abrirModal('cadastro_aluno')">Cadastrar</button>
-            <button class="btnTI">Editar</button>
+            <button class="btnTI" id="botao-abrir-modal" data-modal="cadastro_aluno">Cadastrar</button>
+            <button class="btnTI" id="botao-abrir-modal" data-modal="menu_aluno">Editar</button>
             <button class="btnTI">Excluir</button>
         </div>
 

@@ -6,7 +6,7 @@
                     <tr>
                         <th><input type="checkbox" id="select-all" onclick="selecionarTodos()"></th>
                         <th>Disponibilidade</th>
-                        <th>IBSN</th>
+                        <th>ISBN</th>
                         <th>Titulo</th>
                         <th>Autor</th>
                         <th>Editora</th>
@@ -23,8 +23,8 @@
         </div>
 
         <div class="buttonsTI">
-            <button class="btnTI" onclick="abrirModal('cadastro_livro')">Cadastrar</button>
-            <button class="btnTI">Editar</button>
+            <button class="btnTI" id="botao-abrir-modal" data-modal="cadastro_livro">Cadastrar</button>
+            <button class="btnTI" id="botao-abrir-modal" data-modal="menu_livro">Editar</button>
             <button class="btnTI">Gerar Etiqueta</button>
         </div>
 

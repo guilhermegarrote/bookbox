@@ -1,3 +1,22 @@
+document.addEventListener('click', function (e) {
+    if (e.target && (e.target.id === 'botao-fechar-modal' || e.target.closest('#botao-fechar-modal'))) {
+        fecharModal();
+    } else if (e.target && e.target.id === 'botao-abrir-modal') {
+        abrirModal(e.target.dataset.modal);
+    }
+});
+
+window.onclick = function (event) {
+    if (event.target === document.getElementById("overlay")) {
+        fecharModal();
+    }
+};
+
+function fecharModal() {
+    document.getElementById("overlay").style.display = "none";
+    document.getElementById("modal-container").innerHTML = '';
+}
+
 function abrirModal(modalType, id = null) {
     let url = `modals/${modalType}`;
     if (id) {
@@ -11,39 +30,8 @@ function abrirModal(modalType, id = null) {
             document.getElementById("overlay").style.display = "flex";
 
             if (modalType === 'cadastro_emprestimo') {
-                preencherDataDevolucao('dataDevolucao');
+                preencherDataDevolucao('data-devolucao');
             }
         })
         .catch(error => console.error('Erro ao carregar o modal:', error));
-}
-
-function fecharModal() {
-    document.getElementById("overlay").style.display = "none";
-    document.getElementById("modal-container").innerHTML = '';
-}
-
-window.onclick = function (event) {
-    if (event.target === document.getElementById("overlay")) {
-        fecharModal();
-    }
-};
-
-function realizarEmprestimo(event) {
-    event.preventDefault();
-
-    const formData = new FormData();
-    formData.append("cpf", document.getElementById("cpf").value);
-    formData.append("codigoIBSN", document.getElementById("codigoIBSN").value);
-    formData.append("exemplar", document.getElementById("exemplar").value);
-
-    fetch('/bookbox/api/cadastrar_emprestimo', {
-        method: 'POST',
-        body: formData
-    })
-        .then(response => response.json())
-        .then(data => {
-            alert(data.mensagem);
-            fecharModal();
-        })
-        .catch(error => console.error('Erro ao cadastrar:', error));
 }
