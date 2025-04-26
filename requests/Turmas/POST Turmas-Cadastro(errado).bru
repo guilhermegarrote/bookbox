@@ -1,0 +1,27 @@
+meta {
+  name: POST Turmas-Cadastro(errado)
+  type: http
+  seq: 2
+}
+
+post {
+  url: http://localhost/bookbox/api/turmas/cadastrar
+  body: json
+  auth: inherit
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "curso": "SDJSDJKA",
+    "horario": "Manha",
+    "regime": "Diário",
+    "dataInicio": "2025-02-01",
+    "dataFim": "2023-01-02"
+  }
+  
+  
+}

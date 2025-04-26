@@ -40,60 +40,46 @@ class TurmaModel
         return $stmt->execute();
     }
 
-    /**
-     * Método responsável por editar turma.
-     * @param string $id
-     * @param string|null $curso
-     * @param string|null $horario
-     * @param string|null $regime
-     * @param string|null $dataInicio
-     * @param string|null $dataFim
-     * @return bool
-     */
     public function editar($id, $curso, $horario, $regime, $dataInicio, $dataFim)
     {
-        $query = "UPDATE tbturmas SET ";
-
+        $campos = [];
+        $parametros = [':id' => $id];
+    
         if ($curso !== null) {
-            $query .= "turCurso = :curso, ";
+            $campos[] = "turCurso = :curso";
+            $parametros[':curso'] = $curso;
         }
         if ($horario !== null) {
-            $query .= "turHorario = :horario, ";
+            $campos[] = "turHorario = :horario";
+            $parametros[':horario'] = $horario;
         }
         if ($regime !== null) {
-            $query .= "turRegime = :regime, ";
+            $campos[] = "turRegime = :regime";
+            $parametros[':regime'] = $regime;
         }
         if ($dataInicio !== null) {
-            $query .= "turDataInicio = :dataInicio, ";
+            $campos[] = "turDataInicio = :dataInicio";
+            $parametros[':dataInicio'] = $dataInicio;
         }
         if ($dataFim !== null) {
-            $query .= "turDataFim = :dataFim, ";
+            $campos[] = "turDataFim = :dataFim";
+            $parametros[':dataFim'] = $dataFim;
         }
-        $query .= " WHERE turId = :id";
-
+    
+        if (empty($campos)) {
+            return false;
+        }
+    
+        $query = "UPDATE tbturmas SET " . implode(", ", $campos) . " WHERE turId = :id";
+    
         $stmt = $this->db->prepare($query);
-
-        if ($curso !== null) {
-            $stmt->bindParam(":curso", $curso);
+    
+        foreach ($parametros as $param => $valor) {
+            $stmt->bindValue($param, $valor);
         }
-        if ($horario !== null) {
-            $stmt->bindParam(":horario", $horario);
-        }
-        if ($regime !== null) {
-            $stmt->bindParam(":regime", $regime);
-        }
-        if ($dataInicio !== null) {
-            $stmt->bindParam(":dataInicio", $dataInicio);
-        }
-        if ($dataFim !== null) {
-            $stmt->bindParam(":dataFim", $dataFim);
-        }
-
-        $stmt->bindParam(":id", $id, PDO::PARAM_INT);
-
+    
         return $stmt->execute();
     }
-
     /**
      * Método responsável por excluir turma.
      * @param string $id
