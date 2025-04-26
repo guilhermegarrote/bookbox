@@ -39,9 +39,9 @@ function rotear($caminho, $metodo, $usuarioController, $turmaController)
                 }
                 carregarPagina('pages/cadastro');
             },
-            '/modals/cadastro_emprestimo' => fn() => carregarPagina('modals/cadastro_emprestimo'),
-            '/modals/cadastro_aluno' => fn() => carregarPagina('modals/cadastro_aluno'),
-            '/modals/cadastro_livro' => fn() => carregarPagina('modals/cadastro_livro'),
+            '/modals/cadastro_emprestimo' => fn() => carregarPagina('modals/emprestimos/cadastro_emprestimo'),
+            '/modals/cadastro_aluno' => fn() => carregarPagina('modals/alunos/cadastro_aluno'),
+            '/modals/cadastro_livro' => fn() => carregarPagina('modals/livros/cadastro_livro'),
         ],
         'POST' => [
             '/api/login' => fn() => $usuarioController->login(),
