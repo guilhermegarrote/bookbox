@@ -42,42 +42,45 @@ class TurmaModel
 
     public function editar($id, $curso, $horario, $regime, $dataInicio, $dataFim)
     {
-        $campos = [];
-        $parametros = [':id' => $id];
-    
+        $query = "UPDATE tbturmas SET ";
+
         if ($curso !== null) {
-            $campos[] = "turCurso = :curso";
-            $parametros[':curso'] = $curso;
+            $query .= "turCurso = :curso, ";
         }
         if ($horario !== null) {
-            $campos[] = "turHorario = :horario";
-            $parametros[':horario'] = $horario;
+            $query .= "turHorario = :horario, ";
         }
         if ($regime !== null) {
-            $campos[] = "turRegime = :regime";
-            $parametros[':regime'] = $regime;
+            $query .= "turRegime = :regime, ";
         }
         if ($dataInicio !== null) {
-            $campos[] = "turDataInicio = :dataInicio";
-            $parametros[':dataInicio'] = $dataInicio;
+            $query .= "turDataInicio = :dataInicio, ";
         }
         if ($dataFim !== null) {
-            $campos[] = "turDataFim = :dataFim";
-            $parametros[':dataFim'] = $dataFim;
+            $query .= "turDataFim = :dataFim, ";
         }
-    
-        if (empty($campos)) {
-            return false;
-        }
-    
-        $query = "UPDATE tbturmas SET " . implode(", ", $campos) . " WHERE turId = :id";
-    
+        $query .= " WHERE turId = :id";
+
         $stmt = $this->db->prepare($query);
-    
-        foreach ($parametros as $param => $valor) {
-            $stmt->bindValue($param, $valor);
+
+        if ($curso !== null) {
+            $stmt->bindParam(":curso", $curso);
         }
-    
+        if ($horario !== null) {
+            $stmt->bindParam(":horario", $horario);
+        }
+        if ($regime !== null) {
+            $stmt->bindParam(":regime", $regime);
+        }
+        if ($dataInicio !== null) {
+            $stmt->bindParam(":dataInicio", $dataInicio);
+        }
+        if ($dataFim !== null) {
+            $stmt->bindParam(":dataFim", $dataFim);
+        }
+
+        $stmt->bindParam(":id", $id, PDO::PARAM_INT);
+
         return $stmt->execute();
     }
     /**
