@@ -8,13 +8,13 @@
 
             <div class="retangulo">
                 <input type="text" class="barradepesquisa" placeholder="Pesquisar">
-                <button class="btnfiltro"><img class="filtrar" src="\bookbox\public\images\filtro.png" alt="filtrar"></button>
+                <button class="btnfiltro"><img class="filtrar" src="/bookbox/public/images/filtro.png" alt="filtrar"></button>
 
                 <div class="botoes">
                     <button class="menu-top-btn" data-pagina="emprestimos">Empréstimos</button>
                     <button class="menu-top-btn" data-pagina="livros">Livros</button>
                     <button class="menu-top-btn" data-pagina="alunos">Alunos</button>
-                    <button class="trespontinhos" onclick="logout()">&#x22EE;</button>
+                    <button class="trespontinhos" id="abrir-configuracoes">&#x22EE;</button>
                 </div>
             </div>
         </div>
