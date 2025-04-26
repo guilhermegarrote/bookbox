@@ -64,6 +64,16 @@ class TurmaController
             $erros['dataFim'] = 'A data de fim fornecida não é válida. Use o formato AAAA-MM-DD.';
         }
 
+        if (empty($erros)) {
+            if (!$this->validarOrdemDatas($dataInicio, $dataFim)) {
+                $erros['dataFim'] = 'A data de fim não pode ser anterior à data de início.';
+            } elseif (!$this->validarIntervaloRegime($dataInicio, $dataFim, $regime)) {
+                $erros['dataFim'] = $regime === 'Anual'
+                    ? 'Para regime Anual, a data de fim deve ser pelo menos 1 ano após a data de início.'
+                    : 'Para regime Semestral, a data de fim deve ser pelo menos 6 meses após a data de início.';
+            }
+        }
+
         if (!empty($erros)) {
             echo json_encode(["erro" => $erros]);
             http_response_code(400);
@@ -130,6 +140,16 @@ class TurmaController
             $erros['dataFim'] = 'A data de fim fornecida não é válida. Use o formato AAAA-MM-DD.';
         }
 
+        if (empty($erros) && $dataInicio && $dataFim && $regime) {
+            if (!$this->validarOrdemDatas($dataInicio, $dataFim)) {
+                $erros['dataFim'] = 'A data de fim não pode ser anterior à data de início.';
+            } elseif (!$this->validarIntervaloRegime($dataInicio, $dataFim, $regime)) {
+                $erros['dataFim'] = $regime === 'Anual'
+                    ? 'Para regime Anual, a data de fim deve ser pelo menos 1 ano após a data de início.'
+                    : 'Para regime Semestral, a data de fim deve ser pelo menos 6 meses após a data de início.';
+            }
+        }
+
         if (!empty($erros)) {
             echo json_encode(["erro" => $erros]);
             http_response_code(400);
@@ -149,6 +169,30 @@ class TurmaController
             http_response_code(500);
             exit();
         }
+    }
+
+    private static function validarOrdemDatas($dataInicio, $dataFim)
+    {
+        $inicio = new DateTime($dataInicio);
+        $fim = new DateTime($dataFim);
+        return $fim >= $inicio;
+    }
+
+    private static function validarIntervaloRegime($dataInicio, $dataFim, $regime)
+    {
+        $inicio = new DateTime($dataInicio);
+        $fim = new DateTime($dataFim);
+        $intervalo = $inicio->diff($fim);
+
+        if ($regime === 'Anual') {
+            return $intervalo->y >= 1;
+        }
+
+        if ($regime === 'Semestral') {
+            return $intervalo->y > 0 || $intervalo->m >= 6;
+        }
+
+        return false;
     }
 
     private static function validarEstruturaCurso($curso)
