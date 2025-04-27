@@ -96,7 +96,7 @@ class UsuarioModel
      * Método responsável por verificar login.
      * @param string $email
      * @param string $senha
-     * @return array/false $usuario
+     * @return array|false $usuario
      */
     public function verificarLogin($email, $senha)
     {
