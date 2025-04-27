@@ -43,7 +43,7 @@ class TurmaModel
     public function editar($id, $curso, $horario, $regime, $dataInicio, $dataFim)
     {
         $query = "UPDATE tbturmas SET ";
-
+    
         if ($curso !== null) {
             $query .= "turCurso = :curso, ";
         }
@@ -59,10 +59,12 @@ class TurmaModel
         if ($dataFim !== null) {
             $query .= "turDataFim = :dataFim, ";
         }
+        $query = rtrim($query, ', ');
+    
         $query .= " WHERE turId = :id";
-
+    
         $stmt = $this->db->prepare($query);
-
+    
         if ($curso !== null) {
             $stmt->bindParam(":curso", $curso);
         }
@@ -78,11 +80,12 @@ class TurmaModel
         if ($dataFim !== null) {
             $stmt->bindParam(":dataFim", $dataFim);
         }
-
+    
         $stmt->bindParam(":id", $id, PDO::PARAM_INT);
-
+    
         return $stmt->execute();
     }
+    
     /**
      * Método responsável por excluir turma.
      * @param string $id
