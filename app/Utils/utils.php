@@ -50,3 +50,17 @@ function gerarUuid() {
 
     return $uuid;
 }
+
+/**
+ * Transforma um uuid binário para seu formato original em texto
+ * @param string $uuidBinario
+ * @return string $uuid
+ */
+function binarioParaUuid($uuidBin) {
+    $hex = bin2hex($uuidBin);
+    return substr($hex, 0, 8) . '-' .
+           substr($hex, 8, 4) . '-' .
+           substr($hex, 12, 4) . '-' .
+           substr($hex, 16, 4) . '-' .
+           substr($hex, 20);
+}
