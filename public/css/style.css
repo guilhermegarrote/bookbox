@@ -46,8 +46,9 @@ h1 {
 /* Caixa do formulário */
 .cadastro-box {
     width: 400px;
-    padding: 40px;
-    border-radius: 10px;
+    height: 600px;
+    padding: 45px 65px 45px 65px ;
+    border-radius: 20px;
     background-color: white;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
 }
@@ -71,9 +72,9 @@ h1 {
 /* Labels */
 .cadastro-label {
     font-family: 'Urbanist';
-    font-weight: 700;
+    font-weight: bold;
     font-size: 14px;
-    color: #333;
+    color: var(--cinza-escuro);
     margin-bottom: 5px;
     text-align: left;
     display: block;
@@ -81,19 +82,19 @@ h1 {
 
 /* Campos de entrada */
 .cadastro-input {
-    font-family: 'Urbanist';
     width: 100%;
-    padding: 10px;
-    margin-bottom: 15px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    font-size: 16px;
+    padding: 15px;
+    margin-bottom: 20px;
+    background-color: var(--cinza);
+    border: 1px solid var(--cinza-claro);
+    border-radius: 10px;
+    font-size: 20px;
     outline: none;
     transition: border-color 0.3s;
 }
 
 .cadastro-input:focus {
-    border-color: #555;
+    border-color: var(--cinza-escuro);
 }
 
 /* Botão */
@@ -154,14 +155,16 @@ h1 {
 }
 
 .login-form h2 {
+    font-family: 'Urbanist';
     font-size: 32px;
     font-weight: bold;
     margin-bottom: 30px;
-    color: #000;
+     color: #333;
     text-align: center;
 }
 
 .login-label {
+    font-family: 'Urbanist';
     font-weight: bold;
     font-size: 14px;
     color: var(--cinza-escuro);
@@ -259,7 +262,7 @@ h1 {
     justify-content: space-between;
     width: 100%;
     background-color: #ffffff;
-    padding: 15px 25px;
+    padding: 15px 15px;
     height: 70px;
     border-radius: 0px;
 }
@@ -267,7 +270,7 @@ h1 {
 .logo {
     max-width: 240px;
     height: auto;
-    margin-left: 40px;
+    margin: 0px 10px 0px 10px;
 }
 
 .retangulo {
@@ -391,25 +394,15 @@ h1 {
 @media (max-width: 1230px) {
     .menusuperior {
         flex-direction: column;
-        padding: 3px 15px;
+        padding: 15px 15px;
         height: auto;
     }
 
     .logo {
         max-width: 180px;
-        margin-left: 0;
+        margin-left:10px;
         margin-bottom: 10px;
     }
-
-    .retangulo {
-        flex-direction: row;
-        width: 1000px;
-        height: 50px;
-        margin-right: 5px;
-        margin-left: 5px;
-        margin-bottom: 20px;
-    }
-
 }
 
 @media (max-width: 1025px) {
