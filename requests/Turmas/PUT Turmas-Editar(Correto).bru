@@ -5,7 +5,22 @@ meta {
 }
 
 put {
-  url: 
-  body: none
+  url: http://localhost/bookbox/api/turmas/editar
+  body: json
   auth: inherit
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "id": "2974fa7f-62fc-4d58-824e-4b1302f72fff", 
+    "curso": "Administração",
+    "horario": "Matutino",
+    "regime": "Anual",
+    "dataInicio": "2025-02-01",
+    "dataFim": "2026-02-01"
+  }
 }
