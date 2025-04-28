@@ -145,6 +145,64 @@ class UsuarioController
         return $this->model->existeUsuarios();
     }
 
+/**
+ * Método responsável por editar usuário.
+ * @return void
+ */
+public function editar()
+{
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        $id = $_POST['id'] ?? null;
+        $nome = $_POST['nome'] ?? null;
+        $email = $_POST['email'] ?? null;
+        $senha = $_POST['senha'] ?? null;
+        $senhaConfirmada = $_POST['senhaConfirmada'] ?? null;
+
+        $erros = [];
+
+        if (empty($id)) {
+            $erros['id'] = 'O ID do usuário é obrigatório.';
+        }
+
+        if ($nome !== null && !$this->validarEstruturaNome($nome)) {
+            $erros['nome'] = 'O nome fornecido não é válido. Por favor, tente novamente.';
+        }
+
+        if ($email !== null && !$this->validarEstruturaEmail($email)) {
+            $erros['email'] = 'O e-mail fornecido não é válido. Por favor, tente novamente.';
+        }
+
+        if ($senha !== null && !$this->validarEstruturaSenha($senha)) {
+            $erros['senha'] = 'A senha deve ter de 8 a 16 caracteres, conter no mínimo 1 número, 1 caractere especial, e não deve conter espaços.';
+        }
+
+        if ($senha !== null && $senhaConfirmada !== null && $senha !== $senhaConfirmada) {
+            $erros['senhaConfirmada'] = 'As senhas não são iguais. Por favor, tente novamente.';
+        }
+
+        if (!empty($erros)) {
+            echo json_encode(["erro" => $erros]);
+            http_response_code(400);
+            exit();
+        }
+
+        $sucesso = $this->model->editar($id, $nome, $email, $senha);
+
+        if ($sucesso) {
+            echo json_encode([
+                "mensagem" => "Dados do usuário atualizados com sucesso!",
+                "redirecionar" => "/bookbox/usuarios"
+            ]);
+            exit();
+        } else {
+            $erros['geral'] = 'Erro ao atualizar dados do usuário. Tente novamente.';
+            echo json_encode(["erro" => $erros]);
+            http_response_code(500);
+            exit();
+        }
+    }
+}
+
     /**
      * Método responsável por verificar se o nome segue os requisitos mínimos.
      * @param string $nome
