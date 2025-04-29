@@ -1,6 +1,6 @@
 <?php
 
-require_once __DIR__ . '/../../config/database.php';
+require_once __DIR__ . '/../../config/Database.php';
 
 class AlunosTurmasModel
 {
@@ -12,16 +12,14 @@ class AlunosTurmasModel
     }
 
     /**
-     * Cadastra a relação entre alunos e turmas.
+     * Método responsável por cadastrar relação entre aluno e turma.
      * @param string $fkAluId
      * @param string $fkTurId
      * @return bool
      */
     public function cadastrar($fkAluId, $fkTurId)
     {
-
-        $query = "INSERT INTO tbalunos_turmas (fkAluId, fkTurId) 
-                  VALUES (:fkAluId, :fkTurId)";
+        $query = "INSERT INTO tbalunos_turmas (fkAluId, fkTurId) VALUES (:fkAluId, :fkTurId)";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':fkAluId', $fkAluId, PDO::PARAM_LOB);
         $stmt->bindParam(':fkTurId', $fkTurId, PDO::PARAM_LOB);
@@ -29,10 +27,9 @@ class AlunosTurmasModel
         return $stmt->execute();
     }
 
-
     /**
-     * Método responsável por editar alunos_turmas.
-     * @param int $id
+     * Método responsável por editar relação entre aluno e turma.
+     * @param string $id
      * @param string|null $fkAluId
      * @param string|null $fkTurId
      * @return bool
@@ -47,6 +44,7 @@ class AlunosTurmasModel
         if ($fkTurId !== null) {
             $query .= "fkTurId = :fkTurId, ";
         }
+        $query = rtrim($query, ', ');
 
         $query .= " WHERE aluTurId = :id";
 
@@ -59,14 +57,13 @@ class AlunosTurmasModel
             $stmt->bindParam(":fkTurId", $fkTurId);
         }
 
-        $stmt->bindParam(":aluTurId", $id, PDO::PARAM_INT);
+        $stmt->bindParam(":aluTurId", $id, PDO::PARAM_STR);
 
         return $stmt->execute();
     }
 
-
     /**
-     * Remove alunos_turmas.
+     * Método responsável por excluir relação entre aluno e turma.
      * @param string $aluTurId
      * @return bool
      */
@@ -77,6 +74,4 @@ class AlunosTurmasModel
         $stmt->bindParam(':aluTurId', $aluTurId, PDO::PARAM_LOB);
         return $stmt->execute();
     }
-
-
 }
