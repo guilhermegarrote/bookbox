@@ -33,7 +33,7 @@ class AlunoModel
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(":uuid", $uuidBin, PDO::PARAM_LOB);
         $stmt->bindParam(":nome", $nome);
-        $stmt->bindParam(":cpf", $cpf);
+        $stmt->bindParam(":cpf", var: $cpf);
         $stmt->bindParam(":email", $email);
 
         if ($telefone === null) {
@@ -58,7 +58,7 @@ class AlunoModel
     public function editar($id, $nome, $cpf, $email, $telefone)
     {
         $query = "UPDATE tbalunos SET ";
-
+        $uuidBin = hex2bin(str_replace('-', '', $id));
         if ($nome !== null) {
             $query .= "aluNome = :nome, ";
         }
@@ -92,7 +92,7 @@ class AlunoModel
             $stmt->bindParam(":telefone", $telefone, PDO::PARAM_STR);
         }
 
-        $stmt->bindParam(":id", $id, PDO::PARAM_INT);
+        $stmt->bindParam(":id", $uuidBin, PDO::PARAM_INT);
 
         return $stmt->execute();
     }
@@ -124,5 +124,16 @@ class AlunoModel
         $resultado = $stmt->fetch(PDO::FETCH_ASSOC);
 
         return $resultado ? $resultado : false;
+    }
+    public function existeCpf($cpf)
+    {
+        $cpf = criptografar($cpf);
+
+        $query = "SELECT  FROM tbalunos WHERE aluCpf = :cpf";
+        $stmt = $this->db->prepare($query);
+        $stmt->bindParam(':cpf', $cpf);
+        $stmt->execute();
+
+        return $stmt->fetchColumn() > 0;
     }
 }
