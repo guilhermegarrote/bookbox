@@ -55,7 +55,8 @@ function rotear($caminho, $metodo, $usuarioController, $turmaController, $genero
             '/api/alunos/cadastrar' => fn() => $alunoController->cadastrar(),
             '/logout' => fn() => session_destroy(),
         ],
-        'PUT' => [
+        'PUT' => [],
+        'PATCH' => [
             '/api/turmas/editar' => fn() => $turmaController->editar(),
             '/api/generos/editar' => fn() => $generoController->editar(),
             '/api/alunos/editar' => fn() => $alunoController->editar()
