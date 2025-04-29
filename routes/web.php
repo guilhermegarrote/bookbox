@@ -1,18 +1,22 @@
 <?php
 require_once __DIR__ . '/../app/Controllers/UsuarioController.php';
 require_once __DIR__ . '/../app/Controllers/TurmaController.php';
+require_once __DIR__ . '/../app/Controllers/GeneroController.php';
+require_once __DIR__ . '/../app/Controllers/AlunoController.php';
 
 $usuarioController = new UsuarioController();
 $turmaController = new TurmaController();
+$generoController = new GeneroController();
+$alunoController = new AlunoController();
 $caminhoBase = '/bookbox';
 
 $uriRequisicao = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 $caminho = str_replace($caminhoBase, '', $uriRequisicao);
 $metodo = $_SERVER['REQUEST_METHOD'];
 
-rotear($caminho, $metodo, $usuarioController, $turmaController);
+rotear($caminho, $metodo, $usuarioController, $turmaController, $generoController, $alunoController);
 
-function rotear($caminho, $metodo, $usuarioController, $turmaController)
+function rotear($caminho, $metodo, $usuarioController, $turmaController, $generoController, $alunoController)
 {
     $rotas = [
         'GET' => [
@@ -47,10 +51,14 @@ function rotear($caminho, $metodo, $usuarioController, $turmaController)
             '/api/login' => fn() => $usuarioController->login(),
             '/api/usuarios/cadastrar' => fn() => $usuarioController->cadastro(),
             '/api/turmas/cadastrar' => fn() => $turmaController->cadastrar(),
+            '/api/generos/cadastrar' => fn() => $generoController->cadastrar(),
+            '/api/alunos/cadastrar' => fn() => $alunoController->cadastrar(),
             '/logout' => fn() => session_destroy(),
         ],
         'PUT' => [
-            '/api/turmas/editar' => fn() => $turmaController->editar()
+            '/api/turmas/editar' => fn() => $turmaController->editar(),
+            '/api/generos/editar' => fn() => $generoController->editar(),
+            '/api/alunos/editar' => fn() => $alunoController->editar()
         ],
         'DELETE' => []
     ];
