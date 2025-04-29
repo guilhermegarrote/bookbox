@@ -17,7 +17,7 @@ class AlunoController
     public function __construct()
     {
         $db = Database::conectar();
-        $this->TurmaModel = new AlunoModel($db);
+        $this->AlunoModel = new AlunoModel($db);
         $this->TurmaModel = new TurmaModel($db);
     }
 
@@ -25,17 +25,20 @@ class AlunoController
      * Método responsável por cadastrar aluno.
      * @return void
      */
-    public function cadastro() 
+    public function cadastrar() 
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $nome = $_POST['nome'];
-            $cpf = $_POST['cpf'];
-            $email = $_POST['email'];
-            $telefone = $_POST['telefone'];
-            $periodo = $_POST['periodo'];
-            $curso = $_POST['curso'];
-
+            $dados = json_decode(file_get_contents("php://input"), true);
+    
+            $nome = $dados['nome'] ?? null;
+            $cpf = $dados['cpf'] ?? null;
+            $email = $dados['email'] ?? null;
+            $telefone = $dados['telefone'] ?? null;
+            $periodo = $dados['periodo'] ?? null;
+            $curso = $dados['curso'] ?? null;
+    
             $erros = [];
+    
 
             if (empty($nome)) {
                 $erros['nome'] = 'O nome é obrigatório.';
@@ -72,6 +75,13 @@ class AlunoController
             if (!empty($erros)) {
                 echo json_encode(["erro" => $erros]);
                 http_response_code(400);
+                exit();
+            }
+            
+            if ($this->AlunoModel->existeCpf($cpf)) {
+                $erros['cpf'] = 'Já existe um aluno cadastrado com este CPF.';
+                echo json_encode(["erro" => $erros]);
+                http_response_code(409);
                 exit();
             }
 
