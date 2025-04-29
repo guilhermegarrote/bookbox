@@ -10,8 +10,7 @@ class TurmaController
 
     public function __construct()
     {
-        $db = Database::conectar();
-        $this->turmaModel = new TurmaModel($db);
+        $this->turmaModel = new TurmaModel(Database::conectar());
     }
 
     public function cadastrar()
@@ -64,14 +63,10 @@ class TurmaController
             $erros['dataFim'] = 'A data de fim fornecida não é válida. Use o formato AAAA-MM-DD.';
         }
 
-        if (empty($erros)) {
-            if (!$this->validarOrdemDatas($dataInicio, $dataFim)) {
-                $erros['dataFim'] = 'A data de fim não pode ser anterior à data de início.';
-            } elseif (!$this->validarIntervaloRegime($dataInicio, $dataFim, $regime)) {
-                $erros['dataFim'] = $regime === 'Anual'
-                    ? 'Para regime Anual, a data de fim deve ser pelo menos 1 ano após a data de início.'
-                    : 'Para regime Semestral, a data de fim deve ser pelo menos 6 meses após a data de início.';
-            }
+        if (!$this->validarOrdemDatas($dataInicio, $dataFim)) {
+            $erros['dataFim'] = 'A data de fim não pode ser anterior à data de início.';
+        } elseif (!$this->validarIntervaloRegime($dataInicio, $dataFim, $regime)) {
+            $erros['dataFim'] = 'A data de fim deve ter no mínimo um periodo completo.';
         }
 
         if (!empty($erros)) {
@@ -186,9 +181,7 @@ class TurmaController
 
         if ($regime === 'Anual') {
             return $intervalo->y >= 1;
-        }
-
-        if ($regime === 'Semestral') {
+        } else if ($regime === 'Semestral') {
             return $intervalo->y > 0 || $intervalo->m >= 6;
         }
 
