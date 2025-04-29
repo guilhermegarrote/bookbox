@@ -44,7 +44,7 @@ class UsuarioController
             $erros['nome'] = 'O nome não é válido. Por favor, tente novamente.';
         }
 
-        if (!$this->validarEstruturaSenha($senha)) {
+        if (!$this->validarEstruturaSenha($senha) && !$this->validarEstruturaSenha($senhaConfirmada)) {
             $erros['senha'] = 'A senha deve ter de 8 a 16 caracteres, no mínimo 1 número, 1 caractere especial e não deve conter espaços.';
         }
 
