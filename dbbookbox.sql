@@ -29,8 +29,8 @@ CREATE TABLE `tbalunos` (
   `aluEmail` varchar(319) NOT NULL,
   `aluTelefone` varchar(20) DEFAULT NULL,
   PRIMARY KEY (`aluId`),
-  UNIQUE KEY `aluCPF` (`aluCpf`),
   UNIQUE KEY `aluEmail` (`aluEmail`),
+  UNIQUE KEY `aluCpf` (`aluCpf`),
   UNIQUE KEY `aluTelefone` (`aluTelefone`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -51,6 +51,24 @@ CREATE TABLE `tbalunos_turmas` (
   KEY `fkTurId` (`fkTurId`),
   CONSTRAINT `tbalunos_turmas_ibfk_1` FOREIGN KEY (`fkAluId`) REFERENCES `tbalunos` (`aluId`),
   CONSTRAINT `tbalunos_turmas_ibfk_2` FOREIGN KEY (`fkTurId`) REFERENCES `tbturmas` (`turId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `tbcodigos_redefinicao_senha`
+--
+
+DROP TABLE IF EXISTS `tbcodigos_redefinicao_senha`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `tbcodigos_redefinicao_senha` (
+  `codId` binary(16) NOT NULL,
+  `fkUsuId` binary(16) NOT NULL,
+  `codValor` varchar(60) NOT NULL,
+  `codExpiracao` datetime NOT NULL,
+  PRIMARY KEY (`codId`),
+  KEY `fkUsuId` (`fkUsuId`),
+  CONSTRAINT `tbcodigos_redefinicao_senha_ibfk_1` FOREIGN KEY (`fkUsuId`) REFERENCES `tbusuarios` (`usuId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -137,14 +155,14 @@ DROP TABLE IF EXISTS `tblivros`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `tblivros` (
   `livId` binary(16) NOT NULL,
-  `livIbsn` varchar(13) NOT NULL,
+  `livIsbn` varchar(13) NOT NULL,
   `livTitulo` varchar(255) NOT NULL,
   `livAutor` varchar(300) NOT NULL,
   `fkGenId` binary(16) NOT NULL,
   `livEditora` varchar(150) NOT NULL,
   PRIMARY KEY (`livId`),
-  UNIQUE KEY `livIbsn` (`livIbsn`),
   UNIQUE KEY `livTitulo` (`livTitulo`,`livAutor`,`livEditora`),
+  UNIQUE KEY `livIsbn` (`livIsbn`),
   KEY `fkGeneroId` (`fkGenId`),
   CONSTRAINT `fkGeneroId` FOREIGN KEY (`fkGenId`) REFERENCES `tbgeneros` (`genId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -181,9 +199,7 @@ CREATE TABLE `tbusuarios` (
   `usuEmail` varchar(512) NOT NULL,
   `usuSenha` varchar(60) NOT NULL,
   PRIMARY KEY (`usuId`),
-  UNIQUE KEY `usuEmail` (`usuEmail`),
-  UNIQUE KEY `usuEmail_2` (`usuEmail`),
-  UNIQUE KEY `usuEmail_3` (`usuEmail`)
+  UNIQUE KEY `usuEmail` (`usuEmail`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -203,7 +219,49 @@ SET @saved_cs_client     = @@character_set_client;
  1 AS `turCurso`,
  1 AS `turHorario`,
  1 AS `turRegime`,
- 1 AS `TurPeriodo`*/;
+ 1 AS `turPeriodo`*/;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Temporary view structure for view `vwexemplares`
+--
+
+DROP TABLE IF EXISTS `vwexemplares`;
+/*!50001 DROP VIEW IF EXISTS `vwexemplares`*/;
+SET @saved_cs_client     = @@character_set_client;
+/*!50503 SET character_set_client = utf8mb4 */;
+/*!50001 CREATE VIEW `vwexemplares` AS SELECT 
+ 1 AS `exId`,
+ 1 AS `livId`,
+ 1 AS `livIsbn`,
+ 1 AS `livTitulo`,
+ 1 AS `livAutor`,
+ 1 AS `genId`,
+ 1 AS `genNome`,
+ 1 AS `genCorHex`,
+ 1 AS `livEditora`,
+ 1 AS `exNumero`,
+ 1 AS `exDisponibilidade`*/;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Temporary view structure for view `vwlivros`
+--
+
+DROP TABLE IF EXISTS `vwlivros`;
+/*!50001 DROP VIEW IF EXISTS `vwlivros`*/;
+SET @saved_cs_client     = @@character_set_client;
+/*!50503 SET character_set_client = utf8mb4 */;
+/*!50001 CREATE VIEW `vwlivros` AS SELECT 
+ 1 AS `livId`,
+ 1 AS `livIsbn`,
+ 1 AS `livTitulo`,
+ 1 AS `livAutor`,
+ 1 AS `genId`,
+ 1 AS `genNome`,
+ 1 AS `genCorHex`,
+ 1 AS `livEditora`,
+ 1 AS `disponibilidade`*/;
 SET character_set_client = @saved_cs_client;
 
 --
@@ -237,7 +295,43 @@ SET character_set_client = @saved_cs_client;
 /*!50001 SET collation_connection      = utf8mb4_general_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
 /*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
-/*!50001 VIEW `vwalunos` AS select `tbalunos`.`aluId` AS `aluId`,`tbalunos`.`aluNome` AS `aluNome`,case when count(distinct `tbemprestimos`.`empId`) < (select `tbconfiguracoes`.`conValor` from `tbconfiguracoes` where `tbconfiguracoes`.`conChave` = 'livrosMaximosEmprestimo' limit 1) and !exists(select 1 from `tbemprestimos` where `tbemprestimos`.`fkAluId` = `tbalunos`.`aluId` and `tbemprestimos`.`empAtivo` is true and `tbemprestimos`.`empDataDevolucao` < curdate() limit 1) then 1 else 0 end AS `podeEmprestar`,`vwturmas`.`turId` AS `turId`,`vwturmas`.`turCurso` AS `turCurso`,`vwturmas`.`turHorario` AS `turHorario`,`vwturmas`.`turRegime` AS `turRegime`,`vwturmas`.`turPeriodo` AS `TurPeriodo` from (((`tbalunos` left join `tbemprestimos` on(`tbemprestimos`.`fkAluId` = `tbalunos`.`aluId` and `tbemprestimos`.`empAtivo` is true)) left join `tbalunos_turmas` on(`tbalunos_turmas`.`fkAluId` = `tbalunos`.`aluId`)) left join `vwturmas` on(`vwturmas`.`turId` = `tbalunos_turmas`.`fkTurId`)) group by `tbalunos`.`aluId`,`tbalunos`.`aluNome`,`tbalunos`.`aluEmail`,`tbalunos`.`aluTelefone`,`vwturmas`.`turId`,`vwturmas`.`turCurso`,`vwturmas`.`turHorario`,`vwturmas`.`turRegime`,`vwturmas`.`turPeriodo` */;
+/*!50001 VIEW `vwalunos` AS select `tbalunos`.`aluId` AS `aluId`,`tbalunos`.`aluNome` AS `aluNome`,case when count(distinct `tbemprestimos`.`empId`) < (select `tbconfiguracoes`.`conValor` from `tbconfiguracoes` where `tbconfiguracoes`.`conChave` = 'livrosMaximosEmprestimo' limit 1) and !exists(select 1 from `tbemprestimos` where `tbemprestimos`.`fkAluId` = `tbalunos`.`aluId` and `tbemprestimos`.`empAtivo` is true and `tbemprestimos`.`empDataDevolucao` < curdate() limit 1) then 1 else 0 end AS `podeEmprestar`,`vwturmas`.`turId` AS `turId`,`vwturmas`.`turCurso` AS `turCurso`,`vwturmas`.`turHorario` AS `turHorario`,`vwturmas`.`turRegime` AS `turRegime`,`vwturmas`.`turPeriodo` AS `turPeriodo` from (((`tbalunos` left join `tbemprestimos` on(`tbemprestimos`.`fkAluId` = `tbalunos`.`aluId` and `tbemprestimos`.`empAtivo` is true)) left join `tbalunos_turmas` on(`tbalunos_turmas`.`fkAluId` = `tbalunos`.`aluId`)) left join `vwturmas` on(`vwturmas`.`turId` = `tbalunos_turmas`.`fkTurId`)) group by `tbalunos`.`aluId`,`tbalunos`.`aluNome`,`tbalunos`.`aluEmail`,`tbalunos`.`aluTelefone`,`vwturmas`.`turId`,`vwturmas`.`turCurso`,`vwturmas`.`turHorario`,`vwturmas`.`turRegime`,`vwturmas`.`turPeriodo` */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
+
+--
+-- Final view structure for view `vwexemplares`
+--
+
+/*!50001 DROP VIEW IF EXISTS `vwexemplares`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = utf8mb4 */;
+/*!50001 SET character_set_results     = utf8mb4 */;
+/*!50001 SET collation_connection      = utf8mb4_general_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
+/*!50001 VIEW `vwexemplares` AS select `ex`.`exId` AS `exId`,`l`.`livId` AS `livId`,`l`.`livIsbn` AS `livIsbn`,`l`.`livTitulo` AS `livTitulo`,`l`.`livAutor` AS `livAutor`,`l`.`genId` AS `genId`,`l`.`genNome` AS `genNome`,`l`.`genCorHex` AS `genCorHex`,`l`.`livEditora` AS `livEditora`,`ex`.`exNumero` AS `exNumero`,`ex`.`exDisponibilidade` AS `exDisponibilidade` from (`tbexemplares` `ex` join `vwlivros` `l` on(`ex`.`fkLivId` = `l`.`livId`)) */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
+
+--
+-- Final view structure for view `vwlivros`
+--
+
+/*!50001 DROP VIEW IF EXISTS `vwlivros`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = utf8mb4 */;
+/*!50001 SET character_set_results     = utf8mb4 */;
+/*!50001 SET collation_connection      = utf8mb4_general_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
+/*!50001 VIEW `vwlivros` AS select `l`.`livId` AS `livId`,`l`.`livIsbn` AS `livIsbn`,`l`.`livTitulo` AS `livTitulo`,`l`.`livAutor` AS `livAutor`,`g`.`genId` AS `genId`,`g`.`genNome` AS `genNome`,`g`.`genCorHex` AS `genCorHex`,`l`.`livEditora` AS `livEditora`,concat(sum(case when `ex`.`exDisponibilidade` = 1 then 1 else 0 end),'/',count(0)) AS `disponibilidade` from ((`tblivros` `l` join `tbgeneros` `g` on(`l`.`fkGenId` = `g`.`genId`)) left join `tbexemplares` `ex` on(`ex`.`fkLivId` = `l`.`livId`)) group by `l`.`livId`,`l`.`livIsbn`,`l`.`livTitulo`,`l`.`livAutor`,`g`.`genId`,`g`.`genNome`,`g`.`genCorHex`,`l`.`livEditora` */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
 /*!50001 SET collation_connection      = @saved_col_connection */;
@@ -269,4 +363,4 @@ SET character_set_client = @saved_cs_client;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-03-15 21:41:11
+-- Dump completed on 2025-05-01 16:49:29
