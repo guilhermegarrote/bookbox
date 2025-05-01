@@ -1,0 +1,25 @@
+meta {
+  name: PATCH_cadastrar__sucesso
+  type: http
+  seq: 3
+}
+
+patch {
+  url: http://localhost/bookbox/api/alunos/editar
+  body: json
+  auth: inherit
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "id": "0xbfff2ca136194997a9b8922c2ee014a3",
+    "nome": "Ana Miura",
+    "cpf": "988.654.321-00",
+    "email": "anam@exemplo.com",
+    "telefone": "(14) 9986-5432"
+  }
+}

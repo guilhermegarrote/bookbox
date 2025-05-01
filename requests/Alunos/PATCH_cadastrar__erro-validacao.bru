@@ -1,0 +1,25 @@
+meta {
+  name: PATCH_cadastrar__erro-validacao
+  type: http
+  seq: 4
+}
+
+patch {
+  url: http://localhost/bookbox/api/alunos/editar
+  body: json
+  auth: inherit
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "id": "0xbfff2ca136194997a9b8922c2ee014a3",
+    "nome": "123",
+    "cpf": "12345678901",
+    "email": "1588aaaa",
+    "telefone": "557777%%%%"
+  }
+}

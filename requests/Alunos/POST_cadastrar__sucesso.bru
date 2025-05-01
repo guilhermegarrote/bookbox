@@ -1,0 +1,26 @@
+meta {
+  name: POST_cadastrar__sucesso
+  type: http
+  seq: 1
+}
+
+post {
+  url: http://localhost/bookbox/api/alunos/cadastrar
+  body: json
+  auth: inherit
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "nome": "Ana Julia Miura",
+    "cpf": "123.456.789-01",
+    "email": "anajulia.miura@example.com",
+    "telefone": "(11) 91234-7799",
+    "periodo": "Noturno",
+    "curso": "Desenvolvimento de Sistemas"
+  }
+}
