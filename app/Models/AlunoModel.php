@@ -56,46 +56,51 @@ class AlunoModel
      * @return bool
      */
     public function editar($id, $nome, $cpf, $email, $telefone)
-    {
-        $query = "UPDATE tbalunos SET ";
-        $uuidBin = hex2bin(str_replace('-', '', $id));
-        if ($nome !== null) {
-            $query .= "aluNome = :nome, ";
-        }
-        if ($cpf !== null) {
-            $nome = criptografar($nome);
-            $query .= "aluCpf = :cpf, ";
-        }
-        if ($email !== null) {
-            $email = criptografar($email);
-            $query .= "aluEmail = :email, ";
-        }
-        if ($telefone !== null) {
-            $telefone = criptografar($telefone);
-            $query .= "aluTelefone = :telefone, ";
-        }
+{
+    $uuid = str_replace(['-', '0x'], '', strtolower(trim($id)));
 
-        $query .= " WHERE aluId = :id";
-
-        $stmt = $this->db->prepare($query);
-
-        if ($nome !== null) {
-            $stmt->bindParam(":nome", $nome);
-        }
-        if ($cpf !== null) {
-            $stmt->bindParam(":cpf", $cpf);
-        }
-        if ($email !== null) {
-            $stmt->bindParam(":email", $email);
-        }
-        if ($telefone !== null) {
-            $stmt->bindParam(":telefone", $telefone, PDO::PARAM_STR);
-        }
-
-        $stmt->bindParam(":id", $uuidBin, PDO::PARAM_INT);
-
-        return $stmt->execute();
+    if (!ctype_xdigit($uuid) || strlen($uuid) !== 32) {
+        throw new Exception("ID inválido.");
     }
+
+    $uuidBin = hex2bin($uuid);
+
+    $campos = [];
+    $params = [];
+
+    if ($nome !== null) {
+        $campos[] = "aluNome = :nome";
+        $params[':nome'] = $nome;
+    }
+    if ($cpf !== null) {
+        $campos[] = "aluCpf = :cpf";
+        $params[':cpf'] = criptografar($cpf);
+    }
+    if ($email !== null) {
+        $campos[] = "aluEmail = :email";
+        $params[':email'] = criptografar($email);
+    }
+    if ($telefone !== null) {
+        $campos[] = "aluTelefone = :telefone";
+        $params[':telefone'] = criptografar($telefone);
+    }
+
+    if (empty($campos)) {
+        throw new Exception("Nenhum campo foi fornecido para atualizar.");
+    }
+
+    $query = "UPDATE tbalunos SET " . implode(", ", $campos) . " WHERE aluId = :id";
+
+    $stmt = $this->db->prepare($query);
+
+    foreach ($params as $chave => $valor) {
+        $stmt->bindValue($chave, $valor);
+    }
+
+    $stmt->bindValue(':id', $uuidBin, PDO::PARAM_LOB);
+
+    return $stmt->execute();
+}
 
     /**
      * Método responsável por excluir aluno.
