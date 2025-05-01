@@ -1,0 +1,26 @@
+meta {
+  name: PATCH_cadastrar__erro-validacao
+  type: http
+  seq: 4
+}
+
+patch {
+  url: http://localhost/bookbox/api/turmas/editar
+  body: json
+  auth: inherit
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "curso": "123",
+    "horario": "Manha",
+    "regime": "Mensal",
+    "dataInicio": "2025-02-01",
+    "dataFim": "2023-01-02"
+  }
+  
+}
