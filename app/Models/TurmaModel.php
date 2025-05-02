@@ -40,16 +40,16 @@ class TurmaModel
         return $stmt->execute();
     }
 
-/**
- * Método responsável por editar uma turma.
- * @param string $id
- * @param string|null $curso
- * @param string|null $horario
- * @param string|null $regime
- * @param string|null $dataInicio
- * @param string|null $dataFim
- * @return bool
- */
+    /**
+     * Método responsável por editar uma turma.
+     * @param string $id
+     * @param string|null $curso
+     * @param string|null $horario
+     * @param string|null $regime
+     * @param string|null $dataInicio
+     * @param string|null $dataFim
+     * @return bool
+     */
     public function editar($id, $curso, $horario, $regime, $dataInicio, $dataFim)
     {
         $uuidBin = hex2bin(str_replace('-', '', $id));
@@ -79,7 +79,7 @@ class TurmaModel
 
         if ($curso !== null) {
             $stmt->bindParam(":curso", $curso);
-        }   
+        }
         if ($horario !== null) {
             $stmt->bindParam(":horario", $horario);
         }
@@ -102,7 +102,7 @@ class TurmaModel
         } else {
             return false;
         }
-}
+    }
 
     /**
      * Método responsável por excluir turma.
@@ -130,4 +130,18 @@ class TurmaModel
         return $stmt->execute();
     }
 
+    /**
+     * Busca turma pelo ID.
+     * @param string $id
+     * @return array|null
+     */
+    public function buscarPorId($id)
+    {
+        $uuidBin = hex2bin(str_replace('-', '', $id));
+        $query = "SELECT * FROM tbturmas WHERE turId = :id";
+        $stmt = $this->db->prepare($query);
+        $stmt->bindParam(':id', $uuidBin, PDO::PARAM_STR);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
 }
