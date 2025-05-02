@@ -32,9 +32,9 @@ class EmailService
             'sender' => ['name' => 'Bookbox', 'email' => 'bookboxsystem@gmail.com'],
             'to' => [[ 'email' => $email]],
             'htmlContent' => "<html><body>
-                                <p>Olá, {$email},</p>
+                                <p>Olá {$email},</p>
                                 <p>Seu código de recuperação de senha é: <strong>{$this->codigo}</strong></p>
-                                <p>Use este código para redefinir sua senha. Ele é válido por tempo limitado.</p>
+                                <p>Use este código para redefinir sua senha.</p>
                               </body></html>",
             'params' => ['codigo' => $this->codigo]
         ]);
