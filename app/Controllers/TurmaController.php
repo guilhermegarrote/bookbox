@@ -90,6 +90,10 @@ class TurmaController
         }
     }
 
+    /**
+     * Método responsável por editar os dados de uma turma.
+     * @return void
+     */
     public function editar()
     {
         header('Content-Type: application/json');
@@ -102,48 +106,74 @@ class TurmaController
             exit();
         }
 
-        $id = $data['id'] ?? null;
-        $curso = $data['curso'] ?? null;
-        $horario = $data['horario'] ?? null;
-        $regime = $data['regime'] ?? null;
-        $dataInicio = $data['dataInicio'] ?? null;
-        $dataFim = $data['dataFim'] ?? null;
+        $id = isset($data['id']) ? trim($data['id']) : null;
+        $curso = isset($data['curso']) ? trim($data['curso']) : null;
+        $horario = isset($data['horario']) ? trim($data['horario']) : null;
+        $regime = isset($data['regime']) ? trim($data['regime']) : null;
+        $dataInicio = isset($data['dataInicio']) ? trim($data['dataInicio']) : null;
+        $dataFim = isset($data['dataFim']) ? trim($data['dataFim']) : null;
 
         $erros = [];
 
         if (empty($id)) {
             $erros['id'] = 'O ID da turma é obrigatório.';
+        } else {
+            $turmaAtual = $this->turmaModel->buscarPorId($id);
+            if (!$turmaAtual) {
+                $erros['id'] = 'Turma não encontrada.';
+            }
         }
 
-        if ($curso !== null && !$this->validarEstruturaCurso($curso)) {
+        if (!empty($curso) && !$this->validarEstruturaCurso($curso)) {
             $erros['curso'] = 'O nome do curso fornecido não é válido. Por favor, tente novamente.';
         }
 
-        if ($horario !== null && !in_array($horario, ['Matutino', 'Vespertino', 'Noturno'])) {
+        if (!empty($horario) && !in_array($horario, ['Matutino', 'Vespertino', 'Noturno'])) {
             $erros['horario'] = 'O horário fornecido não é válido. Por favor, selecione Matutino, Vespertino ou Noturno.';
         }
 
-        if ($regime !== null && !in_array($regime, ['Anual', 'Semestral'])) {
+        if (!empty($regime) && !in_array($regime, ['Anual', 'Semestral'])) {
             $erros['regime'] = 'O regime fornecido não é válido. Por favor, selecione Anual ou Semestral.';
         }
 
-        if ($dataInicio !== null && !$this->validarData($dataInicio)) {
+        if (!empty($dataInicio) && !$this->validarData($dataInicio)) {
             $erros['dataInicio'] = 'A data de início fornecida não é válida. Use o formato AAAA-MM-DD.';
         }
 
-        if ($dataFim !== null && !$this->validarData($dataFim)) {
+        if (!empty($dataFim) && !$this->validarData($dataFim)) {
             $erros['dataFim'] = 'A data de fim fornecida não é válida. Use o formato AAAA-MM-DD.';
         }
 
-        if (empty($erros) && $dataInicio && $dataFim && $regime) {
-            if (!$this->validarOrdemDatas($dataInicio, $dataFim)) {
-                $erros['dataFim'] = 'A data de fim não pode ser anterior à data de início.';
-            } elseif (!$this->validarIntervaloRegime($dataInicio, $dataFim, $regime)) {
-                $erros['dataFim'] = $regime === 'Anual'
-                    ? 'Para regime Anual, a data de fim deve ser pelo menos 1 ano após a data de início.'
-                    : 'Para regime Semestral, a data de fim deve ser pelo menos 6 meses após a data de início.';
+
+        if (empty($erros) && ($dataInicio !== null || $dataFim !== null || $regime !== null)) {
+
+            if (!$turmaAtual) {
+                $turmaAtual = $this->turmaModel->buscarPorId($id);
+            }
+
+            if ($dataInicio === null) {
+                $dataInicio = $turmaAtual['turDataInicio'] ?? null;
+            }
+
+            if ($dataFim === null) {
+                $dataFim = $turmaAtual['turDataFim'] ?? null;
+            }
+
+            if ($regime === null) {
+                $regime = $turmaAtual['turRegime'] ?? null;
+            }
+
+            if ($dataInicio && $dataFim && $regime) {
+                if (!$this->validarOrdemDatas($dataInicio, $dataFim)) {
+                    $erros['dataFim'] = 'A data de fim não pode ser anterior à data de início.';
+                } elseif (!$this->validarIntervaloRegime($dataInicio, $dataFim, $regime)) {
+                    $erros['dataFim'] = $regime === 'Anual'
+                        ? 'Para regime Anual, a data de fim deve ser pelo menos 1 ano após a data de início.'
+                        : 'Para regime Semestral, a data de fim deve ser pelo menos 6 meses após a data de início.';
+                }
             }
         }
+
 
         if (!empty($erros)) {
             echo json_encode(["erro" => $erros]);
@@ -151,16 +181,16 @@ class TurmaController
             exit();
         }
 
-        $sucesso = $this->turmaModel->editar($id, $curso, $horario, $regime, $dataInicio, $dataFim);
-        if ($sucesso) {
+        $atualizacao = $this->turmaModel->editar($id, $curso, $horario, $regime, $dataInicio, $dataFim);
+
+        if ($atualizacao) {
             echo json_encode([
                 "mensagem" => "Turma atualizada com sucesso!",
                 "redirecionar" => "/bookbox/turmas"
             ]);
             exit();
         } else {
-            $erros['geral'] = 'Erro ao atualizar a turma. Tente novamente.';
-            echo json_encode(["erro" => $erros]);
+            echo json_encode(["erro" => "Erro ao atualizar a turma. Tente novamente."]);
             http_response_code(500);
             exit();
         }
