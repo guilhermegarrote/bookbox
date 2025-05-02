@@ -25,158 +25,136 @@ class AlunoController
      * Método responsável por cadastrar aluno.
      * @return void
      */
-    public function cadastrar() 
+    public function cadastrar()
     {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $dados = json_decode(file_get_contents("php://input"), true);
-    
-            $nome = $dados['nome'] ?? null;
-            $cpf = $dados['cpf'] ?? null;
-            $email = $dados['email'] ?? null;
-            $telefone = $dados['telefone'] ?? null;
-            $periodo = $dados['periodo'] ?? null;
-            $curso = $dados['curso'] ?? null;
-    
-            $erros = [];
-    
+        header('Content-Type: application/json');
 
-            if (empty($nome)) {
-                $erros['nome'] = 'O nome é obrigatório.';
-            } elseif (!$this->validarEstruturaNome($nome)) {
-                $erros['nome'] = 'O nome fornecido não é válido. Por favor, tente novamente.';
-            }
+        $data = json_decode(file_get_contents('php://input'), true);
 
-           if (empty($cpf)) {
-                $erros['cpf'] = 'O cpf é obrigatório.';
-             }elseif (!$this->validarEstruturaCpf($cpf)) {
-                $erros['cpf'] = 'O CPF fornecido não é válido. Por favor, tente novamente.';
-            }
-
-            if (empty($email)) {
-                $erros['email'] = 'O email é obrigatório.';
-            }elseif (!$this->validarEstruturaEmail($email)) {
-                $erros['email'] = 'O e-mail fornecido não é válido. Por favor, tente novamente.';
-            }
-
-            if (empty($telefone)) {
-                $erros['telefone'] = 'O telefone é obrigatório.';
-            }elseif (!$this->validarEstruturaTelefone($telefone)) {
-                $erros['telefone'] = 'O telefone fornecido não é válido. Por favor, tente novamente.';
-            }
-
-            if (empty($periodo)) {
-                $erros['periodo'] = 'O período é obrigatório.';
-            }
-
-            if (empty($curso)) {
-                $erros['curso'] = 'O curso é obrigatório.';
-            }
-
-            if (!empty($erros)) {
-                echo json_encode(["erro" => $erros]);
-                http_response_code(400);
-                exit();
-            }
-            
-            if ($this->AlunoModel->existeCpf($cpf)) {
-                $erros['cpf'] = 'Já existe um aluno cadastrado com este CPF.';
-                echo json_encode(["erro" => $erros]);
-                http_response_code(409);
-                exit();
-            }
-
-            $cursoExiste = $this->TurmaModel->buscaCurso($curso);
-            if (!$cursoExiste) {
-                $erros['curso'] = 'O curso informado não está cadastrado. Por favor, verifique e tente novamente.';
-                echo json_encode(["erro" => $erros]);
-                http_response_code(400);
-                exit();
-            }
-
-            $cadastroDeuCerto = $this->AlunoModel->cadastrar($nome, $cpf, $email, $telefone, $periodo, $curso);
-            if ($cadastroDeuCerto) {
-                echo json_encode([
-                    "mensagem" => "Aluno cadastrado com sucesso!",
-                    "redirecionar" => "/bookbox/alunos"
-                ]);
-                exit();
-            } else {
-                $erros['geral'] = 'Erro ao cadastrar aluno. Tente novamente.';
-                echo json_encode(["erro" => $erros]);
-                http_response_code(500);
-                exit();
-            }
+        if (!$data) {
+            echo json_encode(["erro" => "Dados inválidos."]);
+            http_response_code(400);
+            exit();
         }
-    } 
+
+        $nome = isset($data['nome']) ? trim($data['nome']) : '';
+        $cpf = isset($data['cpf']) ? trim($data['cpf']) : '';
+        $email = isset($data['email']) ? trim($data['email']) : '';
+        $telefone = isset($data['telefone']) ? trim($data['telefone']) : '';
+
+        $erros = [];
+        if (!$this->validarEstruturaNome($nome)) {
+            $erros['nome'] = 'O nome não é válido. Por favor, tente novamente.';
+        }
+
+        if (!$this->validarEstruturaCpf($cpf)) {
+            $erros['cpf'] = 'O CPF fornecido não é válido. Por favor, tente novamente.';
+        }
+
+        if (!$this->validarEstruturaEmail($email)) {
+            $erros['email'] = 'O e-mail fornecido não é válido. Por favor, tente novamente.';
+        }
+
+        if (!$this->validarEstruturaTelefone($telefone)) {
+            $erros['telefone'] = 'O telefone fornecido não é válido. Por favor, tente novamente.';
+        }
+
+        if (!empty($erros)) {
+            echo json_encode(["erro" => $erros]);
+            http_response_code(400);
+            exit();
+        }
 
 
-/**
- * Método responsável por editar os dados de um aluno.
- * @return void
- */
-public function editar()
-{
-    header('Content-Type: application/json');
+        if ($this->AlunoModel->existeCpf($cpf)) {
+            echo json_encode(["erro" => ["cpf" => "Já existe um aluno cadastrado com este CPF."]]);
+            http_response_code(409);
+            exit();
+        }
 
-    $data = json_decode(file_get_contents('php://input'), true);
+        $cadastroDeuCerto = $this->AlunoModel->cadastrar($nome, $cpf, $email, $telefone);
 
-    if (!$data) {
-        echo json_encode(["erro" => "Dados inválidos."]);
-        http_response_code(400);
-        exit();
+        if ($cadastroDeuCerto) {
+            echo json_encode([
+                "mensagem" => "Aluno cadastrado com sucesso!",
+                "redirecionar" => "/bookbox/alunos"
+            ]);
+            exit();
+        } else {
+            echo json_encode(["erro" => "Erro ao cadastrar aluno. Tente novamente."]);
+            http_response_code(500);
+            exit();
+        }
     }
 
-    $id = isset($data['id']) ? trim($data['id']) : null;
-    $nome = isset($data['nome']) ? trim($data['nome']) : '';
-    $cpf = isset($data['cpf']) ? trim($data['cpf']) : '';
-    $email = isset($data['email']) ? trim($data['email']) : '';
-    $telefone = isset($data['telefone']) ? trim($data['telefone']) : '';
+
+    /**
+     * Método responsável por editar os dados de um aluno.
+     * @return void
+     */
+    public function editar()
+    {
+        header('Content-Type: application/json');
+
+        $data = json_decode(file_get_contents('php://input'), true);
+
+        if (!$data) {
+            echo json_encode(["erro" => "Dados inválidos."]);
+            http_response_code(400);
+            exit();
+        }
+
+        $id = isset($data['id']) ? trim($data['id']) : null;
+        $nome = isset($data['nome']) ? trim($data['nome']) : '';
+        $cpf = isset($data['cpf']) ? trim($data['cpf']) : '';
+        $email = isset($data['email']) ? trim($data['email']) : '';
+        $telefone = isset($data['telefone']) ? trim($data['telefone']) : '';
 
 
-    $erros = [];
+        $erros = [];
 
-    if (empty($id)) {
-        $erros['id'] = 'O ID do aluno é obrigatório.';
+        if (empty($id)) {
+            $erros['id'] = 'O ID do aluno é obrigatório.';
+        }
+
+        if (!empty($nome) && !$this->validarEstruturaNome($nome)) {
+            $erros['nome'] = 'O nome fornecido não é válido. Por favor, tente novamente.';
+        }
+
+        if (!empty($cpf) && !$this->validarEstruturaCpf($cpf)) {
+            $erros['cpf'] = 'O CPF fornecido não é válido. Por favor, tente novamente.';
+        }
+
+        if (!empty($email) && !$this->validarEstruturaEmail($email)) {
+            $erros['email'] = 'O e-mail fornecido não é válido. Por favor, tente novamente.';
+        }
+
+        if (!empty($telefone) && !$this->validarEstruturaTelefone($telefone)) {
+            $erros['telefone'] = 'O telefone fornecido não é válido. Por favor, tente novamente.';
+        }
+
+        if (!empty($erros)) {
+            echo json_encode(["erro" => $erros]);
+            http_response_code(400);
+            exit();
+        }
+
+        $atualizacao = $this->AlunoModel->editar($id, $nome, $cpf, $email, $telefone);
+
+        if ($atualizacao) {
+            echo json_encode([
+                "mensagem" => "Dados do aluno atualizados com sucesso!",
+                "redirecionar" => "/bookbox/aluno"
+            ]);
+            exit();
+        } else {
+            echo json_encode(["erro" => "Erro ao atualizar os dados do aluno. Tente novamente."]);
+            http_response_code(500);
+            exit();
+        }
     }
 
-    if (!empty($nome) && !$this->validarEstruturaNome($nome)) {
-        $erros['nome'] = 'O nome fornecido não é válido. Por favor, tente novamente.';
-    }
 
-    if (!empty($cpf) && !$this->validarEstruturaCpf($cpf)) {
-        $erros['cpf'] = 'O CPF fornecido não é válido. Por favor, tente novamente.';
-    }
-
-    if (!empty($email) && !$this->validarEstruturaEmail($email)) {
-        $erros['email'] = 'O e-mail fornecido não é válido. Por favor, tente novamente.';
-    }
-
-    if (!empty($telefone) && !$this->validarEstruturaTelefone($telefone)) {
-        $erros['telefone'] = 'O telefone fornecido não é válido. Por favor, tente novamente.';
-    }
-
-    if (!empty($erros)) {
-        echo json_encode(["erro" => $erros]);
-        http_response_code(400);
-        exit();
-    }
-
-    $atualizacao = $this->AlunoModel->editar($id, $nome, $cpf, $email, $telefone);
-
-    if ($atualizacao) {
-        echo json_encode([
-            "mensagem" => "Dados do aluno atualizados com sucesso!",
-            "redirecionar" => "/bookbox/aluno"
-        ]);
-        exit();
-    } else {
-        echo json_encode(["erro" => "Erro ao atualizar os dados do aluno. Tente novamente."]);
-        http_response_code(500);
-        exit();
-    }
-}
-
-    
 
     /**
      * Método responsável por verificar se o nome segue os requisitos mínimos.
@@ -235,5 +213,4 @@ public function editar()
         }
         return true;
     }
-
 }
