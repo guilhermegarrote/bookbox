@@ -28,7 +28,7 @@
                 <label class="labelline" for="genero">Gênero</label>
                 <div style="position: absolute; width: 35px; height: 35px; top: 60%; left: 84.8%; border: 1px solid #ccc; border-radius: 0px 6px 6px 0px; transform: translateY(-60%); background-color: blue;"></div>
             </div>
-            <div class="entryarea" style="right: 25%;">
+            <div class="entryarea" style="right: 27%;">
                 <input type="text" id="quantidade-exemplares" class="modal-input" style="width: 230px;" required>
                 <label class="labelline" for="quantidade-exemplares">Quantidade de exemplares</label>
             </div>
