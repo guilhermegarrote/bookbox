@@ -39,11 +39,11 @@
                 <input type="text" id="exemplar" class="modal-input" style="width: 140px;" required>
                 <label class="labelline" for="exemplar">Exemplar</label>
             </div>
-            <div class="entryarea">
-                <input type="text" id="status-livro" class="modal-input" style="width: 140px;" readonly>
+            <div class="entryarea" style="right:50px;">
+                <input type="text" id="status-livro" class="modal-input" style="width: 140px; " readonly>
                 <label class="labelline" for="status-livro">Status do livro</label>
             </div>
-            <div class="entryarea">
+            <div class="entryarea" style="right:100px;">
                 <input type="text" id="data-devolucao" class="modal-input" style="width: 170px;" readonly>
                 <label class="labelline" for="data-devolucao">Data de devolução</label>
             </div>
