@@ -5,7 +5,7 @@ document.getElementById('cadastro-form').addEventListener('submit', async functi
     const formObject = Object.fromEntries(formData);
 
     try {
-        const response = await fetch('/bookbox/api/usuarios', {
+        const response = await fetch('/bookbox/api/usuarios/cadastrar', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
