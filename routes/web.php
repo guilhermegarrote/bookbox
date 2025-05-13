@@ -46,6 +46,8 @@ function rotear($caminho, $metodo, $usuarioController, $turmaController, $genero
             '/modals/cadastro_emprestimo' => fn() => carregarPagina('modals/emprestimos/cadastro_emprestimo'),
             '/modals/cadastro_aluno' => fn() => carregarPagina('modals/alunos/cadastro_aluno'),
             '/modals/cadastro_livro' => fn() => carregarPagina('modals/livros/cadastro_livro'),
+            '/modals/cadastro_genero' => fn() => carregarPagina('modals/generos/cadastro_genero'),
+            '/modals/cadastro_turma' => fn() => carregarPagina('modals/turmas/cadastro_turma'),
             '/popups/filtro' => fn() => carregarPagina('popups/filtro'),
         ],
         'POST' => [

@@ -35,7 +35,7 @@
 
         <div class="modal-footer">
             <button id="botao-fechar-modal" class="modal-button">Cancelar</button>
-            <button class="modal-button">Cadastrar</button>
+            <button id="botao-cadastrar" data-entidade="aluno" class="modal-button">Cadastrar</button>
         </div>
     </div>
 </div>
