@@ -5,8 +5,14 @@ document.addEventListener('input', function (e) {
         mascararISBN(e.target);
     } else if (e.target.id === 'telefone') {
         mascararTelefone(e.target);
-    } else if (e.target.id === 'exemplar' || e.target.id === 'periodo') {
-        permitirSomenteNumeros(e.target);
+    } else if (e.target.id === 'periodo') {
+        mascararPeriodo(e.target);
+    } else if (e.target.id === 'exemplar' || e.target.id === 'quantidade-exemplares') {
+        permitirSomenteNumeros(e.target, 5);
+    } else if (e.target.id === 'autor') {
+        permitirSomenteLetras(e.target, 300);
+    } else if (e.target.id === 'genero' || e.target.id === 'nome' || e.target.id === 'curso') {
+        permitirSomenteLetras(e.target, 100);
     }
 });
 
@@ -45,7 +51,7 @@ function mascararTelefone(input) {
 
     if (telefone.length > 10) {
         telefone = telefone.replace(/^(\d{2})(\d{5})(\d{4})$/, "($1) $2-$3");
-    } else if (telefone.length > 6) {
+    } else if (telefone.length > 7) {
         telefone = telefone.replace(/^(\d{2})(\d{5})(\d{0,4})$/, "($1) $2-$3");
     } else if (telefone.length > 2) {
         telefone = telefone.replace(/^(\d{2})(\d{1,5})$/, "($1) $2");
@@ -54,6 +60,38 @@ function mascararTelefone(input) {
     input.value = telefone;
 }
 
-function permitirSomenteNumeros(input) {
+function mascararPeriodo(input) {
     input.value = input.value.replace(/[^0-9]/g, '');
+
+    if (parseInt(input.value) === 0) {
+        input.value = '';
+    }
+
+    input.value = input.value.slice(0, 2);
+
+    if (input.value !== '' && !input.value.endsWith('°')) {
+        input.value = input.value + '°';
+    }
+
+    input.addEventListener('keydown', function (event) {
+        if (event.key === 'Backspace' || event.key === 'Delete') {
+            input.value = '';
+        }
+    });
+}
+
+function permitirSomenteNumeros(input, limite = null) {
+    input.value = input.value.replace(/[^0-9]/g, '');
+
+    if (parseInt(input.value) === 0) {
+        input.value = '';
+    }
+
+    if (limite !== null) input.value = input.value.slice(0, limite);
+}
+
+function permitirSomenteLetras(input, limite = null) {
+    input.value = input.value.replace(/[^A-Za-zÀ-ÿ'\s\-]/g, '');
+
+    if (limite !== null) input.value = input.value.slice(0, limite);
 }
