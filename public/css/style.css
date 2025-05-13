@@ -673,6 +673,16 @@ h1 {
 
 }
 
+.login-erro {
+        color: red;
+        margin-top: 10px;
+        display: block;
+        font-family: 'Urbanist';
+        font-weight: bold;
+        font-size: 0.95rem;
+        margin-left: 15%;
+    }
+
 #overlay {
     position: fixed;
     top: 0;
@@ -689,3 +699,4 @@ h1 {
 #modal-container {
     position: relative;
 }
+
