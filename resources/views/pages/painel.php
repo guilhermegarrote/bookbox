@@ -39,5 +39,6 @@
     <script src="public/js/modal.js"></script>
     <script src="public/js/livros/cadastro.js"></script>
     <script src="public/js/alunos/cadastro.js"></script>
+    <script src="public/js/generos/cadastro.js"></script>
     <script src="public/js/mascaras.js"></script>
 </body>
