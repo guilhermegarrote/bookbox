@@ -49,15 +49,16 @@ h1 {
     height: 600px;
     padding: 45px 65px 45px 65px ;
     border-radius: 20px;
-    background-color: white;
+    background-color: rgb(255, 255, 255);
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
 }
 
 /* Formulário */
 .cadastro-form {
+    position: relative;
     display: flex;
     flex-direction: column;
-    text-align: center;
+    text-align: center; 
 }
 
 /* Título */
@@ -84,13 +85,14 @@ h1 {
 .cadastro-input {
     width: 100%;
     padding: 15px;
-    margin-bottom: 20px;
+    margin-bottom: 5px;
     background-color: var(--cinza);
     border: 1px solid var(--cinza-claro);
     border-radius: 10px;
     font-size: 20px;
     outline: none;
     transition: border-color 0.3s;
+    display: block;
 }
 
 .cadastro-input:focus {
@@ -682,6 +684,19 @@ h1 {
         font-size: 0.95rem;
         margin-left: 15%;
     }
+
+.cadastro-erro {
+    color: red;
+    font-family: 'Urbanist', sans-serif;
+    font-weight: bold;
+    font-size: 0.95rem;
+    min-height: 10px; /* espaço fixo reservado */
+    margin: 0;         /* remove margens externas */
+    padding: 0;        /* remove espaçamento interno */
+    line-height: 1.2;  /* controla a altura da linha para evitar estourar */
+    display: block;
+    overflow: hidden;  /* evita estourar se a mensagem for grande */
+}
 
 #overlay {
     position: fixed;
