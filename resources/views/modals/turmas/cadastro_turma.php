@@ -19,7 +19,7 @@
             </div>
 
             <div class="entryarea" style="position: relative;">
-                <input type="text" id="regime" class="modal-input" style="width: 180px;" required>
+                <input type="text" id="regime" class="modal-input" style="width: 195px;" required>
                 <label class="labelline" for="regime">Regime</label>
             </div>
 
@@ -34,7 +34,7 @@
 
 
             <div class="entryarea" style="position: relative;">
-                <input type="date" id="data-fim" class="modal-input" required>
+                <input type="date" id="data-fim" class="modal-inputt" required>
                 <label class="labelline label-fixa" for="data-fim">Data Fim</label>
             </div>
         </div>

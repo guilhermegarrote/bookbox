@@ -24,18 +24,11 @@
             <h2 class="font-urbanist">Login</h2>
             <form id="login-form">
                 <label class="login-label font-urbanist">Email:</label>
-                <input type="text" name="email" class="login-input font-urbanist" required>
+                <input type="email" name="email" class="login-input font-urbanist" required>
 
                 <label class="login-label font-urbanist">Senha:</label>
                 <input type="password" name="senha" class="login-input font-urbanist" required>
 
-                <!-- Aqui deveria aparece a mensagem vinda do backend (PHP) -->
-                <?php if (isset($_SESSION['errors'])): ?>
-                    <p class="login-erro font-urbanist"><?= $_SESSION['errors']; ?></p>
-                    <?php unset($_SESSION['errors']); ?>
-                <?php endif; ?>
-
-                <!-- Aqui era pra aparece a mensagem de erro via JS -->
                 <div id="men-erro" class="login-erro font-urbanist"></div>
 
                 <button type="submit" class="login-button">→</button>
