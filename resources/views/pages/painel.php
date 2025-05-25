@@ -41,4 +41,5 @@
     <script src="public/js/alunos/cadastro.js"></script>
     <script src="public/js/generos/cadastro.js"></script>
     <script src="public/js/mascaras.js"></script>
+    <script src="public/js/emprestimos/finalizar.js"></script>
 </body>

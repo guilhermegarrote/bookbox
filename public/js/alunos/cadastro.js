@@ -1,6 +1,6 @@
 document.addEventListener('click', function (e) {
     if (e.target && e.target.id === 'botao-cadastrar' && e.target.dataset.entidade === 'aluno') {
-        fetch('modals/cadastro_turma')
+        fetch('popups/confirmacao_exclusao_aluno')
         .then(response => response.text())
         .then(html => {
             document.getElementById("modal-container").innerHTML = html;

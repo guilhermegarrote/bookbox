@@ -49,6 +49,9 @@ function rotear($caminho, $metodo, $usuarioController, $turmaController, $genero
             '/modals/cadastro_genero' => fn() => carregarPagina('modals/generos/cadastro_genero'),
             '/modals/cadastro_turma' => fn() => carregarPagina('modals/turmas/cadastro_turma'),
             '/popups/filtro' => fn() => carregarPagina('popups/filtro'),
+            '/popups/genero_nao_cadastrado' => fn() => carregarPagina('popups/genero_nao_cadastrado'),
+            '/popups/confirmar_finalizacao_emprestimo' => fn() => carregarPagina('popups/confirmar_finalizacao_emprestimo'),
+            '/popups/confirmacao_exclusao_aluno' => fn() => carregarPagina('popups/confirmacao_exclusao_aluno'),
         ],
         'POST' => [
             '/api/login' => fn() => $usuarioController->login(),

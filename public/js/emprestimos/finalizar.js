@@ -1,6 +1,6 @@
 document.addEventListener('click', function (e) {
-    if (e.target && e.target.id === 'botao-cadastar' && e.target.dataset.entidade === 'livro') {
-        fetch('popups/genero_nao_cadastrado')
+    if (e.target && e.target.id === 'botao-cadastrar' && e.target.dataset.entidade === 'emprestimo') {
+        fetch('popups/confirmar_finalizacao_emprestimo')
         .then(response => response.text())
         .then(html => {
             document.getElementById("modal-container").innerHTML = html;
