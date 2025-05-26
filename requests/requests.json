@@ -39,20 +39,22 @@
       "type": "folder",
       "name": "Alunos",
       "filename": "Alunos",
+      "seq": 1,
       "root": {
         "meta": {
-          "name": "Alunos"
+          "name": "Alunos",
+          "seq": 1
         }
       },
       "items": [
         {
           "type": "http",
-          "name": "PATCH_cadastrar__erro-validacao",
-          "filename": "PATCH_cadastrar__erro-validacao.bru",
-          "seq": 4,
+          "name": "DELETE_deletar_erro-validacao",
+          "filename": "DELETE_deletar_erro-validacao.bru",
+          "seq": 6,
           "request": {
-            "url": "http://localhost/bookbox/api/alunos/editar",
-            "method": "PATCH",
+            "url": "http://localhost/bookbox/api/alunos/excluir/{{idAlunoInvalido}}",
+            "method": "DELETE",
             "headers": [
               {
                 "name": "Content-Type",
@@ -62,8 +64,7 @@
             ],
             "params": [],
             "body": {
-              "mode": "json",
-              "json": "{\r\n  \"id\": \"{{idAlunosInvalido}}\",\r\n  \"nome\": \"{{nomeInvalido}}\",\r\n  \"cpf\": \"{{cpfInvalido}}\",  \r\n  \"email\": \"{{emailInvalido}}\",  \r\n  \"telefone\": \"{{telefoneInvalido}}\"\r\n}",
+              "mode": "none",
               "formUrlEncoded": [],
               "multipartForm": [],
               "file": []
@@ -80,11 +81,43 @@
         },
         {
           "type": "http",
-          "name": "PATCH_cadastrar__sucesso",
-          "filename": "PATCH_cadastrar__sucesso.bru",
-          "seq": 3,
+          "name": "DELETE_deletar_sucesso",
+          "filename": "DELETE_deletar_sucesso.bru",
+          "seq": 5,
           "request": {
-            "url": "http://localhost/bookbox/api/alunos/editar",
+            "url": "http://localhost/bookbox/api/alunos/excluir/{{idAlunoValido}}",
+            "method": "DELETE",
+            "headers": [
+              {
+                "name": "Content-Type",
+                "value": "application/json",
+                "enabled": true
+              }
+            ],
+            "params": [],
+            "body": {
+              "mode": "none",
+              "formUrlEncoded": [],
+              "multipartForm": [],
+              "file": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "inherit"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "PATCH_editar__erro-validacao",
+          "filename": "PATCH_editar__erro-validacao.bru",
+          "seq": 4,
+          "request": {
+            "url": "http://localhost/bookbox/api/alunos/editar/{{idAlunoInvalido}}",
             "method": "PATCH",
             "headers": [
               {
@@ -96,7 +129,40 @@
             "params": [],
             "body": {
               "mode": "json",
-              "json": "{\r\n  \"id\": \"{{idAlunosValido}}\",\r\n   \"nome\": \"{{nomeValido}}\",\r\n  \"cpf\": \"{{cpfValido}}\",\r\n  \"email\": \"{{emailValido}}\",\r\n  \"telefone\": \"{{telefoneValido}}\"\r\n}",
+              "json": "{\n  \"nome\": \"{{nomeInvalido}}\",\n  \"cpf\": \"{{cpfInvalido}}\",  \n  \"email\": \"{{emailInvalido}}\",  \n  \"telefone\": \"{{telefoneInvalido}}\",\n  \"curso\": \"{{cursoInvalido}}\",\n  \"regime\": \"{{regimeInvalido}}\",\n  \"periodo\": \"{{periodoInvalido}}\"\n}",
+              "formUrlEncoded": [],
+              "multipartForm": [],
+              "file": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "inherit"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "PATCH_editar__sucesso",
+          "filename": "PATCH_editar__sucesso.bru",
+          "seq": 3,
+          "request": {
+            "url": "http://localhost/bookbox/api/alunos/editar/{{idAlunoValido2}}",
+            "method": "PATCH",
+            "headers": [
+              {
+                "name": "Content-Type",
+                "value": "application/json",
+                "enabled": true
+              }
+            ],
+            "params": [],
+            "body": {
+              "mode": "json",
+              "json": "{\n  // \"nome\": \"{{nomeValido}}\"\n  //\"cpf\": \"{{cpfValido}}\",\n  // \"email\": \"{{emailValido2}}\",\n  // \"telefone\": \"{{telefoneValido2}}\",\n  \"curso\": \"{{cursoValido2}}\",\n  \"regime\": \"{{regimeValido2}}\",\n  \"periodo\": \"{{periodoValido}}\"\n}",
               "formUrlEncoded": [],
               "multipartForm": [],
               "file": []
@@ -129,7 +195,7 @@
             "params": [],
             "body": {
               "mode": "json",
-              "json": "{\r\n  \"nome\": \"{{nomeInvalido}}\",\r\n  \"cpf\": \"{{cpfInvalido}}\",  \r\n  \"email\": \"{{emailInvalido}}\",  \r\n  \"telefone\": \"{{telefoneInvalido}}\"\r\n}",
+              "json": "{\n  \"nome\": \"{{nomeInvalido}}\",\n  \"cpf\": \"{{cpfInvalido}}\",  \n  \"email\": \"{{emailInvalido}}\",  \n  \"telefone\": \"{{telefoneInvalido}}\",\n  \"curso\": \"{{cursoInvalido}}\",\n  \"regime\": \"{{regimeInvalido}}\",\n  \"periodo\": \"{{periodoInvalido}}\"\n}",
               "formUrlEncoded": [],
               "multipartForm": [],
               "file": []
@@ -162,7 +228,7 @@
             "params": [],
             "body": {
               "mode": "json",
-              "json": "{\r\n  \"nome\": \"{{nomeValido}}\",\r\n  \"cpf\": \"{{cpfValido}}\",\r\n  \"email\": \"{{emailValido}}\",\r\n  \"telefone\": \"{{telefoneValido}}\"\r\n}",
+              "json": "{\n  \"nome\": \"{{nomeValido}}\",\n  \"cpf\": \"{{cpfValido}}\",\n  \"email\": \"{{emailValido}}\",\n  \"telefone\": \"{{telefoneValido}}\",\n  \"curso\": \"{{cursoValido}}\",\n  \"regime\": \"{{regimeValido}}\",\n  \"periodo\": \"{{periodoValido}}\"\n}",
               "formUrlEncoded": [],
               "multipartForm": [],
               "file": []
@@ -183,9 +249,11 @@
       "type": "folder",
       "name": "Turmas",
       "filename": "Turmas",
+      "seq": 1,
       "root": {
         "meta": {
-          "name": "Turmas"
+          "name": "Turmas",
+          "seq": 1
         }
       },
       "items": [
@@ -207,7 +275,7 @@
             "params": [],
             "body": {
               "mode": "json",
-              "json": "{\r\n  \"id\" : \"{{idTurmasinValido}}\",\r\n  \"curso\": \"{{cursoInvalido}}\",\r\n  \"horario\": \"{{horarioInvalido}}\",\r\n  \"regime\": \"{{regimeInvalido}}\",\r\n  \"dataInicio\": \"{{dataInicioInvalida}}\",\r\n  \"dataFim\": \"{{dataFimInvalida}}\"\r\n}\r\n",
+              "json": "{\n  \"id\": \"{{idTurmasInvalido}}\",\n  \"curso\": \"{{cursoInvalido}}\",\n  \"regime\": \"{{regimeInvalido}}\",\n  \"dataInicio\": \"{{dataInicioInvalida}}\",\n  \"dataFim\": \"{{dataFimInvalida}}\"\n}\n",
               "formUrlEncoded": [],
               "multipartForm": [],
               "file": []
@@ -240,7 +308,7 @@
             "params": [],
             "body": {
               "mode": "json",
-              "json": "{\r\n  \"id\": \"{{idTurmasValido}}\", \r\n  \"curso\": \"{{cursoValido}}\",\r\n  \"horario\": \"{{horarioValido}}\",\r\n  \"regime\": \"{{regimeValido}}\",\r\n  \"dataInicio\": \"{{dataInicioValida}}\",\r\n  \"dataFim\": \"{{dataFimValida}}\"\r\n}",
+              "json": "{\n  \"id\": \"{{idTurmasValido}}\", \n  \"curso\": \"{{cursoValido}}\",\n  \"regime\": \"{{regimeValido}}\",\n  \"dataInicio\": \"{{dataInicioValida}}\",\n  \"dataFim\": \"{{dataFimValida}}\"\n}",
               "formUrlEncoded": [],
               "multipartForm": [],
               "file": []
@@ -273,7 +341,7 @@
             "params": [],
             "body": {
               "mode": "json",
-              "json": "{\r\n  \"curso\": \"{{cursoInvalido}}\",\r\n  \"horario\": \"{{horarioInvalido}}\",\r\n  \"regime\": \"{{regimeInvalido}}\",\r\n  \"dataInicio\": \"{{dataInicioInvalida}}\",\r\n  \"dataFim\": \"{{dataFimInvalida}}\"\r\n}",
+              "json": "{\n  \"curso\": \"{{cursoInvalido}}\",\n  \"regime\": \"{{regimeInvalido}}\",\n  \"dataInicio\": \"{{dataInicioInvalida}}\",\n  \"dataFim\": \"{{dataFimInvalida}}\"\n}",
               "formUrlEncoded": [],
               "multipartForm": [],
               "file": []
@@ -306,7 +374,7 @@
             "params": [],
             "body": {
               "mode": "json",
-              "json": "{\r\n  \"curso\": \"{{cursoValido}}\",\r\n  \"horario\": \"{{horarioValido}}\",\r\n  \"regime\": \"{{regimeValido}}\",\r\n  \"dataInicio\": \"{{dataInicioValida}}\",\r\n  \"dataFim\": \"{{dataFimValida}}\"\r\n}",
+              "json": "{\n  \"curso\": \"{{cursoValido}}\",\n  \"regime\": \"{{regimeValido}}\",\n  \"dataInicio\": \"{{dataInicioValida}}\",\n  \"dataFim\": \"{{dataFimValida}}\"\n}",
               "formUrlEncoded": [],
               "multipartForm": [],
               "file": []
@@ -327,9 +395,11 @@
       "type": "folder",
       "name": "Usuarios",
       "filename": "Usuarios",
+      "seq": 1,
       "root": {
         "meta": {
-          "name": "Usuarios"
+          "name": "Usuarios",
+          "seq": 1
         }
       },
       "items": [
@@ -402,13 +472,20 @@
       ]
     }
   ],
-  "activeEnvironmentUid": "T58GPTwtxXqMHof1EWYFN",
+  "activeEnvironmentUid": "jdDew8hwY4OF9wxdBp6Ln",
   "environments": [
     {
       "variables": [
         {
           "name": "nomeValido",
           "value": "Ricardo Zanata",
+          "enabled": true,
+          "secret": false,
+          "type": "text"
+        },
+        {
+          "name": "nomeValido2",
+          "value": "Alfredo Alexandre",
           "enabled": true,
           "secret": false,
           "type": "text"
@@ -423,6 +500,13 @@
         {
           "name": "emailValido",
           "value": "teste@gmail.com",
+          "enabled": true,
+          "secret": false,
+          "type": "text"
+        },
+        {
+          "name": "emailValido2",
+          "value": "teste2@gmail.com",
           "enabled": true,
           "secret": false,
           "type": "text"
@@ -450,14 +534,21 @@
         },
         {
           "name": "cpfValido",
-          "value": "000.000.000-00",
+          "value": "529.982.247-25",
+          "enabled": true,
+          "secret": false,
+          "type": "text"
+        },
+        {
+          "name": "cpfValido2",
+          "value": "550.875.128-95",
           "enabled": true,
           "secret": false,
           "type": "text"
         },
         {
           "name": "cpfInvalido",
-          "value": "0000000",
+          "value": "000.000.000-00",
           "enabled": true,
           "secret": false,
           "type": "text"
@@ -470,8 +561,15 @@
           "type": "text"
         },
         {
+          "name": "telefoneValido2",
+          "value": "(00) 00000-0002",
+          "enabled": true,
+          "secret": false,
+          "type": "text"
+        },
+        {
           "name": "telefoneInvalido",
-          "value": "00000-0000",
+          "value": "(00) 00000-00",
           "enabled": true,
           "secret": false,
           "type": "text"
@@ -484,6 +582,13 @@
           "type": "text"
         },
         {
+          "name": "cursoValido2",
+          "value": "Administração",
+          "enabled": true,
+          "secret": false,
+          "type": "text"
+        },
+        {
           "name": "cursoInvalido",
           "value": "Desenvolvimento de Sistemas@123",
           "enabled": true,
@@ -491,22 +596,15 @@
           "type": "text"
         },
         {
-          "name": "horarioValido",
-          "value": "Matutino",
-          "enabled": true,
-          "secret": false,
-          "type": "text"
-        },
-        {
-          "name": "horarioInvalido",
-          "value": "Manha",
-          "enabled": true,
-          "secret": false,
-          "type": "text"
-        },
-        {
           "name": "regimeValido",
           "value": "Anual",
+          "enabled": true,
+          "secret": false,
+          "type": "text"
+        },
+        {
+          "name": "regimeValido2",
+          "value": "Semestral",
           "enabled": true,
           "secret": false,
           "type": "text"
@@ -526,6 +624,13 @@
           "type": "text"
         },
         {
+          "name": "dataInicioValida2",
+          "value": "2025-05-01",
+          "enabled": true,
+          "secret": false,
+          "type": "text"
+        },
+        {
           "name": "dataInicioInvalida",
           "value": "01-20205-02",
           "enabled": true,
@@ -540,6 +645,13 @@
           "type": "text"
         },
         {
+          "name": "dataFimValida2",
+          "value": "2026-05-01",
+          "enabled": true,
+          "secret": false,
+          "type": "text"
+        },
+        {
           "name": "dataFimInvalida",
           "value": "2023-02-01",
           "enabled": true,
@@ -547,29 +659,50 @@
           "type": "text"
         },
         {
-          "name": "idTurmasValido",
+          "name": "idTurmaValido",
           "value": "2974fa7f-62fc-4d58-824e-4b1302f72fff",
           "enabled": true,
           "secret": false,
           "type": "text"
         },
         {
-          "name": "idTurmasInvalido",
+          "name": "idTurmaInvalido",
           "value": "2913844192092141402",
           "enabled": true,
           "secret": false,
           "type": "text"
         },
         {
-          "name": "idAlunosValido",
-          "value": "0xbfff2ca136194997a9b8922c2ee014a3",
+          "name": "idAlunoValido",
+          "value": "9fb6bf721552454c9c602a40fcdbf654",
           "enabled": true,
           "secret": false,
           "type": "text"
         },
         {
-          "name": "idAlunosInvalido",
-          "value": "291048742749274874",
+          "name": "idAlunoValido2",
+          "value": "87564A84BEF6498D93A1B441C7619B6C",
+          "enabled": true,
+          "secret": false,
+          "type": "text"
+        },
+        {
+          "name": "idAlunoInvalido",
+          "value": "9fb6bf721552454c9c602a40fcdbf654",
+          "enabled": true,
+          "secret": false,
+          "type": "text"
+        },
+        {
+          "name": "periodoValido",
+          "value": "1",
+          "enabled": true,
+          "secret": false,
+          "type": "text"
+        },
+        {
+          "name": "periodoInvalido",
+          "value": "999",
           "enabled": true,
           "secret": false,
           "type": "text"
@@ -586,7 +719,7 @@
       "node_modules",
       ".git"
     ],
-    "size": 0.004366874694824219,
-    "filesCount": 15
+    "size": 0.0058193206787109375,
+    "filesCount": 18
   }
 }
