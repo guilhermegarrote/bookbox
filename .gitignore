@@ -36,3 +36,9 @@ dist/
 
 # Ignorar arquivos do sistema operacional
 Desktop.ini
+
+# Ignora tudo na pasta requests
+/requests/*
+
+# Mas não ignora o arquivo requests.json
+!/requests/requests.json
