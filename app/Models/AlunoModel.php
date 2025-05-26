@@ -1,6 +1,6 @@
 <?php
 
-require_once __DIR__ . '/../../config/database.php';
+require_once __DIR__ . '/../../config/Database.php';
 
 class AlunoModel
 {
@@ -10,7 +10,7 @@ class AlunoModel
      * Construtor da classe, responsável por estabelecer a conexão com o banco de dados.
      * @return void
      */
-    public function __construct($db)
+    public function __construct(PDO $db)
     {
         $this->db = $db;
     }
@@ -28,27 +28,71 @@ class AlunoModel
         $uuidBin = hex2bin(str_replace('-', '', gerarUuid()));
         $cpf = criptografar($cpf);
         $email = criptografar($email);
+        $telefone = $telefone !== null ? criptografar($telefone) : null;
 
-        $query = "INSERT INTO tbalunos (aluId, aluNome, aluCpf, aluEmail, aluTelefone) VALUES (:uuid, :nome, :cpf, :email, :telefone)";
+        $query = "INSERT INTO tbalunos (aluId, aluNome, aluCpf, aluEmail, aluTelefone)
+              VALUES (:uuid, :nome, :cpf, :email, :telefone)";
+
         $stmt = $this->db->prepare($query);
-        $stmt->bindParam(":uuid", $uuidBin, PDO::PARAM_LOB);
-        $stmt->bindParam(":nome", $nome);
-        $stmt->bindParam(":cpf", var: $cpf);
-        $stmt->bindParam(":email", $email);
-
-        if ($telefone === null) {
-            $stmt->bindValue(":telefone", $telefone, PDO::PARAM_NULL);
-        } else {
-            $telefone = criptografar($telefone);
-            $stmt->bindParam(":telefone", $telefone, PDO::PARAM_STR);
-        }
+        $stmt->bindValue(":uuid", $uuidBin, PDO::PARAM_STR);
+        $stmt->bindValue(":nome", $nome, PDO::PARAM_STR);
+        $stmt->bindValue(":cpf", $cpf, PDO::PARAM_STR);
+        $stmt->bindValue(":email", $email, PDO::PARAM_STR);
+        $stmt->bindValue(":telefone", $telefone, $telefone === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
 
         return $stmt->execute();
     }
 
     /**
+     * Método responsável por buscar aluno.
+     * @param string|null $id
+     * @param string|null $nome
+     * @param string|null $cpf
+     * @param string|null $email
+     * @param string|null $telefone
+     * @return array|false 
+     */
+    public function buscarAluno($id, $nome, $cpf, $email, $telefone)
+    {
+        $campos = [];
+        $params = [];
+
+        if ($id !== null) {
+            $campos[] = "aluId = :id";
+            $params[':id'] = $id;
+        }
+        if ($nome !== null) {
+            $campos[] = "aluNome = :nome";
+            $params[':nome'] = $nome;
+        }
+        if ($cpf !== null) {
+            $campos[] = "aluCpf = :cpf";
+            $params[':cpf'] = criptografar($cpf);
+        }
+        if ($email !== null) {
+            $campos[] = "aluEmail = :email";
+            $params[':email'] = criptografar($email);
+        }
+        if ($telefone !== null) {
+            $campos[] = "aluTelefone = :telefone";
+            $params[':telefone'] = criptografar($telefone);
+        }
+
+        $query = "SELECT * FROM tbalunos WHERE " . implode(" AND ", $campos);
+        $stmt = $this->db->prepare($query);
+
+        foreach ($params as $chave => $valor) {
+            $stmt->bindValue($chave, $valor, PDO::PARAM_STR);
+        }
+
+        $stmt->execute();
+        $resultado = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $resultado ?: false;
+    }
+
+    /**
      * Método responsável por editar aluno.
-     * @param int $id
+     * @param string $id
      * @param string|null $nome
      * @param string|null $cpf
      * @param string|null $email
@@ -57,14 +101,6 @@ class AlunoModel
      */
     public function editar($id, $nome, $cpf, $email, $telefone)
     {
-        $uuid = str_replace(['-', '0x'], '', strtolower(trim($id)));
-
-        if (!ctype_xdigit($uuid) || strlen($uuid) !== 32) {
-            throw new Exception("ID inválido.");
-        }
-
-        $uuidBin = hex2bin($uuid);
-
         $campos = [];
         $params = [];
 
@@ -85,19 +121,14 @@ class AlunoModel
             $params[':telefone'] = criptografar($telefone);
         }
 
-        if (empty($campos)) {
-            throw new Exception("Nenhum campo foi fornecido para atualizar.");
-        }
-
         $query = "UPDATE tbalunos SET " . implode(", ", $campos) . " WHERE aluId = :id";
-
         $stmt = $this->db->prepare($query);
 
         foreach ($params as $chave => $valor) {
             $stmt->bindValue($chave, $valor);
         }
 
-        $stmt->bindValue(':id', $uuidBin, PDO::PARAM_LOB);
+        $stmt->bindValue(':id', $id, PDO::PARAM_STR);
 
         return $stmt->execute();
     }
@@ -111,34 +142,7 @@ class AlunoModel
     {
         $query = "DELETE FROM tbalunos WHERE aluId = :id";
         $stmt = $this->db->prepare($query);
-        $stmt->bindParam(":id", $id);
+        $stmt->bindParam(":id", $id, PDO::PARAM_STR);
         return $stmt->execute();
-    }
-
-    /**
-     * Método responsável por buscar todas as informações de um aluno pelo CPF.
-     * @param string $cpf
-     * @return array|false 
-     */
-    public function buscarAlunoPorCpf($cpf)
-    {
-        $query = "SELECT * FROM vwalunos WHERE aluCpf = :cpf";
-        $stmt = $this->db->prepare($query);
-        $stmt->bindParam(":cpf", $cpf, PDO::PARAM_STR);
-        $stmt->execute();
-        $resultado = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        return $resultado ? $resultado : false;
-    }
-    public function existeCpf($cpf)
-    {
-        $cpf = criptografar($cpf);
-
-        $query = "SELECT 1 FROM tbalunos WHERE aluCpf = :cpf LIMIT 1";
-        $stmt = $this->db->prepare($query);
-        $stmt->bindParam(':cpf', $cpf);
-        $stmt->execute();
-
-        return $stmt->fetchColumn() !== false;
     }
 }
