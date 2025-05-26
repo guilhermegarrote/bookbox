@@ -1,8 +1,13 @@
 <?php
+require_once __DIR__ . '/../vendor/autoload.php';
 require_once __DIR__ . '/../app/Controllers/UsuarioController.php';
 require_once __DIR__ . '/../app/Controllers/TurmaController.php';
 require_once __DIR__ . '/../app/Controllers/GeneroController.php';
 require_once __DIR__ . '/../app/Controllers/AlunoController.php';
+require_once __DIR__ . '/../app/Helpers/JwtHelper.php';
+require_once __DIR__ . '/../app/Middleware/JwtMiddleware.php';
+
+use App\Middleware\JwtMiddleware;
 
 $usuarioController = new UsuarioController();
 $turmaController = new TurmaController();
@@ -18,6 +23,20 @@ rotear($caminho, $metodo, $usuarioController, $turmaController, $generoControlle
 
 function rotear($caminho, $metodo, $usuarioController, $turmaController, $generoController, $alunoController)
 {
+    $id = null;
+    if ($metodo === 'PATCH' || $metodo === 'DELETE') {
+        $entidades = "turmas|generos|alunos";
+        $acoes = "editar|excluir";
+
+        $regex = '#^(/api/(' . $entidades . ')/(' . $acoes . '))/([0-9a-fA-F]{32})$#';
+
+        if (preg_match($regex, $caminho, $matches)) {
+            $rotaSemId = $matches[1];
+            $id = $matches[4];
+            $caminho = $rotaSemId;
+        }
+    }
+
     $rotas = [
         'GET' => [
             '/login' => function () use ($usuarioController) {
@@ -54,7 +73,9 @@ function rotear($caminho, $metodo, $usuarioController, $turmaController, $genero
             '/popups/confirmacao_exclusao_aluno' => fn() => carregarPagina('popups/confirmacao_exclusao_aluno'),
         ],
         'POST' => [
-            '/api/login' => fn() => $usuarioController->login(),
+            '/api/login' => function () use ($usuarioController) {
+                $usuarioController->login();
+            },
             '/api/usuarios/cadastrar' => fn() => $usuarioController->cadastro(),
             '/api/turmas/cadastrar' => fn() => $turmaController->cadastrar(),
             '/api/generos/cadastrar' => fn() => $generoController->cadastrar(),
@@ -63,11 +84,24 @@ function rotear($caminho, $metodo, $usuarioController, $turmaController, $genero
         ],
         'PUT' => [],
         'PATCH' => [
-            '/api/turmas/editar' => fn() => $turmaController->editar(),
-            '/api/generos/editar' => fn() => $generoController->editar(),
-            '/api/alunos/editar' => fn() => $alunoController->editar()
+            '/api/turmas/editar' => function () use ($turmaController, $id) {
+                $turmaController->editar($id);
+            },
+            '/api/generos/editar' => function () use ($generoController, $id) {
+                $generoController->editar($id);
+            },
+            '/api/alunos/editar' => function () use ($alunoController, $id) {
+                $alunoController->editar($id);
+            }
         ],
-        'DELETE' => []
+        'DELETE' => [
+            '/api/turmas/excluir' => function () use ($turmaController, $id) {
+                $turmaController->excluir($id);
+            },
+            '/api/alunos/excluir' => function () use ($alunoController, $id) {
+                $alunoController->excluir($id);
+            }
+        ]
     ];
 
     if (isset($rotas[$metodo][$caminho])) {
