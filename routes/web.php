@@ -4,8 +4,6 @@ require_once __DIR__ . '/../app/Controllers/UsuarioController.php';
 require_once __DIR__ . '/../app/Controllers/TurmaController.php';
 require_once __DIR__ . '/../app/Controllers/GeneroController.php';
 require_once __DIR__ . '/../app/Controllers/AlunoController.php';
-require_once __DIR__ . '/../app/Helpers/JwtHelper.php';
-require_once __DIR__ . '/../app/Middleware/JwtMiddleware.php';
 
 use App\Middleware\JwtMiddleware;
 
