@@ -4,6 +4,8 @@ require_once __DIR__ . '/../app/Controllers/UsuarioController.php';
 require_once __DIR__ . '/../app/Controllers/TurmaController.php';
 require_once __DIR__ . '/../app/Controllers/GeneroController.php';
 require_once __DIR__ . '/../app/Controllers/AlunoController.php';
+require_once __DIR__ . '/../app/Controllers/ExemplarController.php';
+require_once __DIR__ . '/../app/Controllers/LivroController.php';
 
 use App\Middleware\JwtMiddleware;
 
@@ -11,15 +13,17 @@ $usuarioController = new UsuarioController();
 $turmaController = new TurmaController();
 $generoController = new GeneroController();
 $alunoController = new AlunoController();
+$exemplarController = new ExemplarController();
+$livroController = new LivroController();
 $caminhoBase = '/bookbox';
 
 $uriRequisicao = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 $caminho = str_replace($caminhoBase, '', $uriRequisicao);
 $metodo = $_SERVER['REQUEST_METHOD'];
 
-rotear($caminho, $metodo, $usuarioController, $turmaController, $generoController, $alunoController);
+rotear($caminho, $metodo, $usuarioController, $turmaController, $generoController, $alunoController, $exemplarController, $livroController);
 
-function rotear($caminho, $metodo, $usuarioController, $turmaController, $generoController, $alunoController)
+function rotear($caminho, $metodo, $usuarioController, $turmaController, $generoController, $alunoController, $exemplarController, $livroController)
 {
     $id = null;
     if ($metodo === 'PATCH' || $metodo === 'DELETE') {
@@ -78,6 +82,8 @@ function rotear($caminho, $metodo, $usuarioController, $turmaController, $genero
             '/api/turmas/cadastrar' => fn() => $turmaController->cadastrar(),
             '/api/generos/cadastrar' => fn() => $generoController->cadastrar(),
             '/api/alunos/cadastrar' => fn() => $alunoController->cadastrar(),
+            '/api/exemplares/cadastrar' => fn() => $exemplarController->cadastrar(),
+            '/api/livros/cadastrar' => fn() => $livroController->cadastrar(),
             '/logout' => fn() => session_destroy(),
         ],
         'PUT' => [],
@@ -90,7 +96,10 @@ function rotear($caminho, $metodo, $usuarioController, $turmaController, $genero
             },
             '/api/alunos/editar' => function () use ($alunoController, $id) {
                 $alunoController->editar($id);
-            }
+            },
+            '/api/livros/editar' => function () use ($livroController, $id) {
+                $livroController->editar($id);
+            }  
         ],
         'DELETE' => [
             '/api/turmas/excluir' => function () use ($turmaController, $id) {
@@ -98,6 +107,9 @@ function rotear($caminho, $metodo, $usuarioController, $turmaController, $genero
             },
             '/api/alunos/excluir' => function () use ($alunoController, $id) {
                 $alunoController->excluir($id);
+            },
+            '/api/livros/excluir' => function () use ($livroController, $id) {
+                $livroController->excluir($id);
             }
         ]
     ];
