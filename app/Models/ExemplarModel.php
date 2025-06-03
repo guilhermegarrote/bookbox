@@ -22,7 +22,7 @@ class ExemplarModel
  */
 public function pesquisaLivroPorIsbn($isbn)
 {
-    $query = "SELECT livId FROM tblivros WHERE livIbsn = :isbn";
+    $query = "SELECT livId FROM tblivros WHERE livIsbn = :isbn";
     $stmt = $this->db->prepare($query);
     $stmt->bindParam(":isbn", $isbn);
     $stmt->execute();
@@ -38,12 +38,12 @@ public function pesquisaLivroPorIsbn($isbn)
 /**
  * Método responsável por verificar se o exemplar existe.
  * @param int $numeroExemplar
- * @param int $livId
+ * @param string $livId
  * @return bool 
  */
 public function pesquisarExemplar($numeroExemplar, $livId)
 {
-    $queryExemplar = "SELECT * FROM tbexemplares WHERE exNumero = :numeroExemplar AND livId = :livId";
+    $queryExemplar = "SELECT * FROM tbexemplares WHERE exNumero = :numeroExemplar AND fkLivId = :livId";
     $stmtExemplar = $this->db->prepare($queryExemplar);
     $stmtExemplar->bindParam(":numeroExemplar", $numeroExemplar);
     $stmtExemplar->bindParam(":livId", $livId);
@@ -58,16 +58,24 @@ public function pesquisarExemplar($numeroExemplar, $livId)
      * @return bool
      */
     public function cadastrar($livId)
-    {
-        $uuidBin = hex2bin(str_replace('-', '', gerarUuid()));
+{
+    $uuidBin = hex2bin(str_replace('-', '', gerarUuid()));
 
-        $query = "INSERT INTO tbexemplares (exId, exfkLivId, exNumero) 
-        VALUES (:uuid, :livId, COALESCE(MAX(exNumero), 0) + 1)";
-        $stmt = $this->db->prepare($query);
-        $stmt->bindParam(":uuid", $uuidBin, PDO::PARAM_LOB);
-        $stmt->bindParam(":livId", $livId);
-        return $stmt->execute();
-    }
+    $query = "SELECT COALESCE(MAX(exNumero), 0) + 1 as proxNumero FROM tbexemplares WHERE fkLivId = :livId";
+    $stmt = $this->db->prepare($query);
+    $stmt->bindValue(":livId", $livId);
+    $stmt->execute();
+    $proxNumero = $stmt->fetchColumn();
+
+    $query = "INSERT INTO tbexemplares (exId, fkLivId, exNumero) VALUES (:uuid, :livId, :numero)";
+    $stmt = $this->db->prepare($query);
+    $stmt->bindValue(":uuid", $uuidBin, PDO::PARAM_LOB);
+    $stmt->bindValue(":livId", $livId);
+    $stmt->bindValue(":numero", $proxNumero);
+    
+    return $stmt->execute();
+}
+
 
     /**
      * Método responsável por excluir exemplar.
