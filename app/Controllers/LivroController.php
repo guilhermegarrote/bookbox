@@ -25,85 +25,91 @@ class LivroController
     }
 
     /**
-     * Método responsável por cadastrar aluno.
+     * Método responsável por cadastrar livro.
      * @return void
      */
-    public function cadastro() 
+    public function cadastrar()
     {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $Ibsn = $_POST['Ibsn'];
-            $titulo = $_POST['titulo'];
-            $autor = $_POST['autor'];
-            $generoId = $_POST['generoId'];
-            $editora = $_POST['editora'];
+        header('Content-Type: application/json');
 
-            $erros = [];
+        $data = json_decode(file_get_contents('php://input'), true);
 
-            if (empty($Ibsn)) {
-                $erros['Ibsn'] = 'O código IBSN é obrigatório.';
-            } elseif (!$this->validarEstruturaIbsn($Ibsn)) {
-                $erros['Ibsn'] = 'O código IBSN fornecido não é válido. Por favor, tente novamente.';
-            }
+        if (!$data) {
+            echo json_encode(["erro" => "Dados inválidos."]);
+            http_response_code(400);
+            exit();
+        }
 
-           if (empty($titulo)) {
-                $erros['titulo'] = 'O título é obrigatório.';
-             }elseif (!$this->validarEstruturaTitulo($titulo)) {
-                $erros['titulo'] = 'O título fornecido não é válido. Por favor, tente novamente.';
-            }
+        $Isbn = isset($data['isbn']) ? trim($data['isbn']) : '';
+        $titulo = isset($data['titulo']) ? trim($data['titulo']) : '';
+        $autor = isset($data['autor']) ? trim($data['autor']) : '';
+        $genero = isset($data['genero']) ? trim($data['genero']) : '';
+        $editora = isset($data['editora']) ? trim($data['editora']) : '';
 
-            if (empty($autor)) {
-                $erros['autor'] = 'O nome do autor é obrigatório.';
-            }elseif (!$this->validarEstruturaAutor($autor)) {
-                $erros['autor'] = 'O nome do autor fornecido não é válido. Por favor, tente novamente.';
-            }
+        $erros = [];
 
-            if (empty($generoId)) {
-                $erros['generoId'] = 'O gênero é obrigatório.';
-            }
+        if (empty($Isbn)) {
+            $erros['Isbn'] = 'O código ISBN é obrigatório.';
+        } elseif (!$this->validarEstruturaIsbn($Isbn)) {
+            $erros['Isbn'] = 'O código ISBN fornecido não é válido. Por favor, tente novamente.';
+        }
 
-            if (empty($editora)) {
-                $erros['editora'] = 'A editora é obrigatória.';
-            }elseif (!$this->validarEstruturaEditora($editora)) {
-                $erros['editora'] = 'A editora fornecida não é válida. Por favor, tente novamente.';
-            }
+        if (empty($titulo)) {
+            $erros['titulo'] = 'O título é obrigatório.';
+        } elseif (!$this->validarEstruturaTitulo($titulo)) {
+            $erros['titulo'] = 'O título fornecido não é válido. Por favor, tente novamente.';
+        }
 
-            if (!empty($erros)) {
-                echo json_encode(["erro" => $erros]);
-                http_response_code(400);
-                exit();
-            }
+        if (empty($autor)) {
+            $erros['autor'] = 'O nome do autor é obrigatório.';
+        } elseif (!$this->validarEstruturaAutor($autor)) {
+            $erros['autor'] = 'O nome do autor fornecido não é válido. Por favor, tente novamente.';
+        }
 
-            $ibsnExiste = $this->LivroModel->buscaIbsn($Ibsn);
-            if (!$ibsnExiste) {
-                $erros['Ibsn'] = 'O IBSN informado não está cadastrado. Por favor, verifique e tente novamente.';
-                echo json_encode(["erro" => $erros]);
-                http_response_code(400);
-                exit();
-            }
+        if (empty($genero)) {
+            $erros['genero'] = 'O gênero é obrigatório.';
+        }
 
-            $livroExiste = $this->LivroModel->buscaLivro($titulo, $autor, $editora);
-            if (!$livroExiste) {
-                $erros['Ibsn'] = 'O livro informado já está cadastrado. Por favor, verifique.';
-                echo json_encode(["erro" => $erros]);
-                http_response_code(400);
-                exit();
-            }
+        if (empty($editora)) {
+            $erros['editora'] = 'A editora é obrigatória.';
+        } elseif (!$this->validarEstruturaEditora($editora)) {
+            $erros['editora'] = 'A editora fornecida não é válida. Por favor, tente novamente.';
+        }
 
-            $cadastroDeuCerto = $this->LivroModel->cadastrar($Ibsn, $titulo, $autor, $generoId, $editora);
-            if ($cadastroDeuCerto) {
-                echo json_encode([
-                    "mensagem" => "Livro cadastrado com sucesso!",
-                    "redirecionar" => "/bookbox/livros"
-                ]);
-                exit();
-            } else {
-                $erros['geral'] = 'Erro ao cadastrar livro. Tente novamente.';
-                echo json_encode(["erro" => $erros]);
-                http_response_code(500);
-                exit();
-            }
+        if (!empty($erros)) {
+            echo json_encode(["erro" => $erros]);
+            http_response_code(400);
+            exit();
+        }
+
+        $genero = $this->GeneroModel->buscaGenero($genero);
+        if (!$genero) {
+            $erros['genero'] = 'O gênero informado não está cadastrado. Por favor, verifique.';
+            echo json_encode(["erro" => $erros]);
+            http_response_code(400);
+            exit();
+        }
+
+        $livroExiste = $this->LivroModel->buscaLivro($titulo, $autor, $editora);
+        if ($livroExiste) {
+            $erros['isbn'] = 'O livro informado já está cadastrado. Por favor, verifique.';
+            echo json_encode(["erro" => $erros]);
+            http_response_code(400);
+            exit();
+        }
+
+        $cadastroDeuCerto = $this->LivroModel->cadastrar($Isbn, $titulo, $autor, $genero['genId'], $editora);
+        if ($cadastroDeuCerto) {
+            echo json_encode([
+                "mensagem" => "Livro cadastrado com sucesso!",
+                "redirecionar" => "/bookbox/livros"
+            ]);
+            exit();
         } else {
-            require_once __DIR__ . '/../resources/views/alunos/cadastro.php';
+            $erros['geral'] = 'Erro ao cadastrar livro. Tente novamente.';
+            echo json_encode(["erro" => $erros]);
+            http_response_code(500);
+            exit();
         }
     }
 
@@ -124,12 +130,12 @@ class LivroController
         }
 
         $id = $data['id'] ?? null;
-        $Ibsn = $data['Ibsn'] ?? null;
+        $Isbn = $data['Isbn'] ?? null;
         $titulo = $data['titulo'] ?? null;
         $autor = $data['autor'] ?? null;
-        $generoId = $data['generoId'] ?? null;
+        $genero = $data['genero'] ?? null;
         $editora = $data['editora'] ?? null;
-        
+
 
         $erros = [];
 
@@ -137,8 +143,8 @@ class LivroController
             $erros['id'] = 'O ID do livro é obrigatório.';
         }
 
-        if ($Ibsn !== null && !$this->validarEstruturaIbsn($Ibsn)) {
-            $erros['Ibsn'] = 'O IBSN fornecido não é válido. Por favor, tente novamente.';
+        if ($Isbn !== null && !$this->validarEstruturaIsbn($Isbn)) {
+            $erros['Isbn'] = 'O ISBN fornecido não é válido. Por favor, tente novamente.';
         }
 
         if ($titulo !== null && !$this->validarEstruturaTitulo($titulo)) {
@@ -149,8 +155,12 @@ class LivroController
             $erros['autor'] = 'O Autor fornecido não é válido. Por favor, tente novamente.';
         }
 
-        if ($generoId !== null && !$this->$generoId) {
-            $erros['generoId'] = 'O gênero fornecido não é válido. Por favor, tente novamente.';
+        $genero = $this->GeneroModel->buscaGenero($genero);
+        if (!$genero) {
+            $erros['genero'] = 'O gênero informado não está cadastrado. Por favor, verifique.';
+            echo json_encode(["erro" => $erros]);
+            http_response_code(400);
+            exit();
         }
 
         if ($editora !== null && !$this->validarEstruturaEditora($editora)) {
@@ -164,7 +174,7 @@ class LivroController
             exit();
         }
 
-        $sucesso = $this->LivroModel->editar($id, $Ibsn, $titulo, $autor, $generoId, $editora);
+        $sucesso = $this->LivroModel->editar($id, $Isbn, $titulo, $autor, $genero['genId'], $editora);
         if ($sucesso) {
             echo json_encode([
                 "mensagem" => "Livro atualizado com sucesso!",
@@ -180,13 +190,13 @@ class LivroController
     }
 
     /**
-     * Método responsável por verificar se o IBSN segue os requisitos mínimos.
-     * @param string $Ibsn
+     * Método responsável por verificar se o ISBN segue os requisitos mínimos.
+     * @param string $Isbn
      * @return boolean
      */
-    private static function validarEstruturaIbsn($Ibsn)
+    private static function validarEstruturaIsbn($Isbn)
     {
-        if (preg_match("/^(?:\d{9}[\dX]|\d{13})$/", trim($Ibsn))) {
+        if (preg_match("/^(?:\d{9}[\dX]|\d{13})$/", trim($Isbn))) {
             return true;
         }
 
@@ -200,32 +210,31 @@ class LivroController
      */
     private static function validarEstruturaTitulo($titulo)
     {
-        if (preg_match("/^[\p{L}\p{N}\p{P}\p{Zs}]+$/", trim($titulo))) {
-            $palavras = explode(" ", trim($titulo));
-            if (count($palavras) >= 2 && strlen($titulo) >= 3 && strlen($titulo) <= 255) {
-                return true;
-            }
+        $titulo = trim($titulo);
+        if (preg_match("/^[\p{L}\p{N}\p{P}\p{Zs}]+$/u", $titulo)) {
+            return true;
         }
-
         return false;
     }
 
-    /**
-     * Método responsável por verificar se o nome do autor segue os requisitos mínimos.
-     * @param string $autor
-     * @return boolean
-     */
-    private static function validarEstruturaAutor($autor)
-    {
-        if (preg_match("/^[A-Za-zÀ-ÖØ-öø-ÿ' -]+$/", trim($autor))) {
-            $palavras = explode(" ", trim($autor));
-            if (count($palavras) >= 2 && strlen($autor) >= 3 && strlen($autor) <= 300) {
-                return true;
-            }
+   /**
+ * Método responsável por verificar se o nome do autor segue os requisitos mínimos.
+ * @param string $autor
+ * @return boolean
+ */
+private static function validarEstruturaAutor($autor)
+{
+    $autor = trim($autor);
+    if (preg_match("/^[A-Za-zÀ-ÖØ-öø-ÿ'\-\. ]+$/", $autor)) {
+        $palavras = array_filter(explode(" ", $autor));
+        if (count($palavras) >= 2) {
+            return true;
         }
-
-        return false;
     }
+
+    return false;
+}
+
 
     /**
      * Método responsável por verificar se o nome da editora segue os requisitos mínimos.
@@ -234,14 +243,11 @@ class LivroController
      */
     private static function validarEstruturaEditora($editora)
     {
-        if (preg_match("/^[A-Za-z0-9\s\.\-]+$/", trim($editora))) {
-            $palavras = explode(" ", trim($editora));
-            if (count($palavras) >= 2 && strlen($editora) >= 3 && strlen($editora) <= 300) {
-                return true;
-            }
+
+        if (preg_match("/^[\p{L}0-9\s\.\-&]+$/u", trim($editora))) {
+            return true;
         }
 
         return false;
     }
-
 }
