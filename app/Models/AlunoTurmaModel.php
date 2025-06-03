@@ -2,7 +2,7 @@
 
 require_once __DIR__ . '/../../config/Database.php';
 
-class AlunosTurmasModel
+class AlunoTurmaModel
 {
     private PDO $db;
 
