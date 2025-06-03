@@ -22,20 +22,29 @@ class GeneroController
      * Método responsável por cadastrar gênero.
      * @return void
      */
-    public function cadastro()
+    public function cadastrar()
     {
-            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-                $nome = $_POST['nome'];
-                $cor = $_POST['cor'];
+        header('Content-Type: application/json');
 
-            $erros = [];
+        $data = json_decode(file_get_contents('php://input'), true);
+
+        if (!$data) {
+            echo json_encode(["erro" => "Dados inválidos."]);
+            http_response_code(400);
+            exit();
+        }
+
+        $nome = $data['nome'] ?? null;
+        $cor = $data['cor'] ?? null;
+
+        $erros = [];
 
             if (!$this->validarEstruturaNome($nome)) {
                 $erros['nome'] = 'O nome não é válido. Por favor, tente novamente.';
             }
 
             if (!$this->validarEstruturaCor($cor)) {
-                $erros['senha'] = 'Essa estrutura de cor não é válida. Por favor, tente novamente.';
+                $erros['cor'] = 'Essa estrutura de cor não é válida. Por favor, tente novamente.';
             }
 
             if (!empty($erros)) {
@@ -45,7 +54,7 @@ class GeneroController
             }
 
             $generoExiste = $this->GeneroModel->buscaGenero($nome);
-            if (!$generoExiste) {
+            if ($generoExiste) {
                 $erros['nome'] = 'O gênero informado já está cadastrado. Por favor, verifique.';
                 echo json_encode(["erro" => $erros]);
                 http_response_code(400);
@@ -65,7 +74,7 @@ class GeneroController
                 http_response_code(500);
                 exit();
             }
-        }
+    
     }
 
     /**
@@ -131,12 +140,12 @@ class GeneroController
      */
     private static function validarEstruturaNome($nome)
     {
-        if (preg_match("/^[A-Za-zÀ-ÖØ-öø-ÿ' -]+$/", trim($nome))) {
-            $palavras = explode(" ", trim($nome));
-            if (count($palavras) >= 2 && strlen($nome) >= 3 && strlen($nome) <= 100) {
+         if (preg_match("/^[A-Za-zÀ-ÖØ-öø-ÿ'-]+$/", trim($nome))) {
+            if (strlen($nome) >= 3 && strlen($nome) <= 100) {
                 return true;
-            }
-        }
+            } 
+    }
+        
 
         return false;
     }
