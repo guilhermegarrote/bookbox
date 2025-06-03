@@ -14,32 +14,28 @@ class ExemplarController
         $this->exemplarModel = new ExemplarModel($db);
     }
 
-    public function cadastro()
+    public function cadastrar()
     {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $isbn = $_POST['isbn'];
-            $numeroExemplar = $_POST['numeroExemplar'];
-            $disponibilidade = $_POST['disponibilidade'];
+        header('Content-Type: application/json');
 
-            $erros = $this->validarDadosExemplar($isbn);
+        $data = json_decode(file_get_contents('php://input'), true);
 
-            if (!empty($erros)) {
-                echo json_encode(["erro" => $erros]);
-                http_response_code(400);
-                exit();
-            }
+        if (!$data) {
+            echo json_encode(["erro" => "Dados inválidos."]);
+            http_response_code(400);
+            exit();
+        }
+
+        $isbn = $data['isbn'] ?? null;
+        $quantidade = $data['quantidade'] ?? null;
+
+        $erros = [];
+
+            
 
             $livId = $this->exemplarModel->pesquisaLivroPorIsbn($isbn);
             if (!$livId) {
                 $erros['isbn'] = 'O livro com o ISBN informado não está cadastrado. Verifique o ISBN e tente novamente.';
-                echo json_encode(["erro" => $erros]);
-                http_response_code(400);
-                exit();
-            }
-
-            $exemplarExiste = $this->exemplarModel->pesquisarExemplar($numeroExemplar, $livId);
-            if ($exemplarExiste) {
-                $erros['exemplarId'] = 'O exemplar informado já está cadastrado.';
                 echo json_encode(["erro" => $erros]);
                 http_response_code(400);
                 exit();
@@ -56,10 +52,8 @@ class ExemplarController
                 http_response_code(500);
                 exit();
             }
-        } else {
-            require_once __DIR__ . '/../resources/views/exemplares/cadastro.php';
-        }
-    }
+        } 
+
 
     public function excluir()
     {
@@ -71,14 +65,14 @@ class ExemplarController
 
             $livId = $this->exemplarModel->pesquisaLivroPorIsbn($isbn);
             if (!$livId) {
-                $erros['livro'] = 'O livro com o ISBN informado não está cadastrado.';
+                $erros['isbn'] = 'O livro com o ISBN informado não está cadastrado.';
                 echo json_encode(["erro" => $erros]);
                 http_response_code(400);
                 exit();
             }
 
-            $exemplarExiste = $this->exemplarModel->pesquisarExemplar($exemplarId, $livId);
-            if (!$exemplarExiste) {
+            $exemplarNaoExiste = $this->exemplarModel->pesquisarExemplar($exemplarId, $livId);
+            if (!$exemplarNaoExiste) {
                 $erros['exemplar'] = 'O exemplar não foi encontrado.';
                 echo json_encode(["erro" => $erros]);
                 http_response_code(400);
@@ -100,22 +94,4 @@ class ExemplarController
         }
     }
 
-    private function validarDadosExemplar($isbn)
-    {
-        $erros = [];
-
-        if (empty($isbn)) {
-            $erros['isbn'] = 'O campo "ISBN" é obrigatório.';
-        } elseif (!preg_match("/^\d{9}(\d{3})?$/", $isbn)) {
-            $erros['isbn'] = 'O ISBN informado é inválido.';
-        }
-
-        if (!empty($erros)) {
-            echo json_encode(["erro" => $erros]);
-            http_response_code(400);
-            exit();
-        }
-
-        return $erros;
-    }
 }
