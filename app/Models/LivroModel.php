@@ -17,22 +17,22 @@ class LivroModel
 
     /**
      * Método responsável por cadastrar novo livro. 	
-     * @param string $Ibsn
+     * @param string $Isbn
      * @param string $titulo
      * @param string $autor
      * @param string $generoId
      * @param string $editora
      * @return bool
      */
-    public function cadastrar($Ibsn, $titulo, $autor, $generoId, $editora)
+    public function cadastrar($Isbn, $titulo, $autor, $generoId, $editora)
     {
         $uuidBin = hex2bin(str_replace('-', '', gerarUuid()));
 
-        $query = "INSERT INTO tblivros (livId, livIbsn, livTitulo, livAutor, fkGenId, livEditora) 
-        VALUES (:uuid, :Ibsn, :titulo, :autor, :generoId, :editora)";
+        $query = "INSERT INTO tblivros (livId, livIsbn, livTitulo, livAutor, fkGenId, livEditora) 
+        VALUES (:uuid, :Isbn, :titulo, :autor, :generoId, :editora)";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(":uuid", $uuidBin, PDO::PARAM_LOB);
-        $stmt->bindParam(":Ibsn", $Ibsn);
+        $stmt->bindParam(":Isbn", $Isbn);
         $stmt->bindParam(":titulo", $titulo);
         $stmt->bindParam(":autor", $autor);
         $stmt->bindParam(":generoId", $generoId);
@@ -41,59 +41,54 @@ class LivroModel
     }
 
     /**
-     * Método responsável por editar livro.
-     * @param string $id
-     * @param string|null $Ibsn
-     * @param string|null $titulo
-     * @param string|null $autor
-     * @param string|null $editora
-     * @param string|null $generoId
-     * @return bool
-     */
-    public function editar($id, $Ibsn, $titulo, $autor, $generoId, $editora)
-    {
-        $query = "UPDATE tblivros SET ";
+ * Método responsável por editar livro.
+ * @param string $id
+ * @param string|null $Isbn
+ * @param string|null $titulo
+ * @param string|null $autor
+ * @param string|null $generoId
+ * @param string|null $editora
+ * @return bool
+ */
+public function editar($id, $Isbn, $titulo, $autor, $generoId, $editora)
+{
+    $campos = [];
+    $params = [];
 
-        if ($Ibsn !== null) {
-            $query .= "livIBSN = :Ibsn, ";
-        }
-        if ($titulo !== null) {
-            $query .= "livTitulo = :titulo, ";
-        }
-        if ($autor !== null) {
-            $query .= "livAutor = :autor, ";
-        }
-        if ($generoId !== null) {
-            $query .= "fkGeneroId = :generoId, ";
-        }
-        if ($editora !== null) {
-            $query .= "livEditora = :editora, ";
-        }
+    if ($Isbn !== null) {
+        $campos[] = "livISBN = :Isbn";
+        $params[':Isbn'] = $Isbn;
+    }
+    if ($titulo !== null) {
+        $campos[] = "livTitulo = :titulo";
+        $params[':titulo'] = $titulo;
+    }
+    if ($autor !== null) {
+        $campos[] = "livAutor = :autor";
+        $params[':autor'] = $autor;
+    }
+    if ($generoId !== null) {
+        $campos[] = "fkGenId = :generoId";
+        $params[':generoId'] = $generoId;
+    }
+    if ($editora !== null) {
+        $campos[] = "livEditora = :editora";
+        $params[':editora'] = $editora;
+    }
 
-        $query .= " WHERE livId = :id";
-
+    
+    $query = "UPDATE tblivros SET " . implode(", ", $campos) . " WHERE livId = :id";
         $stmt = $this->db->prepare($query);
 
-        if ($Ibsn !== null) {
-            $stmt->bindParam(":Ibsn", $Ibsn);
-        }
-        if ($titulo !== null) {
-            $stmt->bindParam(":titulo", $titulo);
-        }
-        if ($autor !== null) {
-            $stmt->bindParam(":autor", $autor);
-        }
-        if ($generoId !== null) {
-            $stmt->bindParam(":generoId", $generoId);
-        }
-        if ($editora !== null) {
-            $stmt->bindParam(":editora", $editora);
+        foreach ($params as $chave => $valor) {
+            $stmt->bindValue($chave, $valor);
         }
 
-        $stmt->bindParam(":id", $id, PDO::PARAM_INT);
+        $stmt->bindValue(':id', $id, PDO::PARAM_STR);
 
         return $stmt->execute();
-    }
+}
+
 
     /**
      * Método responsável por excluir livro.
@@ -109,16 +104,17 @@ class LivroModel
     }
 
     /**
-     * Método responsável por pesquisar livro pelo IBSN.
-     * @param string $ibsn
+     * Método responsável por pesquisar livro pelo ISBN.
+     * @param string $isbn
      * @return bool
      */
-    public function buscaIbsn($ibsn)
+    public function buscaIsbn($isbn)
     {
-        $query = "SELECT * FROM tblivros WHERE livIbsn = :ibsn";
+        $query = "SELECT * FROM tblivros WHERE livIsbn = :isbn";
         $stmt = $this->db->prepare($query);
-        $stmt->bindParam(":ibsn", $ibsn);
-        return $stmt->execute();
+        $stmt->bindParam(":isbn", $isbn);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
     /**
@@ -129,11 +125,20 @@ class LivroModel
      * @param string $editora
      * @return bool
      */
-    public function buscaLivro($titulo, $autor, $editora)
-    {
-        $query = "SELECT livTitulo, livAutor, livEditora FROM tblivros WHERE livId = :id";
-        $stmt = $this->db->prepare($query);
-        $stmt->bindParam(":id", $id);
-        return $stmt->execute();
-    }
+   public function buscaLivro($titulo, $autor, $editora)
+{
+    $query = "SELECT livTitulo, livAutor, livEditora FROM tblivros WHERE livTitulo = :titulo AND livAutor = :autor AND livEditora = :editora";
+
+    $stmt = $this->db->prepare($query);
+    $stmt->execute([
+        ':titulo' => $titulo,
+        ':autor' => $autor,
+        ':editora' => $editora
+    ]);
+
+    // Retorna true se encontrar pelo menos 1 livro
+    return $stmt->fetch(PDO::FETCH_ASSOC) !== false;
+}
+
+
 }
