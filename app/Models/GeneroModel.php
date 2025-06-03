@@ -40,28 +40,36 @@ class GeneroModel
      * @param string|null $cor
      * @return bool
      */
-    public function editar($nome, $cor)
+    public function editar($id, $nome, $cor)
     {
+        $campos = [];
+        $params = [];
+
         $query = "UPDATE tbgeneros SET ";
 
         if ($nome !== null) {
-            $query .= "genNome = :nome";
+            $campos[] = "genNome = :nome";
+            $params[':nome'] = $nome;
         }
         if ($cor !== null) {
-            $query .= "genCorHex = :cor";
+            $campos[] = "genCorHex = :cor";
+            $params[':cor'] = $cor;
         }
 
-        $query .= " WHERE genId = :id";
+        if (empty($campos)) {
+            throw new Exception("Nenhum campo foi fornecido para atualizar.");
+        }
+
+        $query = "UPDATE tbgeneros SET " . implode(", ", $campos) . " WHERE genId = :id";
+
         $stmt = $this->db->prepare($query);
 
-        if ($nome !== null) {
-            $stmt->bindParam(":nome", $nome);
-        }
-        if ($cor !== null) {
-            $stmt->bindParam(":cor", $cor);
+        foreach ($params as $chave => $valor) {
+            $stmt->bindValue($chave, $valor);
         }
 
-        $stmt->bindParam(":id", $id, PDO::PARAM_INT);
+        $stmt->bindValue(':id', $id, PDO::PARAM_LOB);
+
         return $stmt->execute();
     }
 
@@ -88,6 +96,8 @@ class GeneroModel
         $query = "SELECT * FROM tbgeneros WHERE genNome = :genero";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(":genero", $genero);
-        return $stmt->execute();
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
     }
+
 }
