@@ -31,6 +31,8 @@
 
                 <div id="men-erro" class="login-erro font-urbanist"></div>
 
+                <a class='esqueceu-senha' href="/bookbox/pages/redefinicao-senha/email.php">Esqueceu sua Senha?</a>
+
                 <button type="submit" class="login-button">→</button>
             </form>
         </div>
