@@ -47,7 +47,7 @@ h1 {
 .cadastro-box {
     width: 400px;
     height: 600px;
-    padding: 45px 65px 45px 65px ;
+    padding: 45px 65px 45px 65px;
     border-radius: 20px;
     background-color: rgb(255, 255, 255);
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
@@ -58,7 +58,7 @@ h1 {
     position: relative;
     display: flex;
     flex-direction: column;
-    text-align: center; 
+    text-align: center;
 }
 
 /* Título */
@@ -161,7 +161,7 @@ h1 {
     font-size: 32px;
     font-weight: bold;
     margin-bottom: 30px;
-     color: #333;
+    color: #333;
     text-align: center;
 }
 
@@ -353,7 +353,7 @@ h1 {
     border: none;
     cursor: pointer;
     overflow: hidden;
-    
+
 }
 
 .menu-top-btn::after {
@@ -370,7 +370,7 @@ h1 {
 
 .menu-top-btn:hover::after {
     width: 75%;
-    
+
 }
 
 .trespontinhos {
@@ -601,6 +601,16 @@ h1 {
     font-size: 1em;
 }
 
+.modal-inputt {
+    height: 35px;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    background-color: transparent;
+    outline: none;
+    font-size: 1em;
+}
+
 .labelline {
     position: absolute;
     font-size: 1em;
@@ -611,6 +621,17 @@ h1 {
     top: 50%;
     left: 10px;
     transform: translateY(-50%);
+}
+
+.label-fixa {
+    top: -10px;
+    left: 10px;
+    font-size: 0.85em;
+    background-color: #ffffff;
+    padding: 0 5px;
+    transform: none;
+    color: #6e6e6e;
+    pointer-events: none;
 }
 
 .label-fixa {
@@ -654,7 +675,7 @@ h1 {
     z-index: 2;
 }
 
-.modal-input.preenchido + .labelline {
+.modal-input.preenchido+.labelline {
     position: absolute;
     color: #000000;
     top: 0px;
@@ -697,26 +718,31 @@ h1 {
 }
 
 .login-erro {
-        color: red;
-        margin-top: 10px;
-        display: block;
-        font-family: 'Urbanist';
-        font-weight: bold;
-        font-size: 0.95rem;
-        margin-left: 20%;
-    }
+    color: red;
+    margin-top: 10px;
+    display: block;
+    font-family: 'Urbanist';
+    font-weight: bold;
+    font-size: 0.95rem;
+    margin-left: 20%;
+}
 
 .cadastro-erro {
     color: red;
     font-family: 'Urbanist', sans-serif;
     font-weight: bold;
     font-size: 0.95rem;
-    min-height: 10px; /* espaço fixo reservado */
-    margin: 0;         /* remove margens externas */
-    padding: 0;        /* remove espaçamento interno */
-    line-height: 1.2;  /* controla a altura da linha para evitar estourar */
+    min-height: 10px;
+    /* espaço fixo reservado */
+    margin: 0;
+    /* remove margens externas */
+    padding: 0;
+    /* remove espaçamento interno */
+    line-height: 1.2;
+    /* controla a altura da linha para evitar estourar */
     display: block;
-    overflow: hidden;  /* evita estourar se a mensagem for grande */
+    overflow: hidden;
+    /* evita estourar se a mensagem for grande */
 }
 
 #overlay {
@@ -746,7 +772,7 @@ h1 {
     pointer-events: none;
 }
 
-.esqueceu-senha{
+.esqueceu-senha {
     color: #333;
     margin-top: 10px;
     display: block;
@@ -754,11 +780,11 @@ h1 {
     font-weight: bold;
     font-size: 1.1rem;
     margin-left: 20%;
-    text-decoration: none; 
+    text-decoration: none;
 }
 
 
-  .esqueceu-senha::after {
+.esqueceu-senha::after {
     content: '';
     position: absolute;
     margin-top: 20px;
@@ -766,16 +792,18 @@ h1 {
     height: 2px;
     width: 13%;
     background-color: #000;
-     transform: translateX(-50%) scaleX(0); /* centraliza e esconde */
+    transform: translateX(-50%) scaleX(0);
+    /* centraliza e esconde */
     transform-origin: center;
     transition: transform 0.3s ease;
-  }
+}
 
-  .esqueceu-senha:hover::after {
-     transform: translateX(-50%) scaleX(1); /* revela expandindo do centro */
-  }
+.esqueceu-senha:hover::after {
+    transform: translateX(-50%) scaleX(1);
+    /* revela expandindo do centro */
+}
 
-  /*  TELA DE CADASTRO */
+/*  TELA DE CADASTRO */
 .email-container {
     height: 100vh;
     display: flex;
@@ -790,7 +818,7 @@ h1 {
 .email-box {
     width: 400px;
     height: 300px;
-    padding: 45px 65px 45px 65px ;
+    padding: 45px 65px 45px 65px;
     border-radius: 20px;
     background-color: rgb(255, 255, 255);
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
@@ -801,7 +829,7 @@ h1 {
     position: relative;
     display: flex;
     flex-direction: column;
-    text-align: center; 
+    text-align: center;
 }
 
 /* Título */
@@ -866,6 +894,7 @@ h1 {
     background-color: #444;
     color: #ffffff;
 }
+
 /*---------------------------*/
 .codigo-container {
     height: 100vh;
@@ -880,7 +909,7 @@ h1 {
 .codigo-box {
     width: 450px;
     height: 200px;
-    padding: 30px 50px 45px 50px ;
+    padding: 30px 50px 45px 50px;
     border-radius: 20px;
     background-color: rgb(252, 252, 252);
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
@@ -892,23 +921,23 @@ h1 {
     position: relative;
     display: flex;
     flex-direction: column;
-    text-align: center; 
-    
+    text-align: center;
+
 }
 
-.hc{
+.hc {
     font-family: 'Urbanist';
     font-weight: bold;
     font-size: 1rem;
     color: #6e6e6e;
 }
 
-.codigo-q{
+.codigo-q {
     position: absolute;
     width: 95%;
     bottom: 40%;
     display: flex;
-    gap: 2% ;
+    gap: 2%;
 }
 
 .codigo-input {
@@ -925,7 +954,7 @@ h1 {
     display: block;
 }
 
-.reenviar{
+.reenviar {
     position: absolute;
     left: 20%;
     color: #333;
@@ -935,11 +964,11 @@ h1 {
     font-weight: bold;
     font-size: 1.1rem;
     margin-left: 20%;
-    text-decoration: none; 
+    text-decoration: none;
 }
 
 
-  .reenviar::after {
+.reenviar::after {
     content: '';
     position: absolute;
     margin-top: 20px;
@@ -947,16 +976,18 @@ h1 {
     height: 2px;
     width: 70px;
     background-color: #000;
-     transform: translateX(-50%) scaleX(0); /* centraliza e esconde */
+    transform: translateX(-50%) scaleX(0);
+    /* centraliza e esconde */
     transform-origin: center;
     transition: transform 0.3s ease;
-  }
+}
 
-  .reenviar:hover::after {
-     transform: translateX(-50%) scaleX(1); /* revela expandindo do centro */
-  }
+.reenviar:hover::after {
+    transform: translateX(-50%) scaleX(1);
+    /* revela expandindo do centro */
+}
 
-  .nova-senha-button {
+.nova-senha-button {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -975,4 +1006,54 @@ h1 {
 .nova-senha-button:hover {
     background-color: var(--cinza-escuro);
     color: var(--branco);
+}
+
+/* Faz a label ficar fixa acima do campo */
+.label-fixa {
+    position: absolute;
+    top: -10px;
+    left: 10px;
+    font-size: 12px;
+    color: #444;
+    pointer-events: none;
+}
+
+.modal-bodyy {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    min-width: auto;
+    max-width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.quantity-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.modal-inputt {
+    width: 60px;
+    height: 40px;
+    text-align: center;
+    font-size: 18px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+}
+
+.quantity-btn {
+    background-color: #2c2c2c;
+    color: white;
+    font-size: 20px;
+    width: 40px;
+    height: 40px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
 }
