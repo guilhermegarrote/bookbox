@@ -51,7 +51,7 @@
 
         <div class="modal-footer">
             <button id="botao-fechar-modal" class="modal-button">Cancelar</button>
-             <button id="botao-cadastar" data-entidade="emprestimo" class="modal-button">Cadastrar</button>
+             <button id="botao-cadastrar" data-entidade="emprestimo" class="modal-button">Cadastrar</button>
         </div>
     </div>
 </div>

@@ -72,7 +72,7 @@ function rotear($caminho, $metodo, $usuarioController, $turmaController, $genero
             '/modals/cadastro_exemplar' => fn() => carregarPagina('modals/exemplares/cadastro_exemplar'),
             '/popups/filtro' => fn() => carregarPagina('popups/filtro'),
             '/popups/genero_nao_cadastrado' => fn() => carregarPagina('popups/genero_nao_cadastrado'),
-            '/popups/confirmar_finalizacao_emprestimo' => fn() => carregarPagina('popups/confirmar_finalizacao_emprestimo'),
+            '/popups/confirmacao_finalizacao_emprestimo' => fn() => carregarPagina('popups/confirmacao_finalizacao_emprestimo'),
             '/popups/confirmacao_exclusao_aluno' => fn() => carregarPagina('popups/confirmacao_exclusao_aluno'),
             '/pages/redefinicao-senha/email.php' => fn() => carregarPagina('pages/redefinicao-senha/email'),
             '/pages/redefinicao-senha/codigo.php' => fn() => carregarPagina('pages/redefinicao-senha/codigo'),
