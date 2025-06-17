@@ -3,196 +3,21 @@
   "version": "1",
   "items": [
     {
-      "type": "http",
-      "name": "login",
-      "filename": "login.bru",
-      "seq": 1,
-      "request": {
-        "url": "http://localhost/bookbox/api/login",
-        "method": "POST",
-        "headers": [
-          {
-            "name": "Content-Type",
-            "value": "application/json",
-            "enabled": true
-          }
-        ],
-        "params": [],
-        "body": {
-          "mode": "json",
-          "json": "{\r\n  \"email\": \"{{emailValido}}\",\r\n  \"senha\": \"{{senhaValida}}\"\r\n}",
-          "formUrlEncoded": [],
-          "multipartForm": [],
-          "file": []
-        },
-        "script": {},
-        "vars": {},
-        "assertions": [],
-        "tests": "",
-        "docs": "",
-        "auth": {
-          "mode": "inherit"
-        }
-      }
-    },
-    {
-      "type": "folder",
-      "name": "Gênero",
-      "filename": "Gênero",
-      "root": {
-        "meta": {
-          "name": "Gênero"
-        }
-      },
-      "items": [
-        {
-          "type": "http",
-          "name": "PATCH_editar__erro-validacao",
-          "filename": "PATCH_editar__erro-validacao.bru",
-          "seq": 4,
-          "request": {
-            "url": "http://localhost/bookbox/api/generos/editar",
-            "method": "PATCH",
-            "headers": [
-              {
-                "name": "Content-Type",
-                "value": "application/json",
-                "enabled": true
-              }
-            ],
-            "params": [],
-            "body": {
-              "mode": "json",
-              "json": "{\n  \"id\" : \"{{idGeneroInvalido}}\",\n  \"nome\": \"{{nomeGeneroInvalido}}\",\n  \"cor\": \"{{corGeneroInvalida}}\"\n}",
-              "formUrlEncoded": [],
-              "multipartForm": [],
-              "file": []
-            },
-            "script": {},
-            "vars": {},
-            "assertions": [],
-            "tests": "",
-            "docs": "",
-            "auth": {
-              "mode": "inherit"
-            }
-          }
-        },
-        {
-          "type": "http",
-          "name": "PATCH_editar__sucesso",
-          "filename": "PATCH_editar__sucesso.bru",
-          "seq": 3,
-          "request": {
-            "url": "http://localhost/bookbox/api/generos/editar",
-            "method": "PATCH",
-            "headers": [
-              {
-                "name": "Content-Type",
-                "value": "application/json",
-                "enabled": true
-              }
-            ],
-            "params": [],
-            "body": {
-              "mode": "json",
-              "json": "{\n  \"id\" : \"{{idGeneroValido}}\",\n  \"nome\": \"{{nomeGeneroValido2}}\",\n  \"cor\": \"{{corGeneroValida2}}\"\n}",
-              "formUrlEncoded": [],
-              "multipartForm": [],
-              "file": []
-            },
-            "script": {},
-            "vars": {},
-            "assertions": [],
-            "tests": "",
-            "docs": "",
-            "auth": {
-              "mode": "inherit"
-            }
-          }
-        },
-        {
-          "type": "http",
-          "name": "POST_cadastrar__erro",
-          "filename": "POST_cadastrar__erro.bru",
-          "seq": 2,
-          "request": {
-            "url": "http://localhost/bookbox/api/generos/cadastrar",
-            "method": "POST",
-            "headers": [
-              {
-                "name": "Content-Type",
-                "value": "application/json",
-                "enabled": true
-              }
-            ],
-            "params": [],
-            "body": {
-              "mode": "json",
-              "json": "{\n  \"nome\": \"{{nomeGeneroInvalido}}\",\n  \"cor\": \"{{corGeneroInvalida}}\"\n}",
-              "formUrlEncoded": [],
-              "multipartForm": [],
-              "file": []
-            },
-            "script": {},
-            "vars": {},
-            "assertions": [],
-            "tests": "",
-            "docs": "",
-            "auth": {
-              "mode": "inherit"
-            }
-          }
-        },
-        {
-          "type": "http",
-          "name": "POST_cadastrar__sucesso",
-          "filename": "POST_cadastrar__sucesso.bru",
-          "seq": 1,
-          "request": {
-            "url": "http://localhost/bookbox/api/generos/cadastrar",
-            "method": "POST",
-            "headers": [
-              {
-                "name": "Content-Type",
-                "value": "application/json",
-                "enabled": true
-              }
-            ],
-            "params": [],
-            "body": {
-              "mode": "json",
-              "json": "{\n  \"nome\": \"{{nomeGeneroValido}}\",\n  \"cor\": \"{{corGeneroValida}}\"\n}",
-              "formUrlEncoded": [],
-              "multipartForm": [],
-              "file": []
-            },
-            "script": {},
-            "vars": {},
-            "assertions": [],
-            "tests": "",
-            "docs": "",
-            "auth": {
-              "mode": "inherit"
-            }
-          }
-        }
-      ]
-    },
-    {
       "type": "folder",
       "name": "Exemplares",
       "filename": "Exemplares",
+      "seq": 5,
       "root": {
         "meta": {
-          "name": "Exemplares"
+          "name": "Exemplares",
+          "seq": 5
         }
       },
       "items": [
         {
           "type": "http",
-          "name": "POST_cadastrar__erro",
-          "filename": "POST_cadastrar__erro.bru",
+          "name": "POST_cadastrar__erro-validacao",
+          "filename": "POST_cadastrar__erro-validacao.bru",
           "seq": 2,
           "request": {
             "url": "http://localhost/bookbox/api/exemplares/cadastrar",
@@ -259,155 +84,13 @@
     },
     {
       "type": "folder",
-      "name": "Livros",
-      "filename": "Livros",
-      "root": {
-        "meta": {
-          "name": "Livros"
-        }
-      },
-      "items": [
-        {
-          "type": "http",
-          "name": "PATCH_editar__erro-validacao",
-          "filename": "PATCH_editar__erro-validacao.bru",
-          "seq": 4,
-          "request": {
-            "url": "http://localhost/bookbox/api/livros/editar",
-            "method": "PATCH",
-            "headers": [
-              {
-                "name": "Content-Type",
-                "value": "application/json",
-                "enabled": true
-              }
-            ],
-            "params": [],
-            "body": {
-              "mode": "json",
-              "json": "{\n  \"id\": \"{{idLivroInvalido}}\",\n  \"isbn\": \"{{isbnInvalido}}\",\n  \"titulo\": \"{{tituloInvalido}}\",\n  \"autor\": \"{{autorInvalido}}\",\n  \"genero\": \"{{nomeGeneroInvalido}}\",\n  \"editora\": \"{{editoraInvalida}}\"\n}",
-              "formUrlEncoded": [],
-              "multipartForm": [],
-              "file": []
-            },
-            "script": {},
-            "vars": {},
-            "assertions": [],
-            "tests": "",
-            "docs": "",
-            "auth": {
-              "mode": "inherit"
-            }
-          }
-        },
-        {
-          "type": "http",
-          "name": "PATCH_editar__sucesso",
-          "filename": "PATCH_editar__sucesso.bru",
-          "seq": 3,
-          "request": {
-            "url": "http://localhost/bookbox/api/livros/editar",
-            "method": "PATCH",
-            "headers": [
-              {
-                "name": "Content-Type",
-                "value": "application/json",
-                "enabled": true
-              }
-            ],
-            "params": [],
-            "body": {
-              "mode": "json",
-              "json": "{\n  \"id\": \"{{idLivroValido}}\",\n  \"isbn\": \"{{isbnValido2}}\",\n  \"titulo\": \"{{tituloValido}}\",\n  \"autor\": \"{{autorValido2}}\",\n  \"genero\": \"{{nomeGeneroValido2}}\",\n  \"editora\": \"{{editoraValida2}}\"\n}",
-              "formUrlEncoded": [],
-              "multipartForm": [],
-              "file": []
-            },
-            "script": {},
-            "vars": {},
-            "assertions": [],
-            "tests": "",
-            "docs": "",
-            "auth": {
-              "mode": "inherit"
-            }
-          }
-        },
-        {
-          "type": "http",
-          "name": "POST_cadastrar__erro-validacao",
-          "filename": "POST_cadastrar__erro-validacao.bru",
-          "seq": 2,
-          "request": {
-            "url": "http://localhost/bookbox/api/livros/cadastrar",
-            "method": "POST",
-            "headers": [
-              {
-                "name": "Content-Type",
-                "value": "application/json",
-                "enabled": true
-              }
-            ],
-            "params": [],
-            "body": {
-              "mode": "json",
-              "json": "{\n  \"isbn\": \"{{isbnInvalido}}\",\n  \"titulo\": \"{{tituloInvalido}}\",\n  \"autor\": \"{{autorInvalido}}\",\n  \"genero\": \"{{nomeGeneroInvalido}}\",\n  \"editora\": \"{{editoraInvalida}}\"\n}",
-              "formUrlEncoded": [],
-              "multipartForm": [],
-              "file": []
-            },
-            "script": {},
-            "vars": {},
-            "assertions": [],
-            "tests": "",
-            "docs": "",
-            "auth": {
-              "mode": "inherit"
-            }
-          }
-        },
-        {
-          "type": "http",
-          "name": "POST_cadastrar__sucesso",
-          "filename": "POST_cadastrar__sucesso.bru",
-          "seq": 1,
-          "request": {
-            "url": "http://localhost/bookbox/api/livros/cadastrar",
-            "method": "POST",
-            "headers": [
-              {
-                "name": "Content-Type",
-                "value": "application/json",
-                "enabled": true
-              }
-            ],
-            "params": [],
-            "body": {
-              "mode": "json",
-              "json": "{\n  \"isbn\": \"{{isbnValido}}\",\n  \"titulo\": \"{{tituloValido}}\",\n  \"autor\": \"{{autorValido}}\",\n  \"genero\": \"{{nomeGeneroValido}}\",\n  \"editora\": \"{{editoraValida}}\"\n}",
-              "formUrlEncoded": [],
-              "multipartForm": [],
-              "file": []
-            },
-            "script": {},
-            "vars": {},
-            "assertions": [],
-            "tests": "",
-            "docs": "",
-            "auth": {
-              "mode": "inherit"
-            }
-          }
-        }
-      ]
-    },
-    {
-      "type": "folder",
       "name": "Alunos",
       "filename": "Alunos",
+      "seq": 3,
       "root": {
         "meta": {
-          "name": "Alunos"
+          "name": "Alunos",
+          "seq": 3
         }
       },
       "items": [
@@ -417,7 +100,7 @@
           "filename": "PATCH_cadastrar__erro-validacao.bru",
           "seq": 4,
           "request": {
-            "url": "http://localhost/bookbox/api/alunos/editar",
+            "url": "http://localhost/bookbox/api/alunos/editar/{{id_aluno_invalido}}",
             "method": "PATCH",
             "headers": [
               {
@@ -450,7 +133,7 @@
           "filename": "PATCH_cadastrar__sucesso.bru",
           "seq": 3,
           "request": {
-            "url": "http://localhost/bookbox/api/alunos/editar",
+            "url": "http://localhost/bookbox/api/alunos/editar/{{id_aluno_valido}}",
             "method": "PATCH",
             "headers": [
               {
@@ -547,21 +230,89 @@
     },
     {
       "type": "folder",
-      "name": "Usuarios",
-      "filename": "Usuarios",
+      "name": "Gênero",
+      "filename": "Gênero",
+      "seq": 4,
       "root": {
         "meta": {
-          "name": "Usuarios"
+          "name": "Gênero",
+          "seq": 4
         }
       },
       "items": [
         {
           "type": "http",
+          "name": "PATCH_editar__erro-validacao",
+          "filename": "PATCH_editar__erro-validacao.bru",
+          "seq": 4,
+          "request": {
+            "url": "http://localhost/bookbox/api/generos/editar",
+            "method": "PATCH",
+            "headers": [
+              {
+                "name": "Content-Type",
+                "value": "application/json",
+                "enabled": true
+              }
+            ],
+            "params": [],
+            "body": {
+              "mode": "json",
+              "json": "{\n  \"id\" : \"{{idGeneroInvalido}}\",\n  \"nome\": \"{{nomeGeneroInvalido}}\",\n  \"cor\": \"{{corGeneroInvalida}}\"\n}",
+              "formUrlEncoded": [],
+              "multipartForm": [],
+              "file": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "inherit"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "PATCH_editar__sucesso",
+          "filename": "PATCH_editar__sucesso.bru",
+          "seq": 3,
+          "request": {
+            "url": "http://localhost/bookbox/api/generos/editar",
+            "method": "PATCH",
+            "headers": [
+              {
+                "name": "Content-Type",
+                "value": "application/json",
+                "enabled": true
+              }
+            ],
+            "params": [],
+            "body": {
+              "mode": "json",
+              "json": "{\n  \"id\" : \"{{idGeneroValido}}\",\n  \"nome\": \"{{nomeGeneroValido2}}\",\n  \"cor\": \"{{corGeneroValida2}}\"\n}",
+              "formUrlEncoded": [],
+              "multipartForm": [],
+              "file": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "inherit"
+            }
+          }
+        },
+        {
+          "type": "http",
           "name": "POST_cadastrar__erro-validacao",
           "filename": "POST_cadastrar__erro-validacao.bru",
-          "seq": 1,
+          "seq": 2,
           "request": {
-            "url": "http://localhost/bookbox/api/usuarios/cadastrar",
+            "url": "http://localhost/bookbox/api/generos/cadastrar",
             "method": "POST",
             "headers": [
               {
@@ -573,7 +324,7 @@
             "params": [],
             "body": {
               "mode": "json",
-              "json": "{\r\n  \"nome\": \"{{nomeInvalido}}\",\r\n  \"email\": \"{{emailInvalido}}\",\r\n  \"senha\": \"{{senhaInvalida}}\",\r\n  \"senhaConfirmada\": \"{{senhaValida}}\"\r\n}",
+              "json": "{\n  \"nome\": \"{{nomeGeneroInvalido}}\",\n  \"cor\": \"{{corGeneroInvalida}}\"\n}",
               "formUrlEncoded": [],
               "multipartForm": [],
               "file": []
@@ -594,7 +345,7 @@
           "filename": "POST_cadastrar__sucesso.bru",
           "seq": 1,
           "request": {
-            "url": "http://localhost/bookbox/api/usuarios/cadastrar",
+            "url": "http://localhost/bookbox/api/generos/cadastrar",
             "method": "POST",
             "headers": [
               {
@@ -606,7 +357,153 @@
             "params": [],
             "body": {
               "mode": "json",
-              "json": "{\r\n  \"nome\": \"{{nomeValido}}\",\r\n  \"email\": \"{{emailValido}}\",\r\n  \"senha\": \"{{senhaValida}}\",\r\n  \"senhaConfirmada\": \"{{senhaValida}}\"\r\n}",
+              "json": "{\n  \"nome\": \"{{nomeGeneroValido}}\",\n  \"cor\": \"{{corGeneroValida}}\"\n}",
+              "formUrlEncoded": [],
+              "multipartForm": [],
+              "file": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "inherit"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "type": "folder",
+      "name": "Livros",
+      "filename": "Livros",
+      "seq": 6,
+      "root": {
+        "meta": {
+          "name": "Livros",
+          "seq": 6
+        }
+      },
+      "items": [
+        {
+          "type": "http",
+          "name": "PATCH_editar__erro-validacao",
+          "filename": "PATCH_editar__erro-validacao.bru",
+          "seq": 4,
+          "request": {
+            "url": "http://localhost/bookbox/api/livros/editar",
+            "method": "PATCH",
+            "headers": [
+              {
+                "name": "Content-Type",
+                "value": "application/json",
+                "enabled": true
+              }
+            ],
+            "params": [],
+            "body": {
+              "mode": "json",
+              "json": "{\n  \"id\": \"{{idLivroInvalido}}\",\n  \"isbn\": \"{{isbnInvalido}}\",\n  \"titulo\": \"{{tituloInvalido}}\",\n  \"autor\": \"{{autorInvalido}}\",\n  \"genero\": \"{{nomeGeneroInvalido}}\",\n  \"editora\": \"{{editoraInvalida}}\"\n}",
+              "formUrlEncoded": [],
+              "multipartForm": [],
+              "file": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "inherit"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "PATCH_editar__sucesso",
+          "filename": "PATCH_editar__sucesso.bru",
+          "seq": 3,
+          "request": {
+            "url": "http://localhost/bookbox/api/livros/editar/{{idLivroValido}}",
+            "method": "PATCH",
+            "headers": [
+              {
+                "name": "Content-Type",
+                "value": "application/json",
+                "enabled": true
+              }
+            ],
+            "params": [],
+            "body": {
+              "mode": "json",
+              "json": "{\n  \"id\": \"{{idLivroValido}}\",\n  \"isbn\": \"{{isbnValido2}}\",\n  \"titulo\": \"{{tituloValido}}\",\n  \"autor\": \"{{autorValido2}}\",\n  \"genero\": \"{{nomeGeneroValido2}}\",\n  \"editora\": \"{{editoraValida2}}\"\n}",
+              "formUrlEncoded": [],
+              "multipartForm": [],
+              "file": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "inherit"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "POST_cadastrar__erro-validacao",
+          "filename": "POST_cadastrar__erro-validacao.bru",
+          "seq": 2,
+          "request": {
+            "url": "http://localhost/bookbox/api/livros/cadastrar",
+            "method": "POST",
+            "headers": [
+              {
+                "name": "Content-Type",
+                "value": "application/json",
+                "enabled": true
+              }
+            ],
+            "params": [],
+            "body": {
+              "mode": "json",
+              "json": "{\n  \"isbn\": \"{{isbnInvalido}}\",\n  \"titulo\": \"{{tituloInvalido}}\",\n  \"autor\": \"{{autorInvalido}}\",\n  \"genero\": \"{{nomeGeneroInvalido}}\",\n  \"editora\": \"{{editoraInvalida}}\"\n}",
+              "formUrlEncoded": [],
+              "multipartForm": [],
+              "file": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "inherit"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "POST_cadastrar__sucesso",
+          "filename": "POST_cadastrar__sucesso.bru",
+          "seq": 1,
+          "request": {
+            "url": "http://localhost/bookbox/api/livros/cadastrar",
+            "method": "POST",
+            "headers": [
+              {
+                "name": "Content-Type",
+                "value": "application/json",
+                "enabled": true
+              }
+            ],
+            "params": [],
+            "body": {
+              "mode": "json",
+              "json": "{\n  \"isbn\": \"{{isbnValido}}\",\n  \"titulo\": \"{{tituloValido}}\",\n  \"autor\": \"{{autorValido}}\",\n  \"genero\": \"{{nomeGeneroValido}}\",\n  \"editora\": \"{{editoraValida}}\"\n}",
               "formUrlEncoded": [],
               "multipartForm": [],
               "file": []
@@ -627,9 +524,11 @@
       "type": "folder",
       "name": "Turmas",
       "filename": "Turmas",
+      "seq": 7,
       "root": {
         "meta": {
-          "name": "Turmas"
+          "name": "Turmas",
+          "seq": 7
         }
       },
       "items": [
@@ -639,7 +538,7 @@
           "filename": "PATCH_editar__erro-validacao.bru",
           "seq": 4,
           "request": {
-            "url": "http://localhost/bookbox/api/turmas/editar",
+            "url": "http://localhost/bookbox/api/turmas/editar{{id_turmas_invalido}}",
             "method": "PATCH",
             "headers": [
               {
@@ -672,7 +571,7 @@
           "filename": "PATCH_editar__sucesso.bru",
           "seq": 3,
           "request": {
-            "url": "http://localhost/bookbox/api/turmas/editar",
+            "url": "http://localhost/bookbox/api/turmas/editar{{id_turmas_valido}}",
             "method": "PATCH",
             "headers": [
               {
@@ -766,9 +665,122 @@
           }
         }
       ]
+    },
+    {
+      "type": "folder",
+      "name": "Usuarios",
+      "filename": "Usuarios",
+      "seq": 2,
+      "root": {
+        "meta": {
+          "name": "Usuarios",
+          "seq": 2
+        }
+      },
+      "items": [
+        {
+          "type": "http",
+          "name": "POST_cadastrar__erro-validacao",
+          "filename": "POST_cadastrar__erro-validacao.bru",
+          "seq": 1,
+          "request": {
+            "url": "http://localhost/bookbox/api/usuarios/cadastrar",
+            "method": "POST",
+            "headers": [
+              {
+                "name": "Content-Type",
+                "value": "application/json",
+                "enabled": true
+              }
+            ],
+            "params": [],
+            "body": {
+              "mode": "json",
+              "json": "{\r\n  \"nome\": \"{{nomeInvalido}}\",\r\n  \"email\": \"{{emailInvalido}}\",\r\n  \"senha\": \"{{senhaInvalida}}\",\r\n  \"senhaConfirmada\": \"{{senhaValida}}\"\r\n}",
+              "formUrlEncoded": [],
+              "multipartForm": [],
+              "file": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "inherit"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "POST_cadastrar__sucesso",
+          "filename": "POST_cadastrar__sucesso.bru",
+          "seq": 1,
+          "request": {
+            "url": "http://localhost/bookbox/api/usuarios/cadastrar",
+            "method": "POST",
+            "headers": [
+              {
+                "name": "Content-Type",
+                "value": "application/json",
+                "enabled": true
+              }
+            ],
+            "params": [],
+            "body": {
+              "mode": "json",
+              "json": "{\r\n  \"nome\": \"{{nomeValido}}\",\r\n  \"email\": \"{{emailValido}}\",\r\n  \"senha\": \"{{senhaValida}}\",\r\n  \"senhaConfirmada\": \"{{senhaValida}}\"\r\n}",
+              "formUrlEncoded": [],
+              "multipartForm": [],
+              "file": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "inherit"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "POST_login__sucesso",
+          "filename": "POST_login__sucesso.bru",
+          "seq": 1,
+          "request": {
+            "url": "http://localhost/bookbox/api/login",
+            "method": "POST",
+            "headers": [
+              {
+                "name": "Content-Type",
+                "value": "application/json",
+                "enabled": true
+              }
+            ],
+            "params": [],
+            "body": {
+              "mode": "json",
+              "json": "{\r\n  \"email\": \"{{emailValido}}\",\r\n  \"senha\": \"{{senhaValida}}\"\r\n}",
+              "formUrlEncoded": [],
+              "multipartForm": [],
+              "file": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "inherit"
+            }
+          }
+        }
+      ]
     }
   ],
-  "activeEnvironmentUid": "TobeRDhBISQ4uzj6hPleY",
+  "activeEnvironmentUid": "EkepWKtm0te84VZPKHGK8",
   "environments": [
     {
       "variables": [
@@ -1106,7 +1118,7 @@
       "node_modules",
       ".git"
     ],
-    "size": 0.008929252624511719,
+    "size": 0.009013175964355469,
     "filesCount": 29
   }
 }
