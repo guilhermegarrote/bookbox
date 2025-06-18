@@ -4,86 +4,6 @@
   "items": [
     {
       "type": "folder",
-      "name": "Exemplares",
-      "filename": "Exemplares",
-      "seq": 5,
-      "root": {
-        "meta": {
-          "name": "Exemplares",
-          "seq": 5
-        }
-      },
-      "items": [
-        {
-          "type": "http",
-          "name": "POST_cadastrar__erro-validacao",
-          "filename": "POST_cadastrar__erro-validacao.bru",
-          "seq": 2,
-          "request": {
-            "url": "http://localhost/bookbox/api/exemplares/cadastrar",
-            "method": "POST",
-            "headers": [
-              {
-                "name": "Content-Type",
-                "value": "application/json",
-                "enabled": true
-              }
-            ],
-            "params": [],
-            "body": {
-              "mode": "json",
-              "json": "{\n  \"isbn\": \"{{isbnInvalido}}\"\n}",
-              "formUrlEncoded": [],
-              "multipartForm": [],
-              "file": []
-            },
-            "script": {},
-            "vars": {},
-            "assertions": [],
-            "tests": "",
-            "docs": "",
-            "auth": {
-              "mode": "inherit"
-            }
-          }
-        },
-        {
-          "type": "http",
-          "name": "POST_cadastrar__sucesso",
-          "filename": "POST_cadastrar__sucesso.bru",
-          "seq": 1,
-          "request": {
-            "url": "http://localhost/bookbox/api/exemplares/cadastrar",
-            "method": "POST",
-            "headers": [
-              {
-                "name": "Content-Type",
-                "value": "application/json",
-                "enabled": true
-              }
-            ],
-            "params": [],
-            "body": {
-              "mode": "json",
-              "json": "{\n  \"isbn\": \"{{isbnValido2}}\"\n}",
-              "formUrlEncoded": [],
-              "multipartForm": [],
-              "file": []
-            },
-            "script": {},
-            "vars": {},
-            "assertions": [],
-            "tests": "",
-            "docs": "",
-            "auth": {
-              "mode": "inherit"
-            }
-          }
-        }
-      ]
-    },
-    {
-      "type": "folder",
       "name": "Alunos",
       "filename": "Alunos",
       "seq": 3,
@@ -212,6 +132,86 @@
             "body": {
               "mode": "json",
               "json": "{\r\n  \"nome\": \"{{nomeValido}}\",\r\n  \"cpf\": \"{{cpfValido}}\",\r\n  \"email\": \"{{emailValido}}\",\r\n  \"telefone\": \"{{telefoneValido}}\"\r\n}",
+              "formUrlEncoded": [],
+              "multipartForm": [],
+              "file": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "inherit"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "type": "folder",
+      "name": "Exemplares",
+      "filename": "Exemplares",
+      "seq": 5,
+      "root": {
+        "meta": {
+          "name": "Exemplares",
+          "seq": 5
+        }
+      },
+      "items": [
+        {
+          "type": "http",
+          "name": "POST_cadastrar__erro-validacao",
+          "filename": "POST_cadastrar__erro-validacao.bru",
+          "seq": 2,
+          "request": {
+            "url": "http://localhost/bookbox/api/exemplares/cadastrar",
+            "method": "POST",
+            "headers": [
+              {
+                "name": "Content-Type",
+                "value": "application/json",
+                "enabled": true
+              }
+            ],
+            "params": [],
+            "body": {
+              "mode": "json",
+              "json": "{\n  \"isbn\": \"{{isbnInvalido}}\"\n}",
+              "formUrlEncoded": [],
+              "multipartForm": [],
+              "file": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "inherit"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "POST_cadastrar__sucesso",
+          "filename": "POST_cadastrar__sucesso.bru",
+          "seq": 1,
+          "request": {
+            "url": "http://localhost/bookbox/api/exemplares/cadastrar",
+            "method": "POST",
+            "headers": [
+              {
+                "name": "Content-Type",
+                "value": "application/json",
+                "enabled": true
+              }
+            ],
+            "params": [],
+            "body": {
+              "mode": "json",
+              "json": "{\n  \"isbn\": \"{{isbnValido2}}\"\n}",
               "formUrlEncoded": [],
               "multipartForm": [],
               "file": []
@@ -522,6 +522,119 @@
     },
     {
       "type": "folder",
+      "name": "Usuarios",
+      "filename": "Usuarios",
+      "seq": 2,
+      "root": {
+        "meta": {
+          "name": "Usuarios",
+          "seq": 2
+        }
+      },
+      "items": [
+        {
+          "type": "http",
+          "name": "POST_cadastrar__erro-validacao",
+          "filename": "POST_cadastrar__erro-validacao.bru",
+          "seq": 1,
+          "request": {
+            "url": "http://localhost/bookbox/api/usuarios/cadastrar",
+            "method": "POST",
+            "headers": [
+              {
+                "name": "Content-Type",
+                "value": "application/json",
+                "enabled": true
+              }
+            ],
+            "params": [],
+            "body": {
+              "mode": "json",
+              "json": "{\r\n  \"nome\": \"{{nomeInvalido}}\",\r\n  \"email\": \"{{emailInvalido}}\",\r\n  \"senha\": \"{{senhaInvalida}}\",\r\n  \"senhaConfirmada\": \"{{senhaValida}}\"\r\n}",
+              "formUrlEncoded": [],
+              "multipartForm": [],
+              "file": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "inherit"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "POST_cadastrar__sucesso",
+          "filename": "POST_cadastrar__sucesso.bru",
+          "seq": 1,
+          "request": {
+            "url": "http://localhost/bookbox/api/usuarios/cadastrar",
+            "method": "POST",
+            "headers": [
+              {
+                "name": "Content-Type",
+                "value": "application/json",
+                "enabled": true
+              }
+            ],
+            "params": [],
+            "body": {
+              "mode": "json",
+              "json": "{\r\n  \"nome\": \"{{nomeValido}}\",\r\n  \"email\": \"{{emailValido}}\",\r\n  \"senha\": \"{{senhaValida}}\",\r\n  \"senhaConfirmada\": \"{{senhaValida}}\"\r\n}",
+              "formUrlEncoded": [],
+              "multipartForm": [],
+              "file": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "inherit"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "POST_login__sucesso",
+          "filename": "POST_login__sucesso.bru",
+          "seq": 1,
+          "request": {
+            "url": "http://localhost/bookbox/api/login",
+            "method": "POST",
+            "headers": [
+              {
+                "name": "Content-Type",
+                "value": "application/json",
+                "enabled": true
+              }
+            ],
+            "params": [],
+            "body": {
+              "mode": "json",
+              "json": "{\r\n  \"email\": \"{{emailValido}}\",\r\n  \"senha\": \"{{senhaValida}}\"\r\n}",
+              "formUrlEncoded": [],
+              "multipartForm": [],
+              "file": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "inherit"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "type": "folder",
       "name": "Turmas",
       "filename": "Turmas",
       "seq": 7,
@@ -665,442 +778,329 @@
           }
         }
       ]
-    },
-    {
-      "type": "folder",
-      "name": "Usuarios",
-      "filename": "Usuarios",
-      "seq": 2,
-      "root": {
-        "meta": {
-          "name": "Usuarios",
-          "seq": 2
-        }
-      },
-      "items": [
-        {
-          "type": "http",
-          "name": "POST_cadastrar__erro-validacao",
-          "filename": "POST_cadastrar__erro-validacao.bru",
-          "seq": 1,
-          "request": {
-            "url": "http://localhost/bookbox/api/usuarios/cadastrar",
-            "method": "POST",
-            "headers": [
-              {
-                "name": "Content-Type",
-                "value": "application/json",
-                "enabled": true
-              }
-            ],
-            "params": [],
-            "body": {
-              "mode": "json",
-              "json": "{\r\n  \"nome\": \"{{nomeInvalido}}\",\r\n  \"email\": \"{{emailInvalido}}\",\r\n  \"senha\": \"{{senhaInvalida}}\",\r\n  \"senhaConfirmada\": \"{{senhaValida}}\"\r\n}",
-              "formUrlEncoded": [],
-              "multipartForm": [],
-              "file": []
-            },
-            "script": {},
-            "vars": {},
-            "assertions": [],
-            "tests": "",
-            "docs": "",
-            "auth": {
-              "mode": "inherit"
-            }
-          }
-        },
-        {
-          "type": "http",
-          "name": "POST_cadastrar__sucesso",
-          "filename": "POST_cadastrar__sucesso.bru",
-          "seq": 1,
-          "request": {
-            "url": "http://localhost/bookbox/api/usuarios/cadastrar",
-            "method": "POST",
-            "headers": [
-              {
-                "name": "Content-Type",
-                "value": "application/json",
-                "enabled": true
-              }
-            ],
-            "params": [],
-            "body": {
-              "mode": "json",
-              "json": "{\r\n  \"nome\": \"{{nomeValido}}\",\r\n  \"email\": \"{{emailValido}}\",\r\n  \"senha\": \"{{senhaValida}}\",\r\n  \"senhaConfirmada\": \"{{senhaValida}}\"\r\n}",
-              "formUrlEncoded": [],
-              "multipartForm": [],
-              "file": []
-            },
-            "script": {},
-            "vars": {},
-            "assertions": [],
-            "tests": "",
-            "docs": "",
-            "auth": {
-              "mode": "inherit"
-            }
-          }
-        },
-        {
-          "type": "http",
-          "name": "POST_login__sucesso",
-          "filename": "POST_login__sucesso.bru",
-          "seq": 1,
-          "request": {
-            "url": "http://localhost/bookbox/api/login",
-            "method": "POST",
-            "headers": [
-              {
-                "name": "Content-Type",
-                "value": "application/json",
-                "enabled": true
-              }
-            ],
-            "params": [],
-            "body": {
-              "mode": "json",
-              "json": "{\r\n  \"email\": \"{{emailValido}}\",\r\n  \"senha\": \"{{senhaValida}}\"\r\n}",
-              "formUrlEncoded": [],
-              "multipartForm": [],
-              "file": []
-            },
-            "script": {},
-            "vars": {},
-            "assertions": [],
-            "tests": "",
-            "docs": "",
-            "auth": {
-              "mode": "inherit"
-            }
-          }
-        }
-      ]
     }
   ],
-  "activeEnvironmentUid": "EkepWKtm0te84VZPKHGK8",
+  "activeEnvironmentUid": "3X9T9hVCsULK6seZwFLjp",
   "environments": [
     {
       "variables": [
         {
-          "name": "nomeValido",
+          "name": "nome_valido",
           "value": "Ricardo Zanata",
           "enabled": true,
           "secret": false,
           "type": "text"
         },
         {
-          "name": "nomeInvalido",
+          "name": "nome_invalido",
           "value": "Ric@rdo Zan4ta",
           "enabled": true,
           "secret": false,
           "type": "text"
         },
         {
-          "name": "emailValido",
+          "name": "email_valido",
           "value": "teste@gmail.com",
           "enabled": true,
           "secret": false,
           "type": "text"
         },
         {
-          "name": "emailInvalido",
+          "name": "email_invalido",
           "value": "testegmail.com",
           "enabled": true,
           "secret": false,
           "type": "text"
         },
         {
-          "name": "senhaValida",
+          "name": "senha_valida",
           "value": "Senha123@",
           "enabled": true,
           "secret": false,
           "type": "text"
         },
         {
-          "name": "senhaInvalida",
+          "name": "senha_invalida",
           "value": "Senha123",
           "enabled": true,
           "secret": false,
           "type": "text"
         },
         {
-          "name": "cpfValido",
+          "name": "cpf_valido",
           "value": "000.000.000-00",
           "enabled": true,
           "secret": false,
           "type": "text"
         },
         {
-          "name": "cpfInvalido",
+          "name": "cpf_invalido",
           "value": "0000000",
           "enabled": true,
           "secret": false,
           "type": "text"
         },
         {
-          "name": "telefoneValido",
+          "name": "telefone_valido",
           "value": "(00) 00000-0000",
           "enabled": true,
           "secret": false,
           "type": "text"
         },
         {
-          "name": "telefoneInvalido",
+          "name": "telefone_invalido",
           "value": "00000-0000",
           "enabled": true,
           "secret": false,
           "type": "text"
         },
         {
-          "name": "cursoValido",
+          "name": "curso_valido",
           "value": "Desenvolvimento de Sistemas",
           "enabled": true,
           "secret": false,
           "type": "text"
         },
         {
-          "name": "cursoInvalido",
+          "name": "curso_invalido",
           "value": "Desenvolvimento de Sistemas@123",
           "enabled": true,
           "secret": false,
           "type": "text"
         },
         {
-          "name": "horarioValido",
+          "name": "horario_valido",
           "value": "Matutino",
           "enabled": true,
           "secret": false,
           "type": "text"
         },
         {
-          "name": "horarioInvalido",
+          "name": "horario_invalido",
           "value": "Manha",
           "enabled": true,
           "secret": false,
           "type": "text"
         },
         {
-          "name": "regimeValido",
+          "name": "regime_valido",
           "value": "Anual",
           "enabled": true,
           "secret": false,
           "type": "text"
         },
         {
-          "name": "regimeInvalido",
+          "name": "regime_invalido",
           "value": "Diário",
           "enabled": true,
           "secret": false,
           "type": "text"
         },
         {
-          "name": "dataInicioValida",
+          "name": "data_inicio_valida",
           "value": "2025-02-01",
           "enabled": true,
           "secret": false,
           "type": "text"
         },
         {
-          "name": "dataInicioInvalida",
+          "name": "data_inicio_invalida",
           "value": "01-20205-02",
           "enabled": true,
           "secret": false,
           "type": "text"
         },
         {
-          "name": "dataFimValida",
+          "name": "data_fim_valida",
           "value": "2026-02-01",
           "enabled": true,
           "secret": false,
           "type": "text"
         },
         {
-          "name": "dataFimInvalida",
+          "name": "data_fim_invalida",
           "value": "2023-02-01",
           "enabled": true,
           "secret": false,
           "type": "text"
         },
         {
-          "name": "idTurmasValido",
+          "name": "id_turmas_valido",
           "value": "2974fa7f-62fc-4d58-824e-4b1302f72fff",
           "enabled": true,
           "secret": false,
           "type": "text"
         },
         {
-          "name": "idTurmasInvalido",
+          "name": "id_turmas_invalido",
           "value": "2913844192092141402",
           "enabled": true,
           "secret": false,
           "type": "text"
         },
         {
-          "name": "idAlunosValido",
+          "name": "id_alunos_valido",
           "value": "0xbfff2ca136194997a9b8922c2ee014a3",
           "enabled": true,
           "secret": false,
           "type": "text"
         },
         {
-          "name": "idAlunosInvalido",
+          "name": "id_alunos_invalido",
           "value": "291048742749274874",
           "enabled": true,
           "secret": false,
           "type": "text"
         },
         {
-          "name": "idGeneroValido",
+          "name": "id_genero_valido",
           "value": "0x40c9b1c754094eecbdf3c0d5daff8395",
           "enabled": true,
           "secret": false,
           "type": "text"
         },
         {
-          "name": "idGeneroInvalido",
+          "name": "id_genero_invalido",
           "value": "54896587547855488",
           "enabled": true,
           "secret": false,
           "type": "text"
         },
         {
-          "name": "nomeGeneroValido",
+          "name": "nome_genero_valido",
           "value": "Comédia",
           "enabled": true,
           "secret": false,
           "type": "text"
         },
         {
-          "name": "nomeGeneroValido2",
+          "name": "nome_genero_valido2",
           "value": "Romance",
           "enabled": true,
           "secret": false,
           "type": "text"
         },
         {
-          "name": "corGeneroValida",
+          "name": "cor_genero_valida",
           "value": "#FFF000",
           "enabled": true,
           "secret": false,
           "type": "text"
         },
         {
-          "name": "corGeneroValida2",
+          "name": "cor_genero_valida2",
           "value": "#FF0000",
           "enabled": true,
           "secret": false,
           "type": "text"
         },
         {
-          "name": "nomeGeneroInvalido",
+          "name": "nome_genero_invalido",
           "value": "R0m4nc3",
           "enabled": true,
           "secret": false,
           "type": "text"
         },
         {
-          "name": "corGeneroInvalida",
+          "name": "cor_genero_invalida",
           "value": "rosinha",
           "enabled": true,
           "secret": false,
           "type": "text"
         },
         {
-          "name": "isbnValido",
+          "name": "isbn_valido",
           "value": "9792258976325",
           "enabled": true,
           "secret": false,
           "type": "text"
         },
         {
-          "name": "isbnValido2",
+          "name": "isbn_valido2",
           "value": "9787412564569",
           "enabled": true,
           "secret": false,
           "type": "text"
         },
         {
-          "name": "isbnInvalido",
+          "name": "isbn_invalido",
           "value": "a45de8a4s5ed4e",
           "enabled": true,
           "secret": false,
           "type": "text"
         },
         {
-          "name": "tituloValido2",
-          "value": "Harry Potter",
-          "enabled": true,
-          "secret": false,
-          "type": "text"
-        },
-        {
-          "name": "tituloValido",
+          "name": "titulo_valido",
           "value": "A culpa é das Estrelas",
           "enabled": true,
           "secret": false,
           "type": "text"
         },
         {
-          "name": "tituloInvalido",
+          "name": "titulo_valido2",
+          "value": "Harry Potter",
+          "enabled": true,
+          "secret": false,
+          "type": "text"
+        },
+        {
+          "name": "titulo_invalido",
           "value": "Sorriso😊😀",
           "enabled": true,
           "secret": false,
           "type": "text"
         },
         {
-          "name": "autorValido",
+          "name": "autor_valido",
           "value": "J. K. Rolling",
           "enabled": true,
           "secret": false,
           "type": "text"
         },
         {
-          "name": "autorValido2",
+          "name": "autor_valido2",
           "value": "Mário de Andrade",
           "enabled": true,
           "secret": false,
           "type": "text"
         },
         {
-          "name": "autorInvalido",
+          "name": "autor_invalido",
           "value": "J0s3 d3 Oliv31r4",
           "enabled": true,
           "secret": false,
           "type": "text"
         },
         {
-          "name": "editoraValida",
+          "name": "editora_valida",
           "value": "Saraiva",
           "enabled": true,
           "secret": false,
           "type": "text"
         },
         {
-          "name": "editoraValida2",
+          "name": "editora_valida2",
           "value": "Leitura",
           "enabled": true,
           "secret": false,
           "type": "text"
         },
         {
-          "name": "editoraInvalida",
+          "name": "editora_invalida",
           "value": "L31tur4",
           "enabled": true,
           "secret": false,
           "type": "text"
         },
         {
-          "name": "idLivroValido",
+          "name": "id_livro_valido",
           "value": "0x00ca2a39a79e4d268c6b07a0df45947c",
           "enabled": true,
           "secret": false,
           "type": "text"
         },
         {
-          "name": "idLivroInvalido",
+          "name": "id_livro_invalido",
           "value": "14526854745895788",
           "enabled": true,
           "secret": false,
@@ -1118,7 +1118,7 @@
       "node_modules",
       ".git"
     ],
-    "size": 0.009013175964355469,
+    "size": 0.009110450744628906,
     "filesCount": 29
   }
 }
