@@ -22,7 +22,7 @@
     <div class="codigo-box {">
         <div class="codigo-form">
             <h2>Digite o Código</h2>
-            <h3 class="hc">Ele chegara no seu e-mail</h3>
+            <h3 class="hc">Ele chegará no seu e-mail</h3>
             <form id=" codigo-form">
                  <div class="codigo-q">
                     <input type="codigo" name="codigo" class="codigo-input" required>

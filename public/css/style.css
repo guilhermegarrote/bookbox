@@ -758,19 +758,18 @@ h1 {
     content: '';
     position: absolute;
     margin-top: 20px;
-    left: 545px;
+    left: 565px;
     height: 2px;
-    width: 13%;
+    width: 12%;
     background-color: #000;
     transform: translateX(-50%) scaleX(0);
-    /* centraliza e esconde */
     transform-origin: center;
     transition: transform 0.3s ease;
 }
 
 .esqueceu-senha:hover::after {
     transform: translateX(-50%) scaleX(1);
-    /* revela expandindo do centro */;
+;
 }
 
 /*  TELA DE CADASTRO */
@@ -875,7 +874,7 @@ h1 {
 
 .codigo-box {
     width: 450px;
-    height: 200px;
+    height: 230px;
     padding: 30px 50px 45px 50px;
     border-radius: 20px;
     background-color: rgb(252, 252, 252);
@@ -893,9 +892,10 @@ h1 {
 
 .hc {
     font-family: 'Urbanist';
-    font-weight: bold;
-    font-size: 1rem;
+    font-weight: 600;
+    font-size: 0.95rem;
     color: #6e6e6e;
+    bottom:20%;
 }
 
 .codigo-q {
@@ -910,7 +910,7 @@ h1 {
     width: 50px;
     height: 50px;
     padding: 0px 0px 0px 17px;
-    margin-bottom: 3px;
+    bottom: 10%;
     background-color: var(--cinza);
     border: 1px solid var(--cinza-claro);
     border-radius: 5px;
@@ -924,7 +924,7 @@ h1 {
     position: absolute;
     left: 20%;
     color: #333;
-    bottom: 30%;
+    bottom: 20%;
     display: block;
     font-family: 'Urbanist';
     font-weight: bold;
@@ -942,14 +942,13 @@ h1 {
     width: 70px;
     background-color: #000;
     transform: translateX(-50%) scaleX(0);
-    /* centraliza e esconde */
     transform-origin: center;
     transition: transform 0.3s ease;
 }
 
 .reenviar:hover::after {
     transform: translateX(-50%) scaleX(1);
-    /* revela expandindo do centro */;
+    /* revela expandindo do centro */
 }
 
 .nova-senha-button {

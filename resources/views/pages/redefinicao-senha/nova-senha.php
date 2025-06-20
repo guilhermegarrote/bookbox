@@ -24,11 +24,11 @@
             <h2>Nova Senha</h2>
             <form id="email-form">
                     <label class="email-label">Senha</label>
-                    <input type="email" name="email" class="email-input" required>
+                    <input type="password" name="email" class="email-input" required>
                     <div id="erro-email" class="email-erro"></div>
 
                     <label class="email-label">Comfirma senha</label>
-                    <input type="email" name="email" class="email-input" required>
+                    <input type="password" name="email" class="email-input" required>
                     <div id="erro-email" class="email-erro"></div>
 
                 <button type="submit" class="nova-senha-button" href="/bookbox/pages/login.php">→</button>

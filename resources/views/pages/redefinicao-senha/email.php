@@ -13,21 +13,22 @@
         .cadastro-erro {
             color: red;
             font-size: 0.9rem;
-            
+
         }
     </style>
 </head>
 
 <body class="email-container">
-    <div class="email-box {">
+    <div class="email-box">
         <div class="email-form">
             <h2>Cadastro</h2>
             <form id="email-form">
-                    <label class="email-label">Email:</label>
-                    <input type="email" name="email" class="email-input" required>
-                    <div id="erro-email" class="email-erro"></div>
+                <label class="email-label">Email:</label>
+                <input type="email" name="email" class="email-input" required>
+                <div id="erro-email" class="email-erro"></div>
 
-                <button type="submit" class="email-button" href="/bookbox/pages/redefinicao-senha/codigo.php">Enviar código</button>
+                <button type="submit" class="email-button" href="pages/redefinicao-senha/codigo.php">Enviar código
+                </button>
             </form>
         </div>
     </div>
