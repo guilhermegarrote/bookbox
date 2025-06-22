@@ -21,7 +21,7 @@
 <body class="email-container">
     <div class="email-box">
         <div class="email-form">
-            <h2>Cadastro</h2>
+            <h2>Nova Senha</h2>
             <form id="email-form">
                 <label class="email-label">Email:</label>
                 <input type="email" name="email" class="email-input" required>
