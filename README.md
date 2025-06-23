@@ -4,9 +4,26 @@ Você já imaginou como a falta de um sistema eficiente pode impactar o funciona
 
 Pensando nisso, desenvolvemos um Sistema de Gerenciamento de Biblioteca com o objetivo de modernizar e otimizar a administração dos livros, tornando o dia a dia da bibliotecária e dos alunos muito mais ágil e organizado.
 
+## Descrição
+O Bookbox surgiu da necessidade de resolver falhas operacionais causadas pela ausência de um sistema informatizado. Entre os principais problemas enfrentados estavam: atrasos, perda de controle nos empréstimos e dificuldades na organização.
+
+O sistema oferece funcionalidades como:
+
+- Cadastro de livros e alunos;
+
+- Controle de empréstimos e devoluções com prazos e alertas;
+
+- Consulta de disponibilidade de livros;
+
+- Listagem de empréstimos ativos e atrasados;
+
+- Geração de etiquetas ou PDFs para os livros emprestados.
+
+Essa solução busca otimizar o tempo, reduzir erros e facilitar a rotina da bibliotecária com uma ferramenta prática e funcional.
+
 ## 📌 Objetivo do Projeto
 
-Nosso principal propósito foi criar um sistema que automatizasse e facilitasse o controle da biblioteca, eliminando falhas no registro de empréstimos e devoluções. Com ele, é possível:
+O principal objetivo do projeto é automatizar e facilitar o controle da biblioteca, eliminando falhas e aumentando a eficiência da gestão. Entre os recursos disponíveis:
 
 ✅ *Cadastrar livros e alunos de forma intuitiva;*
 
@@ -20,7 +37,7 @@ Com essa solução, garantimos mais eficiência e organização na gestão da bi
 
 ## 🔎 Metodologia e Desenvolvimento
 
-Para criar um sistema realmente eficiente, realizamos um levantamento de requisitos, ouvindo diretamente a bibliotecária. A partir dessas informações passadas a nós, elaboramos um projeto que atendesse exatamente às suas necessidades.
+Para garantir a efetividade do sistema, realizamos um levantamento de requisitos diretamente com a bibliotecária da instituição. As funcionalidades foram desenvolvidas com base nas demandas reais identificadas durante esse processo, garantindo que o sistema atenda de forma precisa às necessidades da biblioteca.
 
 ## 🧑‍💻 Tecnologias Utilizadas
 
@@ -29,7 +46,6 @@ Para criar um sistema realmente eficiente, realizamos um levantamento de requisi
 - Figma nos auxiliou na criação do design das telas, garantindo uma interface intuitiva e agradável.
 - Git foi empregado para versionamento do código, permitindo maior controle e segurança durante o desenvolvimento.
 
-Desde o início, nosso foco foi construir uma solução prática e eficiente, aplicável não apenas à nossa escola, mas a qualquer biblioteca que precise de um sistema confiável.
 
 ## 📑 Resultados e Impacto
 
