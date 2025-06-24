@@ -606,16 +606,17 @@ h1 {
 }
 
 .label-fixa {
+    position: absolute;
+    font-size: 1em;
+    color: #6e6e6e;
+    background: #ffffff;
+    padding: 0 5px;
+    transition: 0.2s ease;
     top: -10px;
     left: 10px;
-    font-size: 0.85em;
-    background-color: #ffffff;
-    padding: 0 5px;
     transform: none;
-    color: #6e6e6e;
-    pointer-events: none;
 }
-
+    
 .modal-input:focus,
 .modal-input:valid {
     position: relative;
@@ -631,6 +632,15 @@ h1 {
     left: 10px;
     transform: translatey(-50%) scale(0.8);
     transform-origin: left center;
+    z-index: 4;
+}
+
+.modal-input:focus+.label-fixa,
+.modal-input:valid+.label-fixa {
+    position: absolute;
+    color: #000000;
+    top: -10px;
+    left: 10px;
     z-index: 4;
 }
 
@@ -653,6 +663,13 @@ h1 {
     left: 10px;
     transform: translateY(-50%) scale(0.8);
     transform-origin: left center;
+    z-index: 4;
+}
+.modal-input.preenchido+.label-fixa {
+    position: absolute;
+    color: #000000;
+    top: -10px;
+    left: 10px;
     z-index: 4;
 }
 

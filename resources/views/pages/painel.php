@@ -42,4 +42,5 @@
     <script src="public/js/generos/cadastro.js"></script>
     <script src="public/js/mascaras.js"></script>
     <script src="public/js/emprestimos/finalizar.js"></script>
+    <script src="public/js/exemplares/cadastro.js"></script>
 </body>

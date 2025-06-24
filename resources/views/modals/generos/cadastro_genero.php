@@ -9,7 +9,7 @@
     <div class="modal-body">
         <div class="rec-inputs" style="display: flex; align-items: center; flex-wrap: wrap; gap: 10px; justify-content: center;">
             <div class="entryarea" style="width: auto; display: flex; align-items: center;">
-                <label class="labelline" for="cor-genero">Cor</label>
+                <label class="label-fixa" for="cor-genero">Cor</label>
                 <input type="text" id="cor-genero" class="modal-input" style="width: 150px; border-radius: 6px 0 0 6px; height: 35px;" required>
 
                 <input type="color" id="cor-genero-picker" name="cor" style="opacity: 0; position: absolute; top: 0; left: 0; width: 100%; height: 100%; cursor: pointer; z-index: 2;">

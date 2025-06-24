@@ -48,7 +48,6 @@
                 <label class="labelline" for="data-devolucao">Data de devolução</label>
             </div>
         </div>
-
         <div class="modal-footer">
             <button id="botao-fechar-modal" class="modal-button">Cancelar</button>
              <button id="botao-cadastrar" data-entidade="emprestimo" class="modal-button">Cadastrar</button>
