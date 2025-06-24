@@ -46,8 +46,8 @@
         </div>
 
         <div class="modal-footer">
-            <button id="botao-fechar-modal" class="modal-button">Cancelar</button>
-             <button id="botao-cadastrar" data-entidade="emprestimo" class="modal-button">Cadastrar</button>
+            <button id="botao-prolongar-devolucao" class="modal-button">Prolongar devolução</button>
+             <button id="botao-finalizar" data-entidade="emprestimo" class="modal-button">Finalizar</button>
         </div>
     </div>
 </div>

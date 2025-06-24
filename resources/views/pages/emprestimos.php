@@ -26,7 +26,7 @@
         </div>
 
         <div class="buttonsTI">
-            <button class="btnTI" id="botao-abrir-modal" data-modal="menu_emprestimo" href="resources/views/modals/emprestimos/menu_emprestimo.php">Cadastrar</button>
+            <button class="btnTI" id="botao-abrir-modal" data-modal="cadastro_emprestimo">Cadastrar</button>
             <button class="btnTI">Finalizar</button>
         </div>
 
