@@ -55,14 +55,14 @@ function rotear($caminho, $metodo, $usuarioController, $turmaController, $genero
                 carregarPagina('pages/painel');
             },
             '/painel' => function () {
-                exigeAutenticacao();
+                // exigeAutenticacao();
                 carregarPagina('pages/painel');
             },
             '/cadastro' => function () use ($usuarioController) {
                 if ($usuarioController->existeUsuarios()) {
                     redirecionar('/bookbox/login');
                 }
-                carregarPagina('pages/cadastro');
+                carregarPagina('pages/cadastro'); 
             },
             '/modals/cadastro_emprestimo' => fn() => carregarPagina('modals/emprestimos/cadastro_emprestimo'),
             '/modals/cadastro_aluno' => fn() => carregarPagina('modals/alunos/cadastro_aluno'),
@@ -70,6 +70,7 @@ function rotear($caminho, $metodo, $usuarioController, $turmaController, $genero
             '/modals/cadastro_genero' => fn() => carregarPagina('modals/generos/cadastro_genero'),
             '/modals/cadastro_turma' => fn() => carregarPagina('modals/turmas/cadastro_turma'),
             '/modals/cadastro_exemplar' => fn() => carregarPagina('modals/exemplares/cadastro_exemplar'),
+            '/modals/configuracao' => fn() => carregarPagina('modals/configuracao'),
             '/popups/filtro' => fn() => carregarPagina('popups/filtro'),
             '/popups/genero_nao_cadastrado' => fn() => carregarPagina('popups/genero_nao_cadastrado'),
             '/popups/confirmacao_finalizacao_emprestimo' => fn() => carregarPagina('popups/confirmacao_finalizacao_emprestimo'),
@@ -77,6 +78,9 @@ function rotear($caminho, $metodo, $usuarioController, $turmaController, $genero
             '/pages/redefinicao-senha/email.php' => fn() => carregarPagina('pages/redefinicao-senha/email'),
             '/pages/redefinicao-senha/codigo.php' => fn() => carregarPagina('pages/redefinicao-senha/codigo'),
             '/pages/redefinicao-senha/nova-senha.php' => fn() => carregarPagina('pages/redefinicao-senha/nova-senha'),
+            '/popups/filtro_emprestimo' => fn() => carregarPagina('popups/filtroEmprestimo'),
+            '/popups/filtro_aluno' => fn() => carregarPagina('popups/filtroAluno'),
+
         ],
         'POST' => [
             '/api/login' => function () use ($usuarioController) {
@@ -121,8 +125,8 @@ function rotear($caminho, $metodo, $usuarioController, $turmaController, $genero
     if (isset($rotas[$metodo][$caminho])) {
         $rotas[$metodo][$caminho]();
     } else {
-        http_response_code(404);
-        echo json_encode(["erro" => "Página não encontrada"]);
+        carregarPagina('pages/404'); 
+        exit();
     }
 }
 
