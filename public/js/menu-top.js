@@ -11,6 +11,6 @@ document.addEventListener('click', function (e) {
     const targetId = e.target.id;
 
     if (targetId === 'abrir-configuracoes') {
-        logout();
+        abrirModal('configuracao');
     }
 });

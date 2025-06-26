@@ -9,8 +9,7 @@
             <div class="retangulo">
                 <input type="text" class="barradepesquisa" placeholder="Pesquisar">
                 <button class="btnfiltro" id="btn-filtro"><img class="filtrar" src="/bookbox/public/images/filtro.png" alt="filtrar"></button>
-                <div id="popupFiltro" style="position: absolute; display: none; background: white; border: 1px solid #ccc; padding: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.2); z-index: 1000; min-width: 150px; border-radius: 4px;"></div>
-
+                <div id="popupFiltro"></div>
                 <div class="botoes">
                     <button class="menu-top-btn" data-pagina="emprestimos">Empréstimos</button>
                     <button class="menu-top-btn" data-pagina="livros">Livros</button>
