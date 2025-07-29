@@ -1,0 +1,87 @@
+@import '../pages/auth.css';
+
+.auth-form h2 {
+    margin-bottom: 0px;
+}
+
+.verification-subtitle {
+    font-family: var(--font-primary);
+    font-weight: 600;
+    font-size: 1rem;
+    color: var(--color-base-gray-medium);
+    margin-bottom: 1.5rem;
+}
+
+.verification-code-container {
+    display: flex;
+    justify-content: center;
+    gap: 0.4rem;
+    margin-bottom: 1rem;
+}
+
+.verification-input {
+    width: 38px;
+    height: 48px;
+    text-align: center;
+    font-family: var(--font-primary);
+    font-size: 1.25rem;
+    font-weight: bold;
+    background-color: var(--color-base-gray);
+    border: 1px solid var(--color-base-gray-light);
+    border-radius: 6px;
+    outline: none;
+    transition: border-color 0.3s;
+}
+
+.verification-input:focus {
+    border-color: var(--color-base-gray-dark);
+}
+
+.btn-link-style {
+    all: unset;
+    display: inline-block;
+    margin-top: 10%;
+    font-family: var(--font-primary);
+    font-weight: 600;
+    font-size: 1rem;
+    color: var(--color-base-gray-dark);
+    line-height: 1.2;
+    white-space: nowrap;
+    cursor: pointer;
+    user-select: none;
+}
+
+.btn-link-text {
+    position: relative;
+    display: inline-block;
+    padding-bottom: 2px;
+    transition: color 0.3s ease;
+}
+
+.btn-link-text::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    height: 2px;
+    width: 100%;
+    background-color: currentColor;
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition: transform 0.3s ease;
+    pointer-events: none;
+}
+
+.btn-link-style:hover .btn-link-text,
+.btn-link-style:focus .btn-link-text {
+    color: var(--color-ui-link);
+}
+
+.btn-link-style:hover .btn-link-text::after,
+.btn-link-style:focus .btn-link-text::after {
+    transform: scaleX(1);
+}
+
+.btn-link-style:focus {
+    outline: none;
+}

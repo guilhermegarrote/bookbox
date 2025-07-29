@@ -1,5 +1,0 @@
-RewriteEngine On
-
-# Garante que URLs não comecem com '/public/' sejam redirecionadas para a pasta public
-RewriteCond %{REQUEST_URI} !^/public/
-RewriteRule ^(.*)$ /bookbox/public/$1 [L,QSA]

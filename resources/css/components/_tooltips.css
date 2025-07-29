@@ -1,0 +1,17 @@
+.tippy-box[data-theme~='error'] {
+    background-color: var(--color-ui-tooltip-error);
+    color: #fff;
+    font-size: 0.85rem;
+    padding: 8px 12px;
+    border-radius: 6px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    font-family: var(--font-primary);
+    letter-spacing: 0.3px;
+    line-height: 1.4;
+    max-width: 220px;
+    text-align: center;
+}
+
+.tippy-box[data-theme~='error'] .tippy-arrow {
+    color: var(--color-ui-tooltip-error);
+}

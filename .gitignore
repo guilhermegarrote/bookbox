@@ -1,44 +1,26 @@
-# Ignorar arquivos de log
 *.log
-
-# Ignorar pastas de cache e sessão
-/cache/
-/session/
-
-# Ignorar o diretório do Composer (vendor) - você não quer versionar as dependências
-/vendor/
-
-# Ignorar arquivos de IDE, como do VSCode
-.vscode/
-
-# Ignorar arquivos temporários do sistema
-.DS_Store         # (Para Mac)
-Thumbs.db         # (Para Windows)
-
-# Ignorar arquivos de configuração de IDEs
-.idea/
-*.iml
-
-# Ignorar pastas específicas de ambiente de desenvolvimento
-/.env
-/.env.local
-
-# Ignorar o diretório de testes temporários, se houver
-/tests/tmp/
-
-# Ignorar diretórios de build
-/build/
-dist/
-
-# Ignorar arquivos específicos que não devem ser versionados
-*.swp
-*.swo
-
-# Ignorar arquivos do sistema operacional
-Desktop.ini
-
-# Ignora tudo na pasta requests
-/requests/*
-
-# Mas não ignora o arquivo requests.json
-!/requests/requests.json
+.DS_Store
+.env
+.env.backup
+.env.production
+.phpactor.json
+.phpunit.result.cache
+/.fleet
+/.idea
+/.nova
+/.phpunit.cache
+/.vscode
+/.zed
+/auth.json
+/node_modules
+/public/build
+/public/hot
+/public/storage
+/storage/*.key
+/storage/pail
+/vendor
+Homestead.json
+Homestead.yaml
+npm-debug.log
+Thumbs.db
+yarn-error.log

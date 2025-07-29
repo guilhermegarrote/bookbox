@@ -1,0 +1,162 @@
+.panel {
+    margin: 0 1%;
+}
+
+.data-container {
+    display: flex;
+    flex-direction: column;
+    max-width: 100%;
+    position: relative;
+    font-family: var(--font-primary);
+}
+
+.page-title {
+    font-size: 2rem;
+    font-weight: bold;
+    margin: 10px;
+    text-transform: capitalize;
+}
+
+.table-wrapper {
+    overflow-x: auto;
+    max-height: 100%;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+}
+
+.data-empty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+}
+
+.data-empty h1 {
+    color: var(--color-base-gray-dark);
+    margin-bottom: 0.3rem;
+    text-align: left;
+    display: block;
+}
+
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+
+.data-table thead tr {
+    background: var(--color-base-gray-dark);
+}
+
+.data-table thead th {
+    position: sticky;
+    top: 0;
+    background: var(--color-base-gray-dark);
+    color: white;
+    z-index: 5;
+    border-bottom: 1px solid var(--color-base-gray-light);
+    font-size: 17px;
+    font-weight: 550;
+    padding: 12px 20px;
+    text-align: left;
+}
+
+.data-table tbody {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+
+.data-table tbody td {
+    padding: 8px 20px;
+    border-bottom: 1px solid var(--color-base-gray-light);
+}
+
+.data-table tbody tr:nth-child(odd) {
+    background-color: white;
+}
+
+.data-table tbody tr:nth-child(even) {
+    background-color: #f0f0f0;
+}
+
+.sort-link {
+    color: inherit;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.sort-link span {
+    position: relative;
+    display: inline-block;
+}
+
+.sort-link span::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    bottom: -1px;
+    width: 0;
+    height: 1px;
+    background: currentColor;
+    transform: translateX(-50%);
+    transition: width 0.3s ease;
+}
+
+.sort-link:hover span::after {
+    width: 110%;
+}
+
+.status-icon {
+    width: 25px;
+    height: 25px;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.status-active {
+    fill: #28a745;
+}
+
+.status-blocked {
+    fill: #dc3545;
+}
+
+.btn-add {
+    width: 30px;
+    height: 30px;
+    padding: 0;
+}
+
+.btn-add svg {
+    width: 16px;
+    height: 16px;
+    display: block;
+}
+
+.btn-add svg path {
+    fill: var(--color-base-white);
+    transition: fill 0.3s ease;
+}
+
+.btn-add:hover svg path {
+    fill: var(--color-base-gray-dark);
+}
+
+.data-table th.status-col,
+.data-table td.status-col {
+    width: 100px;
+    max-width: 125px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.data-table th.button-col,
+.data-table td.button-col {
+    width: 75px;
+    max-width: 125px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}

@@ -1,59 +1,57 @@
 <?php
-require_once(__DIR__ . '/vendor/autoload.php');
 
-use Brevo\Client\Configuration;
+namespace App\Services;
+
 use Brevo\Client\Api\TransactionalEmailsApi;
 use Brevo\Client\Model\SendSmtpEmail;
-use GuzzleHttp\Client;
+use App\Http\Traits\ErrorLoggerTrait;
+use Exception;
+use RuntimeException;
 
 class EmailService
 {
-    private $apiEmail;   
-    private $codigo;     
+    use ErrorLoggerTrait;
 
-    public function __construct()
+    private TransactionalEmailsApi $emailApi;
+
+    public function __construct(TransactionalEmailsApi $emailApi)
     {
-
-        $this->codigo = rand(100000, 999999);
-
-        $configuracao = Configuration::getDefaultConfiguration()
-            ->setApiKey('api-key', getenv('BREVO_API_KEY'));
-
-        $this->apiEmail = new TransactionalEmailsApi(
-            new Client(),
-            $configuracao
-        );
+        $this->emailApi = $emailApi;
     }
 
-    public function enviarCodigo($email)
+    public function sendCode(string $email): string
     {
-        $emailRecuperacao = new SendSmtpEmail([
+        $code = $this->generateCode();
+
+        $html = view('emails.password_reset', [
+            'email' => $email,
+            'code' => $code
+        ])->render();
+
+        $recoveryEmail = new SendSmtpEmail([
             'subject' => 'Recuperação de Senha',
-            'sender' => ['name' => 'Bookbox', 'email' => 'bookboxsystem@gmail.com'],
-            'to' => [[ 'email' => $email]],
-            'htmlContent' => "<html><body>
-                                <p>Olá {$email},</p>
-                                <p>Seu código de recuperação de senha é: <strong>{$this->codigo}</strong></p>
-                                <p>Use este código para redefinir sua senha.</p>
-                              </body></html>",
-            'params' => ['codigo' => $this->codigo]
+            'sender' => [
+                'name' => config('mail.from.name'),
+                'email' => config('mail.from.address')
+            ],
+            'to' => [['email' => $email]],
+            'htmlContent' => $html,
+            'params' => ['code' => $code],
         ]);
 
         try {
-            $resultado = $this->apiEmail->sendTransacEmail($emailRecuperacao);
-            print_r($resultado);
+            $this->emailApi->sendTransacEmail($recoveryEmail);
         } catch (Exception $e) {
-            echo 'Erro ao enviar e-mail: ', $e->getMessage(), PHP_EOL;
+            $this->logError('Erro ao enviar e-mail para ' . $email, $e);
+
+            throw new RuntimeException('Não foi possível enviar o e-mail de recuperação.');
         }
+
+        return $code;
     }
 
-
-    public function getCodigo()
+    private function generateCode(): string
     {
-        return $this->codigo;
+        return (string) rand(100000, 999999);
     }
 }
-
-$recuperacao = new EmailService();
-$codigo = $recuperacao->getCodigo();
-

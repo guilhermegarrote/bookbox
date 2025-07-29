@@ -1,0 +1,25 @@
+@import url('https://fonts.googleapis.com/css2?family=Sancreek&family=Sedgwick+Ave+Display&family=Urbanist:ital,wght@0,100..900;1,100..900&display=swap');
+
+:root {
+    /* Core colors */
+    --color-base-white: #FFFFFF;
+    --color-base-gray-dark: #252525;
+    --color-base-gray-medium: #6e6e6e;
+    --color-base-gray: #fbfbfb;
+    --color-base-gray-light: #dadada;
+    --color-base-gray-454: #454545;
+    --color-base-gray-535: #535353;
+    --color-base-gray-949: #949393;
+
+    /* Status colors */
+    --color-status-error: #E44242;
+    --color-status-success: #98E55C;
+    --color-status-warning: #F8944C;
+
+    /* UI colors */
+    --color-ui-link: #5c5c5c;
+    --color-ui-tooltip-error: #e53935;
+
+    /* Fonts */
+    --font-primary: 'Urbanist', sans-serif;
+}

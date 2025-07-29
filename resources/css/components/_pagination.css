@@ -1,0 +1,102 @@
+.pagination-container {
+    margin: 1rem 0;
+}
+
+.pagination-form {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+    background-color: var(--color-base-gray);
+    padding: 0.8rem 1rem;
+    border-radius: 6px;
+    border: 1px solid #ddd;
+    font-family: var(--font-primary);
+    font-size: 0.9rem;
+    user-select: none;
+}
+
+.pagination-form label {
+    color: var(--color-base-gray-medium);
+    margin: 0;
+}
+
+.pagination-form select,
+.pagination-form select.form-select {
+    padding: 0.2rem 0.4rem;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    font-family: var(--font-primary);
+    font-size: 0.9rem;
+    cursor: pointer;
+}
+
+.pagination-form .info-text {
+    color: var(--color-base-gray-medium);
+    min-width: 150px;
+    white-space: nowrap;
+}
+
+.pagination-form nav {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+.pagination-form input[type="number"],
+.page-input {
+    width: 3.5rem;
+    height: 26px;
+    padding: 4px 6px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-family: var(--font-primary);
+    font-size: 0.9rem;
+    text-align: center;
+    transition: border-color 0.3s ease;
+}
+
+.pagination-form input[type="number"]:focus {
+    border-color: var(--color-base-gray-dark);
+    outline: none;
+}
+
+.no-spin::-webkit-inner-spin-button,
+.no-spin::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.no-spin {
+    -moz-appearance: textfield;
+}
+
+.page-link {
+    background: none;
+    border: 1px solid var(--color-base-gray-dark);
+    color: var(--color-base-gray-dark);
+    padding: 4px 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.page-link svg {
+    width: 16px;
+    height: 16px;
+    fill: currentColor;
+}
+
+.page-link:hover:not(:disabled) {
+    background-color: var(--color-base-gray-dark);
+    color: var(--color-base-white);
+}
+
+.page-link:disabled {
+    border-color: #ccc;
+    color: #ccc;
+    cursor: not-allowed;
+}
