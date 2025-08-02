@@ -1,0 +1,2348 @@
+{
+  "name": "requests",
+  "version": "1",
+  "items": [
+    {
+      "type": "folder",
+      "name": "Authentications",
+      "filename": "Authentications",
+      "seq": 3,
+      "root": {
+        "meta": {
+          "name": "Authentications",
+          "seq": 3
+        }
+      },
+      "items": [
+        {
+          "type": "http",
+          "name": "POST_login__error",
+          "filename": "POST_login__error.bru",
+          "seq": 4,
+          "settings": {},
+          "tags": [],
+          "request": {
+            "url": "http://bookbox.local/api/auth/login",
+            "method": "POST",
+            "headers": [],
+            "params": [],
+            "body": {
+              "mode": "json",
+              "json": "{\n  \"email\": \"{{email_valid}}\",\n  \"password\": \"{{password_invalid}}\"\n}",
+              "formUrlEncoded": [],
+              "multipartForm": [],
+              "file": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "inherit"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "POST_login__success",
+          "filename": "POST_login__success.bru",
+          "seq": 3,
+          "settings": {},
+          "tags": [],
+          "request": {
+            "url": "http://bookbox.local/api/auth/login",
+            "method": "POST",
+            "headers": [
+              {
+                "name": "Content-Type",
+                "value": "application/json",
+                "enabled": true
+              }
+            ],
+            "params": [],
+            "body": {
+              "mode": "json",
+              "json": "{\n  \"email\": \"{{email_valid}}\",\n  \"password\": \"{{password_valid}}\"\n}",
+              "formUrlEncoded": [],
+              "multipartForm": [],
+              "file": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "inherit"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "POST_register__error",
+          "filename": "POST_register__error.bru",
+          "seq": 2,
+          "settings": {},
+          "tags": [],
+          "request": {
+            "url": "http://bookbox.local/api/auth/register",
+            "method": "POST",
+            "headers": [],
+            "params": [],
+            "body": {
+              "mode": "json",
+              "json": "{\n  \"name\": \"{{name_invalid}}\",\n  \"email\": \"{{email_invalid}}\",\n  \"password\": \"{{password_invalid}}\",\n  \"password_confirmation\": \"{{password_valid}}\"\n}\n",
+              "formUrlEncoded": [],
+              "multipartForm": [],
+              "file": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "inherit"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "POST_register__success",
+          "filename": "POST_register__success.bru",
+          "seq": 1,
+          "settings": {},
+          "tags": [],
+          "request": {
+            "url": "http://bookbox.local/api/auth/register",
+            "method": "POST",
+            "headers": [],
+            "params": [],
+            "body": {
+              "mode": "json",
+              "json": "{\n  \"name\": \"{{name_valid}}\",\n  \"email\": \"{{email_valid}}\",\n  \"password\": \"{{password_valid}}\",\n  \"password_confirmation\": \"{{password_valid}}\"\n}\n",
+              "formUrlEncoded": [],
+              "multipartForm": [],
+              "file": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "inherit"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "POST_resend-code__sucess",
+          "filename": "POST_resend-code__sucess.bru",
+          "seq": 7,
+          "settings": {},
+          "tags": [],
+          "request": {
+            "url": "http://bookbox.local/api/recover/resend",
+            "method": "POST",
+            "headers": [],
+            "params": [],
+            "body": {
+              "mode": "none",
+              "formUrlEncoded": [],
+              "multipartForm": [],
+              "file": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "inherit"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "POST_reset-password__error",
+          "filename": "POST_reset-password__error.bru",
+          "seq": 10,
+          "settings": {},
+          "tags": [],
+          "request": {
+            "url": "http://bookbox.local/api/recover/reset-password",
+            "method": "POST",
+            "headers": [],
+            "params": [],
+            "body": {
+              "mode": "json",
+              "json": "{\n  \"password\": \"{{password_invalid}}\",\n  \"password_confirmation\": \"{{password_invalid2}}\"\n}\n",
+              "formUrlEncoded": [],
+              "multipartForm": [],
+              "file": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "inherit"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "POST_reset-password__success",
+          "filename": "POST_reset-password__success.bru",
+          "seq": 9,
+          "settings": {},
+          "tags": [],
+          "request": {
+            "url": "http://bookbox.local/api/recover/reset-password",
+            "method": "POST",
+            "headers": [],
+            "params": [],
+            "body": {
+              "mode": "json",
+              "json": "{\n  \"password\": \"{{password_valid}}\",\n  \"password_confirmation\": \"{{password_valid}}\"\n}\n",
+              "formUrlEncoded": [],
+              "multipartForm": [],
+              "file": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "inherit"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "POST_send-code__error",
+          "filename": "POST_send-code__error.bru",
+          "seq": 6,
+          "settings": {},
+          "tags": [],
+          "request": {
+            "url": "http://bookbox.local/api/recover/send",
+            "method": "POST",
+            "headers": [],
+            "params": [],
+            "body": {
+              "mode": "json",
+              "json": "{\n  \"email\": \"{{email_invalid}}\"\n}",
+              "formUrlEncoded": [],
+              "multipartForm": [],
+              "file": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "inherit"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "POST_send-code__sucess",
+          "filename": "POST_send-code__sucess.bru",
+          "seq": 5,
+          "settings": {},
+          "tags": [],
+          "request": {
+            "url": "http://bookbox.local/api/recover/send",
+            "method": "POST",
+            "headers": [],
+            "params": [],
+            "body": {
+              "mode": "json",
+              "json": "{\n  \"email\": \"{{email_valid}}\"\n}",
+              "formUrlEncoded": [],
+              "multipartForm": [],
+              "file": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "inherit"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "POST_validate-code__sucess",
+          "filename": "POST_validate-code__sucess.bru",
+          "seq": 8,
+          "settings": {},
+          "tags": [],
+          "request": {
+            "url": "http://bookbox.local/api/recover/code",
+            "method": "POST",
+            "headers": [],
+            "params": [],
+            "body": {
+              "mode": "json",
+              "json": "{\n  \"code\": \"739859\"\n}",
+              "formUrlEncoded": [],
+              "multipartForm": [],
+              "file": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "inherit"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "type": "folder",
+      "name": "Books",
+      "filename": "Books",
+      "seq": 6,
+      "root": {
+        "meta": {
+          "name": "Books",
+          "seq": 6
+        }
+      },
+      "items": [
+        {
+          "type": "http",
+          "name": "DELETE_destroy__error",
+          "filename": "DELETE_destroy__error.bru",
+          "seq": 9,
+          "settings": {
+            "encodeUrl": true
+          },
+          "tags": [],
+          "request": {
+            "url": "http://bookbox.local/api/books/{{id_book_invalid}}",
+            "method": "DELETE",
+            "headers": [],
+            "params": [],
+            "body": {
+              "mode": "none",
+              "formUrlEncoded": [],
+              "multipartForm": [],
+              "file": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "inherit"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "DELETE_destroy__success",
+          "filename": "DELETE_destroy__success.bru",
+          "seq": 8,
+          "settings": {
+            "encodeUrl": true
+          },
+          "tags": [],
+          "request": {
+            "url": "http://bookbox.local/api/books/{{id_book_valid}}",
+            "method": "DELETE",
+            "headers": [],
+            "params": [],
+            "body": {
+              "mode": "none",
+              "formUrlEncoded": [],
+              "multipartForm": [],
+              "file": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "inherit"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "GET_index_sucess",
+          "filename": "GET_index_sucess.bru",
+          "seq": 1,
+          "settings": {
+            "encodeUrl": true
+          },
+          "tags": [],
+          "request": {
+            "url": "http://bookbox.local/api/books",
+            "method": "GET",
+            "headers": [],
+            "params": [],
+            "body": {
+              "mode": "none",
+              "formUrlEncoded": [],
+              "multipartForm": [],
+              "file": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "inherit"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "GET_show_error",
+          "filename": "GET_show_error.bru",
+          "seq": 5,
+          "settings": {
+            "encodeUrl": true
+          },
+          "tags": [],
+          "request": {
+            "url": "http://bookbox.local/api/books/{{id_book_invalid}}",
+            "method": "GET",
+            "headers": [],
+            "params": [],
+            "body": {
+              "mode": "none",
+              "formUrlEncoded": [],
+              "multipartForm": [],
+              "file": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "inherit"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "GET_show_sucess",
+          "filename": "GET_show_sucess.bru",
+          "seq": 4,
+          "settings": {
+            "encodeUrl": true
+          },
+          "tags": [],
+          "request": {
+            "url": "http://bookbox.local/api/books/{{id_book_valid}}",
+            "method": "GET",
+            "headers": [],
+            "params": [],
+            "body": {
+              "mode": "none",
+              "formUrlEncoded": [],
+              "multipartForm": [],
+              "file": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "inherit"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "PATCH_update__error",
+          "filename": "PATCH_update__error.bru",
+          "seq": 7,
+          "settings": {},
+          "tags": [],
+          "request": {
+            "url": "http://bookbox.local/api/books/update/{{id_book_invalid}}",
+            "method": "PATCH",
+            "headers": [],
+            "params": [],
+            "body": {
+              "mode": "json",
+              "json": "{\n  \"id\": \"{{id_book_invalid}}\",\n  \"isbn\": \"{{isbn_invalid}}\",\n  \"title\": \"{{title_invalid}}\",\n  \"author\": \"{{author_invalid}}\",\n  \"genre\": \"{{name_genre_invalid}}\",\n  \"publisher\": \"{{publisher_invalid}}\"\n}\n",
+              "formUrlEncoded": [],
+              "multipartForm": [],
+              "file": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "inherit"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "PATCH_update__success",
+          "filename": "PATCH_update__success.bru",
+          "seq": 6,
+          "settings": {},
+          "tags": [],
+          "request": {
+            "url": "http://bookbox.local/api/books/update/{{id_book_valid}}",
+            "method": "PATCH",
+            "headers": [],
+            "params": [],
+            "body": {
+              "mode": "json",
+              "json": "{\n  \"id\": \"{{id_book_valid}}\",\n  \"isbn\": \"{{isbn_valid2}}\",\n  \"title\": \"{{title_valid}}\",\n  \"author\": \"{{author_valid2}}\",\n  \"genre\": \"{{name_genre_valid2}}\",\n  \"publisher\": \"{{publisher_valid2}}\"\n}\n",
+              "formUrlEncoded": [],
+              "multipartForm": [],
+              "file": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "inherit"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "POST_store__error",
+          "filename": "POST_store__error.bru",
+          "seq": 3,
+          "settings": {},
+          "tags": [],
+          "request": {
+            "url": "http://bookbox.local/api/books/store",
+            "method": "POST",
+            "headers": [],
+            "params": [],
+            "body": {
+              "mode": "json",
+              "json": "{\n  \"isbn\": \"{{isbn_invalid}}\",\n  \"title\": \"{{title_invalid}}\",\n  \"author\": \"{{author_invalid}}\",\n  \"genre_id\": \"{{genre_id_invalid}}\",\n  \"publisher\": \"{{publisher_invalid}}\"\n}\n",
+              "formUrlEncoded": [],
+              "multipartForm": [],
+              "file": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "inherit"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "POST_store__success",
+          "filename": "POST_store__success.bru",
+          "seq": 2,
+          "settings": {},
+          "tags": [],
+          "request": {
+            "url": "http://bookbox.local/api/books/store",
+            "method": "POST",
+            "headers": [],
+            "params": [],
+            "body": {
+              "mode": "json",
+              "json": "{\n  \"isbn\": \"{{isbn_valid}}\",\n  \"title\": \"{{title_valid}}\",\n  \"author\": \"{{author_valid}}\",\n  \"genre_id\": \"{{genre_id_valid}}\",\n  \"publisher\": \"{{publisher_valid}}\"\n}\n",
+              "formUrlEncoded": [],
+              "multipartForm": [],
+              "file": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "inherit"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "type": "folder",
+      "name": "Copies",
+      "filename": "Copies",
+      "seq": 4,
+      "root": {
+        "meta": {
+          "name": "Copies",
+          "seq": 4
+        }
+      },
+      "items": [
+        {
+          "type": "http",
+          "name": "DELETE_destroy__error",
+          "filename": "DELETE_destroy__error.bru",
+          "seq": 7,
+          "settings": {},
+          "tags": [],
+          "request": {
+            "url": "http://bookbox.local/api/copies/{{id_copy_invalid}}",
+            "method": "DELETE",
+            "headers": [],
+            "params": [],
+            "body": {
+              "mode": "none",
+              "formUrlEncoded": [],
+              "multipartForm": [],
+              "file": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "inherit"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "DELETE_destroy__success",
+          "filename": "DELETE_destroy__success.bru",
+          "seq": 6,
+          "settings": {},
+          "tags": [],
+          "request": {
+            "url": "http://bookbox.local/api/copies/{{id_copy_valid}}",
+            "method": "DELETE",
+            "headers": [],
+            "params": [],
+            "body": {
+              "mode": "none",
+              "formUrlEncoded": [],
+              "multipartForm": [],
+              "file": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "inherit"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "GET_index__success",
+          "filename": "GET_index__success.bru",
+          "seq": 1,
+          "settings": {},
+          "tags": [],
+          "request": {
+            "url": "http://bookbox.local/api/copies",
+            "method": "GET",
+            "headers": [],
+            "params": [],
+            "body": {
+              "mode": "none",
+              "formUrlEncoded": [],
+              "multipartForm": [],
+              "file": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "inherit"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "GET_show__error",
+          "filename": "GET_show__error.bru",
+          "seq": 5,
+          "settings": {},
+          "tags": [],
+          "request": {
+            "url": "http://bookbox.local/api/copies/{{id_copy_invalid}}",
+            "method": "GET",
+            "headers": [],
+            "params": [],
+            "body": {
+              "mode": "none",
+              "formUrlEncoded": [],
+              "multipartForm": [],
+              "file": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "inherit"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "GET_show__success",
+          "filename": "GET_show__success.bru",
+          "seq": 4,
+          "settings": {},
+          "tags": [],
+          "request": {
+            "url": "http://bookbox.local/api/copies/{{id_copy_valid}}",
+            "method": "GET",
+            "headers": [],
+            "params": [],
+            "body": {
+              "mode": "none",
+              "formUrlEncoded": [],
+              "multipartForm": [],
+              "file": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "inherit"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "POST_store__error",
+          "filename": "POST_store__error.bru",
+          "seq": 3,
+          "settings": {},
+          "tags": [],
+          "request": {
+            "url": "http://bookbox.local/api/copies",
+            "method": "POST",
+            "headers": [],
+            "params": [],
+            "body": {
+              "mode": "json",
+              "json": "{\n  \"isbn\": \"{{isbn_invalid}}\",\n  \"numberOfCopies\": \"{{number_copies_invalid}}\"\n}",
+              "formUrlEncoded": [],
+              "multipartForm": [],
+              "file": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "inherit"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "POST_store__success",
+          "filename": "POST_store__success.bru",
+          "seq": 2,
+          "settings": {},
+          "tags": [],
+          "request": {
+            "url": "http://bookbox.local/api/copies/store",
+            "method": "POST",
+            "headers": [],
+            "params": [],
+            "body": {
+              "mode": "json",
+              "json": "{\n  \"isbn\": \"{{isbn_valid2}}\",\n  \"numberOfCopies\": \"{{number_copies_valid}}\"\n}\n",
+              "formUrlEncoded": [],
+              "multipartForm": [],
+              "file": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "inherit"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "type": "folder",
+      "name": "Genres",
+      "filename": "Genres",
+      "seq": 5,
+      "root": {
+        "meta": {
+          "name": "Genres",
+          "seq": 5
+        }
+      },
+      "items": [
+        {
+          "type": "http",
+          "name": "DELETE_destroy__error",
+          "filename": "DELETE_destroy__error.bru",
+          "seq": 9,
+          "settings": {
+            "encodeUrl": true
+          },
+          "tags": [],
+          "request": {
+            "url": "http://bookbox.local/api/genres/{{id_genre_invalid}}",
+            "method": "DELETE",
+            "headers": [],
+            "params": [],
+            "body": {
+              "mode": "none",
+              "formUrlEncoded": [],
+              "multipartForm": [],
+              "file": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "inherit"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "DELETE_destroy__sucess",
+          "filename": "DELETE_destroy__sucess.bru",
+          "seq": 8,
+          "settings": {
+            "encodeUrl": true
+          },
+          "tags": [],
+          "request": {
+            "url": "http://bookbox.local/api/genres/{{id_genre_valid}}",
+            "method": "DELETE",
+            "headers": [],
+            "params": [],
+            "body": {
+              "mode": "none",
+              "formUrlEncoded": [],
+              "multipartForm": [],
+              "file": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "inherit"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "GET_index_success",
+          "filename": "GET_index_success.bru",
+          "seq": 1,
+          "settings": {
+            "encodeUrl": true
+          },
+          "tags": [],
+          "request": {
+            "url": "http://bookbox.local/api/genres",
+            "method": "GET",
+            "headers": [],
+            "params": [],
+            "body": {
+              "mode": "none",
+              "formUrlEncoded": [],
+              "multipartForm": [],
+              "file": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "inherit"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "GET_show__error",
+          "filename": "GET_show__error.bru",
+          "seq": 5,
+          "settings": {
+            "encodeUrl": true
+          },
+          "tags": [],
+          "request": {
+            "url": "http://bookbox.local/api/genres/{{id_genre_invalid}}",
+            "method": "GET",
+            "headers": [],
+            "params": [],
+            "body": {
+              "mode": "none",
+              "formUrlEncoded": [],
+              "multipartForm": [],
+              "file": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "inherit"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "GET_show__sucess",
+          "filename": "GET_show__sucess.bru",
+          "seq": 4,
+          "settings": {
+            "encodeUrl": true
+          },
+          "tags": [],
+          "request": {
+            "url": "http://bookbox.local/api/genres/{{id_genre_valid}}",
+            "method": "GET",
+            "headers": [],
+            "params": [],
+            "body": {
+              "mode": "none",
+              "formUrlEncoded": [],
+              "multipartForm": [],
+              "file": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "inherit"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "PATCH_update__error",
+          "filename": "PATCH_update__error.bru",
+          "seq": 7,
+          "settings": {},
+          "tags": [],
+          "request": {
+            "url": "http://bookbox.local/api/genres/update/{{id_genre_invalid}}",
+            "method": "PATCH",
+            "headers": [],
+            "params": [],
+            "body": {
+              "mode": "json",
+              "json": "{\n  \"name\": \"{{name_genre_invalid}}\",\n  \"cor\": \"{{color_hex_genre_invalid}}\"\n}\n",
+              "formUrlEncoded": [],
+              "multipartForm": [],
+              "file": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "inherit"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "PATCH_update__success",
+          "filename": "PATCH_update__success.bru",
+          "seq": 6,
+          "settings": {},
+          "tags": [],
+          "request": {
+            "url": "http://bookbox.local/api/genres/update/{{id_genre_valid}}",
+            "method": "PATCH",
+            "headers": [],
+            "params": [],
+            "body": {
+              "mode": "json",
+              "json": "{\n  \"name\": \"{{name_genre_valid2}}\",\n  \"cor\": \"{{color_hex_genre_valid2}}\"\n}\n",
+              "formUrlEncoded": [],
+              "multipartForm": [],
+              "file": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "inherit"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "POST_store__error",
+          "filename": "POST_store__error.bru",
+          "seq": 3,
+          "settings": {},
+          "tags": [],
+          "request": {
+            "url": "http://bookbox.local/api/genres/store",
+            "method": "POST",
+            "headers": [],
+            "params": [],
+            "body": {
+              "mode": "json",
+              "json": "{\n  \"name\": \"{{name_genre_invalid}}\",\n  \"cor\": \"{{color_hex_genre_invalid}}\"\n}\n",
+              "formUrlEncoded": [],
+              "multipartForm": [],
+              "file": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "inherit"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "POST_store__success",
+          "filename": "POST_store__success.bru",
+          "seq": 2,
+          "settings": {},
+          "tags": [],
+          "request": {
+            "url": "http://bookbox.local/api/genres/store",
+            "method": "POST",
+            "headers": [],
+            "params": [],
+            "body": {
+              "mode": "json",
+              "json": "{\n  \"name\": \"{{name_genre_valid}}\",\n  \"cor\": \"{{color_hex_genre_valid}}\"\n}\n",
+              "formUrlEncoded": [],
+              "multipartForm": [],
+              "file": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "inherit"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "type": "folder",
+      "name": "SchoolClasses",
+      "filename": "SchoolClasses",
+      "seq": 7,
+      "root": {
+        "meta": {
+          "name": "SchoolClasses",
+          "seq": 7
+        }
+      },
+      "items": [
+        {
+          "type": "http",
+          "name": "DELETE_destroy__error",
+          "filename": "DELETE_destroy__error.bru",
+          "seq": 9,
+          "settings": {},
+          "tags": [],
+          "request": {
+            "url": "http://bookbox.local/api/school-classes/{{id_school_class_invalid}}",
+            "method": "DELETE",
+            "headers": [],
+            "params": [],
+            "body": {
+              "mode": "none",
+              "formUrlEncoded": [],
+              "multipartForm": [],
+              "file": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "inherit"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "DELETE_destroy__success",
+          "filename": "DELETE_destroy__success.bru",
+          "seq": 8,
+          "settings": {},
+          "tags": [],
+          "request": {
+            "url": "http://bookbox.local/api/school-classes/{{id_school_class_valid}}",
+            "method": "DELETE",
+            "headers": [],
+            "params": [],
+            "body": {
+              "mode": "none",
+              "formUrlEncoded": [],
+              "multipartForm": [],
+              "file": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "inherit"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "GET_index__success",
+          "filename": "GET_index__success.bru",
+          "seq": 1,
+          "settings": {},
+          "tags": [],
+          "request": {
+            "url": "http://bookbox.local/api/school-classes",
+            "method": "GET",
+            "headers": [],
+            "params": [],
+            "body": {
+              "mode": "none",
+              "formUrlEncoded": [],
+              "multipartForm": [],
+              "file": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "inherit"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "GET_show__error",
+          "filename": "GET_show__error.bru",
+          "seq": 5,
+          "settings": {},
+          "tags": [],
+          "request": {
+            "url": "http://bookbox.local/api/school-classes/{{id_school_class_invalid}}",
+            "method": "GET",
+            "headers": [],
+            "params": [],
+            "body": {
+              "mode": "none",
+              "formUrlEncoded": [],
+              "multipartForm": [],
+              "file": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "inherit"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "GET_show__success",
+          "filename": "GET_show__success.bru",
+          "seq": 4,
+          "settings": {},
+          "tags": [],
+          "request": {
+            "url": "http://bookbox.local/api/school-classes/{{id_school_class_valid}}",
+            "method": "GET",
+            "headers": [],
+            "params": [],
+            "body": {
+              "mode": "none",
+              "formUrlEncoded": [],
+              "multipartForm": [],
+              "file": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "inherit"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "PATCH_update__error",
+          "filename": "PATCH_update__error.bru",
+          "seq": 7,
+          "settings": {},
+          "tags": [],
+          "request": {
+            "url": "http://bookbox.local/api/school-classes/{{id_school_class_invalid}}",
+            "method": "PATCH",
+            "headers": [],
+            "params": [],
+            "body": {
+              "mode": "json",
+              "json": "{\n  \"term\": \"{{term_invalid}}\",\n  \"start_date\": \"{{start_date_invalid}}\",\n  \"end_date\": \"{{end_date_invalid}}\"\n}\n",
+              "formUrlEncoded": [],
+              "multipartForm": [],
+              "file": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "inherit"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "PATCH_update__success",
+          "filename": "PATCH_update__success.bru",
+          "seq": 6,
+          "settings": {},
+          "tags": [],
+          "request": {
+            "url": "http://bookbox.local/api/school-classes/{{id_school_class_valid}}",
+            "method": "PATCH",
+            "headers": [],
+            "params": [],
+            "body": {
+              "mode": "json",
+              "json": "{\n  \"course\": \"{{course_valid2}}\"\n  //\"term\": \"{{term_valid}}\",\n  //\"start_date\": \"{{start_date_valid}}\",\n  //\"end_date\": \"{{end_date_valid}}\"\n}",
+              "formUrlEncoded": [],
+              "multipartForm": [],
+              "file": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "inherit"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "POST_store__error",
+          "filename": "POST_store__error.bru",
+          "seq": 3,
+          "settings": {},
+          "tags": [],
+          "request": {
+            "url": "http://bookbox.local/api/school-classes",
+            "method": "POST",
+            "headers": [],
+            "params": [],
+            "body": {
+              "mode": "json",
+              "json": "{\n  \"course\": \"{{course_invalid}}\",\n  \"term\": \"{{term_invalid}}\",\n  \"start_date\": \"{{start_date_invalid}}\",\n  \"end_date\": \"{{end_date_invalid}}\"\n}",
+              "formUrlEncoded": [],
+              "multipartForm": [],
+              "file": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "inherit"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "POST_store__success",
+          "filename": "POST_store__success.bru",
+          "seq": 2,
+          "settings": {},
+          "tags": [],
+          "request": {
+            "url": "http://bookbox.local/api/school-classes",
+            "method": "POST",
+            "headers": [],
+            "params": [],
+            "body": {
+              "mode": "json",
+              "json": "{\n  \"course\": \"{{course_valid}}\",\n  \"term\": \"{{term_valid}}\",\n  \"start_date\": \"{{start_date_valid}}\",\n  \"end_date\": \"{{end_date_valid}}\"\n}",
+              "formUrlEncoded": [],
+              "multipartForm": [],
+              "file": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "inherit"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "type": "folder",
+      "name": "Students",
+      "filename": "Students",
+      "seq": 2,
+      "root": {
+        "meta": {
+          "name": "Students",
+          "seq": 2
+        }
+      },
+      "items": [
+        {
+          "type": "http",
+          "name": "DELETE_destroy__error",
+          "filename": "DELETE_destroy__error.bru",
+          "seq": 9,
+          "settings": {},
+          "tags": [],
+          "request": {
+            "url": "http://bookbox.local/api/students/{{id_student_invalid}}",
+            "method": "DELETE",
+            "headers": [],
+            "params": [],
+            "body": {
+              "mode": "none",
+              "formUrlEncoded": [],
+              "multipartForm": [],
+              "file": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "inherit"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "DELETE_destroy__success",
+          "filename": "DELETE_destroy__success.bru",
+          "seq": 8,
+          "settings": {},
+          "tags": [],
+          "request": {
+            "url": "http://bookbox.local/api/students/{{id_student_valid}}",
+            "method": "DELETE",
+            "headers": [],
+            "params": [],
+            "body": {
+              "mode": "none",
+              "formUrlEncoded": [],
+              "multipartForm": [],
+              "file": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "inherit"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "GET_index__success",
+          "filename": "GET_index__success.bru",
+          "seq": 1,
+          "settings": {},
+          "tags": [],
+          "request": {
+            "url": "http://bookbox.local/api/students",
+            "method": "GET",
+            "headers": [],
+            "params": [],
+            "body": {
+              "mode": "none",
+              "formUrlEncoded": [],
+              "multipartForm": [],
+              "file": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "inherit"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "GET_show__error",
+          "filename": "GET_show__error.bru",
+          "seq": 5,
+          "settings": {},
+          "tags": [],
+          "request": {
+            "url": "http://bookbox.local/api/students/{{id_student_invalid}}",
+            "method": "GET",
+            "headers": [],
+            "params": [],
+            "body": {
+              "mode": "none",
+              "formUrlEncoded": [],
+              "multipartForm": [],
+              "file": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "inherit"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "GET_show__success",
+          "filename": "GET_show__success.bru",
+          "seq": 4,
+          "settings": {},
+          "tags": [],
+          "request": {
+            "url": "http://bookbox.local/api/students/{{id_student_valid}}",
+            "method": "GET",
+            "headers": [],
+            "params": [],
+            "body": {
+              "mode": "none",
+              "formUrlEncoded": [],
+              "multipartForm": [],
+              "file": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "inherit"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "PATCH_update__error",
+          "filename": "PATCH_update__error.bru",
+          "seq": 7,
+          "settings": {},
+          "tags": [],
+          "request": {
+            "url": "http://bookbox.local/api/students/{{id_student_invalid}}",
+            "method": "PATCH",
+            "headers": [],
+            "params": [],
+            "body": {
+              "mode": "json",
+              "json": "{\n  \"name\": \"{{name_invalid}}\",\n  \"cpf\": \"{{cpf_invalid}}\",\n  \"email\": \"{{email_invalid}}\",\n  \"phone\": \"{{phone_invalid}}\",\n  \"course\": \"{{course_invalid}}\",\n  \"term\": \"{{term_invalid}}\",\n  \"period\": \"{{period_invalid}}\"\n}",
+              "formUrlEncoded": [],
+              "multipartForm": [],
+              "file": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "inherit"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "PATCH_update__success",
+          "filename": "PATCH_update__success.bru",
+          "seq": 6,
+          "settings": {},
+          "tags": [],
+          "request": {
+            "url": "http://bookbox.local/api/students/{{id_student_valid}}",
+            "method": "PATCH",
+            "headers": [],
+            "params": [],
+            "body": {
+              "mode": "json",
+              "json": "{\n  \"name\": \"{{name_valid2}}\",\n  \"cpf\": \"{{cpf_valid}}\",\n  \"email\": \"{{email_valid}}\",\n  \"phone\": \"{{phone_valid}}\",\n  \"course\": \"{{course_valid2}}\",\n  \"term\": \"{{term_valid}}\",\n  \"period\": \"{{period_valid}}\"\n}",
+              "formUrlEncoded": [],
+              "multipartForm": [],
+              "file": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "inherit"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "POST_store__error",
+          "filename": "POST_store__error.bru",
+          "seq": 3,
+          "settings": {},
+          "tags": [],
+          "request": {
+            "url": "http://bookbox.local/api/students",
+            "method": "POST",
+            "headers": [],
+            "params": [],
+            "body": {
+              "mode": "json",
+              "json": "{\n  \"name\": \"{{name_invalid}}\",\n  \"cpf\": \"{{cpf_invalid}}\",\n  \"email\": \"{{email_invalid}}\",\n  \"phone\": \"{{phone_invalid}}\",\n  \"course\": \"{{course_invalid}}\",\n  \"term\": \"{{term_invalid}}\",\n  \"period\": \"{{period_invalid}}\"\n}",
+              "formUrlEncoded": [],
+              "multipartForm": [],
+              "file": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "inherit"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "POST_store__success",
+          "filename": "POST_store__success.bru",
+          "seq": 2,
+          "settings": {},
+          "tags": [],
+          "request": {
+            "url": "http://bookbox.local/api/students",
+            "method": "POST",
+            "headers": [],
+            "params": [],
+            "body": {
+              "mode": "json",
+              "json": "{\n  \"name\": \"{{name_valid}}\",\n  \"cpf\": \"{{cpf_valid}}\",\n  \"email\": \"{{email_valid}}\",\n  \"phone\": \"{{phone_valid}}\",\n  \"course\": \"{{course_valid}}\",\n  \"term\": \"{{term_valid}}\",\n  \"period\": \"{{period_valid}}\"\n}",
+              "formUrlEncoded": [],
+              "multipartForm": [],
+              "file": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "inherit"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "type": "folder",
+      "name": "Users",
+      "filename": "Users",
+      "seq": 8,
+      "root": {
+        "meta": {
+          "name": "Users",
+          "seq": 8
+        }
+      },
+      "items": [
+        {
+          "type": "http",
+          "name": "DELETE_destroy__error",
+          "filename": "DELETE_destroy__error.bru",
+          "seq": 9,
+          "settings": {},
+          "tags": [],
+          "request": {
+            "url": "http://bookbox.local/api/users/{{id_user_invalid}}",
+            "method": "DELETE",
+            "headers": [],
+            "params": [],
+            "body": {
+              "mode": "none",
+              "formUrlEncoded": [],
+              "multipartForm": [],
+              "file": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "inherit"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "DELETE_destroy__success",
+          "filename": "DELETE_destroy__success.bru",
+          "seq": 8,
+          "settings": {},
+          "tags": [],
+          "request": {
+            "url": "http://bookbox.local/api/users/{{id_user_valid}}",
+            "method": "DELETE",
+            "headers": [],
+            "params": [],
+            "body": {
+              "mode": "none",
+              "formUrlEncoded": [],
+              "multipartForm": [],
+              "file": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "inherit"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "GET_index__success",
+          "filename": "GET_index__success.bru",
+          "seq": 1,
+          "settings": {},
+          "tags": [],
+          "request": {
+            "url": "http://bookbox.local/api/users",
+            "method": "GET",
+            "headers": [],
+            "params": [],
+            "body": {
+              "mode": "none",
+              "formUrlEncoded": [],
+              "multipartForm": [],
+              "file": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "inherit"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "GET_show__error",
+          "filename": "GET_show__error.bru",
+          "seq": 5,
+          "settings": {},
+          "tags": [],
+          "request": {
+            "url": "http://bookbox.local/api/users/{{id_user_invalid}}",
+            "method": "GET",
+            "headers": [],
+            "params": [],
+            "body": {
+              "mode": "none",
+              "formUrlEncoded": [],
+              "multipartForm": [],
+              "file": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "inherit"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "GET_show__success",
+          "filename": "GET_show__success.bru",
+          "seq": 4,
+          "settings": {},
+          "tags": [],
+          "request": {
+            "url": "http://bookbox.local/api/users/{{id_user_valid}}",
+            "method": "GET",
+            "headers": [],
+            "params": [],
+            "body": {
+              "mode": "none",
+              "formUrlEncoded": [],
+              "multipartForm": [],
+              "file": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "inherit"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "PATCH_update__error",
+          "filename": "PATCH_update__error.bru",
+          "seq": 7,
+          "settings": {},
+          "tags": [],
+          "request": {
+            "url": "http://bookbox.local/api/users/{{id_user_invalid}}",
+            "method": "PATCH",
+            "headers": [],
+            "params": [],
+            "body": {
+              "mode": "json",
+              "json": "{\n  \"name\": \"{{name_invalid}}\",\n  \"email\": \"{{email_invalid}}\",\n  \"password\": \"{{password_invalid}}\",\n  \"password_confirmation\": \"{{password_invalid2}}\"\n}\n",
+              "formUrlEncoded": [],
+              "multipartForm": [],
+              "file": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "inherit"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "PATCH_update__success",
+          "filename": "PATCH_update__success.bru",
+          "seq": 6,
+          "settings": {},
+          "tags": [],
+          "request": {
+            "url": "http://bookbox.local/api/users/{{id_user_valid}}",
+            "method": "PATCH",
+            "headers": [],
+            "params": [],
+            "body": {
+              "mode": "json",
+              "json": "{\n  \"name\": \"{{name_valid2}}\",\n  \"email\": \"{{email_valid}}\"\n  // \"password\": \"{{password_valid}}\",\n  // \"password_confirmation\": \"{{password_valid}}\"\n}\n",
+              "formUrlEncoded": [],
+              "multipartForm": [],
+              "file": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "inherit"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "POST_store__error",
+          "filename": "POST_store__error.bru",
+          "seq": 3,
+          "settings": {},
+          "tags": [],
+          "request": {
+            "url": "http://bookbox.local/api/users",
+            "method": "POST",
+            "headers": [],
+            "params": [],
+            "body": {
+              "mode": "json",
+              "json": "{\n  \"name\": \"{{name_invalid}}\",\n  \"email\": \"{{email_invalid}}\",\n  \"password\": \"{{password_invalid}}\",\n  \"password_confirmation\": \"{{password_valid}}\"\n}\n",
+              "formUrlEncoded": [],
+              "multipartForm": [],
+              "file": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "inherit"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "POST_store__success",
+          "filename": "POST_store__success.bru",
+          "seq": 2,
+          "settings": {},
+          "tags": [],
+          "request": {
+            "url": "http://bookbox.local/api/users",
+            "method": "POST",
+            "headers": [],
+            "params": [],
+            "body": {
+              "mode": "json",
+              "json": "{\n  \"name\": \"{{name_valid}}\",\n  \"email\": \"{{email_valid2}}\",\n  \"password\": \"{{password_valid}}\",\n  \"password_confirmation\": \"{{password_valid}}\"\n}\n",
+              "formUrlEncoded": [],
+              "multipartForm": [],
+              "file": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "inherit"
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "activeEnvironmentUid": "LpKzpfU4BZb1qWnkWgCVX",
+  "environments": [
+    {
+      "variables": [
+        {
+          "name": "name_valid",
+          "value": "Ricardo Zanata",
+          "enabled": true,
+          "secret": false,
+          "type": "text"
+        },
+        {
+          "name": "name_valid2",
+          "value": "Alfredo Alexandre",
+          "enabled": true,
+          "secret": false,
+          "type": "text"
+        },
+        {
+          "name": "name_invalid",
+          "value": "Ric@rdo Zan4ta",
+          "enabled": true,
+          "secret": false,
+          "type": "text"
+        },
+        {
+          "name": "email_valid",
+          "value": "guilhermegg2008@gmail.com",
+          "enabled": true,
+          "secret": false,
+          "type": "text"
+        },
+        {
+          "name": "email_invalid",
+          "value": "testegmail.com",
+          "enabled": true,
+          "secret": false,
+          "type": "text"
+        },
+        {
+          "name": "password_valid",
+          "value": "Teste123@",
+          "enabled": true,
+          "secret": false,
+          "type": "text"
+        },
+        {
+          "name": "password_invalid",
+          "value": "Senha123",
+          "enabled": true,
+          "secret": false,
+          "type": "text"
+        },
+        {
+          "name": "password_invalid2",
+          "value": "Senha1223",
+          "enabled": true,
+          "secret": false,
+          "type": "text"
+        },
+        {
+          "name": "cpf_valid",
+          "value": "150.445.428-65",
+          "enabled": true,
+          "secret": false,
+          "type": "text"
+        },
+        {
+          "name": "cpf_valid2",
+          "value": "410.594.778-82",
+          "enabled": true,
+          "secret": false,
+          "type": "text"
+        },
+        {
+          "name": "cpf_invalid",
+          "value": "0000000",
+          "enabled": true,
+          "secret": false,
+          "type": "text"
+        },
+        {
+          "name": "phone_valid",
+          "value": "(17) 97116-0182",
+          "enabled": true,
+          "secret": false,
+          "type": "text"
+        },
+        {
+          "name": "phone_invalid",
+          "value": "00000-0000",
+          "enabled": true,
+          "secret": false,
+          "type": "text"
+        },
+        {
+          "name": "course_valid",
+          "value": "Desenvolvimento de Sistemas",
+          "enabled": true,
+          "secret": false,
+          "type": "text"
+        },
+        {
+          "name": "course_valid2",
+          "value": "Administração",
+          "enabled": true,
+          "secret": false,
+          "type": "text"
+        },
+        {
+          "name": "course_invalid",
+          "value": "Desenvolvimento de Sistemas@123",
+          "enabled": true,
+          "secret": false,
+          "type": "text"
+        },
+        {
+          "name": "term_valid",
+          "value": "Annual",
+          "enabled": true,
+          "secret": false,
+          "type": "text"
+        },
+        {
+          "name": "term_valid2",
+          "value": "Semester",
+          "enabled": true,
+          "secret": false,
+          "type": "text"
+        },
+        {
+          "name": "term_invalid",
+          "value": "Diário",
+          "enabled": true,
+          "secret": false,
+          "type": "text"
+        },
+        {
+          "name": "start_date_valid",
+          "value": "2025-02-01",
+          "enabled": true,
+          "secret": false,
+          "type": "text"
+        },
+        {
+          "name": "start_date_valid2",
+          "value": "2026-02-01",
+          "enabled": true,
+          "secret": false,
+          "type": "text"
+        },
+        {
+          "name": "start_date_invalid",
+          "value": "01-20205-02",
+          "enabled": true,
+          "secret": false,
+          "type": "text"
+        },
+        {
+          "name": "end_date_valid",
+          "value": "2026-02-01",
+          "enabled": true,
+          "secret": false,
+          "type": "text"
+        },
+        {
+          "name": "end_date_valid2",
+          "value": "2027-02-01",
+          "enabled": true,
+          "secret": false,
+          "type": "text"
+        },
+        {
+          "name": "end_date_invalid",
+          "value": "2023-02-01",
+          "enabled": true,
+          "secret": false,
+          "type": "text"
+        },
+        {
+          "name": "id_school_class_valid",
+          "value": "1486ddce-4348-4155-a7ef-016d352363ff",
+          "enabled": true,
+          "secret": false,
+          "type": "text"
+        },
+        {
+          "name": "id_school_class_valid2",
+          "value": "2974fa7f-62fc-4d58-824e-4b1302f72fff",
+          "enabled": true,
+          "secret": false,
+          "type": "text"
+        },
+        {
+          "name": "id_school_class_invalid",
+          "value": "5553b134-1517-40b2-9398-c167a8d6206b",
+          "enabled": true,
+          "secret": false,
+          "type": "text"
+        },
+        {
+          "name": "id_student_valid",
+          "value": "5b72e7dd-0fdd-49b5-9dd7-3a6321e6489f",
+          "enabled": true,
+          "secret": false,
+          "type": "text"
+        },
+        {
+          "name": "id_student_valid2",
+          "value": "0xbfff2ca136194997a9b8922c2ee014a3",
+          "enabled": true,
+          "secret": false,
+          "type": "text"
+        },
+        {
+          "name": "id_student_invalid",
+          "value": "5553b134-1517-40b2-9398-c167a8d6206d",
+          "enabled": true,
+          "secret": false,
+          "type": "text"
+        },
+        {
+          "name": "id_genre_valid",
+          "value": "5553b134-1517-40b2-9398-c167a8d6206b",
+          "enabled": true,
+          "secret": false,
+          "type": "text"
+        },
+        {
+          "name": "id_genre_invalid",
+          "value": "5553b134-1517-40b2-9398-c167a8d6206b",
+          "enabled": true,
+          "secret": false,
+          "type": "text"
+        },
+        {
+          "name": "name_genre_valid",
+          "value": "Comédia",
+          "enabled": true,
+          "secret": false,
+          "type": "text"
+        },
+        {
+          "name": "name_genre_valid2",
+          "value": "Romance",
+          "enabled": true,
+          "secret": false,
+          "type": "text"
+        },
+        {
+          "name": "name_genre_invalid",
+          "value": "R0m4nc3",
+          "enabled": true,
+          "secret": false,
+          "type": "text"
+        },
+        {
+          "name": "color_hex_genre_valid",
+          "value": "#FFF000",
+          "enabled": true,
+          "secret": false,
+          "type": "text"
+        },
+        {
+          "name": "color_hex_genre_valid2",
+          "value": "#FF0000",
+          "enabled": true,
+          "secret": false,
+          "type": "text"
+        },
+        {
+          "name": "color_hex_genre_invalid",
+          "value": "rosinha",
+          "enabled": true,
+          "secret": false,
+          "type": "text"
+        },
+        {
+          "name": "isbn_valid",
+          "value": "9792258976325",
+          "enabled": true,
+          "secret": false,
+          "type": "text"
+        },
+        {
+          "name": "isbn_valid2",
+          "value": "9787412564569",
+          "enabled": true,
+          "secret": false,
+          "type": "text"
+        },
+        {
+          "name": "isbn_invalid",
+          "value": "a45de8a4s5ed4e",
+          "enabled": true,
+          "secret": false,
+          "type": "text"
+        },
+        {
+          "name": "title_valid",
+          "value": "A culpa é das Estrelas",
+          "enabled": true,
+          "secret": false,
+          "type": "text"
+        },
+        {
+          "name": "title_valid2",
+          "value": "Harry Potter",
+          "enabled": true,
+          "secret": false,
+          "type": "text"
+        },
+        {
+          "name": "title_invalid",
+          "value": "Sorriso😊😀",
+          "enabled": true,
+          "secret": false,
+          "type": "text"
+        },
+        {
+          "name": "author_valid",
+          "value": "J. K. Rolling",
+          "enabled": true,
+          "secret": false,
+          "type": "text"
+        },
+        {
+          "name": "author_valid2",
+          "value": "Mário de Andrade",
+          "enabled": true,
+          "secret": false,
+          "type": "text"
+        },
+        {
+          "name": "author_invalid",
+          "value": "J0s3 d3 Oliv31r4",
+          "enabled": true,
+          "secret": false,
+          "type": "text"
+        },
+        {
+          "name": "publisher_valid",
+          "value": "Saraiva",
+          "enabled": true,
+          "secret": false,
+          "type": "text"
+        },
+        {
+          "name": "publisher_valid2",
+          "value": "Leitura",
+          "enabled": true,
+          "secret": false,
+          "type": "text"
+        },
+        {
+          "name": "publisher_invalid",
+          "value": "L31tur4",
+          "enabled": true,
+          "secret": false,
+          "type": "text"
+        },
+        {
+          "name": "id_book_valid",
+          "value": "5553b134-1517-40b2-9398-c167a8d6206b",
+          "enabled": true,
+          "secret": false,
+          "type": "text"
+        },
+        {
+          "name": "id_book_invalid",
+          "value": "5553b134-1517-40b2-9398-c167a8d6206b",
+          "enabled": true,
+          "secret": false,
+          "type": "text"
+        },
+        {
+          "name": "period_valid",
+          "value": "1",
+          "enabled": true,
+          "secret": false,
+          "type": "text"
+        },
+        {
+          "name": "period_invalid",
+          "value": "99999",
+          "enabled": true,
+          "secret": false,
+          "type": "text"
+        },
+        {
+          "name": "id_user_valid",
+          "value": "85e49bb3-4a17-46c7-9ccf-f9e6e26d9fbb",
+          "enabled": true,
+          "secret": false,
+          "type": "text"
+        },
+        {
+          "name": "id_user_invalid",
+          "value": "8ddfbe4e-c580-45e4-b3b7-44b6da2877a7",
+          "enabled": true,
+          "secret": false,
+          "type": "text"
+        },
+        {
+          "name": "email_valid2",
+          "value": "jhonas_correia@gmail.com",
+          "enabled": true,
+          "secret": false,
+          "type": "text"
+        },
+        {
+          "name": "number_copies_valid",
+          "value": "56",
+          "enabled": true,
+          "secret": false,
+          "type": "text"
+        },
+        {
+          "name": "number_copies_invalid",
+          "value": "aa",
+          "enabled": true,
+          "secret": false,
+          "type": "text"
+        }
+      ],
+      "name": "bookbox-test"
+    }
+  ],
+  "root": {
+    "request": {
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json",
+          "enabled": true,
+          "uid": "AbS7iCWQYrUfA11FMgQ8z"
+        }
+      ]
+    }
+  },
+  "brunoConfig": {
+    "version": "1",
+    "name": "requests",
+    "type": "collection",
+    "ignore": [
+      "node_modules",
+      ".git"
+    ],
+    "size": 0.016315460205078125,
+    "filesCount": 71
+  }
+}
