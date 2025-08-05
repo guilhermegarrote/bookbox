@@ -1,4 +1,6 @@
 @import '../base/_variables.css';
+@import '../libs/notyf-custom.css';
+@import '../components/_tooltips.css';
 
 .auth-container {
     min-height: 100dvh;
