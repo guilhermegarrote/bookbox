@@ -6,7 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Registrar</title>
 
-    @vite(['resources/css/pages/auth.css'])
     @routes
     <meta name="csrf-token" content="{{ csrf_token() }}">
 </head>

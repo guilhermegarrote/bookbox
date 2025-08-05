@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Confirmação de Código</title>
 
-      @vite(['resources/css/pages/recovery-code-validation.css'])
+      @vite([''])
     @routes
     <meta name="csrf-token" content="{{ csrf_token() }}">
 </head>
