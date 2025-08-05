@@ -1,6 +1,7 @@
 import { validateCode } from '../../api/auth/recovery-code-validation.js';
 import { resendCode } from '../../api/auth/resend-recovery-code.js';
 import { showErrors, clearErrors, notifyError, notifySuccess } from '@/utils/formErrors';
+import '../../../css/pages/recovery-code-validation.css';
 
 document.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById('recovery-code-validation-form');

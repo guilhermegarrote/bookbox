@@ -1,5 +1,6 @@
 import { register } from '../../api/auth/register.js';
 import { showErrors, clearErrors, notifyError } from '@/utils/formErrors';
+import '../../../css/pages/auth.css';
 
 document.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById('register-form');

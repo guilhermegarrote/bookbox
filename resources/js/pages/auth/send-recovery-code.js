@@ -1,5 +1,6 @@
 import { sendCode } from '../../api/auth/send-recovery-code.js';
 import { showErrors, clearErrors, notifyError } from '@/utils/formErrors';
+import '../../../css/pages/auth.css';
 
 document.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById('send-recovery-code-form');

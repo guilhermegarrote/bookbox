@@ -1,5 +1,6 @@
 import { login } from '../../api/auth/login.js';
 import { showErrors, clearErrors, notifyError } from '@/utils/formErrors';
+import '../../../css/pages/login.css';
 
 document.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById('login-form');

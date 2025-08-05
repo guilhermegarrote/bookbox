@@ -1,5 +1,6 @@
 import { resetPassword } from '../../api/auth/reset-password.js';
 import { showErrors, clearErrors, notifyError } from '@/utils/formErrors';
+import '../../../css/pages/auth.css';
 
 document.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById('reset-password-form');
