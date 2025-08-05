@@ -1,3 +1,5 @@
+import '../../../css/components/table.css';
+
 import { sendRequest } from '../../api/students/listFetcher';
 import { bindPaginationForm } from '../../components/pagination';
 
@@ -89,6 +91,5 @@ document.addEventListener('DOMContentLoaded', () => {
 
     bindPaginationForm();
 });
-
 
 export { updateTable };

@@ -1,7 +1,3 @@
-@push('styles')
-    @vite('resources/css/components/table.css')
-@endpush
-
 @if ($students->isEmpty())
     <div class="data-empty">
         <h1>Nenhum aluno encontrado.</h1>

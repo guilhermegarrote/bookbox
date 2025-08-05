@@ -1,3 +1,5 @@
+import '../../css/components/_pagination.css';
+
 export function bindPaginationForm() {
     const paginationForm = document.getElementById('paginationForm');
     if (!paginationForm) return;

@@ -1,7 +1,3 @@
-@push('styles')
-    @vite('resources/css/components/_pagination.css')
-@endpush
-
 @php
     $perPageCurrent = request('perPage', 10);
 @endphp
