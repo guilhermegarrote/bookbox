@@ -80,6 +80,15 @@
     background-color: #f0f0f0;
 }
 
+.data-table tbody tr {
+    transition: background-color 0.3s ease;
+}
+
+.data-table tbody tr:hover {
+    background-color: #dddddd;
+    cursor: pointer;
+}
+
 .sort-link {
     color: inherit;
     text-decoration: none;
