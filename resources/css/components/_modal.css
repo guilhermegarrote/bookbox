@@ -1,0 +1,147 @@
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.200);
+    backdrop-filter: blur(1.75px);
+    z-index: 999;
+}
+
+.modal-window {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1050;
+    background: #fff;
+    width: 650px;
+    border-radius: 6px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+    font-family: var(--font-primary);
+}
+
+.hidden {
+    display: none !important;
+    visibility: hidden;
+    opacity: 0;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    padding: 0 15px 0 15px;
+    height: 45px;
+    background-color: #333;
+    border-radius: 6px 6px 0 0;
+}
+
+.modal-title {
+    color: white;
+    font-size: 1.5em;
+    text-align: center;
+    flex-grow: 1;
+}
+
+.modal-content {
+    width: 100%;
+    padding: 20px 20px 10px 20px;
+}
+
+.form-group {
+    position: relative;
+    height: 35px;
+    margin-bottom: 10px;
+}
+
+.form-input {
+    width: 100%;
+    height: 35px;
+    padding: 8px 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    background-color: transparent;
+    outline: none;
+    font-size: 1em;
+    transition: border-color 0.2s ease;
+}
+
+.form-input--small {
+    width: 60px;
+    height: 40px;
+    text-align: center;
+    font-size: 18px;
+}
+
+.form-label {
+    position: absolute;
+    font-size: 1em;
+    font-weight: 450;
+    color: #6e6e6e;
+    background: #fff;
+    padding: 0 5px;
+    top: 50%;
+    left: 10px;
+    transform: translateY(-50%);
+    transition: all 0.2s ease;
+    pointer-events: none;
+}
+
+.form-label--floating {
+    top: -10px;
+    font-size: 12px;
+    color: #444;
+    transform: none;
+}
+
+.form-input:focus,
+.form-input.has-value {
+    border: 1px solid #000;
+    position: relative;
+    z-index: 2;
+}
+
+.form-input:focus+.form-label,
+.form-input.has-value+.form-label {
+    top: 0;
+    left: 10px;
+    transform: translateY(-50%) scale(0.8);
+    transform-origin: left center;
+    color: #000;
+    z-index: 4;
+}
+
+.form-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: flex-start;
+}
+
+.modal-footer {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin: 10px 0;
+}
+
+.modal-button {
+    font-family: var(--font-primary);
+    font-weight: 550;
+    font-size: 15px;
+    padding: 10px 20px;
+    background: #fff;
+    color: #000;
+    border: 1px solid #000;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.modal-button:hover {
+    background: #282828;
+    color: #fff;
+}
