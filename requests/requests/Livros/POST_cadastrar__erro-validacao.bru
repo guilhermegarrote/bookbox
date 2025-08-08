@@ -1,0 +1,26 @@
+meta {
+  name: POST_cadastrar__erro-validacao
+  type: http
+  seq: 2
+}
+
+post {
+  url: http://localhost/bookbox/api/livros/cadastrar
+  body: json
+  auth: inherit
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "isbn": "{{isbn_invalido}}",
+    "titulo": "{{titulo_invalido}}",
+    "autor": "{{autor_invalido}}",
+    "genero": "{{nome_genero_invalido}}",
+    "editora": "{{editora_invalida}}"
+  }
+  
+}

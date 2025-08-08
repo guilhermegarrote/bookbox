@@ -1,0 +1,25 @@
+meta {
+  name: POST_cadastrar__sucesso
+  type: http
+  seq: 1
+}
+
+post {
+  url: http://localhost/bookbox/api/alunos/cadastrar
+  body: json
+  auth: inherit
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "nome": "{{nome_valido}}",
+    "cpf": "{{cpf_valido}}",
+    "email": "{{email_valido}}",
+    "telefone": "{{telefone_valido}}"
+  }
+  
+}

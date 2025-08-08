@@ -1,0 +1,11 @@
+{
+  "version": "1",
+  "name": "requests",
+  "type": "collection",
+  "ignore": [
+    "node_modules",
+    ".git"
+  ],
+  "size": 0.009110450744628906,
+  "filesCount": 29
+}

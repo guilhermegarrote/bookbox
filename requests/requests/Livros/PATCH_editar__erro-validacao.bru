@@ -1,0 +1,27 @@
+meta {
+  name: PATCH_editar__erro-validacao
+  type: http
+  seq: 4
+}
+
+patch {
+  url: http://localhost/bookbox/api/livros/editar/{{id_livro_invalido}}
+  body: json
+  auth: inherit
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "id": "{{id_livro_invalido}}",
+    "isbn": "{{isbn_invalido}}",
+    "titulo": "{{titulo_invalido}}",
+    "autor": "{{autor_invalido}}",
+    "genero": "{{nome_genero_invalido}}",
+    "editora": "{{editora_invalida}}"
+  }
+  
+}

@@ -1,0 +1,27 @@
+meta {
+  name: PATCH_editar__sucesso
+  type: http
+  seq: 3
+}
+
+patch {
+  url: http://localhost/bookbox/api/turmas/editar{{id_turmas_valido}}
+  body: json
+  auth: inherit
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "id": "{{id_turmas_valido}}",
+    "curso": "{{curso_valido}}",
+    "horario": "{{horario_valido}}",
+    "regime": "{{regime_valido}}",
+    "data_inicio": "{{data_inicio_valida}}",
+    "data_fim": "{{data_fim_valida}}"
+  }
+  
+}

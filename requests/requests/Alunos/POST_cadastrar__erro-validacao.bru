@@ -1,0 +1,25 @@
+meta {
+  name: POST_cadastrar__erro-validacao
+  type: http
+  seq: 2
+}
+
+post {
+  url: http://localhost/bookbox/api/alunos/cadastrar
+  body: json
+  auth: inherit
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "nome": "{{nome_invalido}}",
+    "cpf": "{{cpf_invalido}}",  
+    "email": "{{email_invalido}}",  
+    "telefone": "{{telefone_invalido}}"
+  }
+  
+}

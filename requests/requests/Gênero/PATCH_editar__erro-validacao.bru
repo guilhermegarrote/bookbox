@@ -1,0 +1,24 @@
+meta {
+  name: PATCH_editar__erro-validacao
+  type: http
+  seq: 4
+}
+
+patch {
+  url: http://localhost/bookbox/api/generos/editar/{{id_genero_invalido}}
+  body: json
+  auth: inherit
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "id": "{{id_genero_invalido}}",
+    "nome": "{{nome_genero_invalido}}",
+    "cor": "{{cor_genero_invalida}}"
+  }
+  
+}
