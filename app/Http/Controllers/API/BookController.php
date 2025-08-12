@@ -4,13 +4,14 @@ namespace App\Http\Controllers\API;
 
 use App\Helpers\Utils;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Book\BookClassStoreRequest;
-use App\Http\Requests\Book\BookClassUpdateRequest;
+use App\Http\Requests\Book\BookStoreRequest;
+use App\Http\Requests\Book\BookUpdateRequest;
 use App\Models\Book;
 use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
+use Throwable;
 
 class BookController extends Controller
 {
@@ -21,11 +22,11 @@ class BookController extends Controller
     {
         //
     }
-    
+
     /**
      * Store a newly created resource in storage.
      */
-    public function store(BookClassStoreRequest $request): JsonResponse
+    public function store(BookStoreRequest $request): JsonResponse
     {
         $data = $request->validated();
 
@@ -44,7 +45,7 @@ class BookController extends Controller
             Book::create($bookData);
 
             return $this->createdResponse();
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             $this->logError('Erro ao cadastrar livro.', $e, ['data' => $data]);
             return $this->internalErrorResponse($e, 'Erro interno ao cadastrar livro.');
         }
@@ -62,7 +63,7 @@ class BookController extends Controller
             return $this->successResponse($book->toArray());
         } catch (ModelNotFoundException $e) {
             return $this->notFoundResponse('Livro não encontrado.');
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             $this->logError('Erro ao buscar livro.', $e, ['book_id' => $id]);
             return $this->internalErrorResponse($e, 'Erro interno ao buscar livro.');
         }
@@ -71,7 +72,7 @@ class BookController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(BookClassUpdateRequest $request, string $id): JsonResponse
+    public function update(BookUpdateRequest $request, string $id): JsonResponse
     {
         $data = $request->validated();
 
@@ -106,7 +107,7 @@ class BookController extends Controller
             return $this->noContentResponse();
         } catch (ModelNotFoundException $e) {
             return $this->notFoundResponse('Livro não encontrado.');
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             $this->logError('Erro ao atualizar livro.', $e, [
                 'book_id' => $id,
                 'data' => $data,
@@ -124,12 +125,12 @@ class BookController extends Controller
             $binaryId = Utils::convertUuidToBinary($id);
             $book = Book::findOrFail($binaryId);
 
-            $hasActiveLoans = DB::table('loans')
+            $hasActiveCopies = DB::table('copies')
                 ->where('book_id', $binaryId)
-                ->where('active', true)
+                ->where('available', false)
                 ->exists();
 
-            if ($hasActiveLoans) {
+            if ($hasActiveCopies) {
                 return $this->validationErrorResponse([
                     'book' => 'Não é possível excluir o livro, pois há empréstimos ativos vinculados.'
                 ]);
@@ -140,7 +141,7 @@ class BookController extends Controller
             return $this->noContentResponse();
         } catch (ModelNotFoundException $e) {
             return $this->notFoundResponse('Livro não encontrado.');
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             $this->logError('Erro ao excluir livro.', $e, ['book_id' => $id]);
             return $this->internalErrorResponse($e, 'Erro interno ao excluir livro.');
         }
