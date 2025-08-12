@@ -487,7 +487,7 @@
             "params": [],
             "body": {
               "mode": "json",
-              "json": "{\n  \"id\": \"{{id_book_invalid}}\",\n  \"isbn\": \"{{isbn_invalid}}\",\n  \"title\": \"{{title_invalid}}\",\n  \"author\": \"{{author_invalid}}\",\n  \"genre\": \"{{name_genre_invalid}}\",\n  \"publisher\": \"{{publisher_invalid}}\"\n}\n",
+              "json": "{\n  \"isbn\": \"{{isbn_invalid}}\",\n  \"title\": \"{{title_invalid}}\",\n  \"author\": \"{{author_invalid}}\",\n  \"genre_id\": \"{{genre_id_invalid}}\",\n  \"publisher\": \"{{publisher_invalid}}\"\n}\n",
               "formUrlEncoded": [],
               "multipartForm": [],
               "file": []
@@ -516,7 +516,7 @@
             "params": [],
             "body": {
               "mode": "json",
-              "json": "{\n  \"id\": \"{{id_book_valid}}\",\n  \"isbn\": \"{{isbn_valid2}}\",\n  \"title\": \"{{title_valid}}\",\n  \"author\": \"{{author_valid2}}\",\n  \"genre\": \"{{name_genre_valid2}}\",\n  \"publisher\": \"{{publisher_valid2}}\"\n}\n",
+              "json": "{\n  \"isbn\": \"{{isbn_valid2}}\",\n  \"title\": \"{{title_valid}}\",\n  \"author\": \"{{author_valid2}}\",\n  \"genre_id\": \"{{genre_id_valid}}\",\n  \"publisher\": \"{{publisher_valid2}}\"\n}\n",
               "formUrlEncoded": [],
               "multipartForm": [],
               "file": []
@@ -545,7 +545,7 @@
             "params": [],
             "body": {
               "mode": "json",
-              "json": "{\n  \"isbn\": \"{{isbn_invalid}}\",\n  \"title\": \"{{title_invalid}}\",\n  \"author\": \"{{author_invalid}}\",\n  \"genre_id\": \"{{genre_id_invalid}}\",\n  \"publisher\": \"{{publisher_invalid}}\"\n}\n",
+              "json": "{\n  \"isbn\": \"{{isbn_valid}}\",\n  \"title\": \"{{title_invalid}}\",\n  \"author\": \"{{author_invalid}}\",\n  \"genre_id\": \"{{genre_id_valid}}\",\n  \"publisher\": \"{{publisher_invalid}}\"\n}\n",
               "formUrlEncoded": [],
               "multipartForm": [],
               "file": []
@@ -1067,6 +1067,276 @@
             "body": {
               "mode": "json",
               "json": "{\n  \"name\": \"{{name_genre_valid}}\",\n  \"cor\": \"{{color_hex_genre_valid}}\"\n}\n",
+              "formUrlEncoded": [],
+              "multipartForm": [],
+              "file": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "inherit"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "type": "folder",
+      "name": "SchoolClasses",
+      "filename": "SchoolClasses",
+      "seq": 7,
+      "root": {
+        "meta": {
+          "name": "SchoolClasses",
+          "seq": 7
+        }
+      },
+      "items": [
+        {
+          "type": "http",
+          "name": "DELETE_destroy__error",
+          "filename": "DELETE_destroy__error.bru",
+          "seq": 9,
+          "settings": {},
+          "tags": [],
+          "request": {
+            "url": "http://bookbox.local/api/school-classes/{{id_school_class_invalid}}",
+            "method": "DELETE",
+            "headers": [],
+            "params": [],
+            "body": {
+              "mode": "none",
+              "formUrlEncoded": [],
+              "multipartForm": [],
+              "file": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "inherit"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "DELETE_destroy__success",
+          "filename": "DELETE_destroy__success.bru",
+          "seq": 8,
+          "settings": {},
+          "tags": [],
+          "request": {
+            "url": "http://bookbox.local/api/school-classes/{{id_school_class_valid}}",
+            "method": "DELETE",
+            "headers": [],
+            "params": [],
+            "body": {
+              "mode": "none",
+              "formUrlEncoded": [],
+              "multipartForm": [],
+              "file": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "inherit"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "GET_index__success",
+          "filename": "GET_index__success.bru",
+          "seq": 1,
+          "settings": {},
+          "tags": [],
+          "request": {
+            "url": "http://bookbox.local/api/school-classes",
+            "method": "GET",
+            "headers": [],
+            "params": [],
+            "body": {
+              "mode": "none",
+              "formUrlEncoded": [],
+              "multipartForm": [],
+              "file": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "inherit"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "GET_show__error",
+          "filename": "GET_show__error.bru",
+          "seq": 5,
+          "settings": {},
+          "tags": [],
+          "request": {
+            "url": "http://bookbox.local/api/school-classes/{{id_school_class_invalid}}",
+            "method": "GET",
+            "headers": [],
+            "params": [],
+            "body": {
+              "mode": "none",
+              "formUrlEncoded": [],
+              "multipartForm": [],
+              "file": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "inherit"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "GET_show__success",
+          "filename": "GET_show__success.bru",
+          "seq": 4,
+          "settings": {},
+          "tags": [],
+          "request": {
+            "url": "http://bookbox.local/api/school-classes/{{id_school_class_valid}}",
+            "method": "GET",
+            "headers": [],
+            "params": [],
+            "body": {
+              "mode": "none",
+              "formUrlEncoded": [],
+              "multipartForm": [],
+              "file": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "inherit"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "PATCH_update__error",
+          "filename": "PATCH_update__error.bru",
+          "seq": 7,
+          "settings": {},
+          "tags": [],
+          "request": {
+            "url": "http://bookbox.local/api/school-classes/{{id_school_class_invalid}}",
+            "method": "PATCH",
+            "headers": [],
+            "params": [],
+            "body": {
+              "mode": "json",
+              "json": "{\n  \"term\": \"{{term_invalid}}\",\n  \"start_date\": \"{{start_date_invalid}}\",\n  \"end_date\": \"{{end_date_invalid}}\"\n}\n",
+              "formUrlEncoded": [],
+              "multipartForm": [],
+              "file": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "inherit"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "PATCH_update__success",
+          "filename": "PATCH_update__success.bru",
+          "seq": 6,
+          "settings": {},
+          "tags": [],
+          "request": {
+            "url": "http://bookbox.local/api/school-classes/{{id_school_class_valid}}",
+            "method": "PATCH",
+            "headers": [],
+            "params": [],
+            "body": {
+              "mode": "json",
+              "json": "{\n  \"course\": \"{{course_valid2}}\"\n  //\"term\": \"{{term_valid}}\",\n  //\"start_date\": \"{{start_date_valid}}\",\n  //\"end_date\": \"{{end_date_valid}}\"\n}",
+              "formUrlEncoded": [],
+              "multipartForm": [],
+              "file": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "inherit"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "POST_store__error",
+          "filename": "POST_store__error.bru",
+          "seq": 3,
+          "settings": {},
+          "tags": [],
+          "request": {
+            "url": "http://bookbox.local/api/school-classes",
+            "method": "POST",
+            "headers": [],
+            "params": [],
+            "body": {
+              "mode": "json",
+              "json": "{\n  \"course\": \"{{course_invalid}}\",\n  \"term\": \"{{term_invalid}}\",\n  \"start_date\": \"{{start_date_invalid}}\",\n  \"end_date\": \"{{end_date_invalid}}\"\n}",
+              "formUrlEncoded": [],
+              "multipartForm": [],
+              "file": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "inherit"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "POST_store__success",
+          "filename": "POST_store__success.bru",
+          "seq": 2,
+          "settings": {},
+          "tags": [],
+          "request": {
+            "url": "http://bookbox.local/api/school-classes",
+            "method": "POST",
+            "headers": [],
+            "params": [],
+            "body": {
+              "mode": "json",
+              "json": "{\n  \"course\": \"{{course_valid}}\",\n  \"term\": \"{{term_valid}}\",\n  \"start_date\": \"{{start_date_valid}}\",\n  \"end_date\": \"{{end_date_valid}}\"\n}",
               "formUrlEncoded": [],
               "multipartForm": [],
               "file": []
@@ -1622,279 +1892,9 @@
           }
         }
       ]
-    },
-    {
-      "type": "folder",
-      "name": "SchoolClasses",
-      "filename": "SchoolClasses",
-      "seq": 7,
-      "root": {
-        "meta": {
-          "name": "SchoolClasses",
-          "seq": 7
-        }
-      },
-      "items": [
-        {
-          "type": "http",
-          "name": "DELETE_destroy__error",
-          "filename": "DELETE_destroy__error.bru",
-          "seq": 9,
-          "settings": {},
-          "tags": [],
-          "request": {
-            "url": "http://bookbox.local/api/school-classes/{{id_school_class_invalid}}",
-            "method": "DELETE",
-            "headers": [],
-            "params": [],
-            "body": {
-              "mode": "none",
-              "formUrlEncoded": [],
-              "multipartForm": [],
-              "file": []
-            },
-            "script": {},
-            "vars": {},
-            "assertions": [],
-            "tests": "",
-            "docs": "",
-            "auth": {
-              "mode": "inherit"
-            }
-          }
-        },
-        {
-          "type": "http",
-          "name": "DELETE_destroy__success",
-          "filename": "DELETE_destroy__success.bru",
-          "seq": 8,
-          "settings": {},
-          "tags": [],
-          "request": {
-            "url": "http://bookbox.local/api/school-classes/{{id_school_class_valid}}",
-            "method": "DELETE",
-            "headers": [],
-            "params": [],
-            "body": {
-              "mode": "none",
-              "formUrlEncoded": [],
-              "multipartForm": [],
-              "file": []
-            },
-            "script": {},
-            "vars": {},
-            "assertions": [],
-            "tests": "",
-            "docs": "",
-            "auth": {
-              "mode": "inherit"
-            }
-          }
-        },
-        {
-          "type": "http",
-          "name": "GET_index__success",
-          "filename": "GET_index__success.bru",
-          "seq": 1,
-          "settings": {},
-          "tags": [],
-          "request": {
-            "url": "http://bookbox.local/api/school-classes",
-            "method": "GET",
-            "headers": [],
-            "params": [],
-            "body": {
-              "mode": "none",
-              "formUrlEncoded": [],
-              "multipartForm": [],
-              "file": []
-            },
-            "script": {},
-            "vars": {},
-            "assertions": [],
-            "tests": "",
-            "docs": "",
-            "auth": {
-              "mode": "inherit"
-            }
-          }
-        },
-        {
-          "type": "http",
-          "name": "GET_show__error",
-          "filename": "GET_show__error.bru",
-          "seq": 5,
-          "settings": {},
-          "tags": [],
-          "request": {
-            "url": "http://bookbox.local/api/school-classes/{{id_school_class_invalid}}",
-            "method": "GET",
-            "headers": [],
-            "params": [],
-            "body": {
-              "mode": "none",
-              "formUrlEncoded": [],
-              "multipartForm": [],
-              "file": []
-            },
-            "script": {},
-            "vars": {},
-            "assertions": [],
-            "tests": "",
-            "docs": "",
-            "auth": {
-              "mode": "inherit"
-            }
-          }
-        },
-        {
-          "type": "http",
-          "name": "GET_show__success",
-          "filename": "GET_show__success.bru",
-          "seq": 4,
-          "settings": {},
-          "tags": [],
-          "request": {
-            "url": "http://bookbox.local/api/school-classes/{{id_school_class_valid}}",
-            "method": "GET",
-            "headers": [],
-            "params": [],
-            "body": {
-              "mode": "none",
-              "formUrlEncoded": [],
-              "multipartForm": [],
-              "file": []
-            },
-            "script": {},
-            "vars": {},
-            "assertions": [],
-            "tests": "",
-            "docs": "",
-            "auth": {
-              "mode": "inherit"
-            }
-          }
-        },
-        {
-          "type": "http",
-          "name": "PATCH_update__error",
-          "filename": "PATCH_update__error.bru",
-          "seq": 7,
-          "settings": {},
-          "tags": [],
-          "request": {
-            "url": "http://bookbox.local/api/school-classes/{{id_school_class_invalid}}",
-            "method": "PATCH",
-            "headers": [],
-            "params": [],
-            "body": {
-              "mode": "json",
-              "json": "{\n  \"term\": \"{{term_invalid}}\",\n  \"start_date\": \"{{start_date_invalid}}\",\n  \"end_date\": \"{{end_date_invalid}}\"\n}\n",
-              "formUrlEncoded": [],
-              "multipartForm": [],
-              "file": []
-            },
-            "script": {},
-            "vars": {},
-            "assertions": [],
-            "tests": "",
-            "docs": "",
-            "auth": {
-              "mode": "inherit"
-            }
-          }
-        },
-        {
-          "type": "http",
-          "name": "PATCH_update__success",
-          "filename": "PATCH_update__success.bru",
-          "seq": 6,
-          "settings": {},
-          "tags": [],
-          "request": {
-            "url": "http://bookbox.local/api/school-classes/{{id_school_class_valid}}",
-            "method": "PATCH",
-            "headers": [],
-            "params": [],
-            "body": {
-              "mode": "json",
-              "json": "{\n  \"course\": \"{{course_valid2}}\"\n  //\"term\": \"{{term_valid}}\",\n  //\"start_date\": \"{{start_date_valid}}\",\n  //\"end_date\": \"{{end_date_valid}}\"\n}",
-              "formUrlEncoded": [],
-              "multipartForm": [],
-              "file": []
-            },
-            "script": {},
-            "vars": {},
-            "assertions": [],
-            "tests": "",
-            "docs": "",
-            "auth": {
-              "mode": "inherit"
-            }
-          }
-        },
-        {
-          "type": "http",
-          "name": "POST_store__error",
-          "filename": "POST_store__error.bru",
-          "seq": 3,
-          "settings": {},
-          "tags": [],
-          "request": {
-            "url": "http://bookbox.local/api/school-classes",
-            "method": "POST",
-            "headers": [],
-            "params": [],
-            "body": {
-              "mode": "json",
-              "json": "{\n  \"course\": \"{{course_invalid}}\",\n  \"term\": \"{{term_invalid}}\",\n  \"start_date\": \"{{start_date_invalid}}\",\n  \"end_date\": \"{{end_date_invalid}}\"\n}",
-              "formUrlEncoded": [],
-              "multipartForm": [],
-              "file": []
-            },
-            "script": {},
-            "vars": {},
-            "assertions": [],
-            "tests": "",
-            "docs": "",
-            "auth": {
-              "mode": "inherit"
-            }
-          }
-        },
-        {
-          "type": "http",
-          "name": "POST_store__success",
-          "filename": "POST_store__success.bru",
-          "seq": 2,
-          "settings": {},
-          "tags": [],
-          "request": {
-            "url": "http://bookbox.local/api/school-classes",
-            "method": "POST",
-            "headers": [],
-            "params": [],
-            "body": {
-              "mode": "json",
-              "json": "{\n  \"course\": \"{{course_valid}}\",\n  \"term\": \"{{term_valid}}\",\n  \"start_date\": \"{{start_date_valid}}\",\n  \"end_date\": \"{{end_date_valid}}\"\n}",
-              "formUrlEncoded": [],
-              "multipartForm": [],
-              "file": []
-            },
-            "script": {},
-            "vars": {},
-            "assertions": [],
-            "tests": "",
-            "docs": "",
-            "auth": {
-              "mode": "inherit"
-            }
-          }
-        }
-      ]
     }
   ],
-  "activeEnvironmentUid": "VZGmMWKl3MVxmSrrmjFiO",
+  "activeEnvironmentUid": "6hXyjzz7UB7HVR3Eb8yee",
   "environments": [
     {
       "variables": [
@@ -1921,7 +1921,7 @@
         },
         {
           "name": "email_valid",
-          "value": "guilhermegg2008@gmail.com",
+          "value": "anajuliammiura@gmail.com",
           "enabled": true,
           "secret": false,
           "type": "text"
@@ -1935,7 +1935,7 @@
         },
         {
           "name": "password_valid",
-          "value": "Teste123@",
+          "value": "Anajulia123@",
           "enabled": true,
           "secret": false,
           "type": "text"
@@ -2257,7 +2257,7 @@
         },
         {
           "name": "id_book_valid",
-          "value": "5553b134-1517-40b2-9398-c167a8d6206b",
+          "value": "CAA569922B7A4093BD0D13617F039702",
           "enabled": true,
           "secret": false,
           "type": "text"
@@ -2317,6 +2317,20 @@
           "enabled": true,
           "secret": false,
           "type": "text"
+        },
+        {
+          "name": "genre_id_valid",
+          "value": "87BF2455A17A45E191B308958C7A6618",
+          "enabled": true,
+          "secret": false,
+          "type": "text"
+        },
+        {
+          "name": "genre_id_invalid",
+          "value": "87BF2455A17A45E191B308958C7A6617",
+          "enabled": true,
+          "secret": false,
+          "type": "text"
         }
       ],
       "name": "bookbox-test"
@@ -2329,7 +2343,7 @@
           "name": "Content-Type",
           "value": "application/json",
           "enabled": true,
-          "uid": "qGnO2nxaAoFSroqhdNNdT"
+          "uid": "dKqLrDgiVudHpYrlbY73q"
         }
       ]
     }
@@ -2342,7 +2356,7 @@
       "node_modules",
       ".git"
     ],
-    "size": 0.016260147094726562,
+    "size": 0.01629352569580078,
     "filesCount": 71
   }
 }
