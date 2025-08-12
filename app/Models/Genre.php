@@ -11,7 +11,7 @@ class Genre extends BaseModel
 
     protected $fillable = [
         'name',
-        'hex_color',
+        'color_hex',
     ];
 
     public function books(): HasMany
