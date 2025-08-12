@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Ramsey\Uuid\Uuid;
 
 class Book extends BaseModel
 {
@@ -17,6 +18,11 @@ class Book extends BaseModel
         'genre_id',
         'publisher',
     ];
+
+    public function getGenreIdAttribute($value)
+    {
+        return $value ? Uuid::fromBytes($value)->toString() : null;
+    }
 
     public function genre(): BelongsTo
     {
