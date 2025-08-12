@@ -32,12 +32,27 @@ class BookStoreRequest extends FormRequest
                 'required',
                 'string',
                 'max:20',
-                'regex:/^(97(8|9))?\d{9}(\d|X)$/i'
+                'regex:/^(97(8|9))?\d{9}(\d|X)$/i',
             ],
-            'title' => ['required', 'string', 'max:255'],
-            'author' => ['required', 'string', 'max:255'],
+            'title' => [
+                'required',
+                'string',
+                'max:255',
+                'regex:/^[\pL\pN\s.,!?\'"-]+$/u',
+            ],
+            'author' => [
+                'required',
+                'string',
+                'max:255',
+                'regex:/^[\pL\s.\'-]+$/u',
+            ],
             'genre_id' => ['required', 'exists:genres,id'],
-            'publisher' => ['required', 'string', 'max:255'],
+            'publisher' => [
+                'required',
+                'string',
+                'max:255',
+                'regex:/^[\pL\s.\'-]+$/u',
+            ],
         ];
     }
 
@@ -52,10 +67,12 @@ class BookStoreRequest extends FormRequest
             'title.required' => 'O título é obrigatório.',
             'title.string' => 'O título deve ser um texto.',
             'title.max' => 'O título não pode ter mais que 255 caracteres.',
+            'title.regex' => 'O título contém caracteres inválidos.',
 
             'author.required' => 'O autor é obrigatório.',
             'author.string' => 'O autor deve ser um texto.',
             'author.max' => 'O nome do autor não pode ter mais que 255 caracteres.',
+            'author.regex' => 'O nome do autor contém caracteres inválidos.',
 
             'genre_id.required' => 'O gênero é obrigatório.',
             'genre_id.exists' => 'O gênero selecionado não existe.',
@@ -63,6 +80,7 @@ class BookStoreRequest extends FormRequest
             'publisher.required' => 'A editora é obrigatória.',
             'publisher.string' => 'A editora deve ser um texto.',
             'publisher.max' => 'O nome da editora não pode ter mais que 255 caracteres.',
+            'publisher.regex' => 'O nome da editora contém caracteres inválidos.',
         ];
     }
 }

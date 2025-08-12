@@ -32,12 +32,27 @@ class BookUpdateRequest extends FormRequest
                 'sometimes',
                 'string',
                 'max:20',
-                'regex:/^(97(8|9))?\d{9}(\d|X)$/i'
+                'regex:/^(97(8|9))?\d{9}(\d|X)$/i',
             ],
-            'title' => ['sometimes', 'string', 'max:255'],
-            'author' => ['sometimes', 'string', 'max:255'],
+            'title' => [
+                'sometimes',
+                'string',
+                'max:255',
+                'regex:/^[\pL\pN\s.,!?\'"-]+$/u',
+            ],
+            'author' => [
+                'sometimes',
+                'string',
+                'max:255',
+                'regex:/^[\pL\s.\'-]+$/u',
+            ],
             'genre_id' => ['sometimes', 'exists:genres,id'],
-            'publisher' => ['sometimes', 'string', 'max:255'],
+            'publisher' => [
+                'sometimes',
+                'string',
+                'max:255',
+                'regex:/^[\pL\s.\'-]+$/u',
+            ],
         ];
     }
 
@@ -50,14 +65,17 @@ class BookUpdateRequest extends FormRequest
 
             'title.string' => 'O título deve ser um texto.',
             'title.max' => 'O título não pode ter mais que 255 caracteres.',
+            'title.regex' => 'O título contém caracteres inválidos.',
 
             'author.string' => 'O autor deve ser um texto.',
             'author.max' => 'O nome do autor não pode ter mais que 255 caracteres.',
+            'author.regex' => 'O nome do autor contém caracteres inválidos.',
 
             'genre_id.exists' => 'O gênero selecionado não existe.',
 
             'publisher.string' => 'A editora deve ser um texto.',
             'publisher.max' => 'O nome da editora não pode ter mais que 255 caracteres.',
+            'publisher.regex' => 'O nome da editora contém caracteres inválidos.',
         ];
     }
 }
