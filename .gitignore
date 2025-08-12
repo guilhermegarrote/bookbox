@@ -24,3 +24,8 @@ Homestead.yaml
 npm-debug.log
 Thumbs.db
 yarn-error.log
+
+/tests/*
+!/tests/bruno-api/
+/tests/bruno-api/*
+!/tests/bruno-api/requests.json
