@@ -32,15 +32,24 @@ Route::middleware(['auth.jwt.cookie'])->group(function () {
     });
 
     Route::apiResource('students', StudentController::class);
-    Route::apiResource('settings', SettingController::class);
-    Route::apiResource('loans', LoanController::class);
-    Route::apiResource('copies', CopyController::class);
     Route::apiResource('genres', GenreController::class);
     Route::apiResource('books', BookController::class);
     Route::apiResource('school-classes', SchoolClassController::class);
     Route::apiResource('users', UserController::class);
-});
 
+    Route::apiResource('copies', CopyController::class)
+        ->except(['update']);
+
+    Route::apiResource('settings', SettingController::class)
+        ->except(['store', 'destroy']);
+
+    Route::apiResource('loans', LoanController::class)
+        ->except(['update']);
+    Route::patch('loans/{loan}/extend', [LoanController::class, 'extend'])
+        ->name('loans.extend');
+    Route::patch('loans/{loan}/finalize', [LoanController::class, 'finalize'])
+        ->name('loans.finalize');
+});
 
 Route::prefix('recover')->middleware('users.exist')->group(function () {
     Route::post('/send', [PasswordRecoveryController::class, 'sendCode'])
