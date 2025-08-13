@@ -32,7 +32,7 @@ Route::middleware(['auth.jwt.cookie'])->group(function () {
     });
 
     Route::apiResource('students', StudentController::class);
-    Route::apiResource('configurations', SettingController::class);
+    Route::apiResource('settings', SettingController::class);
     Route::apiResource('loans', LoanController::class);
     Route::apiResource('copies', CopyController::class);
     Route::apiResource('genres', GenreController::class);
