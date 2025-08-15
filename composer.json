@@ -15,6 +15,7 @@
         "laravel/framework": "^12.0",
         "laravel/tinker": "^2.10.1",
         "php-open-source-saver/jwt-auth": "^2.8",
+        "spatie/browsershot": "*",
         "tightenco/ziggy": "^2.5"
     },
     "require-dev": {

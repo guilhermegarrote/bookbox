@@ -6,6 +6,8 @@ use App\Http\Controllers\LoanController;
 use App\Http\Controllers\BookController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\Auth\PasswordRecoveryController;
+use Illuminate\Support\Facades\Log;
+use Spatie\Browsershot\Browsershot;
 
 Route::middleware('auth.jwt.cookie')->group(function () {
     Route::get('/', [LoanController::class, 'index'])
@@ -45,5 +47,35 @@ Route::middleware('guest')->group(function () {
                 ->middleware('code.valid')
                 ->name('recovery.new-password.form');
         });
+    });
+
+    Route::get('/teste-pdf', function () {
+        $html = view('pdf.teste', [
+            'titulo' => 'Teste de PDF',
+            'conteudo' => 'Este é um conteúdo de teste para o PDF.'
+        ])->render();
+
+        // Caminho do Chromium instalado via terminal
+        $chromePath = 'C:\\Program Files\\Chromium\\Application\\chrome.exe'; // ajuste se o caminho for outro
+
+        if (!file_exists($chromePath)) {
+            Log::error("Chrome.exe não encontrado: $chromePath");
+            abort(500, 'Chrome.exe não encontrado. Verifique a instalação do Chromium.');
+        }
+
+        try {
+            $pdfOutput = Browsershot::html($html)
+                ->setChromePath($chromePath)
+                ->format('A4')
+                ->margins(10, 10, 10, 10)
+                ->pdf();
+
+            return response($pdfOutput, 200)
+                ->header('Content-Type', 'application/pdf')
+                ->header('Content-Disposition', 'inline; filename="relatorio.pdf"');
+        } catch (\Exception $e) {
+            Log::error("Erro ao gerar PDF: " . $e->getMessage());
+            abort(500, 'Erro ao gerar PDF. Verifique o log do sistema.');
+        }
     });
 });
