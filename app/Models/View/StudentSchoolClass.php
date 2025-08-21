@@ -3,6 +3,7 @@
 namespace App\Models\View;
 
 use App\Helpers\Utils;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Ramsey\Uuid\Uuid;
 
 class StudentSchoolClass extends BaseModel
@@ -76,5 +77,15 @@ class StudentSchoolClass extends BaseModel
         } else {
             return $this->phone;
         }
+    }
+
+    public function student(): BelongsTo
+    {
+        return $this->belongsTo(Student::class);
+    }
+
+    public function schoolClass(): BelongsTo
+    {
+        return $this->belongsTo(SchoolClass::class);
     }
 }

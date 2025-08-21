@@ -3,6 +3,7 @@
 namespace App\Models\View;
 
 use App\Helpers\Utils;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Student extends BaseModel
 {
@@ -10,6 +11,12 @@ class Student extends BaseModel
     public $timestamps = false;
 
     protected $guarded = [];
+
+    protected $hidden = [
+        'cpf_hash',
+        'email_hash',
+        'phone_hash',
+    ];
 
     public function getCpfAttribute($value): ?string
     {
@@ -41,5 +48,15 @@ class Student extends BaseModel
         }
 
         return $decrypted;
+    }
+
+    public function schoolClasses(): BelongsToMany
+    {
+        return $this->belongsToMany(
+            SchoolClass::class,
+            'vw_student_school_class',
+            'student_id',
+            'school_class_id'
+        );
     }
 }
