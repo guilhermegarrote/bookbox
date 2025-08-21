@@ -16,7 +16,6 @@
     },
     "dependencies": {
         "@popperjs/core": "^2.11.8",
-        "imask": "^7.6.1",
         "notyf": "^3.10.0",
         "puppeteer": "^24.16.2",
         "tippy.js": "^6.3.7",
