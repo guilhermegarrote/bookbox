@@ -7,10 +7,10 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\SchoolClass\SchoolClassStoreRequest;
 use App\Http\Requests\SchoolClass\SchoolClassUpdateRequest;
 use App\Models\SchoolClass;
-use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\JsonResponse;
+use Throwable;
 
 class SchoolClassController extends Controller
 {
@@ -20,7 +20,7 @@ class SchoolClassController extends Controller
             $classes = SchoolClass::orderBy('course')->paginate(10);
 
             return $this->successResponse($classes->toArray());
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             $this->logError('Erro ao listar turmas.', $e);
             return $this->internalErrorResponse($e, 'Erro interno ao listar as turmas.');
         }
@@ -45,7 +45,7 @@ class SchoolClassController extends Controller
             SchoolClass::create($classData);
 
             return $this->createdResponse();
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             $this->logError('Erro ao cadastrar turma.', $e, ['data' => $data]);
             return $this->internalErrorResponse($e, 'Erro interno ao cadastrar turma.');
         }
@@ -60,7 +60,7 @@ class SchoolClassController extends Controller
             return $this->successResponse($schoolClass->toArray());
         } catch (ModelNotFoundException $e) {
             return $this->notFoundResponse('Turma não encontrada.');
-        } catch (\Exception $e) {
+        } catch (Throwable $e) {
             $this->logError('Erro ao buscar turma.', $e, ['school_class_id' => $id]);
             return $this->internalErrorResponse($e, 'Erro interno ao buscar turma.');
         }
@@ -100,7 +100,7 @@ class SchoolClassController extends Controller
             return $this->noContentResponse();
         } catch (ModelNotFoundException $e) {
             return $this->notFoundResponse('Turma não encontrada.');
-        } catch (\Exception $e) {
+        } catch (Throwable $e) {
             $this->logError('Erro ao atualizar turma.', $e, [
                 'school_class_id' => $id,
                 'data' => $data,
@@ -131,7 +131,7 @@ class SchoolClassController extends Controller
             return $this->noContentResponse();
         } catch (ModelNotFoundException $e) {
             return $this->notFoundResponse('Turma não encontrada.');
-        } catch (\Exception $e) {
+        } catch (Throwable $e) {
             $this->logError('Erro ao excluir turma.', $e, ['school_class_id' => $id]);
             return $this->internalErrorResponse($e, 'Erro interno ao excluir a turma.');
         }
