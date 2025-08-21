@@ -7,7 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Book\BookStoreRequest;
 use App\Http\Requests\Book\BookUpdateRequest;
 use App\Models\Book;
-use Exception;
+use App\Models\View\Book as ViewBook;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
@@ -15,17 +15,11 @@ use Throwable;
 
 class BookController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
         //
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(BookStoreRequest $request): JsonResponse
     {
         $data = $request->validated();
@@ -42,6 +36,10 @@ class BookController extends Controller
                 return $this->conflictResponse(['book' => 'Já existe um livro com este ISBN.']);
             }
 
+            // Não pode existir um livro já cadastrado com o mesmo title, author and publisher. Validar isso
+
+            // Novo: cadastrar a quantidade de exemplares que forem passados no parametro numberOfCopies pelo JSON, validar pois não pode ser mais de 32767
+
             Book::create($bookData);
 
             return $this->createdResponse();
@@ -51,14 +49,11 @@ class BookController extends Controller
         }
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(string $id): JsonResponse
     {
         try {
             $binaryId = Utils::convertUuidToBinary($id);
-            $book = Book::findOrFail($binaryId);
+            $book = ViewBook::findOrFail($binaryId);
 
             return $this->successResponse($book->toArray());
         } catch (ModelNotFoundException $e) {
@@ -69,9 +64,6 @@ class BookController extends Controller
         }
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(BookUpdateRequest $request, string $id): JsonResponse
     {
         $data = $request->validated();
@@ -102,6 +94,8 @@ class BookController extends Controller
                 return $this->conflictResponse(['book' => 'Já existe outro livro com este ISBN.']);
             }
 
+            // Não pode existir um livro já cadastrado com o mesmo title, author and publisher. Validar isso
+
             $book->update($updatedData);
 
             return $this->noContentResponse();
@@ -116,9 +110,6 @@ class BookController extends Controller
         }
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(string $id): JsonResponse
     {
         try {
