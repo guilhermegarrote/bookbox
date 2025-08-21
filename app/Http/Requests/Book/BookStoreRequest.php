@@ -43,14 +43,14 @@ class BookStoreRequest extends FormRequest
             'author' => [
                 'required',
                 'string',
-                'max:255',
+                'max:300',
                 'regex:/^[\pL\s.\'-]+$/u',
             ],
             'genre_id' => ['required', 'exists:genres,id'],
             'publisher' => [
                 'required',
                 'string',
-                'max:255',
+                'max:150',
                 'regex:/^[\pL\s.\'-]+$/u',
             ],
         ];
@@ -71,7 +71,7 @@ class BookStoreRequest extends FormRequest
 
             'author.required' => 'O autor é obrigatório.',
             'author.string' => 'O autor deve ser um texto.',
-            'author.max' => 'O nome do autor não pode ter mais que 255 caracteres.',
+            'author.max' => 'O nome do autor não pode ter mais que 300 caracteres.',
             'author.regex' => 'O nome do autor contém caracteres inválidos.',
 
             'genre_id.required' => 'O gênero é obrigatório.',
@@ -79,7 +79,7 @@ class BookStoreRequest extends FormRequest
 
             'publisher.required' => 'A editora é obrigatória.',
             'publisher.string' => 'A editora deve ser um texto.',
-            'publisher.max' => 'O nome da editora não pode ter mais que 255 caracteres.',
+            'publisher.max' => 'O nome da editora não pode ter mais que 150 caracteres.',
             'publisher.regex' => 'O nome da editora contém caracteres inválidos.',
         ];
     }
