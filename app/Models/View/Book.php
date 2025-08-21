@@ -6,6 +6,7 @@ use App\Models\Copy;
 use App\Models\Genre;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Ramsey\Uuid\Uuid;
 
 class Book extends BaseModel
 {
@@ -13,6 +14,11 @@ class Book extends BaseModel
     public $timestamps = false;
 
     protected $guarded = [];
+
+    public function getGenreIdAttribute($value)
+    {
+        return $value ? Uuid::fromBytes($value)->toString() : null;
+    }
 
     public function genre(): BelongsTo
     {
