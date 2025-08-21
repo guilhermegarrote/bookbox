@@ -11,6 +11,7 @@ use App\Models\Student;
 use App\Models\Loan;
 use App\Models\StudentSchoolClass;
 use App\Models\View\SchoolClass;
+use App\Models\View\Student as ViewStudent;
 use App\Models\View\StudentSchoolClass as ViewStudentSchoolClass;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\DB;
@@ -118,7 +119,7 @@ class StudentController extends Controller
     {
         try {
             $binaryId = Utils::convertUuidToBinary($id);
-            $student = Student::findOrFail($binaryId);
+            $student = ViewStudent::findOrFail($binaryId);
 
             return $this->successResponse($student->toArray());
         } catch (ModelNotFoundException $e) {
