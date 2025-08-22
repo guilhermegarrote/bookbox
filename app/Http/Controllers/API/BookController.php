@@ -36,14 +36,43 @@ class BookController extends Controller
                 return $this->conflictResponse(['book' => 'Já existe um livro com este ISBN.']);
             }
 
-            // Não pode existir um livro já cadastrado com o mesmo title, author and publisher. Validar isso
+            $duplicateTitleAuthorPublisher = Book::where('title', $bookData['title'])
+                ->where('author', $bookData['author'])
+                ->where('publisher', $bookData['publisher'])
+                ->exists();
 
-            // Novo: cadastrar a quantidade de exemplares que forem passados no parametro numberOfCopies pelo JSON, validar pois não pode ser mais de 32767
+            if ($duplicateTitleAuthorPublisher) {
+                return $this->conflictResponse(['book' => 'Já existe um livro com este título, autor e editora.']);
+            }
 
-            Book::create($bookData);
+            $numberOfCopies = (int) ($data['numberOfCopies'] ?? 0);
+            if ($numberOfCopies > 32767) {
+                return $this->validationErrorResponse([
+                    'numberOfCopies' => 'O número de cópias não pode exceder 32767.'
+                ]);
+            }
+
+            DB::beginTransaction();
+
+            $book = Book::create($bookData);
+
+            if ($numberOfCopies > 0) {
+                $copies = [];
+                for ($i = 1; $i <= $numberOfCopies; $i++) {
+                    $copies[] = [
+                        'book_id' => $book->id,
+                        'number' => $i
+                    ];
+                }
+
+                DB::table('copies')->insert($copies);
+            }
+
+            DB::commit();
 
             return $this->createdResponse();
         } catch (Throwable $e) {
+            DB::rollBack();
             $this->logError('Erro ao cadastrar livro.', $e, ['data' => $data]);
             return $this->internalErrorResponse($e, 'Erro interno ao cadastrar livro.');
         }
@@ -94,7 +123,15 @@ class BookController extends Controller
                 return $this->conflictResponse(['book' => 'Já existe outro livro com este ISBN.']);
             }
 
-            // Não pode existir um livro já cadastrado com o mesmo title, author and publisher. Validar isso
+            $duplicateTitleAuthorPublisher = Book::where('title', $updatedData['title'])
+                ->where('author', $updatedData['author'])
+                ->where('publisher', $updatedData['publisher'])
+                ->where('id', '!=', $binaryId)
+                ->exists();
+
+            if ($duplicateTitleAuthorPublisher) {
+                return $this->conflictResponse(['book' => 'Já existe um livro com este título, autor e editora.']);
+            }
 
             $book->update($updatedData);
 
