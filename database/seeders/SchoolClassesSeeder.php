@@ -6,11 +6,10 @@ use Illuminate\Database\Seeder;
 use App\Models\SchoolClass;
 use Carbon\Carbon;
 
-class SchoolClassSeeder extends Seeder
+class SchoolClassesSeeder extends Seeder
 {
     public function run()
     {
-        // Lista exemplo de cursos válidos, substitua pelos seus reais
         $courses = [
             'Administração',
             'Engenharia Civil',
@@ -22,23 +21,51 @@ class SchoolClassSeeder extends Seeder
             'Economia',
             'Fisioterapia',
             'Enfermagem',
+            'Engenharia de Produção',
+            'Engenharia Elétrica',
+            'Engenharia Mecânica',
+            'Engenharia de Software',
+            'Sistemas de Informação',
+            'Análise e Desenvolvimento de Sistemas',
+            'Contabilidade',
+            'Gestão de Recursos Humanos',
+            'Marketing',
+            'Publicidade e Propaganda',
+            'Jornalismo',
+            'Pedagogia',
+            'Educação Física',
+            'Farmácia',
+            'Biomedicina',
+            'Odontologia',
+            'Veterinária',
+            'Nutrição',
+            'Design Gráfico',
+            'Design de Interiores',
+            'Moda',
+            'Relações Internacionais',
+            'Serviço Social',
+            'Turismo',
+            'Hotelaria',
+            'Letras',
+            'História',
+            'Geografia',
+            'Matemática',
+            'Física',
+            'Química',
+            'Biologia'
         ];
 
         $terms = ['Annual', 'Semester'];
 
-        for ($i = 1; $i <= 20; $i++) {
+        for ($i = 1; $i <= 50; $i++) {
             $course = $courses[array_rand($courses)];
             $term = $terms[array_rand($terms)];
 
-            // Define a data inicial como uma data aleatória até hoje
             $startDate = Carbon::now()->subDays(rand(0, 365));
 
-            // Define o endDate com base no termo:
             if ($term === 'Annual') {
-                // final do período: até 1 ano depois
                 $endDate = (clone $startDate)->addYear();
             } else {
-                // semestral = 6 meses depois
                 $endDate = (clone $startDate)->addMonths(6);
             }
 
