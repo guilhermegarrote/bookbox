@@ -7,7 +7,6 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Setting\SettingUpdateRequest;
 use App\Models\Setting;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Throwable;
 
@@ -21,17 +20,6 @@ class SettingController extends Controller
         //
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
     public function show(string $id): JsonResponse
     {
         try {
@@ -47,9 +35,6 @@ class SettingController extends Controller
         }
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(SettingUpdateRequest $request, string $id): JsonResponse
     {
         $data = $request->validated();
@@ -83,13 +68,5 @@ class SettingController extends Controller
             ]);
             return $this->internalErrorResponse($e, 'Erro interno ao atualizar configuração.');
         }
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
     }
 }

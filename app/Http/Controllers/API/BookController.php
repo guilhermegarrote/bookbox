@@ -45,6 +45,7 @@ class BookController extends Controller
                 return $this->conflictResponse(['book' => 'Já existe um livro com este título, autor e editora.']);
             }
 
+            // Essa validação deve ser feita no form request esta faltando verificar o se não é menor que 1 
             $numberOfCopies = (int) ($data['numberOfCopies'] ?? 0);
             if ($numberOfCopies > 32767) {
                 return $this->validationErrorResponse([
@@ -56,6 +57,7 @@ class BookController extends Controller
 
             $book = Book::create($bookData);
 
+            // Faltou criar o service de copies que tem uma função de fazer o store de várias copias só passando a quantidade como parâmetro.
             if ($numberOfCopies > 0) {
                 $copies = [];
                 for ($i = 1; $i <= $numberOfCopies; $i++) {
