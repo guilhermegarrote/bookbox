@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 use Spatie\Browsershot\Browsershot;
 use Illuminate\Support\Facades\Storage;
 use RuntimeException;
@@ -14,17 +13,19 @@ class LabelController extends Controller
 {
     public function generateLabels(Request $request)
     {
+        //form requezst não existe?
         $request->validate([
             'isbn' => 'required|string',
             'exemplares' => 'required|string',
         ]);
 
-        // Não valida se é um ISBN válido
-        // Só esta recendo um ISBN, pode ser que mais de um livro seja selecionado
+        // Não valida se é um ISBN válido, válido no sentifo de ter uma estrutura válida
+        // Só esta recendo um ISBN, pode ser que mais de um livro seja selecionado, trabalhar com a estrutura que aceita mais de um livro com seus exemplares sendo passado (espécide array/matrix)
 
         $isbn = $request->input('isbn');
         $copiesString = $request->input('exemplares');
 
+        // não é id é número de exemplar
         $copyIds = $this->parseCopyIds($copiesString);
 
         if (empty($copyIds)) {
@@ -33,12 +34,10 @@ class LabelController extends Controller
 
         $labels = [];
 
-        // Pesquisa esta errada, o que é passado é o número do exemplar, não id
         foreach ($copyIds as $copyId) {
             $label = DB::table('copies')
                 ->select('id', 'number', 'isbn', 'title', 'author', 'genre_name', 'genre_color_hex', 'publisher')
                 ->where('isbn', $isbn)
-                // O where tem que ter todos os números dos exemplares que quer gerar etiqueta pois então retornara os dados de todos
                 ->where('id', $copyId)
                 ->first();
 
@@ -51,6 +50,7 @@ class LabelController extends Controller
             return response()->json(['error' => 'Nenhuma etiqueta encontrada para os dados informados.'], 404);
         }
 
+        //PORTUGAYS??????????????????????????
         $html = view('pdf.label', ['etiquetas' => $labels])->render();
 
         $pdfFilename = 'etiquetas/etiquetas_' . time() . '.pdf';
@@ -80,15 +80,14 @@ class LabelController extends Controller
         $publicUrl = Storage::url($pdfFilename);
 
         return response()->json([
-            'url' => $publicUrl,
-            'quantidade' => count($labels),
-            'etiquetas' => $labels,
+            'url' => $publicUrl
         ], 200);
     }
 
     private function parseCopyIds(string $input): array
     {
-        $ids = [];
+        // trocar de id para valor do exemplar, algo do tipo, em inglês 
+        $ids = []; 
 
         $segments = explode(',', $input);
         foreach ($segments as $segment) {

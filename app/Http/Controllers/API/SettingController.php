@@ -43,20 +43,10 @@ class SettingController extends Controller
             $binaryId = Utils::convertUuidToBinary($id);
             $setting = Setting::findOrFail($binaryId);
 
-            $updatedData = array_filter(
-                array_intersect_key($data, array_flip(['key', 'value'])),
-                fn($v) => $v !== null && $v !== ''
-            );
+            /* Pesquisar e implementar uma forma de validação flexivel para os diferentes tipos de configurações. Por pertencerem a mesma entidade (Settings), não podemos colocar uma validação fixa como valor máximo da configuração 500, 10, etc; pois cada configuração tem um limite e minimo diferente.
+             */
 
-            $duplicateKeyExists = Setting::where('key', $updatedData['key'] ?? $setting->key)
-                ->where('id', '!=', $binaryId)
-                ->exists();
-
-            if ($duplicateKeyExists) {
-                return $this->conflictResponse(['key' => 'Já existe outra configuração com esta chave.']);
-            }
-
-            $setting->update($updatedData);
+            $setting->update($data);
 
             return $this->noContentResponse();
         } catch (ModelNotFoundException $e) {
