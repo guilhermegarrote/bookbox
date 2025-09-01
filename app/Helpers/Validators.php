@@ -220,4 +220,41 @@ class Validators
 
         return checkdnsrr($domain, "MX");
     }
+    /**
+ * Validates an ISBN-10 or ISBN-13.
+ *
+ * @param string $isbn The ISBN to validate.
+ * @return bool True if the ISBN is valid, false otherwise.
+ */
+public static function validateIsbn(string $isbn): bool
+{
+    $isbn = preg_replace('/\D/', '', $isbn);
+
+    if (strlen($isbn) === 10) {
+        $sum = 0;
+        for ($i = 0; $i < 9; $i++) {
+            if (!is_numeric($isbn[$i])) {
+                return false;
+            }
+            $sum += (int)$isbn[$i] * (10 - $i);
+        }
+
+        $check = strtoupper($isbn[9]);
+        $sum += ($check === 'X') ? 10 : (int)$check;
+
+        return $sum % 11 === 0;
+    } elseif (strlen($isbn) === 13) {
+        $sum = 0;
+        for ($i = 0; $i < 12; $i++) {
+            $sum += (int)$isbn[$i] * ($i % 2 === 0 ? 1 : 3);
+        }
+
+        $checkDigit = (10 - ($sum % 10)) % 10;
+
+        return (int)$isbn[12] === $checkDigit;
+    }
+
+    return false;
+}
+
 }
