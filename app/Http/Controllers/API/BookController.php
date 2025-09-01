@@ -3,11 +3,13 @@
 namespace App\Http\Controllers\API;
 
 use App\Helpers\Utils;
+use App\Helpers\Validators;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Book\BookStoreRequest;
 use App\Http\Requests\Book\BookUpdateRequest;
 use App\Models\Book;
 use App\Models\View\Book as ViewBook;
+use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
@@ -15,10 +17,61 @@ use Throwable;
 
 class BookController extends Controller
 {
-    public function index()
+
+    public function index(Request $request): JsonResponse
     {
-        //
+        try {
+            $query = ViewBook::query();
+
+            $query->when($request->filled('isbn'), callback: fn($q) => $q->where('isbn', $request->isbn));
+            $query->when($request->filled('title'), fn($q) => $q->where('title', $request->title));
+            $query->when($request->filled('publisher'), fn($q) => $q->where('publisher', $request->publisher));
+
+
+            if ($request->filled('search')) {
+                $search = trim($request->search);
+                $numericSearch = preg_replace('/\D/', '', $search);
+
+                $searchIsbn = Validators::validateIsbn($search);
+   
+
+                $query->when($searchIsbn, fn($q) => $q->where('isbn' ( $search, true)))
+                    ->unless(
+                        $searchIsbn,
+                        fn($q) => $q->where('name', 'like', "%{$search}%")
+                    );
+            }
+
+            $sortable = ['name', 'formatted_class_name'];
+            $sort = in_array($request->input('sort'), $sortable) ? $request->input('sort') : 'name';
+            $direction = $request->input('direction') === 'desc' ? 'desc' : 'asc';
+            $perPage = max(5, min((int) $request->input('perPage', 10), 250));
+
+            $books = $query
+                ->select([
+                    'isbn',
+                    'title',
+                    'author',
+                    'genre_id',
+                    'publisher',
+                ])
+                ->orderBy($sort, $direction)
+                ->paginate($perPage)
+                ->appends($request->all());
+
+            $html = view('pages.books.partials.table', compact('books'))->render();
+            $paginationHtml = view('vendor.pagination.custom', ['paginator' => $books])->render();
+
+            return response()->json([
+                'html' => $html,
+                'paginationHtml' => $paginationHtml,
+            ]);
+        } catch (Throwable $e) {
+            $this->logError('Erro ao listar livros.', $e);
+            return $this->internalErrorResponse($e, 'Erro interno ao listar os livros.');
+        }
     }
+    
 
     public function store(BookStoreRequest $request): JsonResponse
     {
