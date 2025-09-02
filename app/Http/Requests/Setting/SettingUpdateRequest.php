@@ -11,27 +11,10 @@ class SettingUpdateRequest extends FormRequest
         return true;
     }
 
-    protected function prepareForValidation(): void
-    {
-        $this->merge([
-            'value' => $this->input('value'), 
-        ]);
-    }
-
     public function rules(): array
     {
         return [
-            'value' => [
-                'sometimes',
-                'integer'
-            ],
-        ];
-    }
-
-    public function messages(): array
-    {
-        return [
-            'value.integer' => 'O valor deve ser um número inteiro.',
+            'value' => ['required'],
         ];
     }
 }
