@@ -41,14 +41,55 @@ class SettingController extends Controller
 
         try {
             $binaryId = Utils::convertUuidToBinary($id);
+
             $setting = Setting::findOrFail($binaryId);
 
-            /* Pesquisar e implementar uma forma de validação flexivel para os diferentes tipos de configurações. Por pertencerem a mesma entidade (Settings), não podemos colocar uma validação fixa como valor máximo da configuração 500, 10, etc; pois cada configuração tem um limite e minimo diferente.
-             */
+            $rules = config('settings');
 
-            $setting->update($data);
+            $key = $setting->key;
+
+            if (!isset($rules[$key])) {
+                return response()->json(['error' => 'Configuração inválida para validação.'], 400);
+            }
+
+            $rule = $rules[$key];
+            $value = $data['value'] ?? null;
+
+            if ($value === null) {
+                return response()->json(['error' => 'O valor da configuração é obrigatório.'], 400);
+            }
+
+            switch ($rule['type']) {
+                case 'integer':
+                    if (!ctype_digit($value)) {
+                        return response()->json(['error' => "O valor para {$key} deve ser um número inteiro."], 400);
+                    }
+                    $intValue = (int) $value;
+                    if (isset($rule['min']) && $intValue < $rule['min']) {
+                        return response()->json(['error' => "O valor mínimo para {$key} é {$rule['min']}."], 400);
+                    }
+                    if (isset($rule['max']) && $intValue > $rule['max']) {
+                        return response()->json(['error' => "O valor máximo para {$key} é {$rule['max']}."], 400);
+                    }
+                    break;
+
+                case 'string':
+                    if (!is_string($value)) {
+                        return response()->json(['error' => "O valor para {$key} deve ser uma string."], 400);
+                    }
+                    if (isset($rule['max']) && mb_strlen($value) > $rule['max']) {
+                        return response()->json(['error' => "O valor máximo para {$key} é {$rule['max']} caracteres."], 400);
+                    }
+                    break;
+
+                default:
+                    return response()->json(['error' => 'Tipo de configuração inválido.'], 400);
+            }
+
+            $setting->update(['value' => $value]);
 
             return $this->noContentResponse();
+
         } catch (ModelNotFoundException $e) {
             return $this->notFoundResponse('Configuração não encontrada.');
         } catch (Throwable $e) {
