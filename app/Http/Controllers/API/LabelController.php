@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use App\Http\Requests\Label\LabelStoreRequest;
 use Illuminate\Support\Facades\DB;
 use Spatie\Browsershot\Browsershot;
 use Illuminate\Support\Facades\Storage;
@@ -11,38 +11,28 @@ use RuntimeException;
 
 class LabelController extends Controller
 {
-    public function generateLabels(Request $request)
+    public function generateLabels(LabelStoreRequest $request)
     {
-        //form requezst não existe?
-        $request->validate([
-            'isbn' => 'required|string',
-            'exemplares' => 'required|string',
-        ]);
-
-        // Não valida se é um ISBN válido, válido no sentifo de ter uma estrutura válida
-        // Só esta recendo um ISBN, pode ser que mais de um livro seja selecionado, trabalhar com a estrutura que aceita mais de um livro com seus exemplares sendo passado (espécide array/matrix)
-
-        $isbn = $request->input('isbn');
-        $copiesString = $request->input('exemplares');
-
-        // não é id é número de exemplar
-        $copyIds = $this->parseCopyIds($copiesString);
-
-        if (empty($copyIds)) {
-            return response()->json(['error' => 'Nenhum exemplar válido informado.'], 400);
-        }
-
         $labels = [];
 
-        foreach ($copyIds as $copyId) {
-            $label = DB::table('copies')
-                ->select('id', 'number', 'isbn', 'title', 'author', 'genre_name', 'genre_color_hex', 'publisher')
-                ->where('isbn', $isbn)
-                ->where('id', $copyId)
-                ->first();
+        foreach ($request->input('books') as $book) {
+            $isbn = $book['isbn'];
+            $copyNumbers = $this->parseCopyNumbers($book['copies']);
 
-            if ($label) {
-                $labels[] = (array) $label;
+            if (empty($copyNumbers)) {
+                continue;
+            }
+
+            foreach ($copyNumbers as $copyNumber) {
+                $label = DB::table('copies')
+                    ->select('id', 'number', 'isbn', 'title', 'author', 'genre_name', 'genre_color_hex', 'publisher')
+                    ->where('isbn', $isbn)
+                    ->where('number', $copyNumber)
+                    ->first();
+
+                if ($label) {
+                    $labels[] = (array) $label;
+                }
             }
         }
 
@@ -50,7 +40,6 @@ class LabelController extends Controller
             return response()->json(['error' => 'Nenhuma etiqueta encontrada para os dados informados.'], 404);
         }
 
-        //PORTUGAYS??????????????????????????
         $html = view('pdf.label', ['etiquetas' => $labels])->render();
 
         $pdfFilename = 'etiquetas/etiquetas_' . time() . '.pdf';
@@ -58,17 +47,9 @@ class LabelController extends Controller
         $chromiumPath = env('BROWSERSHOT_CHROME_PATH', null);
 
         if (!$chromiumPath || !file_exists($chromiumPath)) {
-            $exception = new RuntimeException(
-                'Chromium não encontrado em: ' . ($chromiumPath ?? 'variável BROWSERSHOT_CHROME_PATH não definida')
-            );
-
-            $this->logError(
-                'Chromium não encontrado.',
-                $exception,
-                ['chromium_path' => $chromiumPath ?? 'variável BROWSERSHOT_CHROME_PATH não definida']
-            );
-
-            return $this->internalErrorResponse($exception, 'Chromium não encontrado. Verifique a instalação e o arquivo .env');
+            return response()->json([
+                'error' => 'Chromium não encontrado. Verifique a instalação e o arquivo .env'
+            ], 500);
         }
 
         Browsershot::html($html)
@@ -84,10 +65,12 @@ class LabelController extends Controller
         ], 200);
     }
 
-    private function parseCopyIds(string $input): array
+    /**
+     * Converte a string de exemplares (ex: "1-3,5") em array de números inteiros.
+     */
+    private function parseCopyNumbers(string $input): array
     {
-        // trocar de id para valor do exemplar, algo do tipo, em inglês 
-        $ids = []; 
+        $numbers = [];
 
         $segments = explode(',', $input);
         foreach ($segments as $segment) {
@@ -97,13 +80,13 @@ class LabelController extends Controller
                 $end = intval($end);
 
                 if ($start <= $end) {
-                    $ids = array_merge($ids, range($start, $end));
+                    $numbers = array_merge($numbers, range($start, $end));
                 }
             } else {
-                $ids[] = intval($segment);
+                $numbers[] = intval($segment);
             }
         }
 
-        return array_unique($ids);
+        return array_unique($numbers);
     }
 }
