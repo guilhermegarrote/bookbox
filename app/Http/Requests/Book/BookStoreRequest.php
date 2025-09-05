@@ -53,6 +53,12 @@ class BookStoreRequest extends FormRequest
                 'max:150',
                 'regex:/^[\pL\s.\'-]+$/u',
             ],
+            'numberOfCopies' => [
+            'required',
+            'integer',
+            'min:1',
+            'max:32767',
+            ],
         ];
     }
 
@@ -81,6 +87,11 @@ class BookStoreRequest extends FormRequest
             'publisher.string' => 'A editora deve ser um texto.',
             'publisher.max' => 'O nome da editora não pode ter mais que 150 caracteres.',
             'publisher.regex' => 'O nome da editora contém caracteres inválidos.',
+
+            'numberOfCopies.required' => 'O número de cópias é obrigatório.',
+            'numberOfCopies.integer' => 'O número de cópias deve ser um número inteiro.',
+            'numberOfCopies.min' => 'O número de cópias deve ser no mínimo 1.',
+            'numberOfCopies.max' => 'O número de cópias não pode exceder 32767.',
         ];
     }
 }
