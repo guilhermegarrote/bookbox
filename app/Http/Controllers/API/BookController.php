@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Helpers\Utils;
 use App\Helpers\Validators;
+use App\Services\CopyService;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Book\BookStoreRequest;
 use App\Http\Requests\Book\BookUpdateRequest;
@@ -73,7 +74,7 @@ class BookController extends Controller
     }
     
 
-    public function store(BookStoreRequest $request): JsonResponse
+    public function store(BookStoreRequest $request, CopyService $copyService): JsonResponse
     {
         $data = $request->validated();
 
@@ -98,30 +99,14 @@ class BookController extends Controller
                 return $this->conflictResponse(['book' => 'Já existe um livro com este título, autor e editora.']);
             }
 
-            // Essa validação deve ser feita no form request esta faltando verificar o se não é menor que 1 
-            $numberOfCopies = (int) ($data['numberOfCopies'] ?? 0);
-            if ($numberOfCopies > 32767) {
-                return $this->validationErrorResponse([
-                    'numberOfCopies' => 'O número de cópias não pode exceder 32767.'
-                ]);
-            }
+            $numberOfCopies =  (int) $data['numberOfCopies'];
 
             DB::beginTransaction();
 
             $book = Book::create($bookData);
 
-            // Faltou criar o service de copies que tem uma função de fazer o store de várias copias só passando a quantidade como parâmetro.
-            if ($numberOfCopies > 0) {
-                $copies = [];
-                for ($i = 1; $i <= $numberOfCopies; $i++) {
-                    $copies[] = [
-                        'book_id' => $book->id,
-                        'number' => $i
-                    ];
-                }
+            $copyService->storeCopies($book->id, $numberOfCopies);
 
-                DB::table('copies')->insert($copies);
-            }
 
             DB::commit();
 
