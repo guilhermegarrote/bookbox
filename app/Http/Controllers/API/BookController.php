@@ -4,10 +4,10 @@ namespace App\Http\Controllers\API;
 
 use App\Helpers\Utils;
 use App\Helpers\Validators;
-use App\Services\CopyService;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Book\BookStoreRequest;
 use App\Http\Requests\Book\BookUpdateRequest;
+use App\Http\Requests\Copy\CopyStoreRequest;
 use App\Models\Book;
 use App\Models\View\Book as ViewBook;
 use Illuminate\Http\Request;
@@ -74,7 +74,7 @@ class BookController extends Controller
     }
     
 
-    public function store(BookStoreRequest $request, CopyService $copyService): JsonResponse
+    public function store(BookStoreRequest $request, CopyStoreRequest $copyStoreRequest): JsonResponse
     {
         $data = $request->validated();
 
@@ -105,7 +105,7 @@ class BookController extends Controller
 
             $book = Book::create($bookData);
 
-            $copyService->storeCopies($book->id, $numberOfCopies);
+            $copyStoreRequest->storeCopies($book->id, $numberOfCopies);
 
 
             DB::commit();
