@@ -3,24 +3,19 @@
 @section('content')
     <div class="panel">
         <div class="data-container">
-            <h2 class="page-title">Alunos</h2>
+            <h2 class="page-title">Livros</h2>
 
             <div class="table-wrapper" id="data-table-container">
-                @include('pages.students.partials.table', ['students' => $students])
+                @include('pages.books.partials.table', ['books' => $books])
             </div>
 
             <div class="pagination-container" id="pagination-wrapper">
-                @include('vendor.pagination.custom', ['paginator' => $students])
+                @include('vendor.pagination.custom', ['paginator' => $books])
             </div>
         </div>
     </div>
 @endsection
 
 @push('scripts')
-    @vite('resources/js/pages/students/students.js')
+    @vite('resources/js/pages/books/books.js')
 @endpush
-
-
-
-
-
