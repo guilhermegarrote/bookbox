@@ -218,13 +218,13 @@ class PasswordRecoveryController extends Controller
         $attemptKey = "recovery_code_send_attempts:{$user->id}";
         $attempts = Cache::get($attemptKey, 0);
 
-        if ($attempts >= self::MAX_ATTEMPTS) {
+      /*  if ($attempts >= self::MAX_ATTEMPTS) {
             throw new RuntimeException('Número máximo de envios atingido. Tente novamente mais tarde.');
-        }
+       } */
 
         Cache::put($attemptKey, $attempts + 1, self::ATTEMPT_TTL_SECONDS);
 
-        $code = $this->emailService->sendCode($email);
+        $code = $this->emailService->sendCode($email, $user->name);
 
         PasswordResetCode::create([
             'user_id' => $userId,
