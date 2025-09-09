@@ -22,13 +22,18 @@ class LoanController extends Controller
     /**
      * Display a listing of loans.
      */
-    public function index()
+    public function index(): JsonResponse
     {
-        $loans = Loan::with(['student', 'copy.book'])
-            ->orderBy('created_at', 'desc')
-            ->paginate(10); 
-        
-        return view('loans.index', compact('loans'));
+        try {
+            $loans = Loan::with(['student', 'copy.book'])
+                ->orderBy('created_at', 'desc')
+                ->paginate(10);
+
+            return $this->successResponse($loans->toArray());
+        } catch (Throwable $e) {
+            $this->logError('Erro ao listar empréstimos.', $e);
+            return $this->internalErrorResponse($e, 'Erro interno ao listar os empréstimos.');
+        }
     }
 
     /**
