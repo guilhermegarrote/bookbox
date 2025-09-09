@@ -19,11 +19,19 @@ class Genrecontroller extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+      public function index(): JsonResponse
     {
-        //
-    }
+        try {
+            // Paginação, ordenando por nome do gênero
+            $genres = Genre::orderBy('name')->paginate(10);
 
+            return $this->successResponse($genres->toArray());
+        } catch (Throwable $e) {
+            $this->logError('Erro ao listar gêneros.', $e);
+            return $this->internalErrorResponse($e, 'Erro interno ao listar os gêneros.');
+        }
+    }
+    
     /**
      * Store a newly created resource in storage.
      */
