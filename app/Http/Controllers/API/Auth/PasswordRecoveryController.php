@@ -25,7 +25,7 @@ class PasswordRecoveryController extends Controller
     protected EmailService $emailService;
 
     private const EXPIRATION_MINUTES = 15;
-    private const MAX_ATTEMPTS = 3;
+    private const MAX_ATTEMPTS = 5;
     private const ATTEMPT_TTL_SECONDS = 900;
 
     public function __construct(EmailService $emailService)
@@ -182,7 +182,13 @@ class PasswordRecoveryController extends Controller
             return $this->notFoundResponse('Usuário não encontrado.');
         }
 
-        $user->password = $request->validated()['password'];
+        $newPassword = $request->validated()['password'];
+
+        if (Hash::check($newPassword, $user->password)) {
+            return $this->validationErrorResponse(['message' => 'Essa senha já está sendo utilizada.']);
+        }
+
+        $user->password = $newPassword;
         $user->save();
 
         $request->session()->forget([
@@ -218,13 +224,13 @@ class PasswordRecoveryController extends Controller
         $attemptKey = "recovery_code_send_attempts:{$user->id}";
         $attempts = Cache::get($attemptKey, 0);
 
-      /*  if ($attempts >= self::MAX_ATTEMPTS) {
+        if ($attempts >= self::MAX_ATTEMPTS) {
             throw new RuntimeException('Número máximo de envios atingido. Tente novamente mais tarde.');
-       } */
+        }
 
         Cache::put($attemptKey, $attempts + 1, self::ATTEMPT_TTL_SECONDS);
 
-        $code = $this->emailService->sendCode($email, $user->name);
+        $code = $this->emailService->sendRecoveyCode($email, $user->name);
 
         PasswordResetCode::create([
             'user_id' => $userId,

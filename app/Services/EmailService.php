@@ -2,74 +2,67 @@
 
 namespace App\Services;
 
-use Brevo\Client\Api\TransactionalEmailsApi;
-use Brevo\Client\Model\SendSmtpEmail;
-use App\Http\Traits\ErrorLoggerTrait;
-use Exception;
-use RuntimeException;
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\View;
 
 class EmailService
 {
-    use ErrorLoggerTrait;
+    protected PHPMailer $mailer;
 
-    private TransactionalEmailsApi $emailApi;
-
-    public function __construct(TransactionalEmailsApi $emailApi)
+    public function __construct()
     {
-        $this->emailApi = $emailApi;
+        $this->mailer = new PHPMailer(true);
+
+        $this->mailer->isSMTP();
+        $this->mailer->Host       = config('mail.mailers.smtp.host');
+        $this->mailer->SMTPAuth   = true;
+        $this->mailer->Username   = config('mail.mailers.smtp.username');
+        $this->mailer->Password   = config('mail.mailers.smtp.password');
+        $this->mailer->SMTPSecure = config('mail.mailers.smtp.encryption');
+        $this->mailer->Port       = config('mail.mailers.smtp.port');
+
+        $this->mailer->setFrom(
+            config('mail.from.address'),
+            config('mail.from.name')
+        );
     }
 
-    public function sendCode(string $email, string $userName): string
+    /**
+     * Generate and send a recovery code.
+     *
+     * @param string $to   Recipient email
+     * @param string $name Recipient name
+     * @return string The generated recovery code
+     */
+    public function sendRecoveyCode(string $to, string $name): string
     {
-        $code = $this->generateCode();
-
-        $html = view('emails.password_reset', [
-            'email' => $email,
-            'userName' => $userName,
-            'code' => $code
-        ])->render();
-
-        $path = public_path('images/logo/logotype-light.png');
-
-        if (!file_exists($path)) {
-            throw new \Exception("Logo não encontrada em: $path");
-        }
-
-        // Converte a imagem em Base64
-        $logoBase64 = base64_encode(file_get_contents($path));
-
-        // Monta o e-mail
-        $recoveryEmail = new SendSmtpEmail([
-            'subject' => 'Recuperação de Senha',
-            'sender' => [
-                'name' => config('mail.from.name'),
-                'email' => config('mail.from.address')
-            ],
-            'to' => [['email' => $email]],
-            'htmlContent' => $html,
-            'params' => ['code' => $code],
-            'inlineImageActivation' => true,
-            'inlineImages' => [[
-                'name' => 'logotype-light.png',  // nome do arquivo
-                'content' => $logoBase64,        // imagem em Base64
-                'contentId' => 'bookbox_logo'    // deve bater com o "cid:" no HTML
-            ]]
-        ]);
-
+        $code = (string) rand(100000, 999999);
 
         try {
-            $this->emailApi->sendTransacEmail($recoveryEmail);
-        } catch (Exception $e) {
-            $this->logError('Erro ao enviar e-mail para ' . $email, $e);
+            $this->mailer->clearAddresses();
+            $this->mailer->clearAttachments();
+            $this->mailer->addAddress($to, $name);
+            $this->mailer->isHTML(true);
+            $this->mailer->Subject = 'Password Recovery Code';
 
-            throw new RuntimeException('Não foi possível enviar o e-mail de recuperação.');
+            $logoPath = public_path('images/logo/logotype-light.png');
+            $this->mailer->addEmbeddedImage($logoPath, 'logo_cid');
+
+            $this->mailer->Body = View::make('emails.recovery-code', [
+                'name' => $name,
+                'code' => $code,
+            ])->render();
+
+            $this->mailer->AltBody = "Olá {$name}, seu código de recuperação é: {$code}";
+
+            $this->mailer->send();
+        } catch (Exception $e) {
+            Log::error("Failed to send recovery code email: " . $e->getMessage());
+            throw $e;
         }
 
         return $code;
-    }
-
-    private function generateCode(): string
-    {
-        return (string) rand(100000, 999999);
     }
 }

@@ -4,9 +4,8 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Confirmação de Código</title>
+    <title>Confirmar Código | Bookbox</title>
 
-      @vite([''])
     @routes
     <meta name="csrf-token" content="{{ csrf_token() }}">
 </head>
@@ -19,14 +18,14 @@
 
             <div class="verification-code-container">
                 @for ($i = 1; $i <= 6; $i++)
-                    <input type="text" name="code[]" maxlength="1" class="verification-input" required inputmode="numeric">
-
-                    @endfor
+                    <input type="text" name="code[]" maxlength="1" class="verification-input" required
+                        inputmode="numeric" title="Digite o {{ $i }}º dígito do código de verificação">
+                @endfor
             </div>
 
-            <button type="submit" class="auth-button">Validar Código</button>
+            <button type="submit" class="auth-button" title="Validar código de recuperação">Validar Código</button>
 
-            <button type="button" class="btn-link-style" id="resend-code-btn">
+            <button type="button" class="btn-link-style" id="resend-code-btn" title="Reenviar código para o seu e-mail">
                 <span class="btn-link-text">Reenviar código</span>
             </button>
         </form>
