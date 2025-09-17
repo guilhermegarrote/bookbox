@@ -120,6 +120,11 @@ document.addEventListener('DOMContentLoaded', () => {
             errors.push({ field: 'password_confirmation', messages: ['A confirmação de senha deve ser idêntica à senha informada.'] });
         }
 
+        const termsChecked = document.getElementById('terms')?.checked;
+        if (!termsChecked) {
+            errors.push({ field: 'terms', messages: ['Você deve aceitar os Termos de Condição e a Política de Privacidade.'] });
+        }
+
         return errors;
     }
 
