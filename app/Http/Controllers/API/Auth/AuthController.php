@@ -9,6 +9,7 @@ use App\Http\Requests\User\UserStoreRequest;
 use App\Http\Traits\JsonResponseTrait;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\RateLimiter;
 use PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth;
 use Throwable;
 
@@ -56,17 +57,34 @@ class AuthController extends Controller
     public function login(LoginRequest $request): JsonResponse
     {
         $validatedData = $request->validated();
-
         $email = strtolower(trim($validatedData['email']));
         $password = trim($validatedData['password']);
-
         $emailHash = hash('sha256', $email, true);
+
+        $dummyHash = '$2y$10$usesomesillystringforsalt$';
+        $key = $email . $request->ip();
+        $maxAttempts = 5;
+        $decaySeconds = 60;
+
+        if (RateLimiter::tooManyAttempts($key, $maxAttempts)) {
+            return $this->tooManyRequestsResponse("Muitas tentativas. Tente novamente em alguns segundos.");
+        }
 
         $user = User::where('email_hash', $emailHash)->first();
 
-        if (!$user || !Hash::check($password, $user->password)) {
+        if (!$user) {
+            Hash::check($password, $dummyHash);
+            RateLimiter::hit($key, $decaySeconds);
+
             return $this->unauthorizedResponse('Credenciais inválidas.');
         }
+
+        if (!Hash::check($password, $user->password)) {
+            RateLimiter::hit($key, $decaySeconds);
+            return $this->unauthorizedResponse('Credenciais inválidas.');
+        }
+
+        RateLimiter::clear($key);
 
         $token = JWTAuth::fromUser($user);
 

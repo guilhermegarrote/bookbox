@@ -35,7 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!ok) {
                 if (responseData.errors) {
                     showErrors(responseData.errors);
-                } else if (status === 401) {
+                } else if (status === 401 || status === 429) {
                     notifyError(responseData.error || 'Erro desconhecido.');
                 }
                 return;

@@ -16,7 +16,7 @@
             <h2>Login</h2>
 
             <x-auth.input label="Email" name="email" type="email" title="Digite seu endereço de e-mail" />
-            <x-auth.input-password label="Senha" name="password" title="Digite sua senha de acesso" />
+            <x-auth.input-password label="Senha" name="password" autocomplete="off" title="Digite sua senha de acesso" />
 
             <a class="auth-link" href="{{ route('recovery.email.form') }}" title="Recuperar acesso à sua conta">
                 <span class="auth-link-text">Esqueceu sua senha?</span>
