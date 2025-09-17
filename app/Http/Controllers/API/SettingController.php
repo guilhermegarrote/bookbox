@@ -13,11 +13,18 @@ use Throwable;
 class SettingController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Display a listing of settings.
      */
-    public function index()
+    public function index(): JsonResponse
     {
-        //
+        try {
+            $settings = Setting::orderBy('key')->paginate(10);
+
+            return $this->successResponse($settings->toArray());
+        } catch (Throwable $e) {
+            $this->logError('Erro ao listar configurações.', $e);
+            return $this->internalErrorResponse($e, 'Erro interno ao listar as configurações.');
+        }
     }
 
     public function show(string $id): JsonResponse
@@ -89,7 +96,6 @@ class SettingController extends Controller
             $setting->update(['value' => $value]);
 
             return $this->noContentResponse();
-
         } catch (ModelNotFoundException $e) {
             return $this->notFoundResponse('Configuração não encontrada.');
         } catch (Throwable $e) {
