@@ -14,6 +14,23 @@ use Throwable;
 class CopyController extends Controller
 {
     /**
+     * Display a listing of copies.
+     */
+    public function index(): JsonResponse
+    {
+        try {
+            $copies = Copy::with(['book']) // traz informações do livro associado
+                ->orderBy('created_at', 'desc')
+                ->paginate(10);
+
+            return $this->successResponse($copies->toArray());
+        } catch (Throwable $e) {
+            $this->logError('Erro ao listar exemplares.', $e);
+            return $this->internalErrorResponse($e, 'Erro interno ao listar os exemplares.');
+        }
+    }
+
+    /**
      * Store new copies linked to a book via ISBN.
      */
     public function store(CopyStoreRequest $request): JsonResponse
@@ -35,22 +52,20 @@ class CopyController extends Controller
             // Create the requested number of copies
             for ($i = 0; $i < $request->numberOfCopies; $i++) {
                 $copies[] = Copy::create([
-                    'book_id'   =>  Utils::convertUuidToBinary($book->id),
-                    'number'    => $i+1,
+                    'book_id'   => Utils::convertUuidToBinary($book->id),
+                    'number'    => $i + 1,
                     'available' => $request->available ?? true,
                 ]);
             }
 
             DB::commit();
 
-             return $this->createdResponse();
-
+            return $this->createdResponse();
         } catch (Throwable $e) {
             DB::rollBack();
 
-            $this->logError('Erro ao cadastrar exemplar.', $e, ['book' => $book]);
+            $this->logError('Erro ao cadastrar exemplar.', $e, ['book' => $book ?? null]);
             return $this->internalErrorResponse($e, 'Erro interno ao cadastrar exemplar.');
-
         }
     }
 }
