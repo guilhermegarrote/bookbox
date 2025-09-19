@@ -18,43 +18,54 @@ use Throwable;
 
 class BookController extends Controller
 {
-
     public function index(Request $request): JsonResponse
     {
         try {
-            $query = ViewBook::query();
-
-            $query->when($request->filled('isbn'), callback: fn($q) => $q->where('isbn', $request->isbn));
-            $query->when($request->filled('title'), fn($q) => $q->where('title', $request->title));
-            $query->when($request->filled('publisher'), fn($q) => $q->where('publisher', $request->publisher));
-
+            $searchQuery = ViewBook::query();
 
             if ($request->filled('search')) {
                 $search = trim($request->search);
                 $numericSearch = preg_replace('/\D/', '', $search);
 
-                $searchIsbn = Validators::validateIsbn($search);
-   
+                $searchIsbn = Validators::validateIsbn($numericSearch);
 
-                $query->when($searchIsbn, fn($q) => $q->where('isbn' ( $search, true)))
-                    ->unless(
-                        $searchIsbn,
-                        fn($q) => $q->where('name', 'like', "%{$search}%")
-                    );
+                $searchQuery->when(
+                    $searchIsbn,
+                    fn($q) => $q->where('isbn', $numericSearch)
+                )->unless(
+                    $searchIsbn,
+                    fn($q) => $q->where('title', 'like', "%{$search}%")
+                        ->orWhere('author', 'like', "%{$search}%")
+                );
             }
 
-            $sortable = ['name', 'formatted_class_name'];
-            $sort = in_array($request->input('sort'), $sortable) ? $request->input('sort') : 'name';
+            $filterData = (clone $searchQuery)
+                ->select('genre_name', 'publisher')
+                ->groupBy('genre_name', 'publisher')
+                ->orderBy('genre_name')
+                ->orderBy('publisher')
+                ->get();
+
+            $query = clone $searchQuery;
+
+            $query->when($request->filled('genre'), fn($q) => $q->where('genre_name', $request->genre));
+            $query->when($request->filled('publisher'), fn($q) => $q->where('publisher', $request->publisher));
+
+            $sortable = ['title', 'author', 'genre_name', 'publisher'];
+            $sort = in_array($request->input('sort'), $sortable) ? $request->input('sort') : 'title';
             $direction = $request->input('direction') === 'desc' ? 'desc' : 'asc';
             $perPage = max(5, min((int) $request->input('perPage', 10), 250));
 
             $books = $query
                 ->select([
+                    'id',
                     'isbn',
                     'title',
                     'author',
-                    'genre_id',
+                    'genre_name',
+                    'genre_color_hex',
                     'publisher',
+                    'available',
                 ])
                 ->orderBy($sort, $direction)
                 ->paginate($perPage)
@@ -66,15 +77,15 @@ class BookController extends Controller
             return response()->json([
                 'html' => $html,
                 'paginationHtml' => $paginationHtml,
+                'filterData' => $filterData
             ]);
         } catch (Throwable $e) {
             $this->logError('Erro ao listar livros.', $e);
             return $this->internalErrorResponse($e, 'Erro interno ao listar os livros.');
         }
     }
-    
 
-    public function store(BookStoreRequest $request, CopyStoreRequest $copyStoreRequest): JsonResponse
+    public function store(BookStoreRequest $request): JsonResponse
     {
         $data = $request->validated();
 
@@ -105,8 +116,9 @@ class BookController extends Controller
 
             $book = Book::create($bookData);
 
-            $copyStoreRequest->storeCopies($book->id, $numberOfCopies);
-
+            /*
+            Cadastrar os exemplares
+            */
 
             DB::commit();
 
