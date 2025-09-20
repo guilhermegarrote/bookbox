@@ -1,0 +1,6 @@
+.sidebar-wrapper {
+    overflow-x: auto;
+    max-height: 100%;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+}
