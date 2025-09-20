@@ -11,27 +11,28 @@ class CreateStudentSchoolClassView extends Migration
         DB::statement("
             CREATE VIEW vw_student_school_class AS
             SELECT
-                ssc.id AS id,
-                ssc.student_id AS student_id,
-                sv.name AS name,
-                sv.cpf AS cpf,
-                sv.cpf_hash AS cpf_hash,
-                sv.email AS email,
-                sv.email_hash AS email_hash,
-                sv.phone AS phone,
-                sv.phone_hash AS phone_hash,
-                sv.can_borrow AS can_borrow,
-                ssc.school_class_id AS school_class_id,
-                sc.course AS course,
-                sc.term AS term,
-                sc.start_date AS start_date,
-                sc.end_date AS end_date,
-                sc.period AS period,
+                ssc.id,
+                ssc.student_id,
+                sv.name,
+                sv.cpf,
+                sv.cpf_hash,
+                sv.email,
+                sv.email_hash,
+                sv.phone,
+                sv.phone_hash,
+                sv.can_borrow,
+                ssc.school_class_id,
+                sc.course,
+                sc.term,
+                sc.start_date,
+                sc.end_date,
+                sc.period,
                 CONCAT(
-                    sc.period,
-                    CASE
-                        WHEN LOWER(sc.term) = 'semester' THEN '° Semestre - '
-                        ELSE '° Ano - '
+                    sc.period, '° ',
+                    CASE sc.term
+                        WHEN 'Semester' THEN 'Semestre - '
+                        WHEN 'Annual'   THEN 'Ano - '
+                        ELSE CONCAT(sc.term, ' - ') -- fallback, mostra o valor cru
                     END,
                     sc.course
                 ) AS formatted_class_name

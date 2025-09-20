@@ -17,13 +17,22 @@ class CreateCopiesView extends Migration
                 b.title AS title,
                 b.author AS author,
                 b.genre_id AS genre_id,
-                b.genre_name AS genre_name,
-                b.genre_color_hex AS genre_color_hex,
+                g.name AS genre_name,
+                g.color_hex AS genre_color_hex,
                 b.publisher AS publisher,
                 c.number AS number,
-                c.available AS available
+                CASE
+                    WHEN EXISTS (
+                        SELECT 1
+                        FROM loans l
+                        WHERE l.copy_id = c.id
+                          AND l.returned_date IS NULL
+                    ) THEN 0
+                    ELSE 1
+                END AS available
             FROM copies c
-            JOIN vw_books b ON c.book_id = b.id
+            JOIN books b ON c.book_id = b.id
+            LEFT JOIN genres g ON b.genre_id = g.id
         ");
     }
 

@@ -30,10 +30,6 @@ return new class extends Migration {
                 ->nullable()
                 ->comment('Data em que o exemplar foi devolvido.');
 
-            $table->boolean('active')
-                ->default(true)
-                ->comment('Indica se o empréstimo está ativo ou finalizado.');
-
             $table->unique('copy_id');
             $table->index('student_id');
 

@@ -11,17 +11,21 @@ class CreateSchoolClassesView extends Migration
         DB::statement("
             CREATE OR REPLACE VIEW vw_school_classes AS
             SELECT
-                school_classes.id AS id,
-                school_classes.course AS course,
-                school_classes.term AS term,
-                school_classes.start_date AS start_date,
-                school_classes.end_date AS end_date,
+                sc.id,
+                sc.course,
+                sc.term,
+                sc.start_date,
+                sc.end_date,
                 CASE
-                    WHEN school_classes.term = 'Annual' THEN TIMESTAMPDIFF(YEAR, school_classes.start_date, CURDATE()) + 1
-                    WHEN school_classes.term = 'Semester' THEN TIMESTAMPDIFF(MONTH, school_classes.start_date, CURDATE()) DIV 6 + 1
+                    WHEN CURDATE() < sc.start_date THEN 0
+                    WHEN CURDATE() > sc.end_date THEN NULL
+                    WHEN sc.term = 'Annual'
+                        THEN TIMESTAMPDIFF(YEAR, sc.start_date, CURDATE()) + 1
+                    WHEN sc.term = 'Semester'
+                        THEN TIMESTAMPDIFF(MONTH, sc.start_date, CURDATE()) DIV 6 + 1
                     ELSE NULL
-                END AS period  -- Número do período atual da turma baseado no regime e data atual
-            FROM school_classes
+                END AS period
+            FROM school_classes sc
         ");
     }
 

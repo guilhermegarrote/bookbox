@@ -7,7 +7,7 @@ class CreateLoansView extends Migration
 {
     public function up(): void
     {
-        $this->down();
+        DB::statement('DROP VIEW IF EXISTS vw_loans');
 
         DB::statement("
             CREATE VIEW vw_loans AS
@@ -35,13 +35,12 @@ class CreateLoansView extends Migration
                 ssc.course AS course,
                 ssc.term AS term,
                 ssc.start_date AS school_class_start_date,
-                ssc.end_date AS end_date,
+                ssc.end_date AS school_class_end_date,
                 ssc.period AS period,
                 ssc.formatted_class_name AS formatted_class,
-                l.start_date AS start_date,
-                l.due_date AS due_date,
-                l.returned_date AS returned_date,
-                l.active AS active
+                l.start_date AS loan_start_date,
+                l.due_date AS loan_due_date,
+                l.returned_date AS loan_returned_date
             FROM loans l
             LEFT JOIN vw_copies c ON c.id = l.copy_id
             LEFT JOIN vw_student_school_class ssc ON ssc.student_id = l.student_id

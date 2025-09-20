@@ -59,7 +59,6 @@ class LoansSeeder extends Seeder
                     'start_date'    => $start,
                     'due_date'      => $due,
                     'returned_date' => $returned,
-                    'active'        => $active,
                 ]);
 
                 $created++;

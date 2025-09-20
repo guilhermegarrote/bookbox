@@ -17,7 +17,7 @@ class CreateSchoolClassesTable extends Migration
                 ->comment('Nome do curso ao qual a turma está integrada.');
 
             $table->enum('term', ['Annual', 'Semester'])
-                ->comment('Período de vigência da turma, definido como anual ou semestral.');
+                ->comment('Refime de vigência da turma, definido como anual ou semestral.');
 
             $table->date('start_date')
                 ->comment('Data em que a turma iniciou as aulas.');

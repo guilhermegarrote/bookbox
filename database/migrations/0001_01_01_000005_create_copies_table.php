@@ -18,9 +18,6 @@ return new class extends Migration {
             $table->unsignedSmallInteger('number')
                 ->comment('Número do exemplar.');
 
-            $table->boolean('available')->default(true)
-                ->comment('Indica se o exemplar está disponível para empréstimo.');
-
             $table->unique(['book_id', 'number']);
 
             $table->foreign('book_id')->references('id')->on('books')->onDelete('cascade');
