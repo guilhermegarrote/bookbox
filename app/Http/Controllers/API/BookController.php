@@ -7,7 +7,7 @@ use App\Helpers\Validators;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Book\BookStoreRequest;
 use App\Http\Requests\Book\BookUpdateRequest;
-use App\Http\Requests\Copy\CopyStoreRequest;
+use App\Services\CopyService;
 use App\Models\Book;
 use App\Models\View\Book as ViewBook;
 use Illuminate\Http\Request;
@@ -85,50 +85,48 @@ class BookController extends Controller
         }
     }
 
-    public function store(BookStoreRequest $request): JsonResponse
-    {
-        $data = $request->validated();
+public function store(BookStoreRequest $request, CopyService $copyService): JsonResponse
+{
+    $data = $request->validated();
 
-        try {
-            $bookData = array_filter(
-                array_intersect_key($data, array_flip(['isbn', 'title', 'author', 'genre_id', 'publisher'])),
-                fn($v) => $v !== null && $v !== ''
-            );
+    try {
+        $bookData = array_filter(
+            array_intersect_key($data, array_flip(['isbn', 'title', 'author', 'genre_id', 'publisher'])),
+            fn($v) => $v !== null && $v !== ''
+        );
 
-            $bookExists = Book::where('isbn', $bookData['isbn'])->exists();
-
-            if ($bookExists) {
-                return $this->conflictResponse(['book' => 'Já existe um livro com este ISBN.']);
-            }
-
-            $duplicateTitleAuthorPublisher = Book::where('title', $bookData['title'])
-                ->where('author', $bookData['author'])
-                ->where('publisher', $bookData['publisher'])
-                ->exists();
-
-            if ($duplicateTitleAuthorPublisher) {
-                return $this->conflictResponse(['book' => 'Já existe um livro com este título, autor e editora.']);
-            }
-
-            $numberOfCopies =  (int) $data['numberOfCopies'];
-
-            DB::beginTransaction();
-
-            $book = Book::create($bookData);
-
-            /*
-            Cadastrar os exemplares
-            */
-
-            DB::commit();
-
-            return $this->createdResponse();
-        } catch (Throwable $e) {
-            DB::rollBack();
-            $this->logError('Erro ao cadastrar livro.', $e, ['data' => $data]);
-            return $this->internalErrorResponse($e, 'Erro interno ao cadastrar livro.');
+        if (Book::where('isbn', $bookData['isbn'])->exists()) {
+            return $this->conflictResponse(['book' => 'Já existe um livro com este ISBN.']);
         }
+
+        $duplicateTitleAuthorPublisher = Book::where('title', $bookData['title'])
+            ->where('author', $bookData['author'])
+            ->where('publisher', $bookData['publisher'])
+            ->exists();
+
+        if ($duplicateTitleAuthorPublisher) {
+            return $this->conflictResponse(['book' => 'Já existe um livro com este título, autor e editora.']);
+        }
+
+        $numberOfCopies = (int) $data['numberOfCopies'];
+
+        DB::beginTransaction();
+
+        $book = Book::create($bookData);
+
+        $binaryBookId = Utils::convertUuidToBinary($book->id);
+
+        $copyService->storeCopies($binaryBookId, $numberOfCopies);
+
+        DB::commit();
+
+        return $this->createdResponse();
+    } catch (Throwable $e) {
+        DB::rollBack();
+        $this->logError('Erro ao cadastrar livro.', $e, ['data' => $data]);
+        return $this->internalErrorResponse($e, 'Erro interno ao cadastrar livro.');
     }
+}
 
     public function show(string $id): JsonResponse
     {
