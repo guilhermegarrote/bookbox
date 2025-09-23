@@ -4,6 +4,8 @@ namespace App\Http\Requests\Book;
 
 use App\Helpers\Utils;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
+use App\Models\Book;
 
 class BookUpdateRequest extends FormRequest
 {
@@ -19,40 +21,26 @@ class BookUpdateRequest extends FormRequest
             'title' => trim($this->input('title', '')),
             'author' => trim($this->input('author', '')),
             'publisher' => trim($this->input('publisher', '')),
-            'genre_id' => $this->has('genre_id') && $this->input('genre_id') !== null
-                ? Utils::convertUuidToBinary($this->input('genre_id'))
-                : null,
+            'genre_name' => trim($this->input('genre_name', '')),
         ]);
     }
 
     public function rules(): array
     {
+        $binaryId = $this->route('id') ? Utils::convertUuidToBinary($this->route('id')) : null;
+
         return [
             'isbn' => [
                 'sometimes',
                 'string',
                 'max:20',
                 'regex:/^(97(8|9))?\d{9}(\d|X)$/i',
+                Rule::unique('books', 'isbn')->ignore($binaryId),
             ],
-            'title' => [
-                'sometimes',
-                'string',
-                'max:255',
-                'regex:/^[\pL\pN\s.,!?\'"-]+$/u',
-            ],
-            'author' => [
-                'sometimes',
-                'string',
-                'max:300',
-                'regex:/^[\pL\s.\'-]+$/u',
-            ],
-            'genre_id' => ['sometimes', 'exists:genres,id'],
-            'publisher' => [
-                'sometimes',
-                'string',
-                'max:150',
-                'regex:/^[\pL\s.\'-]+$/u',
-            ],
+            'title' => ['sometimes', 'string', 'max:255', 'regex:/^[\pL\pN\s.,!?\'"-]+$/u'],
+            'author' => ['sometimes', 'string', 'max:300', 'regex:/^[\pL\s.\'-]+$/u'],
+            'publisher' => ['sometimes', 'string', 'max:150', 'regex:/^[\pL\s.\'-]+$/u'],
+            'genre_name' => ['sometimes', 'string', 'max:100'],
         ];
     }
 
@@ -62,6 +50,7 @@ class BookUpdateRequest extends FormRequest
             'isbn.string' => 'O ISBN deve ser um texto.',
             'isbn.max' => 'O ISBN não pode ter mais que 20 caracteres.',
             'isbn.regex' => 'O ISBN informado não é válido.',
+            'isbn.unique' => 'Já existe outro livro com este ISBN.',
 
             'title.string' => 'O título deve ser um texto.',
             'title.max' => 'O título não pode ter mais que 255 caracteres.',
@@ -71,11 +60,12 @@ class BookUpdateRequest extends FormRequest
             'author.max' => 'O nome do autor não pode ter mais que 300 caracteres.',
             'author.regex' => 'O nome do autor contém caracteres inválidos.',
 
-            'genre_id.exists' => 'O gênero selecionado não existe.',
-
             'publisher.string' => 'A editora deve ser um texto.',
             'publisher.max' => 'O nome da editora não pode ter mais que 150 caracteres.',
             'publisher.regex' => 'O nome da editora contém caracteres inválidos.',
+
+            'genre_name.string' => 'O nome do gênero deve ser um texto.',
+            'genre_name.max' => 'O nome do gênero não pode ter mais que 100 caracteres.',
         ];
     }
 }

@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests\Genre;
 
+use App\Helpers\Utils;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\DB;
 
 class GenreUpdateRequest extends FormRequest
 {
@@ -16,27 +18,45 @@ class GenreUpdateRequest extends FormRequest
         $this->merge([
             'name' => trim($this->input('name', '')),
             'color_hex' => $this->has('color_hex') && $this->input('color_hex') !== null
-                ? strtoupper(trim($this->input('color_hex')))
+                ? strtoupper(ltrim(trim($this->input('color_hex')), '#'))
                 : null,
         ]);
     }
 
     public function rules(): array
     {
+        $binaryId = Utils::convertUuidToBinary($this->route('genre'));
+
         return [
             'name' => [
                 'sometimes',
                 'string',
                 'max:100',
-                // Remove permissão para números
                 'regex:/^[\pL\s.\'-]+$/u',
+                function ($attribute, $value, $fail) use ($binaryId) {
+                    $exists = DB::table('genres')
+                        ->where('name', $value)
+                        ->where('id', '!=', $binaryId)
+                        ->exists();
+                    if ($exists) {
+                        $fail('Este gênero já está cadastrado.');
+                    }
+                }
             ],
             'color_hex' => [
                 'sometimes',
                 'nullable',
                 'string',
-                // Agora valida 6 caracteres hex sem #
                 'regex:/^[0-9A-Fa-f]{6}$/',
+                function ($attribute, $value, $fail) use ($binaryId) {
+                    $exists = DB::table('genres')
+                        ->where('color_hex', $value)
+                        ->where('id', '!=', $binaryId)
+                        ->exists();
+                    if ($exists) {
+                        $fail('Esta cor já está relacionada a outro gênero.');
+                    }
+                }
             ],
         ];
     }

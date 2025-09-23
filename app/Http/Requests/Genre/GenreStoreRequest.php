@@ -16,7 +16,7 @@ class GenreStoreRequest extends FormRequest
         $this->merge([
             'name' => trim($this->input('name', '')),
             'color_hex' => $this->has('color_hex') && $this->input('color_hex') !== null
-                ? strtoupper(preg_replace('/^#/', '', trim($this->input('color_hex')))) // remove o # e deixa maiúsculo
+                ? strtoupper(ltrim(trim($this->input('color_hex')), '#'))
                 : null,
         ]);
     }
@@ -34,7 +34,8 @@ class GenreStoreRequest extends FormRequest
             'color_hex' => [
                 'required',
                 'string',
-                'regex:/^[0-9A-Fa-f]{6}$/', // agora sem #, 6 caracteres HEX
+                'unique:genres,color_hex',
+                'regex:/^[0-9A-Fa-f]{6}$/',
             ],
         ];
     }
@@ -50,6 +51,7 @@ class GenreStoreRequest extends FormRequest
 
             'color_hex.required' => 'A cor é obrigatória.',
             'color_hex.string' => 'A cor deve ser um texto.',
+            'color_hex.unique' => 'Já existe um gênero com esta cor.',
             'color_hex.regex' => 'A cor deve ser um código hexadecimal válido de 6 caracteres, ex: FF0000.',
         ];
     }

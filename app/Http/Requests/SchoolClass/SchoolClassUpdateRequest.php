@@ -4,8 +4,10 @@ namespace App\Http\Requests\SchoolClass;
 
 use App\Helpers\Validators;
 use App\Rules\ValidTermInterval;
+use App\Models\SchoolClass;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+use App\Helpers\Utils;
 
 class SchoolClassUpdateRequest extends FormRequest
 {
@@ -33,7 +35,7 @@ class SchoolClassUpdateRequest extends FormRequest
                     if (!Validators::validateCourseName($value)) {
                         $fail('O curso informado não foi reconhecido.');
                     }
-                }
+                },
             ],
             'term' => ['sometimes', Rule::in(['Annual', 'Semester'])],
             'start_date' => ['sometimes', 'date', 'date_format:Y-m-d', 'before_or_equal:today'],
@@ -42,7 +44,7 @@ class SchoolClassUpdateRequest extends FormRequest
                 'date',
                 'date_format:Y-m-d',
                 'after:start_date',
-                new ValidTermInterval($this->start_date, $this->term)
+                new ValidTermInterval($this->start_date, $this->term),
             ],
         ];
     }

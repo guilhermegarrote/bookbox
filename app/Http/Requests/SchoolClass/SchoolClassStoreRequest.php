@@ -6,6 +6,7 @@ use App\Helpers\Validators;
 use App\Rules\ValidTermInterval;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+use App\Models\SchoolClass;
 
 class SchoolClassStoreRequest extends FormRequest
 {
@@ -33,7 +34,7 @@ class SchoolClassStoreRequest extends FormRequest
                     if (!Validators::validateCourseName($value)) {
                         $fail('O curso informado não foi reconhecido.');
                     }
-                }
+                },
             ],
             'term' => ['required', Rule::in(['Annual', 'Semester'])],
             'start_date' => ['required', 'date', 'date_format:Y-m-d', 'before_or_equal:today'],
@@ -42,9 +43,20 @@ class SchoolClassStoreRequest extends FormRequest
                 'date',
                 'date_format:Y-m-d',
                 'after:start_date',
-                new ValidTermInterval($this->start_date, $this->term)
+                new ValidTermInterval($this->start_date, $this->term),
             ],
         ];
+    }
+
+    public function withValidator($validator)
+    {
+        $validator->after(function ($validator) {
+            $data = $this->only(['course', 'regime', 'start_date', 'end_date']);
+
+            if (SchoolClass::where($data)->exists()) {
+                $validator->errors()->add('course', 'Já existe uma turma cadastrada com esses dados.');
+            }
+        });
     }
 
     public function messages(): array

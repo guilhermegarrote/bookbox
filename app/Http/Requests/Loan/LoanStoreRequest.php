@@ -11,12 +11,20 @@ class LoanStoreRequest extends FormRequest
         return true;
     }
 
+    protected function prepareForValidation(): void
+    {
+        $this->merge([
+            'cpf' => preg_replace('/\D/', '', $this->input('cpf', '')),
+            'isbn' => preg_replace('/[^0-9X]/', '', $this->input('isbn', '')),
+        ]);
+    }
+
     public function rules(): array
     {
         return [
-            'cpf' => ['required', 'string'],             
-            'isbn' => ['required', 'string'],              
-            'copy_number' => ['required', 'string'],             
+            'cpf' => ['required', 'string'],
+            'isbn' => ['required', 'string'],
+            'copy_number' => ['required', 'int'],
         ];
     }
 
