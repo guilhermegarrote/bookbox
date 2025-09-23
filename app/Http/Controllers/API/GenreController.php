@@ -2,27 +2,21 @@
 
 namespace App\Http\Controllers\API;
 
-use Illuminate\Http\Request;
 use App\Helpers\Utils;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Genre\GenreStoreRequest;
 use App\Http\Requests\Genre\GenreUpdateRequest;
+use App\Models\Book;
 use App\Models\Genre;
-use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\DB;
 use Throwable;
 
 class Genrecontroller extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-      public function index(): JsonResponse
+    public function index(): JsonResponse
     {
         try {
-            // Paginação, ordenando por nome do gênero
             $genres = Genre::orderBy('name')->paginate(10);
 
             return $this->successResponse($genres->toArray());
@@ -31,97 +25,66 @@ class Genrecontroller extends Controller
             return $this->internalErrorResponse($e, 'Erro interno ao listar os gêneros.');
         }
     }
-    
-    /**
-     * Store a newly created resource in storage.
-     */
+
     public function store(GenreStoreRequest $request): JsonResponse
-{
-    DB::beginTransaction();
-
-    try {
-        $data = $request->only(['name', 'color_hex']);
-
-        $genre = Genre::create($data);
-
-        DB::commit();
-
-        return $this->createdResponse([
-            'message' => 'Gênero criado com sucesso!',
-            'data' => $genre,
-        ]);
-    } catch (Throwable $e) {
-        DB::rollBack();
-        $this->logError('Erro ao cadastrar gênero.', $e, ['data' => $request->all()]);
-        return $this->internalErrorResponse($e, 'Erro interno ao cadastrar gênero.');
+    {
+        try {
+            $data = $request->only(['name', 'color_hex']);
+            Genre::create($data);
+            return $this->createdResponse();
+        } catch (Throwable $e) {
+            $this->logError('Erro ao cadastrar gênero.', $e, ['data' => $request->all()]);
+            return $this->internalErrorResponse($e, 'Erro interno ao cadastrar gênero.');
+        }
     }
-}
 
+    /**
+     * Programar função show
+     */
 
     public function update(GenreUpdateRequest $request, string $id): JsonResponse
-{
-    $data = $request->validated();
+    {
+        $data = array_filter($request->validated(), fn($v) => $v !== null && $v !== '');
 
-    try {
-        // Converte o UUID para BINARY(16) caso o banco use esse formato
-        $binaryId = Utils::convertUuidToBinary($id);
-        $genre = Genre::findOrFail($binaryId);
+        try {
+            $binaryId = Utils::convertUuidToBinary($id);
+            $genre = Genre::findOrFail($binaryId);
 
-        // Remove o # do color_hex se enviado
-        if (isset($data['color_hex'])) {
-            $data['color_hex'] = strtoupper(preg_replace('/^#/', '', trim($data['color_hex'])));
+            $genre->update($data);
+
+            return $this->noContentResponse();
+        } catch (ModelNotFoundException) {
+            return $this->notFoundResponse('Gênero não encontrado.');
+        } catch (Throwable $e) {
+            $this->logError('Erro ao atualizar gênero.', $e, [
+                'genre_id' => $id,
+                'data' => $data,
+            ]);
+            return $this->internalErrorResponse($e, 'Erro interno ao atualizar gênero.');
         }
-
-        // Mescla os dados antigos com os novos enviados
-        $updatedData = array_merge(
-            [
-                'name' => $genre->name,
-                'color_hex' => $genre->color_hex,
-            ],
-            array_filter(
-                array_intersect_key($data, array_flip(['name', 'color_hex'])),
-                fn($v) => $v !== null && $v !== ''
-            )
-        );
-
-        $genre->update($updatedData);
-
-         return $this->createdResponse();
-
-    } catch (ModelNotFoundException $e) {
-        return response()->json([
-            'message' => 'Gênero não encontrado.',
-        ], 404);
-    } catch (Throwable $e) {
-        $this->logError('Erro ao atualizar gênero.', $e, [
-            'genre_id' => $id,
-            'data' => $data,
-        ]);
-        return response()->json([
-            'message' => 'Erro interno ao atualizar gênero.',
-        ], 500);
     }
-}
 
-
-
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(string $id): JsonResponse
     {
-        $genre = Genre::find($id);
+        try {
+            $binaryId = Utils::convertUuidToBinary($id);
+            $genre = Genre::findOrFail($binaryId);
 
-        if (!$genre) {
-            return response()->json([
-                'message' => 'Gênero não encontrado.',
-            ], 404);
+            $relatedBooks = Book::where('genre_id', $binaryId)
+                ->exists();
+
+            if ($relatedBooks) {
+                return $this->conflictResponse(['books' => 'Existem livros usando esse gênero.']);
+            }
+
+            $genre->delete();
+
+            return $this->noContentResponse();
+        } catch (ModelNotFoundException $e) {
+            return $this->notFoundResponse('Gênero não encontrado.');
+        } catch (Throwable $e) {
+            $this->logError('Erro ao excluir gênero.', $e, ['genre_id' => $id]);
+            return $this->internalErrorResponse($e, 'Erro interno ao excluir gênero.');
         }
-
-        $genre->delete();
-
-        return response()->json([
-            'message' => 'Gênero removido com sucesso!',
-        ]);
     }
 }

@@ -9,7 +9,9 @@ use App\Http\Requests\Book\BookStoreRequest;
 use App\Http\Requests\Book\BookUpdateRequest;
 use App\Services\CopyService;
 use App\Models\Book;
+use App\Models\Genre;
 use App\Models\View\Book as ViewBook;
+use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
@@ -21,58 +23,25 @@ class BookController extends Controller
     public function index(Request $request): JsonResponse
     {
         try {
-            $searchQuery = ViewBook::query();
+            $query = $this->buildBookQuery($request);
 
-            if ($request->filled('search')) {
-                $search = trim($request->search);
-                $numericSearch = preg_replace('/\D/', '', $search);
-
-                $searchIsbn = Validators::validateIsbn($numericSearch);
-
-                $searchQuery->when(
-                    $searchIsbn,
-                    fn($q) => $q->where('isbn', $numericSearch)
-                )->unless(
-                    $searchIsbn,
-                    fn($q) => $q->where('title', 'like', "%{$search}%")
-                        ->orWhere('author', 'like', "%{$search}%")
-                );
-            }
-
-            $filterData = (clone $searchQuery)
-                ->select('genre_name', 'publisher')
-                ->groupBy('genre_name', 'publisher')
-                ->orderBy('genre_name')
-                ->orderBy('publisher')
-                ->get();
-
-            $query = clone $searchQuery;
-
-            $query->when($request->filled('genre'), fn($q) => $q->where('genre_name', $request->genre));
-            $query->when($request->filled('publisher'), fn($q) => $q->where('publisher', $request->publisher));
-
-            $sortable = ['title', 'author', 'genre_name', 'publisher'];
-            $sort = in_array($request->input('sort'), $sortable) ? $request->input('sort') : 'title';
-            $direction = $request->input('direction') === 'desc' ? 'desc' : 'asc';
             $perPage = max(5, min((int) $request->input('perPage', 10), 250));
 
-            $books = $query
-                ->select([
-                    'id',
-                    'isbn',
-                    'title',
-                    'author',
-                    'genre_name',
-                    'genre_color_hex',
-                    'publisher',
-                    'available',
-                ])
-                ->orderBy($sort, $direction)
-                ->paginate($perPage)
-                ->appends($request->all());
+            $books = $query->select([
+                'id',
+                'isbn',
+                'title',
+                'author',
+                'genre_name',
+                'publisher',
+                'available_copies',
+                'total_copies'
+            ])->paginate($perPage)->appends($request->all());
 
             $html = view('pages.books.partials.table', compact('books'))->render();
             $paginationHtml = view('vendor.pagination.custom', ['paginator' => $books])->render();
+
+            $filterData = ViewBook::getFilterData($query);
 
             return response()->json([
                 'html' => $html,
@@ -85,48 +54,31 @@ class BookController extends Controller
         }
     }
 
-public function store(BookStoreRequest $request, CopyService $copyService): JsonResponse
-{
-    $data = $request->validated();
+    public function store(BookStoreRequest $request, CopyService $copyService): JsonResponse
+    {
+        $bookData = $request->only(['isbn', 'title', 'author', 'publisher']);
+        $numberOfCopies = (int) $request->input('numberOfCopies');
 
-    try {
-        $bookData = array_filter(
-            array_intersect_key($data, array_flip(['isbn', 'title', 'author', 'genre_id', 'publisher'])),
-            fn($v) => $v !== null && $v !== ''
-        );
+        $genre = Genre::where('name', $request->input('genre_name'))->first();
 
-        if (Book::where('isbn', $bookData['isbn'])->exists()) {
-            return $this->conflictResponse(['book' => 'Já existe um livro com este ISBN.']);
+        if (!$genre) {
+            return $this->validationErrorResponse(['genre_name' => 'Gênero não encontrado.']);
         }
 
-        $duplicateTitleAuthorPublisher = Book::where('title', $bookData['title'])
-            ->where('author', $bookData['author'])
-            ->where('publisher', $bookData['publisher'])
-            ->exists();
+        $bookData['genre_id'] = Utils::convertUuidToBinary($genre->id);
 
-        if ($duplicateTitleAuthorPublisher) {
-            return $this->conflictResponse(['book' => 'Já existe um livro com este título, autor e editora.']);
+        try {
+            DB::transaction(function () use ($bookData, $numberOfCopies, $copyService) {
+                $book = Book::create($bookData);
+                $copyService->storeCopies(Utils::convertUuidToBinary($book->id), $numberOfCopies);
+            });
+
+            return $this->createdResponse();
+        } catch (Throwable $e) {
+            $this->logError('Erro ao cadastrar livro.', $e, ['data' => $bookData]);
+            return $this->internalErrorResponse($e, 'Erro interno ao cadastrar livro.');
         }
-
-        $numberOfCopies = (int) $data['numberOfCopies'];
-
-        DB::beginTransaction();
-
-        $book = Book::create($bookData);
-
-        $binaryBookId = Utils::convertUuidToBinary($book->id);
-
-        $copyService->storeCopies($binaryBookId, $numberOfCopies);
-
-        DB::commit();
-
-        return $this->createdResponse();
-    } catch (Throwable $e) {
-        DB::rollBack();
-        $this->logError('Erro ao cadastrar livro.', $e, ['data' => $data]);
-        return $this->internalErrorResponse($e, 'Erro interno ao cadastrar livro.');
     }
-}
 
     public function show(string $id): JsonResponse
     {
@@ -135,7 +87,7 @@ public function store(BookStoreRequest $request, CopyService $copyService): Json
             $book = ViewBook::findOrFail($binaryId);
 
             return $this->successResponse($book->toArray());
-        } catch (ModelNotFoundException $e) {
+        } catch (ModelNotFoundException) {
             return $this->notFoundResponse('Livro não encontrado.');
         } catch (Throwable $e) {
             $this->logError('Erro ao buscar livro.', $e, ['book_id' => $id]);
@@ -146,6 +98,14 @@ public function store(BookStoreRequest $request, CopyService $copyService): Json
     public function update(BookUpdateRequest $request, string $id): JsonResponse
     {
         $data = $request->validated();
+
+        if (isset($data['genre_name'])) {
+            $genre = Genre::where('name', $data['genre_name'])->first();
+            if (!$genre) {
+                return $this->validationErrorResponse(['genre_name' => 'Gênero não encontrado.']);
+            }
+            $data['genre_id'] = Utils::convertUuidToBinary($genre->id);
+        }
 
         try {
             $binaryId = Utils::convertUuidToBinary($id);
@@ -165,14 +125,6 @@ public function store(BookStoreRequest $request, CopyService $copyService): Json
                 )
             );
 
-            $duplicateBookExists = Book::where('isbn', $updatedData['isbn'])
-                ->where('id', '!=', $binaryId)
-                ->exists();
-
-            if ($duplicateBookExists) {
-                return $this->conflictResponse(['book' => 'Já existe outro livro com este ISBN.']);
-            }
-
             $duplicateTitleAuthorPublisher = Book::where('title', $updatedData['title'])
                 ->where('author', $updatedData['author'])
                 ->where('publisher', $updatedData['publisher'])
@@ -186,13 +138,10 @@ public function store(BookStoreRequest $request, CopyService $copyService): Json
             $book->update($updatedData);
 
             return $this->noContentResponse();
-        } catch (ModelNotFoundException $e) {
+        } catch (ModelNotFoundException) {
             return $this->notFoundResponse('Livro não encontrado.');
         } catch (Throwable $e) {
-            $this->logError('Erro ao atualizar livro.', $e, [
-                'book_id' => $id,
-                'data' => $data,
-            ]);
+            $this->logError('Erro ao atualizar livro.', $e, ['book_id' => $id, 'data' => $data]);
             return $this->internalErrorResponse($e, 'Erro interno ao atualizar livro.');
         }
     }
@@ -217,11 +166,77 @@ public function store(BookStoreRequest $request, CopyService $copyService): Json
             $book->delete();
 
             return $this->noContentResponse();
-        } catch (ModelNotFoundException $e) {
+        } catch (ModelNotFoundException) {
             return $this->notFoundResponse('Livro não encontrado.');
         } catch (Throwable $e) {
             $this->logError('Erro ao excluir livro.', $e, ['book_id' => $id]);
             return $this->internalErrorResponse($e, 'Erro interno ao excluir livro.');
         }
+    }
+
+    /**
+     * Build book query with search, filters, and sorting.
+     *
+     * @param Request $request
+     * @return Builder
+     */
+    private function buildBookQuery(Request $request): Builder
+    {
+        $query = ViewBook::query();
+
+        if ($request->filled('search')) {
+            $query = $this->applyBookSearch($query, $request->search);
+        }
+
+        if ($request->filled('genre_name')) {
+            $query->where('genre_name', $request->genre_name);
+        }
+
+        if ($request->filled('publisher')) {
+            $query->where('publisher', $request->publisher);
+        }
+
+        return $this->applyBookSorting($query, $request);
+    }
+
+    /**
+     * Apply search filters for books by ISBN, title, or author.
+     *
+     * @param Builder $query
+     * @param string $search
+     * @return Builder
+     */
+    private function applyBookSearch($query, string $search)
+    {
+        $search = trim($search);
+        $numericSearch = preg_replace('/\D/', '', $search);
+        $isIsbn = Validators::validateIsbn($numericSearch);
+
+        if ($isIsbn) {
+            $query->where('isbn', $numericSearch);
+        } else {
+            $query->where(function ($q) use ($search) {
+                $q->where('title', 'like', "%{$search}%")
+                    ->orWhere('author', 'like', "%{$search}%");
+            });
+        }
+
+        return $query;
+    }
+
+    /**
+     * Apply sorting based on allowed columns.
+     *
+     * @param Builder $query
+     * @param Request $request
+     * @return Builder
+     */
+    private function applyBookSorting($query, Request $request)
+    {
+        $sortable = ['title', 'author', 'genre_name', 'publisher'];
+        $sort = in_array($request->input('sort'), $sortable) ? $request->input('sort') : 'title';
+        $direction = $request->input('direction') === 'desc' ? 'desc' : 'asc';
+
+        return $query->orderBy($sort, $direction);
     }
 }

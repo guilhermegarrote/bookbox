@@ -8,7 +8,6 @@ use App\Http\Requests\SchoolClass\SchoolClassStoreRequest;
 use App\Http\Requests\SchoolClass\SchoolClassUpdateRequest;
 use App\Models\SchoolClass;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Http\JsonResponse;
 use Throwable;
 
@@ -31,18 +30,7 @@ class SchoolClassController extends Controller
         $data = $request->validated();
 
         try {
-            $classData = array_filter(
-                array_intersect_key($data, array_flip(['course', 'regime', 'start_date', 'end_date'])),
-                fn($v) => $v !== null && $v !== ''
-            );
-
-            $existingClass = SchoolClass::where($classData)->exists();
-
-            if ($existingClass) {
-                return $this->conflictResponse(['school_class' => 'Já existe uma turma cadastrada com esses dados.']);
-            }
-
-            SchoolClass::create($classData);
+            SchoolClass::create($data);
 
             return $this->createdResponse();
         } catch (Throwable $e) {
@@ -77,12 +65,12 @@ class SchoolClassController extends Controller
             $updatedData = array_merge(
                 [
                     'course' => $schoolClass->course,
-                    'regime' => $schoolClass->regime,
+                    'term' => $schoolClass->term,
                     'start_date' => $schoolClass->start_date,
                     'end_date' => $schoolClass->end_date,
                 ],
                 array_filter(
-                    array_intersect_key($data, array_flip(['course', 'regime', 'start_date', 'end_date'])),
+                    array_intersect_key($data, array_flip(['course', 'term', 'start_date', 'end_date'])),
                     fn($v) => $v !== null && $v !== ''
                 )
             );
@@ -115,11 +103,8 @@ class SchoolClassController extends Controller
             $binaryId = Utils::convertUuidToBinary($id);
             $schoolClass = SchoolClass::findOrFail($binaryId);
 
-            $hasActiveLoans = DB::table('loans')
-                ->join('students', 'loans.student_id', '=', 'students.id')
-                ->join('student_school_class', 'student_school_class.student_id', '=', 'students.id')
-                ->where('student_school_class.school_class_id', $binaryId)
-                ->where('loans.active', true)
+            $hasActiveLoans = $schoolClass->students()
+                ->whereHas('loans', fn($q) => $q->where('returned_date', null))
                 ->exists();
 
             if ($hasActiveLoans) {

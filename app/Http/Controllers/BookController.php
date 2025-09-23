@@ -2,27 +2,49 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\Utils;
 use App\Http\Controllers\Controller;
 use App\Models\View\Book;
 
 class BookController extends Controller
 {
+    public function filter()
+    {
+        return view('pages.books.partials.filters');
+    }
+
     public function index()
     {
-           $books = Book::select([
+        $filterData = Book::getFilterData();
+
+        $books = Book::select([
             'id',
             'isbn',
             'title',
             'author',
-            'genre_id',
             'genre_name',
-            'genre_color_hex',
             'publisher',
-            'available',
+            'available_copies',
+            'total_copies'
         ])->orderBy('title')->paginate(10);
 
-        //$filterUrl = route('students.filter.view');
+        $filterUrl = route('books.filter.view');
 
-        return view('pages.books.index', compact('books'));
+        return view('pages.books.index', compact('books', 'filterData', 'filterUrl'));
+    }
+
+    public function createModal()
+    {
+        $filterData = Book::getFilterData();
+
+        return view('pages.books.partials.create-modal', compact('filterData'))->render();
+    }
+
+    public function menuModal(String $id)
+    {
+        $book = Book::where('id', Utils::convertUuidToBinary($id))
+            ->firstOrFail();
+
+        return view('pages.books.partials.menu-modal', compact('book'))->render();
     }
 }

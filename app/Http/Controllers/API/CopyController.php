@@ -7,19 +7,17 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Copy\CopyStoreRequest;
 use App\Models\Book;
 use App\Models\Copy;
+use App\Services\CopyService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 use Throwable;
 
 class CopyController extends Controller
 {
-    /**
-     * Display a listing of copies.
-     */
     public function index(): JsonResponse
     {
         try {
-            $copies = Copy::with(['book']) // traz informações do livro associado
+            $copies = Copy::with(['book'])
                 ->orderBy('created_at', 'desc')
                 ->paginate(10);
 
@@ -30,33 +28,20 @@ class CopyController extends Controller
         }
     }
 
-    /**
-     * Store new copies linked to a book via ISBN.
-     */
-    public function store(CopyStoreRequest $request): JsonResponse
+    public function store(CopyStoreRequest $request, CopyService $copyService): JsonResponse
     {
         DB::beginTransaction();
 
         try {
-            // Find book by ISBN
             $book = Book::where('isbn', $request->isbn)->first();
 
             if (!$book) {
-                return response()->json([
-                    'message' => 'Livro não encontrado para o ISBN informado.'
-                ], 404);
+                return $this->notFoundResponse('Livro não encontrado para o ISBN informado.');
             }
 
-            $copies = [];
+            $binaryBookId = Utils::convertUuidToBinary($book->id);
 
-            // Create the requested number of copies
-            for ($i = 0; $i < $request->numberOfCopies; $i++) {
-                $copies[] = Copy::create([
-                    'book_id'   => Utils::convertUuidToBinary($book->id),
-                    'number'    => $i + 1,
-                    'available' => $request->available ?? true,
-                ]);
-            }
+            $copyService->storeCopies($binaryBookId, $numberOfCopies);
 
             DB::commit();
 
@@ -68,4 +53,8 @@ class CopyController extends Controller
             return $this->internalErrorResponse($e, 'Erro interno ao cadastrar exemplar.');
         }
     }
+
+    /*
+        está faltando as funções show() e destroy()
+    */
 }

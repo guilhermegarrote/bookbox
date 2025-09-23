@@ -2,23 +2,20 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\Utils;
 use App\Http\Controllers\Controller;
 use App\Models\View\StudentSchoolClass;
 
 class StudentController extends Controller
 {
-    private function getFilterData()
+    public function filter()
     {
-        return StudentSchoolClass::groupBy('course', 'period', 'term')
-            ->orderBy('course')
-            ->orderBy('period')
-            ->orderBy('term')
-            ->get(['course', 'period', 'term']);
+        return view('pages.students.partials.filters');
     }
 
     public function index()
     {
-        $filterData = $this->getFilterData();
+        $filterData = StudentSchoolClass::getFilterData();
 
         $students = StudentSchoolClass::select([
             'student_id',
@@ -34,26 +31,18 @@ class StudentController extends Controller
         return view('pages.students.index', compact('students', 'filterData', 'filterUrl'));
     }
 
-    public function filter()
-    {
-        $filterData = $this->getFilterData();
-
-        $courses = $filterData->pluck('course')->unique()->values();
-        $periods = $filterData->pluck('period')->unique()->values();
-        $terms = $filterData->pluck('term')->unique()->values();
-
-        return view('pages.students.partials.filters', compact('courses', 'periods', 'terms'));
-    }
-
     public function createModal()
     {
-        $filterData = $this->getFilterData();
+        $filterData = StudentSchoolClass::getFilterData();
 
         return view('pages.students.partials.create-modal', compact('filterData'))->render();
     }
 
-    public function menuModal(StudentSchoolClass $student)
+    public function menuModal(String $id)
     {
+        $student = StudentSchoolClass::where('student_id', Utils::convertUuidToBinary($id))
+            ->firstOrFail();
+
         return view('pages.students.partials.menu-modal', compact('student'))->render();
     }
 }

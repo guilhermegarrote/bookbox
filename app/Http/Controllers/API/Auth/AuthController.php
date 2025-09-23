@@ -17,6 +17,10 @@ class AuthController extends Controller
 {
     use JsonResponseTrait;
 
+    private const DUMMY_HASH = '$2y$12$QGYzxPXvopQXXkx29TxsROfguuQLNlZRO1NBierMiIxbpZoWkPLTK';
+    private const MAX_LOGIN_ATTEMPTS = 5;
+    private const DECAY_SECONDS = 60;
+
     /**
      * Registers the first user in the system.
      * Registration is only allowed if no users currently exist.
@@ -26,7 +30,7 @@ class AuthController extends Controller
      */
     public function register(UserStoreRequest $request): JsonResponse
     {
-        if (User::limit(1)->exists()) {
+        if (User::exists()) {
             return $this->forbiddenResponse('Cadastro desabilitado. Já existe um usuário no sistema.');
         }
 
@@ -35,14 +39,14 @@ class AuthController extends Controller
         try {
             $userData = array_filter(
                 array_intersect_key($validatedData, array_flip(['name', 'email', 'password'])),
-                fn($value) => !is_null($value) && $value !== ''
+                fn($v) => $v !== null && $v !== ''
             );
 
             User::create($userData);
 
             return $this->createdResponse(['redirect' => route('login')]);
         } catch (Throwable $e) {
-            $this->logError('Erro ao cadastrar o primeiro usuário.', $e, ['dados' => $validatedData]);
+            $this->logError('Erro ao cadastrar o primeiro usuário.', $e, ['data' => $validatedData]);
             return $this->internalErrorResponse($e, 'Erro interno ao cadastrar o primeiro usuário.');
         }
     }
@@ -59,46 +63,23 @@ class AuthController extends Controller
         $validatedData = $request->validated();
         $email = strtolower(trim($validatedData['email']));
         $password = trim($validatedData['password']);
-        $emailHash = hash('sha256', $email, true);
-
-        $dummyHash = '$2y$10$usesomesillystringforsalt$';
         $key = $email . $request->ip();
-        $maxAttempts = 5;
-        $decaySeconds = 60;
 
-        if (RateLimiter::tooManyAttempts($key, $maxAttempts)) {
+        if ($this->tooManyAttempts($key)) {
             return $this->tooManyRequestsResponse("Muitas tentativas. Tente novamente em alguns segundos.");
         }
 
-        $user = User::where('email_hash', $emailHash)->first();
+        $user = User::where('email_hash', hash('sha256', $email, true))->first();
 
-        if (!$user) {
-            Hash::check($password, $dummyHash);
-            RateLimiter::hit($key, $decaySeconds);
-
+        if (!$this->validateCredentials($user, $password)) {
+            $this->incrementAttempts($key);
             return $this->unauthorizedResponse('Credenciais inválidas.');
         }
 
-        if (!Hash::check($password, $user->password)) {
-            RateLimiter::hit($key, $decaySeconds);
-            return $this->unauthorizedResponse('Credenciais inválidas.');
-        }
-
-        RateLimiter::clear($key);
+        $this->clearAttempts($key);
 
         $token = JWTAuth::fromUser($user);
-
-        $cookie = cookie(
-            env('JWT_COOKIE_NAME', 'jwt_token'),
-            $token,
-            env('JWT_COOKIE_TTL', JWTAuth::factory()->getTTL()),
-            env('JWT_COOKIE_PATH', '/'),
-            env('JWT_COOKIE_DOMAIN', null),
-            config('app.env') !== 'local',
-            env('JWT_COOKIE_HTTPONLY', true),
-            env('JWT_COOKIE_RAW', false),
-            env('JWT_COOKIE_SAMESITE', 'Strict')
-        );
+        $cookie = $this->makeJwtCookie($token);
 
         return $this->successResponse([
             'token' => $token,
@@ -141,10 +122,7 @@ class AuthController extends Controller
     {
         try {
             JWTAuth::invalidate(JWTAuth::getToken());
-
-            $cookie = cookie()->forget(env('JWT_COOKIE_NAME', 'jwt_token'));
-
-            return $this->successResponse()->cookie($cookie);
+            return $this->successResponse()->cookie(cookie()->forget(env('JWT_COOKIE_NAME', 'jwt_token')));
         } catch (Throwable $e) {
             return $this->internalErrorResponse($e, 'Erro ao realizar logout.');
         }
@@ -178,5 +156,78 @@ class AuthController extends Controller
             $this->logError('Erro ao atualizar token.', $e, ['token' => $token]);
             return $this->unauthorizedResponse('Não foi possível atualizar o token.');
         }
+    }
+
+    /**
+     * Creates a secure cookie containing the JWT token.
+     *
+     * @param string $token The JWT token generated for the authenticated user.
+     * @return \Symfony\Component\HttpFoundation\Cookie Secure cookie configured with HttpOnly and SameSite Strict.
+     */
+    private function makeJwtCookie(string $token)
+    {
+        return cookie(
+            env('JWT_COOKIE_NAME', 'jwt_token'),
+            $token,
+            env('JWT_COOKIE_TTL', JWTAuth::factory()->getTTL()),
+            env('JWT_COOKIE_PATH', '/'),
+            env('JWT_COOKIE_DOMAIN', null),
+            config('app.env') !== 'local', // Secure only in production
+            true,  // HTTPOnly
+            false,
+            'Strict' // SameSite
+        );
+    }
+
+    /**
+     * Checks if the user has exceeded the maximum number of login attempts.
+     *
+     * @param string $key Unique key to track attempts (usually email + IP).
+     * @return bool True if the limit is exceeded, false otherwise.
+     */
+    private function tooManyAttempts(string $key): bool
+    {
+        return RateLimiter::tooManyAttempts($key, self::MAX_LOGIN_ATTEMPTS);
+    }
+
+    /**
+     * Increments the login attempt counter to prevent brute-force attacks.
+     *
+     * @param string $key Unique key to track attempts (usually email + IP).
+     * @return void
+     */
+    private function incrementAttempts(string $key): void
+    {
+        RateLimiter::hit($key, self::DECAY_SECONDS);
+    }
+
+    /**
+     * Clears the login attempt counter after a successful authentication.
+     *
+     * @param string $key Unique key to track attempts (usually email + IP).
+     * @return void
+     */
+    private function clearAttempts(string $key): void
+    {
+        RateLimiter::clear($key);
+    }
+
+    /**
+     * Validates the user's credentials.
+     *
+     * Uses a "dummy" hash when the user does not exist to prevent timing attacks.
+     *
+     * @param User|null $user The user instance or null if not found.
+     * @param string $password The password provided by the user.
+     * @return bool True if the password is correct, false otherwise.
+     */
+    private function validateCredentials(?User $user, string $password): bool
+    {
+        if (!$user) {
+            Hash::check($password, self::DUMMY_HASH);
+            return false;
+        }
+
+        return Hash::check($password, $user->password);
     }
 }

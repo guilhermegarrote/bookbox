@@ -13,6 +13,7 @@ use App\Models\StudentSchoolClass;
 use App\Models\View\SchoolClass;
 use App\Models\View\Student as ViewStudent;
 use App\Models\View\StudentSchoolClass as ViewStudentSchoolClass;
+use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\JsonResponse;
@@ -24,54 +25,31 @@ class StudentController extends Controller
     public function index(Request $request): JsonResponse
     {
         try {
-            $query = ViewStudentSchoolClass::query();
+            $query = $this->buildStudentQuery($request);
 
-            $query->when($request->filled('course'), fn($q) => $q->where('course', $request->course));
-            $query->when($request->filled('period'), fn($q) => $q->where('period', $request->period));
-            $query->when($request->filled('term'), fn($q) => $q->where('term', $request->term));
-            $query->when($request->filled('can_borrow'), fn($q) => $q->where('can_borrow', $request->can_borrow));
-
-            if ($request->filled('search')) {
-                $search = trim($request->search);
-                $numericSearch = preg_replace('/\D/', '', $search);
-
-                $searchIsEmail = Validators::validateEmail($search);
-                $searchIsCpf = Validators::validateCpf($numericSearch);
-                $searchIsPhone = Validators::validatePhoneNumber($numericSearch);
-
-                $query->when($searchIsEmail, fn($q) => $q->where('email_hash', hash('sha256', $search, true)))
-                    ->when($searchIsCpf, fn($q) => $q->where('cpf_hash', hash('sha256', $numericSearch, true)))
-                    ->when($searchIsPhone, fn($q) => $q->where('phone_hash', hash('sha256', $numericSearch, true)))
-                    ->unless(
-                        $searchIsEmail || $searchIsCpf || $searchIsPhone,
-                        fn($q) => $q->where('name', 'like', "%{$search}%")
-                    );
-            }
-
-            $sortable = ['name', 'formatted_class_name'];
-            $sort = in_array($request->input('sort'), $sortable) ? $request->input('sort') : 'name';
-            $direction = $request->input('direction') === 'desc' ? 'desc' : 'asc';
             $perPage = max(5, min((int) $request->input('perPage', 10), 250));
 
-            $students = $query
-                ->select([
-                    'student_id',
-                    'name',
-                    'email',
-                    'phone',
-                    'can_borrow',
-                    'formatted_class_name'
-                ])
-                ->orderBy($sort, $direction)
-                ->paginate($perPage)
-                ->appends($request->all());
+            $students = $query->select([
+                'student_id',
+                'name',
+                'email',
+                'phone',
+                'can_borrow',
+                'formatted_class_name',
+                'course',
+                'period',
+                'term'
+            ])->paginate($perPage)->appends($request->all());
 
             $html = view('pages.students.partials.table', compact('students'))->render();
             $paginationHtml = view('vendor.pagination.custom', ['paginator' => $students])->render();
 
+            $filterData = ViewStudentSchoolClass::getFilterData($query);
+
             return response()->json([
                 'html' => $html,
                 'paginationHtml' => $paginationHtml,
+                'filterData' => $filterData,
             ]);
         } catch (Throwable $e) {
             $this->logError('Erro ao listar alunos.', $e);
@@ -91,21 +69,19 @@ class StudentController extends Controller
                 return $this->notFoundResponse('Turma não encontrada.');
             }
 
-            DB::beginTransaction();
+            DB::transaction(function () use ($data, $class, &$student) {
+                $studentData = array_filter(
+                    array_intersect_key($data, array_flip(['name', 'cpf', 'email', 'phone'])),
+                    fn($v) => $v !== null && $v !== ''
+                );
 
-            $studentData = array_filter(
-                array_intersect_key($data, array_flip(['name', 'cpf', 'email', 'phone'])),
-                fn($v) => $v !== null && $v !== ''
-            );
+                $student = Student::create($studentData);
 
-            $student = Student::create($studentData);
-
-            StudentSchoolClass::create([
-                'student_id' => Utils::convertUuidToBinary($student->id),
-                'school_class_id' => Utils::convertUuidToBinary($class->id),
-            ]);
-
-            DB::commit();
+                StudentSchoolClass::create([
+                    'student_id' => Utils::convertUuidToBinary($student->id),
+                    'school_class_id' => Utils::convertUuidToBinary($class->id),
+                ]);
+            });
 
             return $this->createdResponse();
         } catch (Throwable $e) {
@@ -138,26 +114,20 @@ class StudentController extends Controller
             $binaryId = Utils::convertUuidToBinary($id);
             $student = Student::findOrFail($binaryId);
 
-            $updatedData = array_merge(
-                [
-                    'name' => $student->name,
-                    'cpf' => $student->cpf,
-                    'email' => $student->email,
-                    'phone' => $student->phone,
-                ],
-                array_filter(
-                    array_intersect_key($data, array_flip(['name', 'cpf', 'email', 'phone'])),
-                    fn($v) => $v !== null && $v !== ''
-                )
+            $studentData = array_filter(
+                array_intersect_key($data, array_flip(['name', 'cpf', 'email', 'phone'])),
+                fn($v) => $v !== null && $v !== ''
             );
 
-            $student->update($updatedData);
+            $student->update($studentData);
 
             $classData = collect($data)->only(['course', 'term', 'period'])->toArray();
 
             if (count(array_filter($classData)) > 0) {
                 if (in_array(null, $classData, true)) {
-                    return $this->badRequestResponse(['school_class' => 'Para alterar a turma, informe curso, regime e período.']);
+                    return $this->badRequestResponse([
+                        'school_class' => 'Para alterar a turma, informe curso, regime e período.'
+                    ]);
                 }
 
                 $class = SchoolClass::where($classData)->first();
@@ -192,7 +162,7 @@ class StudentController extends Controller
             $student = Student::findOrFail($binaryId);
 
             $activeLoans = Loan::where('student_id', $binaryId)
-                ->where('active', true)
+                ->where('returned_date', null)
                 ->exists();
 
             if ($activeLoans) {
@@ -208,5 +178,80 @@ class StudentController extends Controller
             $this->logError('Erro ao excluir aluno.', $e, ['student_id' => $id]);
             return $this->internalErrorResponse($e, 'Erro interno ao excluir aluno.');
         }
+    }
+
+    /**
+     * Build student query with search, filters, and sorting.
+     *
+     * @param Request $request
+     * @return Builder
+     */
+    private function buildStudentQuery(Request $request): Builder
+    {
+        $query = ViewStudentSchoolClass::query();
+
+        if ($request->filled('search')) {
+            $query = $this->applyStudentSearch($query, $request->search);
+        }
+
+        if ($request->filled('course')) {
+            $query->where('course', $request->course);
+        }
+        if ($request->filled('period')) {
+            $query->where('period', $request->period);
+        }
+        if ($request->filled('term')) {
+            $query->where('term', $request->term);
+        }
+        if ($request->filled('can_borrow')) {
+            $query->where('can_borrow', $request->can_borrow);
+        }
+
+        return $this->applyStudentSorting($query, $request);
+    }
+
+    /**
+     * Apply search filters for students by email, CPF, phone, or name.
+     *
+     * @param Builder $query
+     * @param string $search
+     * @return Builder
+     */
+    private function applyStudentSearch($query, string $search): Builder
+    {
+        $search = trim($search);
+        $numericSearch = preg_replace('/\D/', '', $search);
+
+        $isEmail = Validators::validateEmail($search);
+        $isCpf = Validators::validateCpf($numericSearch);
+        $isPhone = Validators::validatePhoneNumber($numericSearch);
+
+        if ($isEmail) {
+            $query->where('email_hash', hash('sha256', $search, true));
+        } elseif ($isCpf) {
+            $query->where('cpf_hash', hash('sha256', $numericSearch, true));
+        } elseif ($isPhone) {
+            $query->where('phone_hash', hash('sha256', $numericSearch, true));
+        } else {
+            $query->where('name', 'like', "%{$search}%");
+        }
+
+        return $query;
+    }
+
+    /**
+     * Apply sorting based on allowed columns.
+     *
+     * @param Builder $query
+     * @param Request $request
+     * @return Builder
+     */
+    private function applyStudentSorting($query, Request $request): Builder
+    {
+        $sortable = ['name', 'formatted_class_name'];
+        $sort = in_array($request->input('sort'), $sortable) ? $request->input('sort') : 'name';
+        $direction = $request->input('direction') === 'desc' ? 'desc' : 'asc';
+
+        return $query->orderBy($sort, $direction);
     }
 }

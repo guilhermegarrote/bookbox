@@ -12,9 +12,6 @@ use Throwable;
 
 class SettingController extends Controller
 {
-    /**
-     * Display a listing of settings.
-     */
     public function index(): JsonResponse
     {
         try {
@@ -79,7 +76,6 @@ class SettingController extends Controller
                         return response()->json(['error' => "O valor máximo para {$key} é {$rule['max']}."], 400);
                     }
                     break;
-
                 case 'string':
                     if (!is_string($value)) {
                         return response()->json(['error' => "O valor para {$key} deve ser uma string."], 400);
@@ -88,7 +84,6 @@ class SettingController extends Controller
                         return response()->json(['error' => "O valor máximo para {$key} é {$rule['max']} caracteres."], 400);
                     }
                     break;
-
                 default:
                     return response()->json(['error' => 'Tipo de configuração inválido.'], 400);
             }
