@@ -9,6 +9,7 @@ use App\Models\Book;
 use App\Models\Copy;
 use App\Services\CopyService;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\DB;
 use Throwable;
 
@@ -41,6 +42,9 @@ class CopyController extends Controller
 
             $binaryBookId = Utils::convertUuidToBinary($book->id);
 
+            // Aqui precisa garantir que $numberOfCopies exista (talvez do request)
+            $numberOfCopies = $request->input('number_of_copies', 1);
+
             $copyService->storeCopies($binaryBookId, $numberOfCopies);
 
             DB::commit();
@@ -54,7 +58,40 @@ class CopyController extends Controller
         }
     }
 
-    /*
-        está faltando as funções show() e destroy()
-    */
+    public function show(string $id): JsonResponse
+    {
+        try {
+            $binaryId = Utils::convertUuidToBinary($id);
+            $copy = Copy::with(['book'])->findOrFail($binaryId);
+
+            return $this->successResponse($copy->toArray());
+        } catch (ModelNotFoundException $e) {
+            return $this->notFoundResponse('Exemplar não encontrado.');
+        } catch (Throwable $e) {
+            $this->logError('Erro ao buscar exemplar.', $e, ['copy_id' => $id]);
+            return $this->internalErrorResponse($e, 'Erro interno ao buscar exemplar.');
+        }
+    }
+
+    public function destroy(string $id): JsonResponse
+    {
+        try {
+            $binaryId = Utils::convertUuidToBinary($id);
+            $copy = Copy::findOrFail($binaryId);
+
+            // Caso precise validar se o exemplar está emprestado antes de excluir:
+            // if ($copy->loans()->whereNull('returned_date')->exists()) {
+            //     return $this->conflictResponse(['loan' => 'Exemplar está emprestado e não pode ser excluído.']);
+            // }
+
+            $copy->delete();
+
+            return $this->noContentResponse();
+        } catch (ModelNotFoundException $e) {
+            return $this->notFoundResponse('Exemplar não encontrado.');
+        } catch (Throwable $e) {
+            $this->logError('Erro ao excluir exemplar.', $e, ['copy_id' => $id]);
+            return $this->internalErrorResponse($e, 'Erro interno ao excluir exemplar.');
+        }
+    }
 }
