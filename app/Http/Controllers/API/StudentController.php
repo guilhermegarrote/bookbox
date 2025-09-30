@@ -121,25 +121,25 @@ class StudentController extends Controller
 
             $student->update($studentData);
 
-            $classData = collect($data)->only(['course', 'term', 'period'])->toArray();
+            $schoolClassData = collect($data)->only(['course', 'term', 'period'])->toArray();
 
-            if (count(array_filter($classData)) > 0) {
-                if (in_array(null, $classData, true)) {
+            if (count(array_filter($schoolClassData)) > 0) {
+                if (in_array(null, $schoolClassData, true)) {
                     return $this->badRequestResponse([
                         'school_class' => 'Para alterar a turma, informe curso, regime e período.'
                     ]);
                 }
 
-                $class = SchoolClass::where($classData)->first();
+                $schoolClass = SchoolClass::where($schoolClassData)->first();
 
-                if (!$class) {
+                if (!$schoolClass) {
                     return $this->notFoundResponse('Turma não encontrada.');
                 }
 
-                $studentSchoolClass = StudentSchoolClass::where('student_id', $student->id)->first();
+                $studentSchoolClass = StudentSchoolClass::where('student_id', Utils::convertUuidToBinary($student->id))->first();
 
-                if ($studentSchoolClass && $studentSchoolClass->class_id !== $class->id) {
-                    $studentSchoolClass->update(['class_id' => $class->id]);
+                if ($studentSchoolClass && $studentSchoolClass->school_class_id !== $schoolClass->id) {
+                    $studentSchoolClass->update(['school_class_id' => Utils::convertUuidToBinary($schoolClass->id)]);
                 }
             }
 
