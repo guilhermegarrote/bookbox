@@ -8,6 +8,7 @@ class CreateSchoolClassesView extends Migration
     public function up()
     {
         DB::statement('DROP VIEW IF EXISTS vw_school_classes');
+
         DB::statement("
             CREATE OR REPLACE VIEW vw_school_classes AS
             SELECT
@@ -18,11 +19,8 @@ class CreateSchoolClassesView extends Migration
                 sc.end_date,
                 CASE
                     WHEN CURDATE() < sc.start_date THEN 0
-                    WHEN CURDATE() > sc.end_date THEN NULL
-                    WHEN sc.term = 'Annual'
-                        THEN TIMESTAMPDIFF(YEAR, sc.start_date, CURDATE()) + 1
-                    WHEN sc.term = 'Semester'
-                        THEN TIMESTAMPDIFF(MONTH, sc.start_date, CURDATE()) DIV 6 + 1
+                    WHEN LOWER(sc.term) = 'annual' THEN TIMESTAMPDIFF(YEAR, sc.start_date, LEAST(CURDATE(), sc.end_date)) + 1
+                    WHEN LOWER(sc.term) = 'semester' THEN TIMESTAMPDIFF(MONTH, sc.start_date, LEAST(CURDATE(), sc.end_date)) DIV 6 + 1
                     ELSE NULL
                 END AS period
             FROM school_classes sc
@@ -34,4 +32,3 @@ class CreateSchoolClassesView extends Migration
         DB::statement("DROP VIEW IF EXISTS vw_school_classes");
     }
 }
-
