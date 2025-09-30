@@ -38,9 +38,20 @@ class Genrecontroller extends Controller
         }
     }
 
-    /**
-     * Programar função show
-     */
+    public function show(string $id): JsonResponse
+    {
+        try {
+            $binaryId = Utils::convertUuidToBinary($id);
+            $genre = Genre::with('books')->findOrFail($binaryId);
+
+            return $this->successResponse($genre->toArray());
+        } catch (ModelNotFoundException $e) {
+            return $this->notFoundResponse('Gênero não encontrado.');
+        } catch (Throwable $e) {
+            $this->logError('Erro ao buscar gênero.', $e, ['genre_id' => $id]);
+            return $this->internalErrorResponse($e, 'Erro interno ao buscar gênero.');
+        }
+    }
 
     public function update(GenreUpdateRequest $request, string $id): JsonResponse
     {
@@ -70,8 +81,7 @@ class Genrecontroller extends Controller
             $binaryId = Utils::convertUuidToBinary($id);
             $genre = Genre::findOrFail($binaryId);
 
-            $relatedBooks = Book::where('genre_id', $binaryId)
-                ->exists();
+            $relatedBooks = Book::where('genre_id', $binaryId)->exists();
 
             if ($relatedBooks) {
                 return $this->conflictResponse(['books' => 'Existem livros usando esse gênero.']);
