@@ -139,17 +139,7 @@ class AuthController extends Controller
         try {
             $token = JWTAuth::refresh(JWTAuth::getToken());
 
-            $cookie = cookie(
-                env('JWT_COOKIE_NAME', 'jwt_token'),
-                $token,
-                env('JWT_COOKIE_TTL', JWTAuth::factory()->getTTL()),
-                env('JWT_COOKIE_PATH', '/'),
-                env('JWT_COOKIE_DOMAIN', null),
-                config('app.env') !== 'local',
-                env('JWT_COOKIE_HTTPONLY', true),
-                env('JWT_COOKIE_RAW', false),
-                env('JWT_COOKIE_SAMESITE', 'Strict')
-            );
+            $cookie = $this->makeJwtCookie($token);
 
             return $this->successResponse(['token' => $token])->cookie($cookie);
         } catch (Throwable $e) {
