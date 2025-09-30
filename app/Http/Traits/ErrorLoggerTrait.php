@@ -16,7 +16,15 @@ trait ErrorLoggerTrait
      * @param string|null $channel Optional log channel (e.g. 'classes')
      * @return void
      */
-    protected function logError(string $message, Throwable $exception, array $extraContext = [], ?string $channel = null): void {
+    protected function logError(string $message, Throwable $exception, array $extraContext = [], ?string $channel = null): void
+    {
+        $sensitiveFields = ['password', 'password_confirmation', 'token'];
+        foreach ($sensitiveFields as $field) {
+            if (isset($extraContext[$field])) {
+                $extraContext[$field] = '*****';
+            }
+        }
+
         $extraContext = $this->encodeStringsUtf8($extraContext);
 
         $logData = array_merge($extraContext, [
