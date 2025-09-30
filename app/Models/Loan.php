@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Ramsey\Uuid\Uuid;
 
 class Loan extends BaseModel
 {
@@ -15,8 +16,17 @@ class Loan extends BaseModel
         'start_date',
         'due_date',
         'returned_date',
-        'active',
     ];
+
+    public function getStudentIdAttribute($value)
+    {
+        return $value ? Uuid::fromBytes($value)->toString() : null;
+    }
+
+    public function getCopyIdAttribute($value)
+    {
+        return $value ? Uuid::fromBytes($value)->toString() : null;
+    }
 
     public function student(): BelongsTo
     {

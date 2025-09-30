@@ -4,6 +4,7 @@ namespace App\Models\View;
 
 use App\Helpers\Utils;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Facades\Log;
 use Ramsey\Uuid\Uuid;
 
 class StudentSchoolClass extends BaseModel
@@ -87,5 +88,23 @@ class StudentSchoolClass extends BaseModel
     public function schoolClass(): BelongsTo
     {
         return $this->belongsTo(SchoolClass::class);
+    }
+
+    /**
+     * Returns data for filters (course, period, term, can_borrow)
+     *
+     * @param \Illuminate\Database\Eloquent\Builder|null $query
+     * @return \Illuminate\Support\Collection
+     */
+    public static function getFilterData($query = null)
+    {
+        $query = $query ?? static::query();
+
+        return $query->select('course', 'period', 'term', 'can_borrow')
+            ->groupBy('course', 'period', 'term', 'can_borrow')
+            ->orderBy('course')
+            ->orderBy('period')
+            ->orderBy('term')
+            ->get();
     }
 }

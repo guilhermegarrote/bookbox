@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Ramsey\Uuid\Uuid;
 
 class Copy extends BaseModel
 {
@@ -12,9 +13,13 @@ class Copy extends BaseModel
 
     protected $fillable = [
         'book_id',
-        'number',
-        'available',
+        'number'
     ];
+
+    public function getBookIdAttribute($value)
+    {
+        return $value ? Uuid::fromBytes($value)->toString() : null;
+    }
 
     public function book(): BelongsTo
     {
