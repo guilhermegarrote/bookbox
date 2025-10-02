@@ -1,19 +1,21 @@
 import '../../css/components/table.css';
 
 export default class TableManager {
-    constructor({ sendRequest, tableContainerId, paginationWrapperId, errorMessage }) {
+    constructor({ sendRequest, tableContainerId, paginationWrapperId, errorMessage = 'Erro ao carregar dados.' }) {
         if (!sendRequest) throw new Error("sendRequest function is required");
 
         this.sendRequest = sendRequest;
         this.tableContainer = document.getElementById(tableContainerId);
+        if (!this.tableContainer) throw new Error(`Elemento com id ${tableContainerId} não encontrado`);
+
         this.paginationWrapper = document.getElementById(paginationWrapperId);
-        this.errorMessage = errorMessage || 'Erro ao carregar dados.';
+        this.errorMessage = errorMessage;
 
         this.currentParams = {};
         this.isLoading = false;
 
-        this.bindGlobalEvents();
         this.initPagination();
+        this.bindGlobalEvents();
     }
 
     async updateTable(params = {}) {
@@ -21,23 +23,19 @@ export default class TableManager {
 
         this.isLoading = true;
 
-        if (params.hasOwnProperty('search')) {
-            this.currentParams.page = 1;
-        }
+        if ('search' in params) this.currentParams.page = 1;
 
-        this.currentParams = { ...params };
+        this.currentParams = { ...this.currentParams, ...params };
 
         try {
             const data = await this.sendRequest(this.currentParams);
             this.handleResponse(data);
-
-            if (window.filterUIInstance && data.filterData) {
-                window.filterUIInstance.updateData(data.filterData);
+            if (this.filterUIInstance && data.filterData) {
+                this.filterUIInstance.updateData(data.filterData);
             }
-
             return data;
-        } catch (err) {
-            this.handleError(err);
+        } catch {
+            this.handleError();
             return [];
         } finally {
             this.isLoading = false;
@@ -45,59 +43,49 @@ export default class TableManager {
     }
 
     handleResponse(data) {
-        if (data.html) {
-            this.tableContainer.innerHTML = data.html;
-
-            if (data.paginationHtml && this.paginationWrapper) {
-                this.paginationWrapper.innerHTML = data.paginationHtml;
-            }
-
-            this.bindPaginationForm();
-        } else {
+        if (!data || !data.html) {
             this.tableContainer.innerHTML = `<p>${this.errorMessage}</p>`;
+            if (this.paginationWrapper) this.paginationWrapper.innerHTML = '';
+            return;
         }
+
+        this.tableContainer.innerHTML = data.html;
+        if (this.paginationWrapper) this.paginationWrapper.innerHTML = data.paginationHtml || '';
+        this.bindPaginationForm();
+        document.dispatchEvent(new Event('tableUpdated'));
     }
 
-    handleError(error) {
-        console.error('Erro ao carregar dados:', error);
+    handleError() {
         this.tableContainer.innerHTML = `<p>${this.errorMessage}</p>`;
+        if (this.paginationWrapper) this.paginationWrapper.innerHTML = '';
     }
 
     bindPaginationForm() {
-        if (window.bindPaginationForm) {
-            window.bindPaginationForm();
+        if (typeof this.bindPaginationFormCallback === 'function') {
+            this.bindPaginationFormCallback();
         }
     }
 
     bindGlobalEvents() {
-        document.addEventListener('click', (e) => {
-            const target = e.target;
-
-            if (target.matches('.pagination-form button.page-link')) {
+        this.tableContainer.addEventListener('click', (e) => {
+            const pageBtn = e.target.closest('.pagination-form button.page-link');
+            if (pageBtn) {
                 e.preventDefault();
-                if (target.disabled) return;
-
-                const page = target.getAttribute('data-page') || 1;
-                const perPage = target.getAttribute('data-per-page') || this.currentParams.perPage || 15;
-
+                if (pageBtn.disabled) return;
+                const page = pageBtn.getAttribute('data-page') || 1;
+                const perPage = pageBtn.getAttribute('data-per-page') || this.currentParams.perPage || 15;
                 this.updateTable({ page, perPage });
             }
 
-            let sortTarget = e.target;
-            while (sortTarget && sortTarget !== document.body && !sortTarget.classList.contains('sort-link')) {
-                sortTarget = sortTarget.parentElement;
-            }
-
-            if (sortTarget && sortTarget.classList.contains('sort-link')) {
+            const sortLink = e.target.closest('.sort-link');
+            if (sortLink) {
                 e.preventDefault();
-                const url = new URL(sortTarget.href);
+                const url = new URL(sortLink.href);
                 const params = Object.fromEntries(url.searchParams.entries());
-
                 if (this.currentParams.perPage && !params.perPage) {
                     params.perPage = this.currentParams.perPage;
                 }
-
-                this.updateTable(params);
+                this.updateTable({ ...this.currentParams, ...params });
             }
         });
 
@@ -108,11 +96,16 @@ export default class TableManager {
     }
 
     initPagination() {
-        document.addEventListener('DOMContentLoaded', () => {
+        const initValues = () => {
             const perPageSelect = document.querySelector('#paginationForm #perPage');
-            this.currentParams.perPage = perPageSelect ? perPageSelect.value : 15;
-
+            this.currentParams.perPage = perPageSelect?.value || 15;
             this.bindPaginationForm();
-        });
+        };
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initValues);
+        } else {
+            initValues();
+        }
     }
 }

@@ -10,11 +10,11 @@
     "license": "MIT",
     "require": {
         "php": "^8.2",
-        "getbrevo/brevo-php": "^2.0",
         "guzzlehttp/guzzle": "^7.9",
         "laravel/framework": "^12.0",
         "laravel/tinker": "^2.10.1",
         "php-open-source-saver/jwt-auth": "^2.8",
+        "phpmailer/phpmailer": "^6.10",
         "spatie/browsershot": "*",
         "tightenco/ziggy": "^2.5"
     },

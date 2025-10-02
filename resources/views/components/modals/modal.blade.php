@@ -1,4 +1,4 @@
-@props(['id', 'title', 'closeId'])
+@props(['id', 'title'])
 
 <div id="{{ $id }}" class="modal-window" aria-hidden="true">
     <div class="modal-header">

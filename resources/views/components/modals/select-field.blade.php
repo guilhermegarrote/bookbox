@@ -2,8 +2,13 @@
     <select id="{{ $id }}" name="{{ $name ?? $id }}" class="form-input"
         @if (!empty($required)) required @endif @if (!empty($readonly)) disabled @endif
         aria-label="{{ $label }}">
+
+        @if (!empty($value))
+            <option value="{{ $value }}" selected>{{ $value }}</option>
+        @endif
+
         @foreach ($options ?? [] as $optionValue => $optionLabel)
-            <option value="{{ $optionValue }}" @if (old($name ?? $id, $value ?? '') == $optionValue) selected @endif>
+            <option value="{{ $optionValue }}" @if (($value ?? '') == $optionValue) selected @endif>
                 {{ $optionLabel }}
             </option>
         @endforeach

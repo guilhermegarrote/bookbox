@@ -45,4 +45,12 @@ class StudentController extends Controller
 
         return view('pages.students.partials.menu-modal', compact('student'))->render();
     }
+
+    public function updateModal(String $id)
+    {
+        $student = StudentSchoolClass::where('student_id', Utils::convertUuidToBinary($id))
+            ->firstOrFail();
+
+        return view('pages.students.partials.update-modal', compact('student'))->render();
+    }
 }

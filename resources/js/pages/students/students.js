@@ -1,37 +1,23 @@
-import { bindPaginationForm } from '../../components/pagination';
 import { initStudentsModals } from './students-modals';
+import { FilterUI } from '../../components/filterUI';
+import studentsTable from './table';
+import { setupTablePage } from '../../components/pageTableSetup';
 
-document.addEventListener('DOMContentLoaded', () => {
-    bindPaginationForm();
-    resizeTableWrapper();
-    initStudentsModals();
+setupTablePage({
+    initFilterUI: () => {
+        return new FilterUI({
+            filterData: window.App.filterData,
+            onParamsChange: (params) => studentsTable.updateTable(params),
+            fields: [
+                { key: 'course', element: null, placeholder: 'Curso' },
+                { key: 'period', element: null, placeholder: 'Período', formatLabel: v => `${v}°` },
+                { key: 'term', element: null, placeholder: 'Regime', formatLabel: v => v.toLowerCase() === 'annual' ? 'Anual' : 'Semestral' },
+                { key: 'can_borrow', element: null, placeholder: 'Status', formatLabel: v => v === 1 ? 'Autorizado' : 'Bloqueado' },
+            ]
+        });
+    },
+    updateTable: (params) => studentsTable.updateTable(params),
+    filterStateKey: 'studentsFilterState',
+    filterData: window.App.filterData,
+    initModals: initStudentsModals
 });
-
-window.addEventListener('resize', resizeTableWrapper);
-
-function getTotalVerticalSpace(element) {
-    if (!element) return 0;
-    const style = getComputedStyle(element);
-    return (
-        element.offsetHeight +
-        (parseFloat(style.marginTop) || 0) +
-        (parseFloat(style.marginBottom) || 0) +
-        (parseFloat(style.paddingTop) || 0) +
-        (parseFloat(style.paddingBottom) || 0)
-    );
-}
-
-function resizeTableWrapper() {
-    const windowHeight = window.innerHeight;
-    const header = document.querySelector('header');
-    const title = document.querySelector('.page-title');
-    const pagination = document.querySelector('.pagination-container');
-    const tableWrapper = document.querySelector('.table-wrapper');
-    if (!tableWrapper) return;
-    const headerSpace = getTotalVerticalSpace(header);
-    const titleSpace = getTotalVerticalSpace(title);
-    const paginationSpace = getTotalVerticalSpace(pagination);
-    const extraSpacing = 0;
-    const availableHeight = windowHeight - headerSpace - titleSpace - paginationSpace - extraSpacing;
-    tableWrapper.style.height = `${availableHeight}px`;
-}

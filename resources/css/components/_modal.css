@@ -18,7 +18,6 @@
     background: #fff;
     width: 650px;
     border-radius: 6px;
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
     font-family: var(--font-primary);
 }
 
@@ -145,3 +144,24 @@
     background: #282828;
     color: #fff;
 }
+
+.warning-icon {
+  width: 45px;
+  height: 45px;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.warning-icon .warning-icon-background {
+  color: #f1c40e;
+}
+
+.warning-icon .warning-icon-foreground {
+  color: #212121;
+}
+
+.view-mode,
+.edit-mode {
+    display: contents; /* faz a div "sumir", mantém apenas os filhos */
+}
+

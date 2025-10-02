@@ -12,9 +12,22 @@ export async function deleteStudent(studentId) {
     });
 
     if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Erro ao deletar aluno');
+        const contentType = response.headers.get('content-type');
+        let errorMessage = 'Erro ao deletar aluno';
+        if (contentType && contentType.includes('application/json')) {
+            const errorData = await response.json();
+            errorMessage = errorData.message || errorMessage;
+        } else {
+            const text = await response.text();
+            if (text) errorMessage = text;
+        }
+        throw new Error(errorMessage);
     }
 
-    return await response.json();
+    const contentLength = response.headers.get('content-length');
+    if (contentLength && parseInt(contentLength) > 0) {
+        return await response.json();
+    }
+
+    return null;
 }

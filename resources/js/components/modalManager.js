@@ -1,9 +1,10 @@
 export default class ModalManager {
     constructor() {
         this.activeModals = new Map();
+        this._escListener = null;
     }
 
-    async loadModalContent(url, modalId) {
+    async loadModalContent(url, modalId, { onInit } = {}) {
         try {
             const response = await fetch(url);
             if (!response.ok) throw new Error('Erro ao carregar modal');
@@ -13,6 +14,8 @@ export default class ModalManager {
             this.bindCloseEvents(modalId);
             this.showModal(modalId);
             this.updateFloatingLabels(modalId);
+
+            if (typeof onInit === 'function') onInit(this.activeModals.get(modalId));
         } catch (err) {
             console.error(err);
             throw err;
@@ -20,20 +23,20 @@ export default class ModalManager {
     }
 
     insertModalHtml(html, modalId) {
-        document.querySelectorAll('.modal-overlay').forEach(el => el.remove());
+        this.closeAll({ remove: true });
 
         const overlay = document.createElement('div');
-        overlay.id = 'modalOverlay';
+        overlay.id = `${modalId}-overlay`;
         overlay.classList.add('modal-overlay', 'hidden');
         overlay.setAttribute('aria-hidden', 'true');
+        overlay.setAttribute('role', 'dialog');
+        overlay.setAttribute('aria-modal', 'true');
         overlay.innerHTML = html;
-
         document.body.appendChild(overlay);
 
         const modalWrapper = overlay.querySelector(`#${modalId}`);
         if (!modalWrapper) {
-            console.warn(`Modal com ID ${modalId} não encontrado no HTML carregado`);
-            return;
+            throw new Error(`Modal com ID ${modalId} não encontrado no HTML carregado`);
         }
 
         overlay.classList.remove('hidden');
@@ -75,47 +78,153 @@ export default class ModalManager {
         modal.setAttribute('inert', '');
     }
 
+    removeModal(modalId) {
+        const overlay = document.getElementById(`${modalId}-overlay`);
+        if (overlay) overlay.remove();
+        this.activeModals.delete(modalId);
+    }
+
+    closeAll({ remove = true } = {}) {
+        for (const modalId of this.activeModals.keys()) {
+            remove ? this.removeModal(modalId) : this.hideModal(modalId);
+        }
+    }
+
+    getModalData(modalId) {
+        const modal = this.activeModals.get(modalId);
+        if (!modal) return {};
+
+        const data = {};
+        const elements = modal.querySelectorAll('input, select, textarea');
+
+        elements.forEach(el => {
+            if (!el.id) return;
+            let value = el.value?.trim() || '';
+
+            data[el.id] = value;
+        });
+
+        return data;
+    }
+
+    toggleFields(fields, enable) {
+        fields.forEach(f => {
+            if (f.tagName === 'INPUT') {
+                enable ? f.removeAttribute('readonly') : f.setAttribute('readonly', true);
+            }
+            if (f.tagName === 'SELECT') {
+                enable ? f.removeAttribute('disabled') : f.setAttribute('disabled', true);
+            }
+        });
+    }
+
     bindCloseEvents(modalId) {
         const modal = this.activeModals.get(modalId);
-        if (!modal) {
-            console.warn(`Modal ${modalId} não encontrado na hora de bindCloseEvents`);
-            return;
-        }
+        if (!modal) return;
 
-        const closeButtons = modal.querySelectorAll('.modal-close-btn, .modal-button#btn-close');
-        if (closeButtons.length === 0) {
-            console.warn(`Nenhum botão de fechar encontrado dentro de ${modalId}`);
-        }
-
-        closeButtons.forEach(button => {
-            button.addEventListener('click', () => this.hideModal(modalId), { once: true });
-        });
+        const closeButtons = modal.querySelectorAll('.modal-button#btn-close, #modal-message-decline');
+        closeButtons.forEach(btn => btn.addEventListener('click', () => this.hideModal(modalId), { once: true }));
 
         const overlay = modal.closest('.modal-overlay');
         if (overlay) {
             overlay.addEventListener('click', (e) => {
-                if (e.target === overlay) this.hideModal(modalId);
+                if (e.target === overlay) this.removeModal(modalId);
             }, { once: true });
         }
 
-        const escListener = (e) => {
-            if (e.key === 'Escape') {
-                this.hideModal(modalId);
-                document.removeEventListener('keydown', escListener);
-            }
-        };
-        document.addEventListener('keydown', escListener);
+        if (!this._escListener) {
+            this._escListener = (e) => {
+                if (e.key === 'Escape') {
+                    const lastModalId = Array.from(this.activeModals.keys()).pop();
+                    if (lastModalId) this.removeModal(lastModalId);
+                }
+            };
+            document.addEventListener('keydown', this._escListener);
+        }
     }
 
     updateFloatingLabels(modalId) {
-        const modal = document.getElementById(modalId);
+        const modal = this.activeModals.get(modalId);
         if (!modal) return;
 
         modal.querySelectorAll('.form-input').forEach(input => {
-            if (input.value.trim() !== '') {
-                input.classList.add('has-value');
-            } else {
-                input.classList.remove('has-value');
+            const toggleHasValue = () => input.classList.toggle("has-value", input.value.trim() !== "");
+            toggleHasValue();
+            input.addEventListener("input", toggleHasValue);
+        });
+    }
+
+    async showModalMessage({
+        message,
+        icon = null,
+        acceptText = "OK",
+        declineText = "Cancelar"
+    } = {}) {
+        return new Promise(async (resolve) => {
+            const modalId = 'modal-message';
+            const url = route('modals.modalMessage');
+
+            await this.loadModalContent(url, modalId);
+            const modal = this.activeModals.get(modalId);
+            if (!modal) return resolve(false);
+
+            this.configureModalMessage(modal, { message, icon, acceptText, declineText });
+            this.bindModalMessageEvents(modal, resolve);
+            this.showModal(modalId);
+        });
+    }
+
+    configureModalMessage(modal, { message, icon, acceptText, declineText }) {
+        const msgEl = modal.querySelector("#modal-message-text");
+        const acceptBtn = modal.querySelector("#modal-message-accept");
+        const declineBtn = modal.querySelector("#modal-message-decline");
+
+        msgEl.textContent = message;
+        acceptBtn.textContent = acceptText;
+        declineBtn.textContent = declineText;
+    }
+
+    bindModalMessageEvents(modal, resolve) {
+        const acceptBtn = modal.querySelector("#modal-message-accept");
+        const declineBtn = modal.querySelector("#modal-message-decline");
+        const overlay = modal.closest('.modal-overlay');
+
+        acceptBtn.addEventListener("click", () => {
+            this.hideModal('modal-message');
+            resolve(true);
+        }, { once: true });
+
+        declineBtn.addEventListener("click", () => {
+            this.hideModal('modal-message');
+            resolve(false);
+        }, { once: true });
+
+        overlay.addEventListener('click', (e) => {
+            if (e.target === overlay) {
+                this.hideModal('modal-message');
+                resolve(false);
+            }
+        }, { once: true });
+    }
+
+    bindFormSubmit({ modalId, buttonId, onSubmit, onSuccess, onError }) {
+        const modal = this.activeModals.get(modalId);
+        if (!modal) return;
+
+        const btn = modal.querySelector(`#${buttonId}`);
+        if (!btn) return;
+
+        btn.addEventListener('click', async () => {
+            const data = this.getModalData(modalId);
+            btn.disabled = true;
+
+            try {
+                await onSubmit(data);
+                if (onSuccess) onSuccess();
+            } catch (err) {
+                if (onError) onError(err);
+            } finally {
+                btn.disabled = false;
             }
         });
     }

@@ -18,8 +18,8 @@
 }
 
 .table-wrapper {
-    overflow-x: auto;
-    max-height: 100%;
+    overflow-x: hidden;
+    max-width: 100%;
     border: 1px solid #ccc;
     border-radius: 6px;
 }
@@ -42,6 +42,7 @@
     width: 100%;
     border-collapse: collapse;
     table-layout: fixed;
+    word-wrap: break-word;
 }
 
 .data-table thead tr {
@@ -156,6 +157,15 @@
 .data-table td.status-col {
     width: 100px;
     max-width: 125px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.data-table th.copy-col,
+.data-table td.copy-col {
+    width: 125px;
+    max-width: 150px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;

@@ -9,19 +9,26 @@ use App\Http\Controllers\StudentController;
 use App\Http\Controllers\Auth\PasswordRecoveryController;
 
 Route::middleware('auth.jwt.cookie')->group(function () {
-    Route::get('/', [LoanController::class, 'index'])
-        ->name('loans.view');
-    Route::get('/loans', [LoanController::class, 'index'])
-        ->name('loans.view');
+    Route::get('/', [LoanController::class, 'index'])->name('loans.view');
+    Route::get('/loans', [LoanController::class, 'index'])->name('loans.view');
+    Route::get('/loans/filter', [LoanController::class, 'filter'])->name('loans.filter.view');
+    Route::get('/loans/create-modal', [LoanController::class, 'createModal'])->name('loans.createModal');
 
-    Route::get('/books', [BookController::class, 'index'])
-        ->name('books.view');
+    Route::get('/books', [BookController::class, 'index'])->name('books.view');
+    Route::get('/books/filter', [BookController::class, 'filter'])->name('books.filter.view');
+    Route::get('/books/create-modal', [BookController::class, 'createModal'])->name('books.createModal');
+    Route::get('/books/{book}/update-modal', [BookController::class, 'updateModal'])->name('books.updateModal');
+    Route::get('/books/{book}/menu-modal', [BookController::class, 'menuModal'])->name('book.menuModal');
 
-    Route::get('/students', [StudentController::class, 'index'])
-        ->name('students.view');
+    Route::get('/students', [StudentController::class, 'index'])->name('students.view');
     Route::get('/students/filter', [StudentController::class, 'filter'])->name('students.filter.view');
     Route::get('/students/create-modal', [StudentController::class, 'createModal'])->name('students.createModal');
+    Route::get('/students/{student}/update-modal', [StudentController::class, 'updateModal'])->name('students.updateModal');
     Route::get('/students/{student}/menu-modal', [StudentController::class, 'menuModal'])->name('students.menuModal');
+
+    Route::get('/modals/modal-message', function () {
+        return view('components.modals.modal-message');
+    })->name('modals.modalMessage');
 });
 
 Route::middleware('guest')->group(function () {
