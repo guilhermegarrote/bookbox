@@ -6,6 +6,7 @@ use App\Models\Copy;
 use Illuminate\Support\Facades\DB;
 use Exception;
 use InvalidArgumentException;
+use Ramsey\Uuid\Uuid;
 
 class CopyService
 {
@@ -26,14 +27,12 @@ class CopyService
             $lastNumber = Copy::where('book_id', $binaryBookId)->max('number') ?? 0;
 
             $copies = [];
-            $now = now();
 
             for ($i = 1; $i <= $quantity; $i++) {
                 $copies[] = [
+                    'id' => Uuid::uuid4()->getBytes(),
                     'book_id' => $binaryBookId,
-                    'number'  => $lastNumber + $i,
-                    'created_at' => $now,
-                    'updated_at' => $now,
+                    'number'  => $lastNumber + $i
                 ];
             }
 
