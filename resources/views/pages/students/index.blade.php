@@ -1,5 +1,7 @@
 @extends('layouts.app')
 
+@section('title', 'Alunos')
+
 @section('content')
     <div class="panel">
         <div class="data-container">
@@ -19,8 +21,3 @@
 @push('scripts')
     @vite('resources/js/pages/students/students.js')
 @endpush
-
-
-
-
-

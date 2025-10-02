@@ -4,13 +4,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title', 'Bookbox')</title>
+    <title>@yield('title', ''){{ !empty(trim($__env->yieldContent('title'))) ? ' | Bookbox' : 'Bookbox' }}</title>
 
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <script>
         window.App = {
-            filterData: @json($filterData ?? null),
+            filterData: @json($filterData ?? []),
             csrfToken: '{{ csrf_token() }}',
             filterUrl: @json($filterUrl ?? null)
         };
