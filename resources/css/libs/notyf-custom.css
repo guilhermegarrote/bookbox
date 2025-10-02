@@ -2,6 +2,10 @@
     font-family: var(--font-primary);
 }
 
+.notyf .notyf__toast {
+  border-radius: 10px;
+}
+
 #notyf-announcer {
     font-family: var(--font-primary);
 }
