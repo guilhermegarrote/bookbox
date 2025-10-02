@@ -1,6 +1,6 @@
 @if ($books->isEmpty())
     <div class="data-empty">
-        <h1>Nenhum livro encontrado.</h1>
+        <h1 title="Nenhum livro encontrado">Nenhum livro encontrado.</h1>
     </div>
 @else
     @php
@@ -24,7 +24,9 @@
                 ' (' .
                 e($newDirection) .
                 ')">' .
-                '<span>' .
+                '<span title="Ordenar por ' .
+                e($label) .
+                '">' .
                 e($label) .
                 ' ' .
                 $icon .
@@ -35,24 +37,32 @@
     <table class="data-table" role="table" aria-label="Tabela de livros">
         <thead>
             <tr>
-                <th scope="col">Disponiveis</th>
-                <th scope="col">ISBN</th>
-                <th scope="col">{!! sortLink('title', 'Titulo') !!}</th>
+                <th scope="col" class="copy-col" title="Quantidade de livros disponíveis">Disponíveis</th>
+                <th scope="col" title="Número ISBN do livro">ISBN</th>
+                <th scope="col">{!! sortLink('title', 'Título') !!}</th>
                 <th scope="col">{!! sortLink('author', 'Autor') !!}</th>
-                <th scope="col">Genero Nome</th>
-                <th scope="col">{!! sortLink('publishe', 'Editora') !!}</th>
-                <th scope="col" class="button-col"><button class="btn-dark btn-add"><x-icons.icon name="plus" class="" /></button></th>
+                <th scope="col" title="Gênero do livro">Gênero</th>
+                <th scope="col">{!! sortLink('publisher', 'Editora') !!}</th>
+                <th scope="col" class="button-col">
+                    <button class="btn-dark btn-add" title="Adicionar novo livro">
+                        <x-icons.icon name="plus" class="" />
+                    </button>
+                </th>
             </tr>
         </thead>
         <tbody>
             @foreach ($books as $book)
                 <tr data-book-id="{{ $book->book_id }}">
-                    <td>{{ $book->available }}</td>
-                    <td>{{ $book->isbn }}</td>
-                    <td>{{ $book->title }}</td>
-                    <td>{{ $book->author }}</td>
-                    <td>{{ $book->genre_name }}</td>
-                    <td>{{ $book->publisher }}</td>
+                    <td class="copy-col" title="Disponíveis: {{ $book->available_copies }}/{{ $book->total_copies }}">
+                        {{ $book->available_copies }}
+                    </td>
+                    <td title="ISBN: {{ $book->isbn }}">{{ $book->isbn }}</td>
+                    <td title="Título: {{ $book->title }}">{{ $book->title }}</td>
+                    <td title="Autor: {{ $book->author }}">{{ $book->author }}</td>
+                    <td title="Gênero: {{ $book->genre_name }}">
+                        {{ $book->genre_name }}
+                    </td>
+                    <td title="Editora: {{ $book->publisher }}">{{ $book->publisher }}</td>
                     <td class="button-col"></td>
                 </tr>
             @endforeach

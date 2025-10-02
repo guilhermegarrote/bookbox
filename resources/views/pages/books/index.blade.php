@@ -1,5 +1,7 @@
 @extends('layouts.app')
 
+@section('title', 'Livros')
+
 @section('content')
     <div class="panel">
         <div class="data-container">
