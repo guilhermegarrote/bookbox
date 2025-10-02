@@ -1,6 +1,6 @@
 @if ($loans->isEmpty())
     <div class="data-empty">
-        <h1>Nenhum empréstimo encontrado.</h1>
+        <h1 title="Nenhum empréstimo encontrado">Nenhum empréstimo encontrado.</h1>
     </div>
 @else
     @php
@@ -24,7 +24,9 @@
                 ' (' .
                 e($newDirection) .
                 ')">' .
-                '<span>' .
+                '<span title="Ordenar por ' .
+                e($label) .
+                '">' .
                 e($label) .
                 ' ' .
                 $icon .
@@ -32,32 +34,36 @@
         }
     @endphp
 
-    <table class="data-table" role="table" aria-label="Tabela de emprestimos">
+    <table class="data-table" role="table" aria-label="Tabela de empréstimos">
         <thead>
             <tr>
-                <th scope="col">{!! sortLink('student_id', 'Estudante') !!}</th>
-                <th scope="col">Copia</th>
-                <th scope="col">Data de inicio</th>
-                <th scope="col">Data de vencimento </th>
-                <th scope="col">Data de Retorno</th>
-                <th scope="col">Ativo</th>
-                <th scope="col" class="button-col"><button class="btn-dark btn-add"><x-icons.icon name="plus" class="" /></button></th>
+                <th scope="col">{!! sortLink('title', 'Livro') !!}</th>
+                <th scope="col" title="Número do exemplar">Exemplar</th>
+                <th scope="col">{!! sortLink('author', 'Autor') !!}</th>
+                <th scope="col">{!! sortLink('name', 'Estudante') !!}</th>
+                <th scope="col">{!! sortLink('loan_due_date', 'Data de vencimento') !!}</th>
+                <th scope="col" class="button-col">
+                    <button class="btn-dark btn-add" title="Adicionar novo empréstimo">
+                        <x-icons.icon name="plus" class="" />
+                    </button>
+                </th>
             </tr>
         </thead>
         <tbody>
-            @foreach ($loans as $loans)
-                <tr data-loans-id="{{ $loans->loans_id }}">
-                    <td>{{ $loans->student_id }}</td>
-                    <td>{{ $loans->copy_id }}</td>
-                    <td>{{ $loans->start_date }}</td>
-                    <td>{{ $loans->due_date }}</td>
-                    <td>{{ $loans->returned_date }}</td>
-                    <td>{{ $loans->active }}</td>
+            @foreach ($loans as $loan)
+                @php
+                    $isActive = is_null($loan->loan_returned_date);
+                @endphp
+                <tr data-loan-id="{{ $loan->id }}"
+                    @if (!$isActive) style="background-color: #f5f5f5; color: #999; opacity: 0.6;" @endif>
+                    <td title="Livro: {{ $loan->title }}">{{ $loan->title }}</td>
+                    <td title="Exemplar número: {{ $loan->number }}">{{ $loan->number }}</td>
+                    <td title="Autor: {{ $loan->author }}">{{ $loan->author }}</td>
+                    <td title="Estudante: {{ $loan->name }}">{{ $loan->name }}</td>
+                    <td title="Data de vencimento: {{ $loan->loan_due_date }}">{{ $loan->loan_due_date }}</td>
                     <td class="button-col"></td>
                 </tr>
             @endforeach
         </tbody>
     </table>
 @endif
-
-<!--isbn title author number student-name formatted-class-name dias de vencimento -->
