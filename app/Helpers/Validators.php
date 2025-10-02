@@ -71,8 +71,8 @@ class Validators
         (?=.*[a-z])                              # At least one lowercase letter
         (?=.*[A-Z])                              # At least one uppercase letter
         (?=.*\d)                                 # At least one digit
-        (?=.*[!@#$%^&(),.?":{}|<>])              # At least one special character
-        [A-Za-z\d!@#$%^&(),.?":{}|<>]{8,16}      # Length between 8 and 16
+        (?=.*[!*@#$%^&(),.?":{}|<>])             # At least one special character
+        [A-Za-z\d!*@#$%^&(),.?":{}|<>]{8,16}      # Length between 8 and 16
         $/x';
 
         return (bool) preg_match($regex, $password);

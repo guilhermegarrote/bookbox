@@ -1,4 +1,3 @@
-import { initStudentsFilterUI } from '../pages/students/filter';
 import { updateTable } from '../pages/students/table';
 
 document.addEventListener('DOMContentLoaded', () => {
