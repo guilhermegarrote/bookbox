@@ -19,6 +19,7 @@ Route::middleware('auth.jwt.cookie')->group(function () {
     Route::get('/books/create-modal', [BookController::class, 'createModal'])->name('books.createModal');
     Route::get('/books/{book}/update-modal', [BookController::class, 'updateModal'])->name('books.updateModal');
     Route::get('/books/{book}/menu-modal', [BookController::class, 'menuModal'])->name('book.menuModal');
+    Route::get('/books/generate-labels', [LabelController::class, 'generateLabels'])->name('labels.generate');
 
     Route::get('/students', [StudentController::class, 'index'])->name('students.view');
     Route::get('/students/filter', [StudentController::class, 'filter'])->name('students.filter.view');
@@ -54,6 +55,4 @@ Route::middleware('guest')->group(function () {
                 ->name('recovery.new-password.form');
         });
     });
-
-    Route::get('/teste-pdf', [LabelController::class, 'generateLabels'])->name('labels.generate');
 });

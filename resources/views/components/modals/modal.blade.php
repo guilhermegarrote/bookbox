@@ -6,9 +6,7 @@
     </div>
 
     <div class="modal-content">
-        <div class="form-row">
-            {{ $content }}
-        </div>
+        {{ $content }}
 
         @if (isset($footer))
             <div class="modal-footer">
