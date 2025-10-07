@@ -11,6 +11,7 @@ use App\Models\Book;
 use App\Models\View\Copy as ViewCopy;
 use App\Models\View\Loan as ViewLoan;
 use App\Models\View\Student as ViewStudent;
+use App\Services\ThermalPrinterService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -87,13 +88,17 @@ class LoanController extends Controller
 
             $dueDate = Carbon::today()->addDays(config('loans.default_due_days', 14));
 
-            Loan::create([
+            $loan = Loan::create([
                 'student_id' => Utils::convertUuidToBinary($student->id),
                 'copy_id'    => Utils::convertUuidToBinary($copy->id),
                 'due_date'   => $dueDate,
             ]);
 
             DB::commit();
+
+            $printer = new ThermalPrinterService("192.168.0.50", 9100);
+            $printer->printLoanReceipt($loan);
+
             return $this->createdResponse();
         } catch (Throwable $e) {
             DB::rollBack();
@@ -135,6 +140,9 @@ class LoanController extends Controller
 
             $loan->due_date = Carbon::parse($loan->due_date)->addDays(config('loans.extension_days', 7));
             $loan->save();
+
+            $printer = new ThermalPrinterService("192.168.0.50", 9100);
+            $printer->printLoanReceipt($loan);
 
             return $this->noContentResponse();
         } catch (ModelNotFoundException) {
@@ -258,7 +266,7 @@ class LoanController extends Controller
      */
     private function applySorting($query, Request $request)
     {
-        $sortable = ['title', 'author', 'name', 'due_date'];
+        $sortable = ['title', 'author', 'name', 'loan_due_date'];
         $sort = in_array($request->input('sort'), $sortable) ? $request->input('sort') : 'title';
         $direction = $request->input('direction') === 'desc' ? 'desc' : 'asc';
 
