@@ -56,7 +56,7 @@ async function openUpdateModal(studentId) {
         modalManager.bindFormSubmit({
             modalId: 'studentUpdateModal',
             buttonId: 'submit-update',
-            onSubmit: updateStudent,
+            onSubmit: (data) => updateStudent(studentId, data),
             onSuccess: () => {
                 openMenuModal(studentId);
                 studentsTable.updateTable();
