@@ -52,7 +52,7 @@
         </thead>
         <tbody>
             @foreach ($books as $book)
-                <tr data-book-id="{{ $book->book_id }}">
+                <tr data-book-id="{{ $book->id }}">
                     <td class="copy-col" title="Disponíveis: {{ $book->available_copies }}/{{ $book->total_copies }}">
                         {{ $book->available_copies }}
                     </td>

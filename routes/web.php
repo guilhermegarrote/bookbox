@@ -20,7 +20,7 @@ Route::middleware('auth.jwt.cookie')->group(function () {
     Route::get('/books/filter', [BookController::class, 'filter'])->name('books.filter.view');
     Route::get('/books/create-modal', [BookController::class, 'createModal'])->name('books.createModal');
     Route::get('/books/{book}/update-modal', [BookController::class, 'updateModal'])->name('books.updateModal');
-    Route::get('/books/{book}/menu-modal', [BookController::class, 'menuModal'])->name('book.menuModal');
+    Route::get('/books/{book}/menu-modal', [BookController::class, 'menuModal'])->name('books.menuModal');
     Route::get('/books/generate-labels', [LabelController::class, 'generateLabels'])->name('labels.generate');
 
     Route::get('/students', [StudentController::class, 'index'])->name('students.view');

@@ -152,7 +152,7 @@ class BookController extends Controller
             $binaryId = Utils::convertUuidToBinary($id);
             $book = Book::findOrFail($binaryId);
 
-            $hasActiveCopies = DB::table('copies')
+            $hasActiveCopies = DB::table('vw_copies')
                 ->where('book_id', $binaryId)
                 ->where('available', false)
                 ->exists();

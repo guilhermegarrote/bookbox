@@ -47,4 +47,12 @@ class BookController extends Controller
 
         return view('pages.books.partials.menu-modal', compact('book'))->render();
     }
+
+    public function updateModal(String $id)
+    {
+        $book = Book::where('id', Utils::convertUuidToBinary($id))
+            ->firstOrFail();
+
+        return view('pages.books.partials.update-modal', compact('book'))->render();
+    }
 }
