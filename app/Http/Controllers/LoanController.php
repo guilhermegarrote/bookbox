@@ -46,4 +46,12 @@ class loanController extends Controller
 
         return view('pages.loans.partials.menu-modal', compact('loan'))->render();
     }
+
+    public function updateModal(String $id)
+    {
+        $loan = Loan::where('id', Utils::convertUuidToBinary($id))
+            ->firstOrFail();
+
+        return view('pages.loans.partials.update-modal', compact('loan'))->render();
+    }
 }

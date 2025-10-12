@@ -1,5 +1,3 @@
-import { updateTable } from '../pages/students/table';
-
 document.addEventListener('DOMContentLoaded', () => {
     const btnFilter = document.getElementById('btn-filter');
     const popupFilter = document.getElementById('popup-filter');
@@ -34,21 +32,6 @@ document.addEventListener('DOMContentLoaded', () => {
             popupFilter.style.display = 'block';
 
             await new Promise(r => setTimeout(r, 0));
-
-            if (window.App?.filterData) {
-                initStudentsFilterUI(window.App.filterData, (params) => {
-                    updateTable(params);
-                    saveFilterState();
-                });
-
-                document.getElementById('filter-course').value = savedState.course || '';
-                document.getElementById('filter-period').value = savedState.period || '';
-                document.getElementById('filter-term').value = savedState.term || '';
-                document.getElementById('filter-status').value = savedState.can_borrow || '';
-
-                document.getElementById('filter-course').dispatchEvent(new Event('change'));
-            }
-
         } catch (error) {
             console.error(error);
             popupFilter.innerHTML = '<p>Não foi possível carregar o filtro.</p>';
