@@ -80,6 +80,11 @@ class PasswordRecoveryController extends Controller
         }
 
         try {
+            $emailHash = hash('sha256', strtolower($email), true);
+            $user = User::where('email_hash', $emailHash)->firstOrFail();
+            $userId = Utils::convertUuidToBinary($user->id);
+            PasswordResetCode::where('user_id', $userId)->delete();
+
             $this->dispatchRecoveryCode($email);
 
             $request->session()->put(RecoverySessionKeys::CODE_SENT, true);
