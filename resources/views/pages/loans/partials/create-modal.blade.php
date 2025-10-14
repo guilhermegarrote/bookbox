@@ -1,31 +1,28 @@
-<x-modals.modal id="loanCreateModal" title="Cadastro de Empréstimo">
-    <x-slot:content>
+<x-modals.modal id="loanCreateModal" title="Cadastrar Empréstimo">
+    <x-slot name="content">
         <div class="form-row">
-            <x-modals.input-field id="name" label="Nome do aluno" width="480px" required
-                title="Informe o nome completo do aluno" />
-            <x-modals.input-field id="status" label="Status" width="75px" required
-                title="Informe o status do estudante" />   
-            <x-modals.input-field id="cpf" label="CPF" width="160px" required
-                title="Informe o CPF do aluno (somente números)" />
-            <x-modals.select-field id="period" label="Período" width="100px" required
-                title="Selecione o período do estudante" />
-            <x-modals.select-field id="course" label="Curso" width="300px" required
-                title="Selecione o curso do aluno" />
-            <x-modals.input-field id="name" label="Nome do livro" width="400px" required
-                title="Informe o nome completo do livro" />
-            <x-modals.input-field id="IBSN" label="Código IBSN" width="150px" required
-                title="Informe o código IBNS do livro" />
-            <x-modals.input-field id="date" label="Data de devolução" width="165px"
-                title="Informe a data de devolução do empréstimo" />
-            <x-modals.input-field id="Exemplar" label="Exemplar" width="100px"
-                title="Informe a quantidade de exemplares" />
-
+            <x-modals.input-field id="name" label="Nome do aluno" width="450px" readonly
+                title="Nome do aluno" />
+            <x-modals.input-field id="can_borrow" label="Status" width="150px" readonly
+                title="Indica se o aluno pode realizar empréstimos" />
+            <x-modals.input-field id="cpf" label="CPF" width="150px" required title="CPF do aluno" />
+            <x-modals.input-field id="formatted_class_name" label="Turma" width="450px" readonly
+                title="Turma do aluno" />
+                <x-modals.input-field id="isbn" label="Código ISBN" width="160px" required
+                    title="Informe o código ISBN do livro" />
+            <x-modals.input-field id="title" label="Título do livro" width="440px" readonly
+                title="Título do livro" />
+            <x-modals.select-field id="copy_number" label="Exemplar" width="150px" required
+                title="Informe o número do exemplar" />
+            <x-modals.input-field id="loan_due_date" label="Data de devolução" width="165px" readonly
+                title="Data de devolução do empréstimo" />
         </div>
-    </x-slot:content>
+    </x-slot name="content">
 
-    <x-slot:footer>
+    <x-slot name="footer">
         <button type="button" class="modal-button" id="btn-close"
-            title="Cancelar o cadastro do aluno">Cancelar</button>
-        <button type="button" class="modal-button" id="submit-create" title="Cadastrar novo Empréstimo">Realizar empréstimo</button>
-    </x-slot:footer>
+            title="Cancelar o cadastro do empréstimo">Cancelar</button>
+        <button type="button" class="modal-button" id="submit-create" title="Cadastrar novo empréstimo">Realizar
+            empréstimo</button>
+    </x-slot name="footer">
 </x-modals.modal>

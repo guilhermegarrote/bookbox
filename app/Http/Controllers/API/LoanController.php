@@ -40,6 +40,7 @@ class LoanController extends Controller
                 'loan_returned_date',
             ])->paginate($perPage)->appends($request->all());
 
+            
             $html = view('pages.loans.partials.table', compact('loans'))->render();
             $paginationHtml = view('vendor.pagination.custom', ['paginator' => $loans])->render();
 
@@ -132,7 +133,7 @@ class LoanController extends Controller
     public function findByBarcode(string $barcode)
     {
         try {
-            if (Validators::validateLoanCode($barcode)) {
+            if (!Validators::validateLoanCode($barcode)) {
                 return $this->badRequestResponse(["barcode_code" => "Código de barras inválido."]);
             }
 

@@ -6,8 +6,8 @@
         </div>
 
         <div class="modal-footer">
-            <button id="modal-message-decline" class="modal-button">Cancelar</button>
-            <button id="modal-message-accept" class="modal-button">Sim</button>
+            <button id="modal-decline" class="modal-button">Cancelar</button>
+            <button id="modal-accept" class="modal-button">Sim</button>
         </div>
     </div>
 </div>

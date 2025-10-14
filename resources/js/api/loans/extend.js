@@ -1,7 +1,7 @@
 import { route } from 'ziggy-js';
 
-export async function updateLoans(loansId, data) {
-    const url = route('loans.update', { loans: loansId });
+export async function extendLoan(loanId) {
+    const url = route('loans.extend', { loan: loanId });
 
     let response;
     try {
@@ -12,15 +12,14 @@ export async function updateLoans(loansId, data) {
                 'Content-Type': 'application/json',
                 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
             },
-            body: JSON.stringify(data),
         });
     } catch (err) {
-        throw new Error('Erro de conexão ao atualizar empréstimo');
+        throw new Error('Erro de conexão ao prorrogar devolução do empréstimo');
     }
 
     if (!response.ok) {
         const errorText = await response.text();
-        throw new Error(errorText.message || 'Erro ao atualizar empréstimo');
+        throw new Error(errorText.message || 'Erro ao prorrogar devolução do empréstimo');
     }
 
     if (response.status === 204) return null;

@@ -156,7 +156,6 @@ export default class ModalManager {
 
     async showModalMessage({
         message,
-        icon = null,
         acceptText = "OK",
         declineText = "Cancelar"
     } = {}) {
@@ -168,16 +167,15 @@ export default class ModalManager {
             const modal = this.activeModals.get(modalId);
             if (!modal) return resolve(false);
 
-            this.configureModalMessage(modal, { message, icon, acceptText, declineText });
+            this.configureModalMessage(modal, { message, acceptText, declineText });
             this.bindModalMessageEvents(modal, resolve);
-            this.showModal(modalId);
         });
     }
 
-    configureModalMessage(modal, { message, icon, acceptText, declineText }) {
+    configureModalMessage(modal, { message, acceptText, declineText }) {
         const msgEl = modal.querySelector("#modal-message-text");
-        const acceptBtn = modal.querySelector("#modal-message-accept");
-        const declineBtn = modal.querySelector("#modal-message-decline");
+        const acceptBtn = modal.querySelector("#modal-accept");
+        const declineBtn = modal.querySelector("#modal-decline");
 
         msgEl.textContent = message;
         acceptBtn.textContent = acceptText;
@@ -185,23 +183,23 @@ export default class ModalManager {
     }
 
     bindModalMessageEvents(modal, resolve) {
-        const acceptBtn = modal.querySelector("#modal-message-accept");
-        const declineBtn = modal.querySelector("#modal-message-decline");
+        const acceptBtn = modal.querySelector("#modal-accept");
+        const declineBtn = modal.querySelector("#modal-decline");
         const overlay = modal.closest('.modal-overlay');
 
         acceptBtn.addEventListener("click", () => {
-            this.hideModal('modal-message');
+            this.hideModal(modal.id);
             resolve(true);
         }, { once: true });
 
         declineBtn.addEventListener("click", () => {
-            this.hideModal('modal-message');
+            this.hideModal(modal.id);
             resolve(false);
         }, { once: true });
 
         overlay.addEventListener('click', (e) => {
             if (e.target === overlay) {
-                this.hideModal('modal-message');
+                this.hideModal(modal.id);
                 resolve(false);
             }
         }, { once: true });

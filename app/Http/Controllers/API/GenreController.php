@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Throwable;
 
-class Genrecontroller extends Controller
+class GenreController extends Controller
 {
     public function index(): JsonResponse
     {

@@ -1,10 +1,10 @@
 import { route } from 'ziggy-js';
 
-export async function deleteLoans(loansId) {
-    const url = route('loans.destroy', { loans: loansId });
+export async function finalizeLoan(loanId) {
+    const url = route('loans.finalize', { loan: loanId });
 
     const response = await fetch(url, {
-        method: 'DELETE',
+        method: 'PATCH',
         headers: {
             'Accept': 'application/json',
             'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
@@ -13,7 +13,7 @@ export async function deleteLoans(loansId) {
 
     if (!response.ok) {
         const contentType = response.headers.get('content-type');
-        let errorMessage = 'Erro ao deletar o emprestimo';
+        let errorMessage = 'Erro ao finalizar o emprestimo';
         if (contentType && contentType.includes('application/json')) {
             const errorData = await response.json();
             errorMessage = errorData.message || errorMessage;

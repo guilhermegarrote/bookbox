@@ -16,4 +16,13 @@ export function applyInputMasks() {
             ]
         });
     }
+
+    const isbnInput = document.getElementById('isbn');
+    if (isbnInput) {
+        IMask(isbnInput, {
+            mask: [
+                { mask: '000-0-0000-0000-0' }
+            ]
+        });
+    }
 }

@@ -1,6 +1,6 @@
 import { route } from 'ziggy-js';
 
-export async function createLoans(data) {
+export async function createLoan(data) {
     const url = route('loans.store');
 
     const response = await fetch(url, {
@@ -15,7 +15,7 @@ export async function createLoans(data) {
 
     if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.message || 'Erro ao criar empréstimo');
+        throw new Error(errorData.message || 'Erro ao cadastrar empréstimo');
     }
 
     return await response.json();

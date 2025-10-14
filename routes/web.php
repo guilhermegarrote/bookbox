@@ -15,6 +15,7 @@ Route::middleware('auth.jwt.cookie')->group(function () {
     Route::get('/loans/create-modal', [LoanController::class, 'createModal'])->name('loans.createModal');
     Route::get('/loans/{loan}/update-modal', [LoanController::class, 'updateModal'])->name('loans.updateModal');
     Route::get('/loans/{loan}/menu-modal', [LoanController::class, 'menuModal'])->name('loans.menuModal');
+    Route::get('/loans/{loan}/extend-modal', [LoanController::class, 'extendModal'])->name('loans.extendModal');
 
     Route::get('/books', [BookController::class, 'index'])->name('books.view');
     Route::get('/books/filter', [BookController::class, 'filter'])->name('books.filter.view');
