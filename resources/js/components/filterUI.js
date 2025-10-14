@@ -5,11 +5,19 @@ export class FilterUI {
         this.onParamsChange = onParamsChange;
 
         window.filterUIInstance = this;
-    } 
+    }
 
     init() {
         this.fields.forEach(field => {
             if (!field.element) return;
+
+            if (field.element.tagName === 'SELECT') {
+                field.optionsData = this.uniqueBy(this.filterData, field.key)
+                    .map(item => ({
+                        value: item[field.key],
+                        label: field.formatLabel ? field.formatLabel(item[field.key]) : item[field.key]
+                    }));
+            }
 
             field.element.addEventListener('change', () => this.applyFilter(field));
 
@@ -28,11 +36,16 @@ export class FilterUI {
     clearAllFilters() {
         this.fields.forEach(f => {
             if (!f.element) return;
-
             const el = f.element;
+
             switch (el.tagName) {
                 case 'SELECT':
-                    el.selectedIndex = 0;
+                    if (f.optionsData) {
+                        this.populateSelect(el, f.optionsData, 'value', 'label', f.placeholder);
+                    } else {
+                        el.innerHTML = '';
+                        el.appendChild(new Option(f.placeholder || 'Selecione...', '', true, true));
+                    }
                     el.dispatchEvent(new Event('change', { bubbles: true }));
                     break;
                 case 'INPUT':
@@ -47,8 +60,6 @@ export class FilterUI {
                 case 'TEXTAREA':
                     el.value = '';
                     el.dispatchEvent(new Event('input', { bubbles: true }));
-                    break;
-                default:
                     break;
             }
         });
@@ -73,28 +84,29 @@ export class FilterUI {
         select.innerHTML = '';
 
         const fragment = document.createDocumentFragment();
+        const validItems = items.filter(item => item[valueKey] !== null && item[valueKey] !== undefined);
 
-        if (items.length === 1) {
-            const item = items[0];
-            fragment.appendChild(new Option(item[textKey], item[valueKey], true, true));
-            select.disabled = true;
-        } else if (items.length > 0) {
+        if (validItems.length > 0) {
             const placeholderOption = new Option(placeholderText, '');
-            placeholderOption.selected = currentValue === '';
             fragment.appendChild(placeholderOption);
 
-            items.forEach(item => {
-                const value = String(item[valueKey]);
-                const option = new Option(item[textKey], value);
-                if (value === currentValue) {
-                    option.selected = true;
-                    placeholderOption.selected = false;
-                }
-                fragment.appendChild(option);
-            });
+            validItems
+                .sort((a, b) => String(a[textKey]).localeCompare(String(b[textKey]), 'pt-BR', { numeric: true }))
+                .forEach(item => {
+                    const value = String(item[valueKey]);
+                    const option = new Option(item[textKey], value);
+
+                    if (value === currentValue) {
+                        option.selected = true;
+                        placeholderOption.selected = false;
+                    }
+
+                    fragment.appendChild(option);
+                });
 
             select.disabled = false;
         } else {
+            fragment.appendChild(new Option(placeholderText, ''));
             select.disabled = true;
         }
 
@@ -125,7 +137,9 @@ export class FilterUI {
         this.fields.forEach(f => {
             if (!f.element) return;
             const val = f.element.value?.trim();
-            if (val) filtered = filtered.filter(d => String(d[f.key]) === val);
+            if (val !== undefined && val !== null && val !== '') {
+                filtered = filtered.filter(d => String(d[f.key]) === String(val));
+            }
         });
 
         this.fields.forEach(f => {
@@ -137,7 +151,9 @@ export class FilterUI {
                     this.fields.forEach(other => {
                         if (!other.element || other === f) return;
                         const val = other.element.value?.trim();
-                        if (val) filteredForSelect = filteredForSelect.filter(d => String(d[other.key]) === val);
+                        if (val !== undefined && val !== null && val !== '') {
+                            filteredForSelect = filteredForSelect.filter(d => String(d[other.key]) === String(val));
+                        }
                     });
 
                     const currentVal = f.element.value;
@@ -152,6 +168,8 @@ export class FilterUI {
                             label: f.formatLabel ? f.formatLabel(item[f.key]) : item[f.key]
                         }));
 
+                    console.log(`Populando select ${f.key}`);
+                    console.log('Valores filtrados:', filteredForSelect.map(d => d[f.key]));
                     this.populateSelect(f.element, uniqueItems, 'value', 'label', f.placeholder);
                 }
             }

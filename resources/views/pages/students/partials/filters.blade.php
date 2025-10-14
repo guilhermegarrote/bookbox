@@ -13,7 +13,7 @@
 
         <div class="filter-row">
             <select id="filter-period" class="filter-input" name="period" title="Selecione o período"></select>
-            <select id="filter-term" class="filter-input" name="term" title="Selecione o termo"></select>
+            <select id="filter-term" class="filter-input" name="term" title="Selecione o regime"></select>
             <select id="filter-can_borrow" class="filter-input" name="can_borrow" title="Filtrar por disponibilidade de empréstimo"></select>
         </div>
     </div>
