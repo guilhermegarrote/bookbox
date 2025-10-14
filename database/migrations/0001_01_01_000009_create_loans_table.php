@@ -13,6 +13,10 @@ return new class extends Migration {
                 ->primary()
                 ->comment('Código de identificação do empréstimo.');
 
+            $table->string('barcode_code', 20)
+                ->unique()
+                ->comment('Código legível do empréstimo, com prefixo e número sequencial.');
+
             $table->binary('student_id', 16)
                 ->comment('Código de identificação do aluno que realizou o empréstimo.');
 

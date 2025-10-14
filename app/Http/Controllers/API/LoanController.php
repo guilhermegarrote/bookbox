@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth;
 use Throwable;
 
 class LoanController extends Controller
@@ -96,8 +97,14 @@ class LoanController extends Controller
 
             DB::commit();
 
-            $printer = new ThermalPrinterService("192.168.0.50", 9100);
-            $printer->printLoanReceipt($loan);
+            try {
+                $loanData = ViewLoan::where('id', Utils::convertUuidToBinary($loan->id))->first();
+
+                $printer = new ThermalPrinterService();
+                $printer->printLoanReceipt($loanData, JWTAuth::user()->name ?? 'Desconhecido');
+            } catch (Throwable $printError) {
+                $this->logError('Erro ao imprimir recibo de empréstimo.', $printError);
+            }
 
             return $this->createdResponse();
         } catch (Throwable $e) {
@@ -122,6 +129,30 @@ class LoanController extends Controller
         }
     }
 
+    public function findByBarcode(string $barcode)
+    {
+        try {
+            if (Validators::validateLoanCode($barcode)) {
+                return $this->badRequestResponse(["barcode_code" => "Código de barras inválido."]);
+            }
+
+            $loan = ViewLoan::where('barcode_code', $barcode)->first();
+
+            if (!$loan) {
+                return $this->notFoundResponse('Empréstimo não encontrado.');
+            }
+
+            return $this->successResponse([
+                'loanId' => $loan->id,
+                'bookId' => $loan->book_id,
+                'studentId' => $loan->student_id,
+            ]);
+        } catch (\Throwable $e) {
+            $this->logError('Erro ao buscar empréstimo por código de barras.', $e, ['barcode' => $barcode]);
+            return $this->internalErrorResponse($e, 'Erro interno ao consultar o empréstimo.');
+        }
+    }
+
     /**
      * Extend a loan by a configurable number of days.
      *
@@ -141,8 +172,14 @@ class LoanController extends Controller
             $loan->due_date = Carbon::parse($loan->due_date)->addDays(config('loans.extension_days', 7));
             $loan->save();
 
-            $printer = new ThermalPrinterService("192.168.0.50", 9100);
-            $printer->printLoanReceipt($loan);
+            try {
+                $loanData = ViewLoan::where('id', Utils::convertUuidToBinary($loan->id))->first();
+
+                $printer = new ThermalPrinterService();
+                $printer->printLoanReceipt($loanData, JWTAuth::user()->name ?? 'Desconhecido');
+            } catch (Throwable $printError) {
+                $this->logError('Erro ao imprimir recibo de empréstimo.', $printError);
+            }
 
             return $this->noContentResponse();
         } catch (ModelNotFoundException) {
@@ -223,6 +260,8 @@ class LoanController extends Controller
             $query->where('phone_hash', hash('sha256', $numericSearch, true));
         } elseif (Validators::validateIsbn($numericSearch)) {
             $query->where('isbn', $numericSearch);
+        } elseif (Validators::validateLoanCode($search)) {
+            $query->where('barcode_code', $search);
         } else {
             $query->where(function ($q) use ($search) {
                 $q->where('title', 'like', "%{$search}%")

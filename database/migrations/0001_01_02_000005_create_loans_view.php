@@ -13,6 +13,8 @@ class CreateLoansView extends Migration
             CREATE VIEW vw_loans AS
             SELECT
                 l.id AS id,
+                l.barcode_code AS barcode_code,
+                c.book_id AS book_id,
                 c.id AS copy_id,
                 c.isbn AS isbn,
                 c.title AS title,
