@@ -106,6 +106,26 @@ class StudentController extends Controller
         }
     }
 
+    public function findByCpf(string $cpf)
+    {
+        try {
+            if (!Validators::validateCpf($cpf)) {
+               return $this->badRequestResponse(["cpf" => "CPF inválido."]);
+            }
+
+            $student = ViewStudentSchoolClass::where('cpf_hash', hash('sha256', $cpf, true))->first();
+
+            if (!$student) {
+                return $this->notFoundResponse('Aluno não encontrado.');
+            }
+
+            return $this->successResponse($student->toArray());
+        } catch (Throwable $e) {
+            $this->logError('Erro ao buscar aluno por CPF.', $e, ['cpf' => $cpf]);
+            return $this->internalErrorResponse($e, 'Erro interno ao consultar o aluno.');
+        }
+    }
+
     public function update(StudentUpdateRequest $request, string $id): JsonResponse
     {
         $data = $request->validated();

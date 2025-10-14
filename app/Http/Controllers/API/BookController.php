@@ -9,6 +9,7 @@ use App\Http\Requests\Book\BookStoreRequest;
 use App\Http\Requests\Book\BookUpdateRequest;
 use App\Services\CopyService;
 use App\Models\Book;
+use App\Models\Copy;
 use App\Models\Genre;
 use App\Models\View\Book as ViewBook;
 use Illuminate\Contracts\Database\Eloquent\Builder;
@@ -92,6 +93,40 @@ class BookController extends Controller
         } catch (Throwable $e) {
             $this->logError('Erro ao buscar livro.', $e, ['book_id' => $id]);
             return $this->internalErrorResponse($e, 'Erro interno ao buscar livro.');
+        }
+    }
+
+    public function findByIsbn(string $isbn)
+    {
+        try {
+            $cleanIsbn = preg_replace('/[^0-9Xx]/', '', trim($isbn));
+
+            if (!Validators::validateIsbn($cleanIsbn)) {
+                return $this->badRequestResponse(["isbn" => "ISBN inválido."]);
+            }
+
+            $book = ViewBook::where('isbn', $cleanIsbn)->first();
+
+            if (!$book) {
+                return $this->notFoundResponse('Livro não encontrado.');
+            }
+
+            $availableCopies = Copy::where('book_id', Utils::convertUuidToBinary($book->id))
+                ->whereDoesntHave('loans', function ($query) {
+                    $query->whereNull('returned_date');
+                })
+                ->get()
+                ->map(function ($copy) {
+                    return ['number' => $copy->number];
+                });
+
+            return $this->successResponse([
+                'book' => $book,
+                'available_copies' => $availableCopies,
+            ]);
+        } catch (Throwable $e) {
+            $this->logError('Erro ao buscar livro por ISBN.', $e, ['isbn' => $isbn]);
+            return $this->internalErrorResponse($e, 'Erro interno ao consultar o livro.');
         }
     }
 

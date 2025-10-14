@@ -1,7 +1,9 @@
 import { createBooks } from '../../api/books/create.js';
 import { updateBooks } from '../../api/books/update.js';
 import { deleteBooks } from '../../api/books/delete.js';
-import booksTable from '../../pages/books/table.js';
+import { findLoanByBarcode } from '../../api/loans/findByBarcode.js';
+import { findBookByIsbn } from '../../api/books/findByIsbn.js';
+import booksTable from './table.js';
 import { applyInputMasks } from '../../components/inputMask.js';
 import ModalManager from '../../components/modalManager.js';
 import { route } from 'ziggy-js';
@@ -106,8 +108,7 @@ async function openMenuModal(bookId) {
 
 export function initBooksSelects(filterData) {
     const genreNameSelect = document.getElementById('genre_name');
-    const publisherSelect = document.getElementById('publisher');;
-    if (!genreNameSelect || !publisherSelect) return;
+    if (!genreNameSelect) return;
 
     const uniqueBy = (array, key) =>
         [...new Map(array.map(item => [item[key], item])).values()];
@@ -128,24 +129,12 @@ export function initBooksSelects(filterData) {
 
     function updateSelects(selected = {}) {
         const selectedGenre_name = selected.genre_name || genreNameSelect.value || genreNameSelect.dataset.value || '';
-        const selectedPublisher = selected.publisher || publisherSelect.value || publisherSelect.dataset.value || '';
-
 
         const genre_names = uniqueBy(filterData, 'genre_name').map(c => ({ value: c.genre_name, label: c.genre_name }));
         populateSelect(genreNameSelect, genre_names, 'value', 'label', 'Gênero', selectedGenre_name);
-
-        const filtered = selectedGenre_name ? filterData.filter(d => d.genre_name === selectedGenre_name) : filterData;
-
-        const publishers = uniqueBy(filtered, 'publisher').map(p => ({ value: p.publisher, label: `${p.publisher}°` }));
-        populateSelect(publisherSelect, publishers, 'value', 'label', 'Editora', selectedPublisher);
-
     }
 
     genreNameSelect.addEventListener('change', () => updateSelects({ genre_name: genreNameSelect.value }));
-    publisherSelect.addEventListener('change', () => updateSelects({
-        genre_name: genreNameSelect.value,
-        publisher: publisherSelect.value
-    }));
 
     updateSelects();
 }
@@ -162,8 +151,59 @@ function bindOpenButtons() {
     });
 }
 
+function initScannerListener() {
+    let barcodeBuffer = '';
+    let barcodeTimer = null;
+
+    document.addEventListener('keydown', async (e) => {
+        const activeElement = document.activeElement;
+        const modalOpen = document.querySelector('.modal.show') !== null;
+
+        if (activeElement && ['INPUT', 'TEXTAREA', 'SELECT'].includes(activeElement.tagName)) return;
+        if (modalOpen) return;
+
+        if (e.key === 'Enter' && barcodeBuffer) {
+            clearTimeout(barcodeTimer);
+
+            try {
+                const isIsbn = (code) => {
+                    const isbn10 = /^\d{9}[\dX]$/i;
+                    const isbn13 = /^\d{13}$/;
+                    return isbn10.test(code) || isbn13.test(code);
+                };
+
+                let bookId = null;
+
+                if (isIsbn(barcodeBuffer)) {
+                    const response = await findBookByIsbn(barcodeBuffer);
+                    bookId = response?.data?.book?.id ?? null;
+                } else {
+                    const response = await findLoanByBarcode(barcodeBuffer);
+                    bookId = response?.data?.bookId ?? null;
+                }
+
+                barcodeBuffer = '';
+
+                if (bookId) {
+                    openMenuModal(bookId);
+                } else {
+                    notifyError('Nenhuma informação encontrada para o código lido.');
+                }
+            } catch (err) {
+                console.error(err);
+                notifyError(err.message || 'Erro ao processar o código.');
+            }
+        } else if (e.key.length === 1) {
+            barcodeBuffer += e.key;
+            clearTimeout(barcodeTimer);
+            barcodeTimer = setTimeout(() => (barcodeBuffer = ''), 300);
+        }
+    });
+}
+
 export function initBooksModals() {
     bindOpenButtons();
+    initScannerListener();
     document.addEventListener('tableUpdated', bindOpenButtons);
 }
 

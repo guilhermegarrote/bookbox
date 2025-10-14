@@ -1,6 +1,7 @@
 import { createStudent } from '../../api/students/create.js';
 import { updateStudent } from '../../api/students/update.js';
 import { deleteStudent } from '../../api/students/delete.js';
+import { findLoanByBarcode } from '../../api/loans/findByBarcode.js';
 import studentsTable from '../../pages/students/table.js';
 import { applyInputMasks } from '../../components/inputMask.js';
 import ModalManager from '../../components/modalManager.js';
@@ -172,8 +173,44 @@ function bindOpenButtons() {
     });
 }
 
+function initBarcodeScannerListener() {
+    let barcodeBuffer = '';
+    let barcodeTimer = null;
+
+    document.addEventListener('keydown', async (e) => {
+        const activeElement = document.activeElement;
+        const modalOpen = document.querySelector('.modal.show') !== null;
+
+        if (activeElement && ['INPUT', 'TEXTAREA', 'SELECT'].includes(activeElement.tagName)) return;
+        if (modalOpen) return;
+
+        if (e.key === 'Enter' && barcodeBuffer) {
+            clearTimeout(barcodeTimer);
+
+            try {
+                const data = await findLoanByBarcode(barcodeBuffer);
+                barcodeBuffer = '';
+
+                if (data?.data?.studentId) {
+                    openMenuModal(data.data.studentId);
+                } else {
+                    notifyError('Nenhuma informação encontrada para o código lido');
+                }
+            } catch (err) {
+                console.error(err);
+                notifyError(err.message || 'Erro ao processar o código.');
+            }
+        } else if (e.key.length === 1) {
+            barcodeBuffer += e.key;
+            clearTimeout(barcodeTimer);
+            barcodeTimer = setTimeout(() => (barcodeBuffer = ''), 300);
+        }
+    });
+}
+
 export function initStudentsModals() {
     bindOpenButtons();
+    initBarcodeScannerListener();
     document.addEventListener('tableUpdated', bindOpenButtons);
 }
 

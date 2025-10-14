@@ -14,6 +14,12 @@ class StudentSchoolClass extends BaseModel
 
     protected $guarded = [];
 
+    protected $hidden = [
+        'cpf_hash',
+        'email_hash',
+        'phone_hash',
+    ];
+
     public function getStudentIdAttribute($value)
     {
         return $value ? Uuid::fromBytes($value)->toString() : null;
@@ -26,18 +32,19 @@ class StudentSchoolClass extends BaseModel
 
     public function getCpfAttribute($value): ?string
     {
-        return $value ? Utils::decrypt($value) : null;
-    }
+        if (!$value) {
+            return null;
+        }
 
-    public function getFormattedCpfAttribute()
-    {
-        $cpf = preg_replace('/\D/', '', $this->cpf);
-        if (strlen($cpf) !== 11) return $this->cpf;
+        $decrypted = Utils::decrypt($value);
 
-        return substr($cpf, 0, 3) . '.' .
-            substr($cpf, 3, 3) . '.' .
-            substr($cpf, 6, 3) . '-' .
-            substr($cpf, 9, 2);
+        $numbersOnly = preg_replace('/\D/', '', $decrypted);
+
+        if (preg_match('/^(\d{3})(\d{3})(\d{3})(\d{2})$/', $numbersOnly, $matches)) {
+            return "{$matches[1]}.{$matches[2]}.{$matches[3]}-{$matches[4]}";
+        }
+
+        return $decrypted;
     }
 
     public function getEmailAttribute($value): ?string
@@ -55,29 +62,11 @@ class StudentSchoolClass extends BaseModel
 
         $numbersOnly = preg_replace('/\D/', '', $decrypted);
 
-        if (strlen($numbersOnly) === 11) {
-            return sprintf(
-                '(%s) %s-%s',
-                substr($numbersOnly, 0, 2),
-                substr($numbersOnly, 2, 5),
-                substr($numbersOnly, 7)
-            );
+        if (preg_match('/^(\d{2})(\d{5})(\d{4})$/', $numbersOnly, $matches)) {
+            return "({$matches[1]}) {$matches[2]}-{$matches[3]}";
         }
 
         return $decrypted;
-    }
-
-    public function getFormattedPhoneAttribute()
-    {
-        $phone = preg_replace('/\D/', '', $this->phone);
-
-        if (strlen($phone) === 11) {
-            return '(' . substr($phone, 0, 2) . ') ' .
-                substr($phone, 2, 5) . '-' .
-                substr($phone, 7, 4);
-        } else {
-            return $this->phone;
-        }
     }
 
     public function student(): BelongsTo

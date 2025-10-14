@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Book;
 
+use App\Helpers\Validators;
 use App\Models\Book;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -16,7 +17,7 @@ class BookStoreRequest extends FormRequest
     protected function prepareForValidation(): void
     {
         $this->merge([
-            'isbn' => trim($this->input('isbn', '')),
+            'isbn' => preg_replace('/\D/', '', trim($this->input('isbn', ''))),
             'title' => trim($this->input('title', '')),
             'author' => trim($this->input('author', '')),
             'publisher' => trim($this->input('publisher', '')),
@@ -32,7 +33,12 @@ class BookStoreRequest extends FormRequest
                 'required',
                 'string',
                 'max:20',
-                'regex:/^(97(8|9))?\d{9}(\d|X)$/i',
+                function ($attribute, $value, $fail) {
+                    if (!Validators::validateIsbn($value)) {
+                        $fail('O ISBN informado é inválido.');
+
+                    }
+                },
                 Rule::unique('books', 'isbn'),
             ],
             'title' => [
@@ -80,7 +86,6 @@ class BookStoreRequest extends FormRequest
             'isbn.required' => 'O ISBN é obrigatório.',
             'isbn.string' => 'O ISBN deve ser um texto.',
             'isbn.max' => 'O ISBN não pode ter mais que 20 caracteres.',
-            'isbn.regex' => 'O ISBN informado não é válido.',
             'isbn.unique' => 'Já existe um livro com este ISBN.',
 
             'title.required' => 'O título é obrigatório.',

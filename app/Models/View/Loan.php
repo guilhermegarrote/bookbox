@@ -28,6 +28,11 @@ class Loan extends BaseModel
         return $value ? Uuid::fromBytes($value)->toString() : null;
     }
 
+    public function getBookIdAttribute($value)
+    {
+        return $value ? Uuid::fromBytes($value)->toString() : null;
+    }
+
     public function getCopyIdAttribute($value)
     {
         return $value ? Uuid::fromBytes($value)->toString() : null;
@@ -45,7 +50,19 @@ class Loan extends BaseModel
 
     public function getCpfAttribute($value): ?string
     {
-        return $value ? Utils::decrypt($value) : null;
+        if (!$value) {
+            return null;
+        }
+
+        $decrypted = Utils::decrypt($value);
+
+        $numbersOnly = preg_replace('/\D/', '', $decrypted);
+
+        if (preg_match('/^(\d{3})(\d{3})(\d{3})(\d{2})$/', $numbersOnly, $matches)) {
+            return "{$matches[1]}.{$matches[2]}.{$matches[3]}-{$matches[4]}";
+        }
+
+        return $decrypted;
     }
 
     public function getEmailAttribute($value): ?string
@@ -63,16 +80,46 @@ class Loan extends BaseModel
 
         $numbersOnly = preg_replace('/\D/', '', $decrypted);
 
-        if (strlen($numbersOnly) === 11) {
-            return sprintf(
-                '(%s) %s-%s',
-                substr($numbersOnly, 0, 2),
-                substr($numbersOnly, 2, 5),
-                substr($numbersOnly, 7)
-            );
+        if (preg_match('/^(\d{2})(\d{5})(\d{4})$/', $numbersOnly, $matches)) {
+            return "({$matches[1]}) {$matches[2]}-{$matches[3]}";
         }
 
         return $decrypted;
+    }
+
+    public function getIsbnAttribute($value): ?string
+    {
+        if (!$value) {
+            return null;
+        }
+
+        $numbersOnly = preg_replace('/\D/', '', $value);
+
+        if (strlen($numbersOnly) === 13) {
+            return sprintf(
+                '%s-%s-%s-%s-%s',
+                substr($numbersOnly, 0, 3),
+                substr($numbersOnly, 3, 1),
+                substr($numbersOnly, 4, 4),
+                substr($numbersOnly, 8, 4),
+                substr($numbersOnly, 12, 1)
+            );
+        }
+
+        return $numbersOnly;
+    }
+
+    public function getLoanStartDateAttribute($value): ?string
+    {
+        if (!$value) {
+            return null;
+        }
+
+        try {
+            return Carbon::parse($value)->format('d/m/Y');
+        } catch (\Exception $e) {
+            return null;
+        }
     }
 
     public function getLoanDueDateAttribute($value): ?string
@@ -83,7 +130,7 @@ class Loan extends BaseModel
 
         try {
             return Carbon::parse($value)->format('d/m/Y');
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return null;
         }
     }

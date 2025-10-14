@@ -3,9 +3,9 @@
 namespace App\Http\Requests\Book;
 
 use App\Helpers\Utils;
+use App\Helpers\Validators;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
-use App\Models\Book;
 
 class BookUpdateRequest extends FormRequest
 {
@@ -17,7 +17,7 @@ class BookUpdateRequest extends FormRequest
     protected function prepareForValidation(): void
     {
         $this->merge([
-            'isbn' => trim($this->input('isbn', '')),
+            'isbn' => preg_replace('/\D/', '', trim($this->input('isbn', ''))),
             'title' => trim($this->input('title', '')),
             'author' => trim($this->input('author', '')),
             'publisher' => trim($this->input('publisher', '')),
@@ -27,15 +27,19 @@ class BookUpdateRequest extends FormRequest
 
     public function rules(): array
     {
-        $binaryId = $this->route('id') ? Utils::convertUuidToBinary($this->route('id')) : null;
+        $binaryId = $this->route('book') ? Utils::convertUuidToBinary($this->route('book')) : null;
 
         return [
             'isbn' => [
                 'sometimes',
                 'string',
                 'max:20',
-                'regex:/^(97(8|9))?\d{9}(\d|X)$/i',
-                Rule::unique('books', 'isbn')->ignore($binaryId),
+                function ($attribute, $value, $fail) {
+                    if (!Validators::validateIsbn($value)) {
+                        $fail('O ISBN informado é inválido.');
+                    }
+                },
+                Rule::unique('books', 'isbn')->ignore($binaryId, 'id'),
             ],
             'title' => ['sometimes', 'string', 'max:255', 'regex:/^[\pL\pN\s.,!?\'"-]+$/u'],
             'author' => ['sometimes', 'string', 'max:300', 'regex:/^[\pL\s.\'-]+$/u'],

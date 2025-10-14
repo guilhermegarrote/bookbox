@@ -160,8 +160,3 @@
   color: #212121;
 }
 
-.view-mode,
-.edit-mode {
-    display: contents; /* faz a div "sumir", mantém apenas os filhos */
-}
-

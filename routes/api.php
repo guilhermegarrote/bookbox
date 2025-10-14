@@ -32,9 +32,17 @@ Route::middleware(['auth.jwt.cookie'])->group(function () {
     });
 
     Route::apiResource('students', StudentController::class);
+    Route::get('/students/find-by-cpf/{cpf}', [StudentController::class, 'findByCpf'])
+        ->name('students.findByCpf');
+
     Route::apiResource('genres', GenreController::class);
+
     Route::apiResource('books', BookController::class);
+    Route::get('/books/find-by-isbn/{isbn}', [BookController::class, 'findByIsbn'])
+        ->name('books.findByIsbn');
+
     Route::apiResource('school-classes', SchoolClassController::class);
+
     Route::apiResource('users', UserController::class);
 
     Route::apiResource('copies', CopyController::class)
@@ -49,6 +57,8 @@ Route::middleware(['auth.jwt.cookie'])->group(function () {
         ->name('loans.extend');
     Route::patch('loans/{loan}/finalize', [LoanController::class, 'finalize'])
         ->name('loans.finalize');
+    Route::get('/loans/find-by-barcode/{barcode}', [LoanController::class, 'findByBarcode'])
+        ->name('loans.findByBarcode');
 });
 
 Route::prefix('recover')->middleware('users.exist')->group(function () {

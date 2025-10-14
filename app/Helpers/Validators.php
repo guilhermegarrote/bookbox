@@ -257,4 +257,19 @@ class Validators
 
         return false;
     }
+
+    /**
+     * Validates a loan code in the format LNXXXXXXXX.
+     *
+     * You can pass the full code (LN + 8 alphanumeric characters) or just the starting part.
+     *
+     * @param string $code The loan code to validate.
+     * @return bool True if the code is valid, false otherwise.
+     */
+    public static function validateLoanCode(string $code): bool
+    {
+        $code = strtoupper(preg_replace('/[^A-Z0-9]/', '', $code));
+
+        return preg_match('/^LN[A-Z0-9]{0,8}$/', $code) === 1;
+    }
 }
