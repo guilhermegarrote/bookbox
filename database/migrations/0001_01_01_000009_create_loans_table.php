@@ -24,7 +24,6 @@ return new class extends Migration {
                 ->comment('Código de identificação do exemplar do livro emprestado.');
 
             $table->date('start_date')
-                ->default(DB::raw('CURRENT_TIMESTAMP'))
                 ->comment('Data em que o empréstimo foi realizado.');
 
             $table->date('due_date')

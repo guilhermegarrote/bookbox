@@ -28,6 +28,10 @@ class Loan extends BaseModel
             if (empty($loan->barcode_code)) {
                 $loan->barcode_code = self::generateBarCode();
             }
+
+            if (empty($loan->start_date)) {
+                $loan->start_date = now()->toDateString();
+            }
         });
     }
 
