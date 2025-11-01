@@ -38,7 +38,7 @@
         <thead>
             <tr>
                 <th scope="col">{!! sortLink('title', 'Livro') !!}</th>
-                <th scope="col" title="Número do exemplar">Exemplar</th>
+                <th scope="col" title="Número do exemplar" style="width: 130px;">Exemplar</th>
                 <th scope="col">{!! sortLink('author', 'Autor') !!}</th>
                 <th scope="col">{!! sortLink('name', 'Estudante') !!}</th>
                 <th scope="col">{!! sortLink('loan_due_date', 'Data de vencimento') !!}</th>
@@ -57,7 +57,7 @@
                 <tr data-loan-id="{{ $loan->id }}"
                     @if (!$isActive) style="background-color: #f5f5f5; color: #999; opacity: 0.6;" @endif>
                     <td title="Livro: {{ $loan->title }}">{{ $loan->title }}</td>
-                    <td title="Exemplar número: {{ $loan->number }}">{{ $loan->number }}</td>
+                    <td title="Número exemplar: {{ $loan->number }}" style="width: 130px;">{{ $loan->number }}</td>
                     <td title="Autor: {{ $loan->author }}">{{ $loan->author }}</td>
                     <td title="Estudante: {{ $loan->name }}">{{ $loan->name }}</td>
                     <td title="Data de vencimento: {{ $loan->loan_due_date }}">{{ $loan->loan_due_date }}</td>
