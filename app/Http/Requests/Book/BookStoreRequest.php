@@ -22,7 +22,7 @@ class BookStoreRequest extends FormRequest
             'author' => trim($this->input('author', '')),
             'publisher' => trim($this->input('publisher', '')),
             'genre_name' => trim($this->input('genre_name', '')),
-            'numberOfCopies' => (int) $this->input('numberOfCopies', 1),
+            'number_copies' => (int) $this->input('number_copies', 1),
         ]);
     }
 
@@ -60,7 +60,7 @@ class BookStoreRequest extends FormRequest
                 'regex:/^[\pL\s.\'-]+$/u',
             ],
             'genre_name' => ['required', 'string', 'max:100'],
-            'numberOfCopies' => ['required', 'integer', 'min:1', 'max:32767'],
+            'number_copies' => ['required', 'integer', 'min:1', 'max:32767'],
         ];
     }
 
@@ -107,10 +107,10 @@ class BookStoreRequest extends FormRequest
             'genre_name.string' => 'O nome do gênero deve ser um texto.',
             'genre_name.max' => 'O nome do gênero não pode ter mais que 100 caracteres.',
 
-            'numberOfCopies.required' => 'O número de cópias é obrigatório.',
-            'numberOfCopies.integer' => 'O número de cópias deve ser um número inteiro.',
-            'numberOfCopies.min' => 'O número de cópias deve ser no mínimo 1.',
-            'numberOfCopies.max' => 'O número de cópias não pode exceder 32767.',
+            'number_copies.required' => 'O número de exemplares é obrigatório.',
+            'number_copies.integer' => 'O número de exemplares deve ser um número inteiro.',
+            'number_copies.min' => 'O número de exemplares deve ser no mínimo 1.',
+            'number_copies.max' => 'O número de exemplares não pode exceder 32767.',
         ];
     }
 }

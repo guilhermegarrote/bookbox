@@ -58,7 +58,7 @@ class BookController extends Controller
     public function store(BookStoreRequest $request, CopyService $copyService): JsonResponse
     {
         $bookData = $request->only(['isbn', 'title', 'author', 'publisher']);
-        $numberOfCopies = (int) $request->input('numberOfCopies');
+        $numberCopies = (int) $request->input('number_copies');
 
         $genre = Genre::where('name', $request->input('genre_name'))->first();
 
@@ -69,9 +69,9 @@ class BookController extends Controller
         $bookData['genre_id'] = Utils::convertUuidToBinary($genre->id);
 
         try {
-            DB::transaction(function () use ($bookData, $numberOfCopies, $copyService) {
+            DB::transaction(function () use ($bookData, $numberCopies, $copyService) {
                 $book = Book::create($bookData);
-                $copyService->storeCopies(Utils::convertUuidToBinary($book->id), $numberOfCopies);
+                $copyService->storeCopies(Utils::convertUuidToBinary($book->id), $numberCopies);
             });
 
             return $this->createdResponse();
