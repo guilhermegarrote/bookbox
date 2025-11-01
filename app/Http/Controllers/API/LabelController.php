@@ -17,7 +17,7 @@ class LabelController extends Controller
      * @param LabelStoreRequest $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function generateLabels(LabelStoreRequest $request)
+    public function generateLabel(LabelStoreRequest $request)
     {
         $books = $request->input('books');
 
