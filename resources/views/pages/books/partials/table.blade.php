@@ -43,6 +43,11 @@
                 <th scope="col">{!! sortLink('author', 'Autor') !!}</th>
                 <th scope="col" title="Gênero do livro">Gênero</th>
                 <th scope="col">{!! sortLink('publisher', 'Editora') !!}</th>
+                <th scope="col" class="button-col" style="width: 55px; padding-right: 10px">
+                    <button class="btn-dark btn-label" title="Gerar etiquetas">
+                        <x-icons.icon name="label" class="" />
+                    </button>
+                </th>
                 <th scope="col" class="button-col">
                     <button class="btn-dark btn-add" title="Adicionar novo livro">
                         <x-icons.icon name="plus" class="" />
@@ -63,6 +68,7 @@
                         {{ $book->genre_name }}
                     </td>
                     <td title="Editora: {{ $book->publisher }}">{{ $book->publisher }}</td>
+                    <td class="button-col"></td>
                     <td class="button-col"></td>
                 </tr>
             @endforeach
