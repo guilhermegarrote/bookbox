@@ -7,6 +7,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Copy\CopyStoreRequest;
 use App\Models\Book;
 use App\Models\Copy;
+use App\Models\Loan;
+use App\Models\View\Copy as ViewCopy;
 use App\Services\CopyService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -18,8 +20,7 @@ class CopyController extends Controller
     public function index(): JsonResponse
     {
         try {
-            $copies = Copy::with(['book'])
-                ->orderBy('created_at', 'desc')
+            $copies = ViewCopy::orderBy('number', 'asc')
                 ->paginate(10);
 
             return $this->successResponse($copies->toArray());
@@ -42,8 +43,7 @@ class CopyController extends Controller
 
             $binaryBookId = Utils::convertUuidToBinary($book->id);
 
-            // Aqui precisa garantir que $numberOfCopies exista (talvez do request)
-            $numberOfCopies = $request->input('number_of_copies', 1);
+            $numberOfCopies = $request->input('number_copies', 1);
 
             $copyService->storeCopies($binaryBookId, $numberOfCopies);
 
@@ -62,7 +62,7 @@ class CopyController extends Controller
     {
         try {
             $binaryId = Utils::convertUuidToBinary($id);
-            $copy = Copy::with(['book'])->findOrFail($binaryId);
+            $copy = Copy::findOrFail($binaryId);
 
             return $this->successResponse($copy->toArray());
         } catch (ModelNotFoundException $e) {
@@ -79,10 +79,14 @@ class CopyController extends Controller
             $binaryId = Utils::convertUuidToBinary($id);
             $copy = Copy::findOrFail($binaryId);
 
-            // Caso precise validar se o exemplar está emprestado antes de excluir:
-            // if ($copy->loans()->whereNull('returned_date')->exists()) {
-            //     return $this->conflictResponse(['loan' => 'Exemplar está emprestado e não pode ser excluído.']);
-            // }
+            if (Loan::where('copy_id', $binaryId)
+                ->whereNull('returned_date')
+                ->exists()
+            ) {
+                return $this->conflictResponse([
+                    'loan' => 'Exemplar está emprestado e não pode ser excluído.'
+                ]);
+            }
 
             $copy->delete();
 
