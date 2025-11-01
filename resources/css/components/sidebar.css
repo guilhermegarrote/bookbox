@@ -1,6 +1,80 @@
+.sidebar {
+    width: 300px;
+    flex-shrink: 0;
+    padding: 0.75rem;
+    border-radius: 8px;
+}
+
+.loan-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+}
+
+.loan-item {
+    display: flex;
+    align-items: stretch;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    background: #fff;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.1s ease-in-out;
+}
+
+.loan-item:hover {
+    transform: scale(1.02);
+}
+
+.loan-color {
+    width: 18px;
+    align-self: stretch;
+}
+
+.loan-content {
+    padding: 0.6rem 0.8rem;
+    flex: 1;
+    display: flex;
+    justify-content: space-between;
+    align-items: stretch;
+}
+
+.loan-title {
+    font-weight: 600;
+    font-size: 1.15rem;
+    color: #333;
+    margin-bottom: 0.25rem;
+}
+
+.loan-label {
+    font-size: 1rem;
+    font-weight: 500;
+}
+
+.loan-days {
+    min-width: 42px;
+    text-align: right;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+}
+
+.loan-days-number {
+    font-weight: 700;
+    font-size: 1.25rem;
+    color: #333;
+}
+
+.loan-days-text {
+    font-size: 1rem;
+    color: #555;
+}
+
 .sidebar-wrapper {
     overflow-x: auto;
     max-height: 100%;
-    border: 1px solid #ccc;
     border-radius: 6px;
 }
