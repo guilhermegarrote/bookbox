@@ -23,20 +23,38 @@ class CopyService
             throw new InvalidArgumentException("A quantidade de cópias deve ser maior que zero.");
         }
 
-        DB::transaction(function () use ($binaryBookId, $quantity) {
-            $lastNumber = Copy::where('book_id', $binaryBookId)->max('number') ?? 0;
+        $lastNumber = Copy::where('book_id', $binaryBookId)->max('number') ?? 0;
 
-            $copies = [];
+        if ($lastNumber == 32767) {
+            throw new InvalidArgumentException("Esse livro já atingiu o número máximo de cópias");
+        }
+
+        if (($lastNumber + $quantity) > 32767) {
+            throw new InvalidArgumentException(
+                "A quantidade de cópias deve ser menor que " . (32768 - $lastNumber) . "."
+            );
+        }
+
+        DB::transaction(function () use ($binaryBookId, $quantity, $lastNumber) {
+            $chunk = [];
+            $chunkSize = 500;
 
             for ($i = 1; $i <= $quantity; $i++) {
-                $copies[] = [
+                $chunk[] = [
                     'id' => Uuid::uuid4()->getBytes(),
                     'book_id' => $binaryBookId,
-                    'number'  => $lastNumber + $i
+                    'number' => $lastNumber + $i,
                 ];
+
+                if (count($chunk) === $chunkSize) {
+                    Copy::insert($chunk);
+                    $chunk = [];
+                }
             }
 
-            Copy::insert($copies);
+            if (!empty($chunk)) {
+                Copy::insert($chunk);
+            }
         });
     }
 }
