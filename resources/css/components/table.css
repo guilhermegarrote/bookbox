@@ -132,24 +132,28 @@
     fill: #dc3545;
 }
 
-.btn-add {
+.btn-add,
+.btn-label {
     width: 30px;
     height: 30px;
     padding: 0;
 }
 
-.btn-add svg {
+.btn-add svg,
+.btn-label svg {
     width: 16px;
     height: 16px;
     display: block;
 }
 
-.btn-add svg path {
+.btn-add svg path,
+.btn-label svg path {
     fill: var(--color-base-white);
     transition: fill 0.3s ease;
 }
 
-.btn-add:hover svg path {
+.btn-add:hover svg path,
+.btn-label:hover svg path {
     fill: var(--color-base-gray-dark);
 }
 
