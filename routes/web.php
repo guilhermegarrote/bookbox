@@ -1,12 +1,13 @@
 <?php
 
-use App\Http\Controllers\Api\LabelController;
+use App\Http\Controllers\LabelController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\LoanController;
 use App\Http\Controllers\BookController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\Auth\PasswordRecoveryController;
+use App\Http\Controllers\CopyController;
 
 Route::middleware('auth.jwt.cookie')->group(function () {
     Route::get('/', [LoanController::class, 'index'])->name('loans.view');
@@ -22,7 +23,6 @@ Route::middleware('auth.jwt.cookie')->group(function () {
     Route::get('/books/create-modal', [BookController::class, 'createModal'])->name('books.createModal');
     Route::get('/books/{book}/update-modal', [BookController::class, 'updateModal'])->name('books.updateModal');
     Route::get('/books/{book}/menu-modal', [BookController::class, 'menuModal'])->name('books.menuModal');
-    Route::get('/books/generate-labels', [LabelController::class, 'generateLabels'])->name('labels.generate');
 
     Route::get('/students', [StudentController::class, 'index'])->name('students.view');
     Route::get('/students/filter', [StudentController::class, 'filter'])->name('students.filter.view');
@@ -30,9 +30,16 @@ Route::middleware('auth.jwt.cookie')->group(function () {
     Route::get('/students/{student}/update-modal', [StudentController::class, 'updateModal'])->name('students.updateModal');
     Route::get('/students/{student}/menu-modal', [StudentController::class, 'menuModal'])->name('students.menuModal');
 
+    Route::get('/copies/{book}/manager-modal', [CopyController::class, 'managerModal'])->name('copies.managerModal');
+    Route::get('/labels/generate-modal', [LabelController::class, 'generateLabelModal'])->name('labels.generateModal');
+
     Route::get('/modals/modal-message', function () {
         return view('components.modals.modal-message');
     })->name('modals.modalMessage');
+
+    Route::get('/settings/modal', function () {
+        return view('settings.index');
+    })->name('settings.view');
 });
 
 Route::middleware('guest')->group(function () {
