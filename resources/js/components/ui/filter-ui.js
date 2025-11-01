@@ -40,31 +40,42 @@ export class FilterUI {
 
             switch (el.tagName) {
                 case 'SELECT':
+                    el.value = '';
                     if (f.optionsData) {
                         this.populateSelect(el, f.optionsData, 'value', 'label', f.placeholder);
                     } else {
                         el.innerHTML = '';
                         el.appendChild(new Option(f.placeholder || 'Selecione...', '', true, true));
                     }
-                    el.dispatchEvent(new Event('change', { bubbles: true }));
                     break;
                 case 'INPUT':
                     if (el.type === 'text' || el.type === 'search') {
                         el.value = '';
-                        el.dispatchEvent(new Event('input', { bubbles: true }));
                     } else if (el.type === 'checkbox' || el.type === 'radio') {
                         el.checked = false;
-                        el.dispatchEvent(new Event('change', { bubbles: true }));
                     }
                     break;
                 case 'TEXTAREA':
                     el.value = '';
-                    el.dispatchEvent(new Event('input', { bubbles: true }));
                     break;
             }
         });
 
         this.applyFilter();
+
+        this.fields.forEach(f => {
+            if (!f.element) return;
+            const el = f.element;
+
+            switch (el.tagName) {
+                case 'SELECT':
+                case 'INPUT':
+                case 'TEXTAREA':
+                    el.dispatchEvent(new Event('change', { bubbles: true }));
+                    el.dispatchEvent(new Event('input', { bubbles: true }));
+                    break;
+            }
+        });
 
         if (typeof saveFilterState === 'function') {
             saveFilterState();
@@ -168,8 +179,6 @@ export class FilterUI {
                             label: f.formatLabel ? f.formatLabel(item[f.key]) : item[f.key]
                         }));
 
-                    console.log(`Populando select ${f.key}`);
-                    console.log('Valores filtrados:', filteredForSelect.map(d => d[f.key]));
                     this.populateSelect(f.element, uniqueItems, 'value', 'label', f.placeholder);
                 }
             }

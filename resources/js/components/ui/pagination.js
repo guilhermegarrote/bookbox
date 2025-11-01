@@ -1,4 +1,4 @@
-import '../../css/components/_pagination.css';
+import '../../../css/components/_pagination.css';
 
 export function bindPaginationForm() {
     const paginationForm = document.getElementById('paginationForm');

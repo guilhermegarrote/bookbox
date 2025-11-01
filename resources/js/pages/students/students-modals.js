@@ -1,10 +1,10 @@
 import { createStudent } from '../../api/students/create.js';
 import { updateStudent } from '../../api/students/update.js';
 import { deleteStudent } from '../../api/students/delete.js';
-import { findLoanByBarcode } from '../../api/loans/findByBarcode.js';
+import { findLoanByBarcode } from '../../api/loans/find-by-barcode.js';
 import studentsTable from '../../pages/students/table.js';
-import { applyInputMasks } from '../../components/inputMask.js';
-import ModalManager from '../../components/modalManager.js';
+import { applyInputMasks } from '../../components/ui/input-mask.js';
+import ModalManager from '../../components/managers/modal-manager.js';
 import { route } from 'ziggy-js';
 import { showErrors, notifySuccess, notifyError } from '@/utils/formErrors';
 

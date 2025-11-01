@@ -1,8 +1,8 @@
 import { initLoansModals } from './loans-modals';
-import { FilterUI } from '../../components/filterUI';
+import { FilterUI } from '../../components/ui/filter-ui';
 import loansTable from './table';
-import { setupTablePage } from '../../components/pageTableSetup';
-import { setupSidebarPage } from '../../components/pageSidebarSetup';
+import { setupTablePage } from '../../components/setups/page-table-setup';
+import { setupSidebarPage } from '../../components/setups/page-sidebar-setup';
 
 setupTablePage({
     initFilterUI: () => {

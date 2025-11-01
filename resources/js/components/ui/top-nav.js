@@ -1,3 +1,5 @@
+import SettingsPanelManager from "../managers/settings-panel-manager";
+
 document.addEventListener('DOMContentLoaded', () => {
     const btnFilter = document.getElementById('btn-filter');
     const popupFilter = document.getElementById('popup-filter');
@@ -144,4 +146,11 @@ document.addEventListener('DOMContentLoaded', () => {
             }, 300);
         });
     }
+
+    const settingsBtn = document.getElementById('open-settings');
+    const settingsManager = new SettingsPanelManager();
+
+    settingsBtn?.addEventListener('click', () => {
+        settingsManager.open();
+    });
 });

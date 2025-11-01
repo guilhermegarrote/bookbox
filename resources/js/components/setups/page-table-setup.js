@@ -1,4 +1,4 @@
-import { bindPaginationForm } from './pagination';
+import { bindPaginationForm } from '../ui/pagination';
 
 export function setupTablePage({ initFilterUI, updateTable, filterStateKey, filterData, initModals }) {
     window.App = {

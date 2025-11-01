@@ -1,4 +1,4 @@
-import '../../css/components/sidebar.css';
+import '../../../css/components/sidebar.css';
 
 export function setupSidebarPage() {
     document.addEventListener('DOMContentLoaded', () => {

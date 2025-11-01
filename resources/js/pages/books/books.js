@@ -1,7 +1,7 @@
 import { initBooksModals } from './books-modals';
-import { FilterUI } from '../../components/filterUI';
+import { FilterUI } from '../../components/ui/filter-ui';
 import booksTable from './table';
-import { setupTablePage } from '../../components/pageTableSetup';
+import { setupTablePage } from '../../components/setups/page-table-setup';
 
 setupTablePage({
     initFilterUI: () => {

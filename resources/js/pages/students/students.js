@@ -1,7 +1,7 @@
 import { initStudentsModals } from './students-modals';
-import { FilterUI } from '../../components/filterUI';
+import { FilterUI } from '../../components/ui/filter-ui';
 import studentsTable from './table';
-import { setupTablePage } from '../../components/pageTableSetup';
+import { setupTablePage } from '../../components/setups/page-table-setup';
 
 setupTablePage({
     initFilterUI: () => {

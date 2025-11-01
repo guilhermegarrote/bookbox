@@ -1,6 +1,6 @@
-import { sendRequest } from '../../api/books/listFetcher';
-import { bindPaginationForm } from '../../components/pagination';
-import TableManager from '../../components/tableManager';
+import { sendRequest } from '../../api/books/list-fetcher';
+import { bindPaginationForm } from '../../components/ui/pagination';
+import TableManager from '../../components/managers/table-manager';
 
 window.bindPaginationForm = bindPaginationForm;
 

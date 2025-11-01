@@ -123,7 +123,7 @@ export default class ModalManager {
         if (!modal) return;
 
         const closeButtons = modal.querySelectorAll('.modal-button#btn-close, #modal-message-decline');
-        closeButtons.forEach(btn => btn.addEventListener('click', () => this.hideModal(modalId), { once: true }));
+        closeButtons.forEach(btn => btn.addEventListener('click', () => this.removeModal(modalId), { once: true }));
 
         const overlay = modal.closest('.modal-overlay');
         if (overlay) {
@@ -188,18 +188,18 @@ export default class ModalManager {
         const overlay = modal.closest('.modal-overlay');
 
         acceptBtn.addEventListener("click", () => {
-            this.hideModal(modal.id);
+            this.remove(modal.id);
             resolve(true);
         }, { once: true });
 
         declineBtn.addEventListener("click", () => {
-            this.hideModal(modal.id);
+            this.remove(modal.id);
             resolve(false);
         }, { once: true });
 
         overlay.addEventListener('click', (e) => {
             if (e.target === overlay) {
-                this.hideModal(modal.id);
+                this.remove(modal.id);
                 resolve(false);
             }
         }, { once: true });

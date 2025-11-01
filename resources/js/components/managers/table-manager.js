@@ -1,4 +1,4 @@
-import '../../css/components/table.css';
+import '../../../css/components/table.css';
 
 export default class TableManager {
     constructor({ sendRequest, tableContainerId, paginationWrapperId, errorMessage = 'Erro ao carregar dados.' }) {
