@@ -4,7 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Helpers\Utils;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Copy\CopyStoreRequest;
+use App\Http\Requests\Copy\CopyAddRequest;
 use App\Models\Book;
 use App\Models\Copy;
 use App\Models\Loan;
@@ -12,7 +12,6 @@ use App\Models\View\Copy as ViewCopy;
 use App\Services\CopyService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Support\Facades\DB;
 use Throwable;
 
 class CopyController extends Controller
@@ -30,30 +29,22 @@ class CopyController extends Controller
         }
     }
 
-    public function store(CopyStoreRequest $request, CopyService $copyService): JsonResponse
+    public function add(CopyAddRequest $request, CopyService $copyService, string $id): JsonResponse
     {
-        DB::beginTransaction();
-
         try {
-            $book = Book::where('isbn', $request->isbn)->first();
+            $binaryBookId = Utils::convertUuidToBinary($id);
 
-            if (!$book) {
-                return $this->notFoundResponse('Livro não encontrado para o ISBN informado.');
-            }
+            Book::findOrFail('id', $binaryBookId);
 
-            $binaryBookId = Utils::convertUuidToBinary($book->id);
+            $amount = $request->input('amount', 1);
 
-            $numberOfCopies = $request->input('number_copies', 1);
+            $copyService->storeCopies($binaryBookId, $amount);
 
-            $copyService->storeCopies($binaryBookId, $numberOfCopies);
-
-            DB::commit();
-
-            return $this->createdResponse();
+            return $this->successResponse(['added_copies' => $amount]);
+        } catch (ModelNotFoundException $e) {
+            return $this->notFoundResponse('Livro não encontrado.');
         } catch (Throwable $e) {
-            DB::rollBack();
-
-            $this->logError('Erro ao cadastrar exemplar.', $e, ['book' => $book ?? null]);
+            $this->logError('Erro ao cadastrar exemplar.', $e, ['book_id' => $id ?? null]);
             return $this->internalErrorResponse($e, 'Erro interno ao cadastrar exemplar.');
         }
     }

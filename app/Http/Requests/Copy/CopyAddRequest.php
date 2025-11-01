@@ -4,7 +4,7 @@ namespace App\Http\Requests\Copy;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class CopyStoreRequest extends FormRequest
+class CopyAddRequest extends FormRequest
 {
     public function authorize(): bool
     {
@@ -15,7 +15,7 @@ class CopyStoreRequest extends FormRequest
     {
         $this->merge([
             'isbn' => trim($this->input('isbn', '')),
-            'number_copies' => (int) $this->input('number_copies', 1)
+            'amount' => (int) $this->input('amount', 1)
         ]);
     }
 
@@ -28,7 +28,7 @@ class CopyStoreRequest extends FormRequest
                 'regex:/^(97(8|9))?\d{9}(\d|X)$/i',
                 'exists:books,isbn',
             ],
-            'number_copies' => ['required', 'integer', 'min:1', 'max:32767']
+            'amount' => ['required', 'integer', 'min:1', 'max:32767']
         ];
     }
 
@@ -40,10 +40,10 @@ class CopyStoreRequest extends FormRequest
             'isbn.regex' => 'O ISBN informado não tem um formato válido.',
             'isbn.exists' => 'O ISBN informado não foi encontrado na base de livros.',
 
-            'number_copies.required' => 'O número de exemplares é obrigatório.',
-            'number_copies.integer' => 'O número de exemplares deve ser um número inteiro.',
-            'number_copies.min' => 'É necessário cadastrar pelo menos 1 exemplar.',
-            'number_copies.max' => 'O número de exemplares não pode exceder 32767.'
+            'amount.required' => 'O número de exemplares é obrigatório.',
+            'amount.integer' => 'O número de exemplares deve ser um número inteiro.',
+            'amount.min' => 'É necessário cadastrar pelo menos 1 exemplar.',
+            'amount.max' => 'O número de exemplares não pode exceder 32767.'
         ];
     }
 }
