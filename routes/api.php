@@ -9,6 +9,7 @@ use App\Http\Controllers\API\{
     CopyController,
     GenreController,
     BookController,
+    LabelController,
     SchoolClassController,
     SettingController,
     UserController
@@ -46,7 +47,9 @@ Route::middleware(['auth.jwt.cookie'])->group(function () {
     Route::apiResource('users', UserController::class);
 
     Route::apiResource('copies', CopyController::class)
-        ->except(['update']);
+        ->except(['store', 'update']);
+    Route::patch('/books/{book}/copies', [CopyController::class, 'add'])->name('books.addCopies');
+    Route::post('/labels/generate-pdf', [LabelController::class, 'generateLabel'])->name('labels.generate');
 
     Route::apiResource('settings', SettingController::class)
         ->except(['store', 'destroy']);
