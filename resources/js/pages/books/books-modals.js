@@ -1,13 +1,19 @@
-import { createBooks } from '../../api/books/create.js';
-import { updateBooks } from '../../api/books/update.js';
-import { deleteBooks } from '../../api/books/delete.js';
-import { findLoanByBarcode } from '../../api/loans/findByBarcode.js';
-import { findBookByIsbn } from '../../api/books/findByIsbn.js';
-import booksTable from './table.js';
-import { applyInputMasks } from '../../components/inputMask.js';
-import ModalManager from '../../components/modalManager.js';
 import { route } from 'ziggy-js';
+
 import { showErrors, notifySuccess, notifyError } from '@/utils/formErrors';
+
+import { applyInputMasks } from '../../components/ui/input-mask.js';
+import ModalManager from '../../components/managers/modal-manager.js';
+
+import { createBooks } from '../../api/books/create.js';
+import { deleteBooks } from '../../api/books/delete.js';
+import { findBookByIsbn } from '../../api/books/find-by-isbn.js';
+import { updateBooks } from '../../api/books/update.js';
+import { findLoanByBarcode } from '../../api/loans/find-by-barcode.js';
+
+import booksTable from './table.js';
+import { openGeneraLabelModal } from '../labels/labels-modals.js';
+import { openManagerCopiesModal } from '../copies/copies-modals.js';
 
 const modalManager = new ModalManager();
 
@@ -83,6 +89,14 @@ async function openMenuModal(bookId) {
             openUpdateModal(bookId);
         });
 
+        document.getElementById('open-manager-copies-modal')?.addEventListener('click', () => {
+            openManagerCopiesModal(bookId, modalManager);
+        });
+
+        document.getElementById('open-generate-label-modal')?.addEventListener('click', () => {
+            openGeneraLabelModal(modalManager);
+        });
+
         document.getElementById('submit-delete')?.addEventListener('click', async () => {
             const confirmed = await modalManager.showModalMessage({
                 message: 'Deseja realmente excluir este livro?',
@@ -142,6 +156,8 @@ export function initBooksSelects(filterData) {
 function bindOpenButtons() {
     const addBtn = document.querySelector('.btn-add');
     if (addBtn) addBtn.addEventListener('click', openCreateModal);
+    const labelBtn = document.querySelector('.btn-label');
+    if (labelBtn) addBtn.addEventListener('click', openGeneraLabelModal(modalManager));
 
     document.querySelectorAll('table.data-table tbody tr').forEach(row => {
         row.addEventListener('click', () => {
