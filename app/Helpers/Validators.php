@@ -1,33 +1,42 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Helpers;
 
+/**
+ * Utility class providing static validation methods for various data formats.
+ *
+ * This helper centralizes all validation logic used throughout the system,
+ * ensuring consistency and reusability for user input, identifiers, and business rules.
+ */
 class Validators
 {
     /**
      * Validates a Brazilian CPF number.
      *
-     * @param string $cpf The CPF number as a string.
-     * @return bool True if the CPF is valid, false otherwise.
+     * @param string $cpf the CPF number as a string (formatted or not)
+     *
+     * @return bool true if the CPF is valid; otherwise, false
      */
     public static function validateCpf(string $cpf): bool
     {
         $cpf = preg_replace('/\D/', '', $cpf);
 
-        if (strlen($cpf) !== 11 || preg_match('/^(\d)\1{10}$/', $cpf)) {
+        if (\strlen($cpf) !== 11 || preg_match('/^(\d)\1{10}$/', $cpf)) {
             return false;
         }
 
-        for ($t = 9; $t < 11; $t++) {
+        for ($t = 9; $t < 11; ++$t) {
             $sum = 0;
-            for ($i = 0; $i < $t; $i++) {
-                $sum += $cpf[$i] * (($t + 1) - $i);
+            for ($i = 0; $i < $t; ++$i) {
+                $sum += (int) $cpf[$i] * (($t + 1) - $i);
             }
 
             $digit = ($sum * 10) % 11;
-            if ($digit == 10) $digit = 0;
+            $digit = ($digit === 10) ? 0 : $digit;
 
-            if ($cpf[$t] != $digit) {
+            if ((int) $cpf[$t] !== $digit) {
                 return false;
             }
         }
@@ -38,90 +47,95 @@ class Validators
     /**
      * Validates the structure of a course name.
      *
-     * @param string $course The course name to validate.
-     * @return bool True if the course name is valid, false otherwise.
+     * @param string $course the course name to validate
+     *
+     * @return bool true if the name meets the format requirements
      */
     public static function validateCourseName(string $course): bool
     {
         $course = trim($course);
 
-        if (preg_match("/^[A-Za-zÀ-ÖØ-öø-ÿ' -]+$/", $course)) {
-            return strlen($course) >= 3 && strlen($course) <= 100;
-        }
-
-        return false;
+        return preg_match("/^[A-Za-zÀ-ÖØ-öø-ÿ' -]+$/", $course)
+            && \strlen($course) >= 3
+            && \strlen($course) <= 100;
     }
 
     /**
-     * Validates the structure of a password.
+     * Validates a password structure according to system security rules.
      *
      * Password must:
-     * - Be 8 to 16 characters long
-     * - Include at least one uppercase letter
-     * - Include at least one lowercase letter
-     * - Include at least one digit
-     * - Include at least one special character
+     * - Be 8–16 characters long.
+     * - Include at least one uppercase and one lowercase letter.
+     * - Include at least one digit and one special character.
      *
-     * @param string $password The password to validate.
-     * @return bool True if the password meets the criteria, false otherwise.
+     * @param string $password the password string to validate
+     *
+     * @return bool true if the password meets the security requirements
+     *
+     * @see https://owasp.org/www-community/password-special-characters
      */
     public static function validatePasswordStructure(string $password): bool
     {
         $regex = '/^
-        (?=.*[a-z])                              # At least one lowercase letter
-        (?=.*[A-Z])                              # At least one uppercase letter
-        (?=.*\d)                                 # At least one digit
-        (?=.*[!*@#$%^&(),.?":{}|<>])             # At least one special character
-        [A-Za-z\d!*@#$%^&(),.?":{}|<>]{8,16}      # Length between 8 and 16
-        $/x';
+            (?=.*[a-z])                                     # At least one lowercase letter
+            (?=.*[A-Z])                                     # At least one uppercase letter
+            (?=.*\d)                                        # At least one digit
+            (?=.*[ !"#$%&\'()*+,\-./:;<=>?@\[\\\]^_`{|}~])  # At least one special character
+            [A-Za-z\d !"#$%&\'()*+,\-./:;<=>?@\[\\\]^_`{|}~]{8,16}$  # Allowed chars, length 8–16
+        /x';
 
         return (bool) preg_match($regex, $password);
     }
 
     /**
-     * Validates the structure of a person's full name.
-     * Name must:
-     * - Contain only letters, spaces, hyphens or apostrophes
-     * - Have at least two words
-     * - Be between 3 and 100 characters
+     * Validates a full name according to format and length rules.
      *
-     * @param string $name The full name to validate.
-     * @return bool True if the name is valid, false otherwise.
+     * Name must contain:
+     * - Only letters, spaces, hyphens or apostrophes.
+     * - At least two words.
+     * - Between 3 and 100 characters.
+     *
+     * @param string $name the full name to validate
+     *
+     * @return bool true if valid, false otherwise
      */
     public static function validateFullName(string $name): bool
     {
         $name = trim($name);
 
-        if (!preg_match("/^[\p{L} '-]+$/u", $name)) {
+        if (!preg_match("/^[\\p{L} '-]+$/u", $name)) {
             return false;
         }
 
         $words = array_filter(explode(' ', $name));
 
-        return count($words) >= 2 && mb_strlen($name) >= 3 && mb_strlen($name) <= 100;
+        return \count($words) >= 2
+            && mb_strlen($name) >= 3
+            && mb_strlen($name) <= 100;
     }
 
     /**
      * Validates a Brazilian mobile phone number.
      *
-     * The number must:
-     * - Have 11 digits (including area code)
-     * - Start with a valid DDD (area code)
-     * - Start with 9 after the DDD (mobile numbers)
+     * Rules:
+     * - 11 digits (including DDD)
+     * - Valid DDD
+     * - Must start with 9 after the DDD
      *
-     * @param string $number The phone number to validate.
-     * @return bool True if the phone number is valid, false otherwise.
+     * @param string $number the phone number to validate
+     *
+     * @return bool true if valid; otherwise, false
      */
     public static function validatePhoneNumber(string $number): bool
     {
         $number = preg_replace('/\D/', '', $number);
 
-        if (strlen($number) !== 11) {
+        if (\strlen($number) !== 11) {
             return false;
         }
 
         $areaCode = substr($number, 0, 2);
-        $firstDigit = substr($number, 2, 1);
+        $firstDigit = $number[2];
 
         $validAreaCodes = [
             '11',
@@ -160,8 +174,8 @@ class Validators
             '55',
             '61',
             '62',
-            '64',
             '63',
+            '64',
             '65',
             '66',
             '67',
@@ -190,25 +204,18 @@ class Validators
             '96',
             '97',
             '98',
-            '99'
+            '99',
         ];
 
-        if (!in_array($areaCode, $validAreaCodes)) {
-            return false;
-        }
-
-        if ($firstDigit !== '9') {
-            return false;
-        }
-
-        return true;
+        return \in_array($areaCode, $validAreaCodes, true) && $firstDigit === '9';
     }
 
     /**
-     * Validates the structure of an email address using PHP's filter and DNS check.
+     * Validates the structure of an email address and checks MX DNS records.
      *
-     * @param string $email The email to validate.
-     * @return bool True if the email is valid and domain has MX records, false otherwise.
+     * @param string $email the email address to validate
+     *
+     * @return bool true if valid and domain has MX records; otherwise, false
      */
     public static function validateEmail(string $email): bool
     {
@@ -216,43 +223,45 @@ class Validators
             return false;
         }
 
-        $domain = substr(strrchr($email, "@"), 1);
+        $domain = substr(strrchr($email, '@'), 1);
 
-        return checkdnsrr($domain, "MX");
+        return $domain && checkdnsrr($domain, 'MX');
     }
 
     /**
-     * Validates an ISBN-10 or ISBN-13.
+     * Validates an ISBN-10 or ISBN-13 format and checksum.
      *
-     * @param string $isbn The ISBN to validate.
-     * @return bool True if the ISBN is valid, false otherwise.
+     * @param string $isbn the ISBN to validate
+     *
+     * @return bool true if valid; otherwise, false
+     *
+     * @see https://en.wikipedia.org/wiki/International_Standard_Book_Number
      */
     public static function validateIsbn(string $isbn): bool
     {
         $isbn = preg_replace('/\D/', '', $isbn);
 
-        if (strlen($isbn) === 10) {
+        if (\strlen($isbn) === 10) {
             $sum = 0;
-            for ($i = 0; $i < 9; $i++) {
-                if (!is_numeric($isbn[$i])) {
-                    return false;
-                }
-                $sum += (int)$isbn[$i] * (10 - $i);
+            for ($i = 0; $i < 9; ++$i) {
+                $sum += (int) $isbn[$i] * (10 - $i);
             }
 
             $check = strtoupper($isbn[9]);
-            $sum += ($check === 'X') ? 10 : (int)$check;
+            $sum += ($check === 'X') ? 10 : (int) $check;
 
             return $sum % 11 === 0;
-        } else if (strlen($isbn) === 13) {
+        }
+
+        if (\strlen($isbn) === 13) {
             $sum = 0;
-            for ($i = 0; $i < 12; $i++) {
-                $sum += (int)$isbn[$i] * ($i % 2 === 0 ? 1 : 3);
+            for ($i = 0; $i < 12; ++$i) {
+                $sum += (int) $isbn[$i] * (($i % 2 === 0) ? 1 : 3);
             }
 
             $checkDigit = (10 - ($sum % 10)) % 10;
 
-            return (int)$isbn[12] === $checkDigit;
+            return (int) $isbn[12] === $checkDigit;
         }
 
         return false;
@@ -261,15 +270,17 @@ class Validators
     /**
      * Validates a loan code in the format LNXXXXXXXX.
      *
-     * You can pass the full code (LN + 8 alphanumeric characters) or just the starting part.
+     * Accepts both the full code (LN + 8 alphanumeric characters)
+     * or partial prefixes (for autocomplete use cases).
      *
-     * @param string $code The loan code to validate.
-     * @return bool True if the code is valid, false otherwise.
+     * @param string $code the loan code to validate
+     *
+     * @return bool true if valid; otherwise, false
      */
     public static function validateLoanCode(string $code): bool
     {
         $code = strtoupper(preg_replace('/[^A-Z0-9]/', '', $code));
 
-        return preg_match('/^LN[A-Z0-9]{0,8}$/', $code) === 1;
+        return (bool) preg_match('/^LN[A-Z0-9]{0,8}$/', $code);
     }
 }
