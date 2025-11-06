@@ -1,32 +1,66 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\API\Auth;
 
-use App\Models\User;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\User\UserStoreRequest;
 use App\Http\Traits\JsonResponseTrait;
+use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\RateLimiter;
 use PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth;
-use Throwable;
+use Symfony\Component\HttpFoundation\Cookie;
 
+/**
+ * Handles user authentication, registration, and JWT token lifecycle operations.
+ * This controller provides endpoints for login, logout, token refresh, and
+ * user self-identification, all returning JSON-based API responses.
+ *
+ * @see LoginRequest for validation of login credentials.
+ * @see UserStoreRequest for validation of user registration data.
+ * @see JWTAuth for JWT token management.
+ * @see RateLimiter for rate limiting login attempts.
+ */
 class AuthController extends Controller
 {
     use JsonResponseTrait;
 
+    /**
+     * A static hash used to prevent timing attacks when the user does not exist.
+     *
+     * @var string
+     */
     private const DUMMY_HASH = '$2y$12$QGYzxPXvopQXXkx29TxsROfguuQLNlZRO1NBierMiIxbpZoWkPLTK';
+
+    /**
+     * Maximum allowed login attempts before temporary lockout.
+     *
+     * @var int
+     */
     private const MAX_LOGIN_ATTEMPTS = 5;
+
+    /**
+     * Number of seconds before login attempt counter resets.
+     *
+     * @var int
+     */
     private const DECAY_SECONDS = 60;
 
     /**
      * Registers the first user in the system.
-     * Registration is only allowed if no users currently exist.
      *
-     * @param UserStoreRequest $request Validated request containing the user's name, email, and password.
-     * @return JsonResponse HTTP response with redirection or error message.
+     * This method allows registration **only if** there are no users yet.
+     * It ensures that the first admin or root account is securely created.
+     *
+     * @param UserStoreRequest $request validated data containing name, email, and password
+     *
+     * @return JsonResponse HTTP 201 response with redirect or 403 if registration is disabled
+     *
+     * @see User::create
      */
     public function register(UserStoreRequest $request): JsonResponse
     {
@@ -39,24 +73,32 @@ class AuthController extends Controller
         try {
             $userData = array_filter(
                 array_intersect_key($validatedData, array_flip(['name', 'email', 'password'])),
-                fn($v) => $v !== null && $v !== ''
+                static fn ($v) => $v !== null && $v !== '',
             );
 
             User::create($userData);
 
             return $this->createdResponse(['redirect' => route('login')]);
-        } catch (Throwable $e) {
+        } catch (\Throwable $e) {
             $this->logError('Erro ao cadastrar o primeiro usuário.', $e, ['data' => $validatedData]);
+
             return $this->internalErrorResponse($e, 'Erro interno ao cadastrar o primeiro usuário.');
         }
     }
 
     /**
-     * Authenticates the user using email and password.
-     * If successful, returns a JWT token stored in a secure HTTP-only cookie.
+     * Authenticates a user and issues a JWT token.
      *
-     * @param LoginRequest $request Validated request containing user credentials.
-     * @return JsonResponse HTTP response with token, user data, and redirect URL.
+     * Validates email and password. If successful, returns a secure JWT cookie
+     * and basic user data. Implements rate limiting to prevent brute-force attacks.
+     *
+     * @param LoginRequest $request validated login credentials
+     *
+     * @return JsonResponse HTTP 200 response with token and user info, or error message
+     *
+     * @see self::tooManyAttempts()
+     * @see self::validateCredentials()
+     * @see \PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth::fromUser()
      */
     public function login(LoginRequest $request): JsonResponse
     {
@@ -66,13 +108,14 @@ class AuthController extends Controller
         $key = $email . $request->ip();
 
         if ($this->tooManyAttempts($key)) {
-            return $this->tooManyRequestsResponse("Muitas tentativas. Tente novamente em alguns segundos.");
+            return $this->tooManyRequestsResponse('Muitas tentativas. Tente novamente em alguns segundos.');
         }
 
         $user = User::where('email_hash', hash('sha256', $email, true))->first();
 
         if (!$this->validateCredentials($user, $password)) {
             $this->incrementAttempts($key);
+
             return $this->unauthorizedResponse('Credenciais inválidas.');
         }
 
@@ -93,68 +136,84 @@ class AuthController extends Controller
     }
 
     /**
-     * Returns the currently authenticated user's basic data.
+     * Retrieves the currently authenticated user's data.
      *
-     * @return JsonResponse HTTP response with user ID, name, and email, or an unauthorized message.
+     * Parses the JWT token and returns the associated user's basic information.
+     *
+     * @return JsonResponse HTTP 200 with user data or 401 if authentication fails
+     *
+     * @see \PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth::parseToken()
      */
     public function me(): JsonResponse
     {
-        $user = JWTAuth::user();
+        try {
+            $user = JWTAuth::parseToken()->authenticate();
 
-        if (!$user) {
-            return $this->unauthorizedResponse('Usuário não autenticado.');
+            if (!$user) {
+                return $this->unauthorizedResponse('Usuário não autenticado.');
+            }
+
+            return $this->successResponse([
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+            ]);
+        } catch (\Throwable) {
+            return $this->unauthorizedResponse('Sessão expirada ou token inválido.');
         }
-
-        return $this->successResponse([
-            'id' => $user->id,
-            'name' => $user->name,
-            'email' => $user->email,
-        ]);
     }
 
     /**
-     * Logs out the authenticated user by invalidating the JWT token
-     * and removing the token cookie from the client.
+     * Logs out the authenticated user.
      *
-     * @return JsonResponse HTTP success or error response with cookie cleared.
+     * Invalidates the current JWT and removes it from the client.
+     *
+     * @return JsonResponse HTTP 200 with cookie cleared
+     *
+     * @see \PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth::invalidate()
      */
     public function logout(): JsonResponse
     {
         try {
             JWTAuth::invalidate(JWTAuth::getToken());
-            return $this->successResponse()->cookie(cookie()->forget(env('JWT_COOKIE_NAME', 'jwt_token')));
-        } catch (Throwable $e) {
-            return $this->internalErrorResponse($e, 'Erro ao realizar logout.');
+        } catch (\Throwable) {
+            // Token may already be invalidated; ignore
         }
+
+        return $this->successResponse()
+            ->cookie(cookie()->forget(env('JWT_COOKIE_NAME', 'jwt_token')))
+        ;
     }
 
     /**
-     * Refreshes the user's JWT token and returns a new one in a secure cookie.
-     * Used to extend the session without requiring login.
+     * Refreshes the JWT token to extend session validity.
      *
-     * @return JsonResponse HTTP response with the new token in a cookie, or an error message.
+     * @return JsonResponse HTTP 200 with new token cookie or 401 on failure
+     *
+     * @see \PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth::refresh()
      */
     public function refresh(): JsonResponse
     {
         try {
             $token = JWTAuth::refresh(JWTAuth::getToken());
-
             $cookie = $this->makeJwtCookie($token);
 
             return $this->successResponse(['token' => $token])->cookie($cookie);
-        } catch (Throwable $e) {
-            $this->logError('Erro ao atualizar token.', $e, ['token' => $token]);
+        } catch (\Throwable $e) {
+            $this->logError('Erro ao atualizar token.', $e);
+
             return $this->unauthorizedResponse('Não foi possível atualizar o token.');
         }
     }
 
     /**
-     * Creates a secure cookie containing the JWT token.
+     * Creates a secure HTTP-only cookie for storing the JWT token.
      *
-     * @param string $token The JWT token generated for the authenticated user.
-     * @return \Symfony\Component\HttpFoundation\Cookie Secure cookie configured with HttpOnly and SameSite Strict.
+     * @param string $token JWT token to embed in the cookie
+     *
+     * @return Cookie secure cookie instance with SameSite=Strict
      */
-    private function makeJwtCookie(string $token)
+    private function makeJwtCookie(string $token): Cookie
     {
         return cookie(
             env('JWT_COOKIE_NAME', 'jwt_token'),
@@ -162,18 +221,19 @@ class AuthController extends Controller
             env('JWT_COOKIE_TTL', JWTAuth::factory()->getTTL()),
             env('JWT_COOKIE_PATH', '/'),
             env('JWT_COOKIE_DOMAIN', null),
-            config('app.env') !== 'local', // Secure only in production
-            true,  // HTTPOnly
+            config('app.env') !== 'local', // Secure in production only
+            true,
             false,
-            'Strict' // SameSite
+            'Strict',
         );
     }
 
     /**
-     * Checks if the user has exceeded the maximum number of login attempts.
+     * Checks if too many failed login attempts occurred.
      *
-     * @param string $key Unique key to track attempts (usually email + IP).
-     * @return bool True if the limit is exceeded, false otherwise.
+     * @param string $key unique key identifying the login attempt (email + IP)
+     *
+     * @return bool true if rate limit exceeded
      */
     private function tooManyAttempts(string $key): bool
     {
@@ -181,10 +241,9 @@ class AuthController extends Controller
     }
 
     /**
-     * Increments the login attempt counter to prevent brute-force attacks.
+     * Increments login attempt counter.
      *
-     * @param string $key Unique key to track attempts (usually email + IP).
-     * @return void
+     * @param string $key unique key identifying the login attempt (email + IP)
      */
     private function incrementAttempts(string $key): void
     {
@@ -192,10 +251,9 @@ class AuthController extends Controller
     }
 
     /**
-     * Clears the login attempt counter after a successful authentication.
+     * Clears login attempt counter after successful authentication.
      *
-     * @param string $key Unique key to track attempts (usually email + IP).
-     * @return void
+     * @param string $key unique key identifying the login attempt (email + IP)
      */
     private function clearAttempts(string $key): void
     {
@@ -203,18 +261,18 @@ class AuthController extends Controller
     }
 
     /**
-     * Validates the user's credentials.
+     * Validates the user's password and mitigates timing attacks.
      *
-     * Uses a "dummy" hash when the user does not exist to prevent timing attacks.
+     * @param null|User $user the retrieved user or null if not found
+     * @param string $password the password provided by the user
      *
-     * @param User|null $user The user instance or null if not found.
-     * @param string $password The password provided by the user.
-     * @return bool True if the password is correct, false otherwise.
+     * @return bool true if credentials are valid
      */
     private function validateCredentials(?User $user, string $password): bool
     {
         if (!$user) {
             Hash::check($password, self::DUMMY_HASH);
+
             return false;
         }
 
