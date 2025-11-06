@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Requests\Book;
 
 use App\Helpers\Utils;
@@ -7,24 +9,29 @@ use App\Helpers\Validators;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
+/**
+ * Handles validation for updating an existing book.
+ *
+ * @method \Illuminate\Session\Store session() Provides access to the session instance.
+ * @method string input(string $key, $default = null)
+ * @method void merge(array $input)
+ * @method mixed route(string $key = null, $default = null)
+ */
 class BookUpdateRequest extends FormRequest
 {
+    /**
+     * Determine if the user is authorized to make this request.
+     */
     public function authorize(): bool
     {
         return true;
     }
 
-    protected function prepareForValidation(): void
-    {
-        $this->merge([
-            'isbn' => preg_replace('/\D/', '', trim($this->input('isbn', ''))),
-            'title' => trim($this->input('title', '')),
-            'author' => trim($this->input('author', '')),
-            'publisher' => trim($this->input('publisher', '')),
-            'genre_name' => trim($this->input('genre_name', '')),
-        ]);
-    }
-
+    /**
+     * Get the validation rules that apply to the request.
+     *
+     * @return array<string, mixed>
+     */
     public function rules(): array
     {
         $binaryId = $this->route('book') ? Utils::convertUuidToBinary($this->route('book')) : null;
@@ -48,6 +55,11 @@ class BookUpdateRequest extends FormRequest
         ];
     }
 
+    /**
+     * Return custom validation messages in Portuguese.
+     *
+     * @return array<string, string>
+     */
     public function messages(): array
     {
         return [
@@ -71,5 +83,19 @@ class BookUpdateRequest extends FormRequest
             'genre_name.string' => 'O nome do gênero deve ser um texto.',
             'genre_name.max' => 'O nome do gênero não pode ter mais que 100 caracteres.',
         ];
+    }
+
+    /**
+     * Prepare and sanitize input data before validation.
+     */
+    protected function prepareForValidation(): void
+    {
+        $this->merge([
+            'isbn' => preg_replace('/\D/', '', trim($this->input('isbn', ''))),
+            'title' => trim($this->input('title', '')),
+            'author' => trim($this->input('author', '')),
+            'publisher' => trim($this->input('publisher', '')),
+            'genre_name' => trim($this->input('genre_name', '')),
+        ]);
     }
 }

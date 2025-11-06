@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Requests\Book;
 
 use App\Helpers\Validators;
@@ -7,25 +9,29 @@ use App\Models\Book;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
+/**
+ * Handles validation for creating a new book.
+ *
+ * @method \Illuminate\Session\Store session() Provides access to the session instance.
+ * @method string input(string $key, $default = null)
+ * @method void merge(array $input)
+ * @method mixed route(string $key = null, $default = null)
+ */
 class BookStoreRequest extends FormRequest
 {
+    /**
+     * Determine if the user is authorized to make this request.
+     */
     public function authorize(): bool
     {
         return true;
     }
 
-    protected function prepareForValidation(): void
-    {
-        $this->merge([
-            'isbn' => preg_replace('/\D/', '', trim($this->input('isbn', ''))),
-            'title' => trim($this->input('title', '')),
-            'author' => trim($this->input('author', '')),
-            'publisher' => trim($this->input('publisher', '')),
-            'genre_name' => trim($this->input('genre_name', '')),
-            'number_copies' => (int) $this->input('number_copies', 1),
-        ]);
-    }
-
+    /**
+     * Get the validation rules that apply to the request.
+     *
+     * @return array<string, mixed>
+     */
     public function rules(): array
     {
         return [
@@ -36,7 +42,6 @@ class BookStoreRequest extends FormRequest
                 function ($attribute, $value, $fail) {
                     if (!Validators::validateIsbn($value)) {
                         $fail('O ISBN informado é inválido.');
-
                     }
                 },
                 Rule::unique('books', 'isbn'),
@@ -64,14 +69,20 @@ class BookStoreRequest extends FormRequest
         ];
     }
 
-    public function withValidator($validator)
+    /**
+     * Add additional validation for duplicate book entries.
+     *
+     * @param \Illuminate\Contracts\Validation\Validator $validator
+     */
+    public function withValidator($validator): void
     {
         $validator->after(function ($validator) {
             if (isset($this->title, $this->author, $this->publisher)) {
                 $exists = Book::where('title', $this->title)
                     ->where('author', $this->author)
                     ->where('publisher', $this->publisher)
-                    ->exists();
+                    ->exists()
+                ;
 
                 if ($exists) {
                     $validator->errors()->add('title', 'Já existe um livro com este título, autor e editora.');
@@ -80,6 +91,11 @@ class BookStoreRequest extends FormRequest
         });
     }
 
+    /**
+     * Return custom validation messages in Portuguese.
+     *
+     * @return array<string, string>
+     */
     public function messages(): array
     {
         return [
@@ -112,5 +128,20 @@ class BookStoreRequest extends FormRequest
             'number_copies.min' => 'O número de exemplares deve ser no mínimo 1.',
             'number_copies.max' => 'O número de exemplares não pode exceder 32767.',
         ];
+    }
+
+    /**
+     * Prepare and sanitize input data before validation.
+     */
+    protected function prepareForValidation(): void
+    {
+        $this->merge([
+            'isbn' => preg_replace('/\D/', '', trim($this->input('isbn', ''))),
+            'title' => trim($this->input('title', '')),
+            'author' => trim($this->input('author', '')),
+            'publisher' => trim($this->input('publisher', '')),
+            'genre_name' => trim($this->input('genre_name', '')),
+            'number_copies' => (int) $this->input('number_copies', 1),
+        ]);
     }
 }
