@@ -9,10 +9,6 @@ namespace App\Helpers;
  *
  * This class provides secure AES-256-GCM encryption/decryption,
  * UUID format conversion, and key retrieval from configuration.
- *
- * @see https://www.php.net/manual/en/function.openssl-encrypt.php
- * @see https://datatracker.ietf.org/doc/html/rfc5288
- * @see https://www.php-fig.org/psr/psr-19/
  */
 class Utils
 {
@@ -37,8 +33,6 @@ class Utils
      * @throws \RuntimeException if encryption fails or the encryption key is invalid
      *
      * @return string binary output: VERSION + IV + TAG + ENCRYPTED_DATA
-     *
-     * @see https://www.php.net/manual/en/function.openssl-encrypt.php
      */
     public static function encrypt(string $plainText): string
     {
@@ -77,8 +71,6 @@ class Utils
      * @throws \RuntimeException if decryption fails or the data format is invalid
      *
      * @return string the decrypted plain text
-     *
-     * @see https://www.php.net/manual/en/function.openssl-decrypt.php
      */
     public static function decrypt(string $encryptedData): string
     {
@@ -173,8 +165,6 @@ class Utils
      * @throws \RuntimeException if the key is missing or not base64-encoded
      *
      * @return string the decoded encryption key (32 bytes for AES-256)
-     *
-     * @see https://laravel.com/docs/master/encryption
      */
     private static function getEncryptionKey(): string
     {
