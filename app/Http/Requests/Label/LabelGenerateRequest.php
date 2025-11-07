@@ -1,16 +1,35 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Requests\Label;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class LabelStoreRequest extends FormRequest
+/**
+ * Form request responsible for validating data when creating labels for books.
+ *
+ * Ensures that the input contains a valid list of books with ISBN and copies.
+ *
+ * @method mixed input(string $key, mixed $default = null) Retrieve an input item from the request.
+ */
+class LabelGenerateRequest extends FormRequest
 {
+    /**
+     * Determine if the user is authorized to make this request.
+     *
+     * @return bool true if the user is authorized
+     */
     public function authorize(): bool
     {
         return true;
     }
 
+    /**
+     * Get the validation rules that apply to the request.
+     *
+     * @return array<string, mixed>
+     */
     public function rules(): array
     {
         return [
@@ -19,16 +38,21 @@ class LabelStoreRequest extends FormRequest
                 'required',
                 'string',
                 'max:20',
-                'regex:/^(97(8|9))?\d{9}(\d|X)$/i', 
+                'regex:/^(97(8|9))?\d{9}(\d|X)$/i',
             ],
             'books.*.copies' => [
                 'required',
                 'string',
-                'regex:/^(\d+(-\d+)?)(,\d+(-\d+)?)*$/', 
+                'regex:/^(\d+(-\d+)?)(,\d+(-\d+)?)*$/',
             ],
         ];
     }
 
+    /**
+     * Get custom error messages for validation failures.
+     *
+     * @return array<string, string>
+     */
     public function messages(): array
     {
         return [
