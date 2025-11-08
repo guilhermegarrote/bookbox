@@ -1,54 +1,64 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Services;
 
-use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\Exception;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\View;
+use PHPMailer\PHPMailer\Exception;
+use PHPMailer\PHPMailer\PHPMailer;
 
+/**
+ * Service responsible for sending emails using PHPMailer.
+ */
 class EmailService
 {
+    /**
+     * PHPMailer instance already configured via AppServiceProvider.
+     */
     protected PHPMailer $mailer;
 
-    public function __construct()
+    /**
+     * EmailService constructor.
+     *
+     * @param PHPMailer $mailer configured PHPMailer instance injected via ServiceProvider
+     */
+    public function __construct(PHPMailer $mailer)
     {
-        $this->mailer = new PHPMailer(true);
-
-        $this->mailer->isSMTP();
-        $this->mailer->Host       = config('mail.mailers.smtp.host');
-        $this->mailer->SMTPAuth   = true;
-        $this->mailer->Username   = config('mail.mailers.smtp.username');
-        $this->mailer->Password   = config('mail.mailers.smtp.password');
-        $this->mailer->SMTPSecure = config('mail.mailers.smtp.encryption');
-        $this->mailer->Port       = config('mail.mailers.smtp.port');
-
-        $this->mailer->setFrom(
-            config('mail.from.address'),
-            config('mail.from.name')
-        );
+        $this->mailer = $mailer;
     }
 
     /**
-     * Generate and send a recovery code.
+     * Generate a numeric recovery code and send it via email to the specified recipient.
      *
-     * @param string $to   Recipient email
-     * @param string $name Recipient name
-     * @return string The generated recovery code
+     * This method clears any previous recipients or attachments, embeds the application logo,
+     * and sends both HTML and plain-text versions of the email.
+     *
+     * @param string $to recipient email address
+     * @param string $name recipient full name
+     *
+     * @throws Exception if the email fails to send
+     *
+     * @return string the generated recovery code
      */
-    public function sendRecoveyCode(string $to, string $name): string
+    public function sendRecoveryCode(string $to, string $name): string
     {
         $code = (string) rand(100000, 999999);
 
         try {
             $this->mailer->clearAddresses();
             $this->mailer->clearAttachments();
+
             $this->mailer->addAddress($to, $name);
             $this->mailer->isHTML(true);
             $this->mailer->Subject = 'Password Recovery Code';
 
             $logoPath = public_path('images/logo/logotype-light.png');
-            $this->mailer->addEmbeddedImage($logoPath, 'logo_cid');
+
+            if (file_exists($logoPath)) {
+                $this->mailer->addEmbeddedImage($logoPath, 'logo_cid');
+            }
 
             $this->mailer->Body = View::make('emails.recovery-code', [
                 'name' => $name,
@@ -59,7 +69,8 @@ class EmailService
 
             $this->mailer->send();
         } catch (Exception $e) {
-            Log::error("Failed to send recovery code email: " . $e->getMessage());
+            Log::error('Failed to send recovery code email: ' . $e->getMessage());
+
             throw $e;
         }
 

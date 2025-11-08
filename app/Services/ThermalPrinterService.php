@@ -14,13 +14,11 @@ use Mike42\Escpos\Printer;
 use Picqer\Barcode\BarcodeGeneratorPNG;
 
 /**
- * Class ThermalPrinterService
+ * Class ThermalPrinterService.
  *
  * Handles printing of loan receipts using thermal printers.
  * Supports both network and local printer connections, prints logos,
  * barcodes, and optionally a school copy with signature line.
- *
- * @package App\Services
  */
 class ThermalPrinterService
 {
@@ -142,6 +140,7 @@ class ThermalPrinterService
 
         if (!file_exists($logoPath) || !is_readable($logoPath)) {
             Log::warning("Logo não encontrada ou não legível: {$logoPath}");
+
             return;
         }
 
@@ -204,9 +203,6 @@ class ThermalPrinterService
 
     /**
      * Print due date inside a box.
-     *
-     * @param Printer $printer
-     * @param string $dueDate
      */
     private function printDueDateBox(Printer $printer, string $dueDate): void
     {
@@ -215,6 +211,7 @@ class ThermalPrinterService
 
         $centerText = function (string $text, int $width): string {
             $padding = max(0, \intval(($width - mb_strlen($text)) / 2));
+
             return str_repeat(' ', $padding) . $text . str_repeat(' ', $width - mb_strlen($text) - $padding);
         };
 
@@ -232,9 +229,6 @@ class ThermalPrinterService
 
     /**
      * Print a barcode for the loan.
-     *
-     * @param Printer $printer
-     * @param string $barcode
      */
     private function printBarcode(Printer $printer, string $barcode): void
     {
