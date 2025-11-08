@@ -1,19 +1,40 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers;
 
 use App\Helpers\Utils;
-use App\Http\Controllers\Controller;
 use App\Models\View\StudentSchoolClass;
+use Illuminate\Contracts\View\View;
 
+/**
+ * Controller responsible for managing student-related pages and modals.
+ */
 class StudentController extends Controller
 {
-    public function filter()
+    /**
+     * Display the student filter modal view.
+     *
+     * @return View the view containing student filter options
+     *
+     * @see resources/views/pages/students/partials/filters.blade.php
+     */
+    public function filter(): View
     {
         return view('pages.students.partials.filters');
     }
 
-    public function index()
+    /**
+     * Display the main student management page.
+     *
+     * Retrieves paginated student and class data for the main view.
+     *
+     * @return View the main student management view
+     *
+     * @see resources/views/pages/students/index.blade.php
+     */
+    public function index(): View
     {
         $filterData = StudentSchoolClass::getFilterData();
 
@@ -31,25 +52,48 @@ class StudentController extends Controller
         return view('pages.students.index', compact('students', 'filterData', 'filterUrl'));
     }
 
-    public function createModal()
+    /**
+     * Display the modal view for creating a new student.
+     *
+     * @return string the rendered HTML for the student creation modal
+     *
+     * @see resources/views/pages/students/partials/create-modal.blade.php
+     */
+    public function createModal(): string
     {
         $filterData = StudentSchoolClass::getFilterData();
 
         return view('pages.students.partials.create-modal', compact('filterData'))->render();
     }
 
-    public function menuModal(String $id)
+    /**
+     * Display the menu modal for a specific student.
+     *
+     * @param string $id the UUID of the student
+     *
+     * @return string the rendered HTML for the student menu modal
+     *
+     * @see resources/views/pages/students/partials/menu-modal.blade.php
+     */
+    public function menuModal(string $id): string
     {
-        $student = StudentSchoolClass::where('student_id', Utils::convertUuidToBinary($id))
-            ->firstOrFail();
+        $student = StudentSchoolClass::where('student_id', Utils::convertUuidToBinary($id))->firstOrFail();
 
         return view('pages.students.partials.menu-modal', compact('student'))->render();
     }
 
-    public function updateModal(String $id)
+    /**
+     * Display the update modal for a specific student.
+     *
+     * @param string $id the UUID of the student
+     *
+     * @return string the rendered HTML for the student update modal
+     *
+     * @see resources/views/pages/students/partials/update-modal.blade.php
+     */
+    public function updateModal(string $id): string
     {
-        $student = StudentSchoolClass::where('student_id', Utils::convertUuidToBinary($id))
-            ->firstOrFail();
+        $student = StudentSchoolClass::where('student_id', Utils::convertUuidToBinary($id))->firstOrFail();
 
         return view('pages.students.partials.update-modal', compact('student'))->render();
     }
