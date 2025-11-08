@@ -1,36 +1,48 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Requests\SchoolClass;
 
 use App\Helpers\Validators;
+use App\Models\SchoolClass;
 use App\Rules\ValidTermInterval;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
-use App\Models\SchoolClass;
 
+/**
+ * Handles validation for creating a new school class.
+ *
+ * Prepares input data, validates course, term, start and end dates,
+ * and ensures uniqueness of class data.
+ *
+ * @method mixed input(string $key, mixed $default = null) Retrieve an input item from the request.
+ * @method void merge(array $input) Merge new input into the request's data.
+ * @method array only(array|string $keys) Retrieve only a subset of input data.
+ */
 class SchoolClassStoreRequest extends FormRequest
 {
+    /**
+     * Determine if the user is authorized to make this request.
+     *
+     * @return bool true if the user is authorized
+     */
     public function authorize(): bool
     {
         return true;
     }
 
-    protected function prepareForValidation(): void
-    {
-        $this->merge([
-            'course' => trim($this->input('course', '')),
-            'term' => trim($this->input('term', '')),
-            'start_date' => trim($this->input('start_date', '')),
-            'end_date' => trim($this->input('end_date', '')),
-        ]);
-    }
-
+    /**
+     * Get the validation rules that apply to the request.
+     *
+     * @return array<string, mixed>
+     */
     public function rules(): array
     {
         return [
             'course' => [
                 'required',
-                function ($attribute, $value, $fail) {
+                function ($attribute, $value, $fail): void {
                     if (!Validators::validateCourseName($value)) {
                         $fail('O curso informado não foi reconhecido.');
                     }
@@ -48,9 +60,17 @@ class SchoolClassStoreRequest extends FormRequest
         ];
     }
 
-    public function withValidator($validator)
+    /**
+     * Add additional validation rules after the initial rules are applied.
+     *
+     * Ensures that the combination of course, regime, start_date, and end_date
+     * is unique in the database.
+     *
+     * @param \Illuminate\Validation\Validator $validator
+     */
+    public function withValidator($validator): void
     {
-        $validator->after(function ($validator) {
+        $validator->after(function ($validator): void {
             $data = $this->only(['course', 'regime', 'start_date', 'end_date']);
 
             if (SchoolClass::where($data)->exists()) {
@@ -59,6 +79,11 @@ class SchoolClassStoreRequest extends FormRequest
         });
     }
 
+    /**
+     * Get custom error messages for validation failures.
+     *
+     * @return array<string, string>
+     */
     public function messages(): array
     {
         return [
@@ -77,5 +102,20 @@ class SchoolClassStoreRequest extends FormRequest
             'end_date.date_format' => 'A data de fim deve estar no formato AAAA-MM-DD.',
             'end_date.after' => 'A data de fim não pode ser anterior à data de início.',
         ];
+    }
+
+    /**
+     * Prepare input data before validation.
+     *
+     * Trims whitespace from all input fields.
+     */
+    protected function prepareForValidation(): void
+    {
+        $this->merge([
+            'course' => trim($this->input('course', '')),
+            'term' => trim($this->input('term', '')),
+            'start_date' => trim($this->input('start_date', '')),
+            'end_date' => trim($this->input('end_date', '')),
+        ]);
     }
 }

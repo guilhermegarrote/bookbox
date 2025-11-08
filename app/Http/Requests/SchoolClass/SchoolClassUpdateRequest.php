@@ -1,37 +1,49 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Requests\SchoolClass;
 
 use App\Helpers\Validators;
 use App\Rules\ValidTermInterval;
-use App\Models\SchoolClass;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
-use App\Helpers\Utils;
 
+/**
+ * Handles validation for updating an existing school class.
+ *
+ * Prepares and sanitizes input data and validates optional fields:
+ * course, term, start_date, and end_date.
+ *
+ * @method mixed input(string $key, mixed $default = null) Retrieve an input item from the request.
+ * @method bool has(string $key) Determine if the request contains a given input key.
+ * @method void merge(array $input) Merge new input into the request's data.
+ * @method array all(?array $keys = null) Retrieve all input data or a subset.
+ * @method array only(array|string $keys) Retrieve only a subset of input data.
+ */
 class SchoolClassUpdateRequest extends FormRequest
 {
+    /**
+     * Determine if the user is authorized to make this request.
+     *
+     * @return bool true if authorized
+     */
     public function authorize(): bool
     {
         return true;
     }
 
-    protected function prepareForValidation(): void
-    {
-        $this->merge([
-            'course' => trim($this->input('course', '')),
-            'term' => trim($this->input('term', '')),
-            'start_date' => trim($this->input('start_date', '')),
-            'end_date' => trim($this->input('end_date', '')),
-        ]);
-    }
-
+    /**
+     * Get the validation rules that apply to the request.
+     *
+     * @return array<string, mixed>
+     */
     public function rules(): array
     {
         return [
             'course' => [
                 'sometimes',
-                function ($attribute, $value, $fail) {
+                function ($attribute, $value, $fail): void {
                     if (!Validators::validateCourseName($value)) {
                         $fail('O curso informado não foi reconhecido.');
                     }
@@ -49,6 +61,11 @@ class SchoolClassUpdateRequest extends FormRequest
         ];
     }
 
+    /**
+     * Get custom error messages for validation failures.
+     *
+     * @return array<string, string>
+     */
     public function messages(): array
     {
         return [
@@ -62,5 +79,20 @@ class SchoolClassUpdateRequest extends FormRequest
             'end_date.date_format' => 'A data de fim deve estar no formato AAAA-MM-DD.',
             'end_date.after' => 'A data de fim não pode ser anterior à data de início.',
         ];
+    }
+
+    /**
+     * Prepare input data before validation.
+     *
+     * Trims whitespace from all input fields.
+     */
+    protected function prepareForValidation(): void
+    {
+        $this->merge([
+            'course' => trim($this->input('course', '')),
+            'term' => trim($this->input('term', '')),
+            'start_date' => trim($this->input('start_date', '')),
+            'end_date' => trim($this->input('end_date', '')),
+        ]);
     }
 }
