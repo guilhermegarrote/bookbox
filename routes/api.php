@@ -1,19 +1,19 @@
 <?php
 
-use App\Http\Controllers\Api\Auth\PasswordRecoveryController;
-use Illuminate\Support\Facades\Route;
+declare(strict_types=1);
+
 use App\Http\Controllers\API\Auth\AuthController;
-use App\Http\Controllers\API\{
-    StudentController,
-    LoanController,
-    CopyController,
-    GenreController,
-    BookController,
-    LabelController,
-    SchoolClassController,
-    SettingController,
-    UserController
-};
+use App\Http\Controllers\Api\Auth\PasswordRecoveryController;
+use App\Http\Controllers\API\BookController;
+use App\Http\Controllers\API\CopyController;
+use App\Http\Controllers\API\GenreController;
+use App\Http\Controllers\API\LabelController;
+use App\Http\Controllers\API\LoanController;
+use App\Http\Controllers\API\SchoolClassController;
+use App\Http\Controllers\API\SettingController;
+use App\Http\Controllers\API\StudentController;
+use App\Http\Controllers\API\UserController;
+use Illuminate\Support\Facades\Route;
 
 Route::prefix('auth')->group(function () {
     Route::middleware('prevent.registration')->group(function () {
@@ -27,55 +27,66 @@ Route::prefix('auth')->group(function () {
 
 Route::middleware(['auth.jwt.cookie'])->group(function () {
     Route::prefix('auth')->group(function () {
-        Route::post('logout', [AuthController::class, 'logout']);
+        Route::post('logout', [AuthController::class, 'logout'])->name('api.logout');
         Route::post('refresh', [AuthController::class, 'refresh']);
         Route::get('me', [AuthController::class, 'me']);
     });
 
     Route::apiResource('students', StudentController::class);
     Route::get('/students/find-by-cpf/{cpf}', [StudentController::class, 'findByCpf'])
-        ->name('students.findByCpf');
+        ->name('students.findByCpf')
+    ;
 
     Route::apiResource('genres', GenreController::class);
 
     Route::apiResource('books', BookController::class);
     Route::get('/books/find-by-isbn/{isbn}', [BookController::class, 'findByIsbn'])
-        ->name('books.findByIsbn');
+        ->name('books.findByIsbn')
+    ;
 
     Route::apiResource('school-classes', SchoolClassController::class);
 
     Route::apiResource('users', UserController::class);
 
     Route::apiResource('copies', CopyController::class)
-        ->except(['store', 'update']);
+        ->except(['store', 'update'])
+    ;
     Route::patch('/books/{book}/copies', [CopyController::class, 'add'])->name('books.addCopies');
     Route::post('/labels/generate-pdf', [LabelController::class, 'generateLabel'])->name('labels.generate');
 
     Route::apiResource('settings', SettingController::class)
-        ->except(['store', 'destroy']);
+        ->except(['store', 'destroy'])
+    ;
 
     Route::apiResource('loans', LoanController::class)
-        ->except(['update']);
+        ->except(['update'])
+    ;
     Route::patch('loans/{loan}/extend', [LoanController::class, 'extend'])
-        ->name('loans.extend');
+        ->name('loans.extend')
+    ;
     Route::patch('loans/{loan}/finalize', [LoanController::class, 'finalize'])
-        ->name('loans.finalize');
+        ->name('loans.finalize')
+    ;
     Route::get('/loans/find-by-barcode/{barcode}', [LoanController::class, 'findByBarcode'])
-        ->name('loans.findByBarcode');
+        ->name('loans.findByBarcode')
+    ;
 });
 
 Route::prefix('recover')->middleware('users.exist')->group(function () {
     Route::post('/send', [PasswordRecoveryController::class, 'sendCode'])
         ->middleware('code.not.sent')
-        ->name('recover.send');
+        ->name('recover.send')
+    ;
 
     Route::post('/resend', [PasswordRecoveryController::class, 'resendCode'])
         ->middleware('code.sent')
-        ->name('recover.resend');
+        ->name('recover.resend')
+    ;
 
     Route::post('/code', [PasswordRecoveryController::class, 'validateCode'])
         ->middleware('code.sent')
-        ->name('recover.validate.code');
+        ->name('recover.validate.code')
+    ;
 
     Route::post('/reset-password', [PasswordRecoveryController::class, 'resetPassword'])
         ->middleware('code.valid')

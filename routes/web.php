@@ -1,13 +1,15 @@
 <?php
 
-use App\Http\Controllers\LabelController;
-use Illuminate\Support\Facades\Route;
+declare(strict_types=1);
+
 use App\Http\Controllers\Auth\AuthController;
-use App\Http\Controllers\LoanController;
-use App\Http\Controllers\BookController;
-use App\Http\Controllers\StudentController;
 use App\Http\Controllers\Auth\PasswordRecoveryController;
+use App\Http\Controllers\BookController;
 use App\Http\Controllers\CopyController;
+use App\Http\Controllers\LabelController;
+use App\Http\Controllers\LoanController;
+use App\Http\Controllers\StudentController;
+use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth.jwt.cookie')->group(function () {
     Route::get('/', [LoanController::class, 'index'])->name('loans.view');
@@ -45,7 +47,8 @@ Route::middleware('auth.jwt.cookie')->group(function () {
 Route::middleware('guest')->group(function () {
     Route::middleware('prevent.registration')->group(function () {
         Route::get('/register', [AuthController::class, 'showRegisterForm'])
-            ->name('register.form');
+            ->name('register.form')
+        ;
     });
 
     Route::middleware('users.exist')->group(function () {
@@ -54,15 +57,18 @@ Route::middleware('guest')->group(function () {
         Route::prefix('recover')->group(function () {
             Route::get('/', [PasswordRecoveryController::class, 'showSendRecoveryCodeForm'])
                 ->middleware('code.not.sent')
-                ->name('recovery.email.form');
+                ->name('recovery.email.form')
+            ;
 
             Route::get('/code', [PasswordRecoveryController::class, 'showRecoveryCodeValidationForm'])
                 ->middleware('code.sent')
-                ->name('recovery.code.form');
+                ->name('recovery.code.form')
+            ;
 
             Route::get('/new-password', [PasswordRecoveryController::class, 'showResetPasswordForm'])
                 ->middleware('code.valid')
-                ->name('recovery.new-password.form');
+                ->name('recovery.new-password.form')
+            ;
         });
     });
 });
