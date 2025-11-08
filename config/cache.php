@@ -1,20 +1,20 @@
 <?php
 
+declare(strict_types=1);
+
 use Illuminate\Support\Str;
 
 return [
-
     /*
     |--------------------------------------------------------------------------
     | Default Cache Store
     |--------------------------------------------------------------------------
     |
-    | This option controls the default cache store that will be used by the
-    | framework. This connection is utilized if another isn't explicitly
-    | specified when running a cache operation inside the application.
+    | The default cache store used by the framework when no specific store
+    | is specified for a cache operation. This can be any of the stores
+    | defined below.
     |
     */
-
     'default' => env('CACHE_DRIVER', 'file'),
 
     /*
@@ -22,17 +22,15 @@ return [
     | Cache Stores
     |--------------------------------------------------------------------------
     |
-    | Here you may define all of the cache "stores" for your application as
-    | well as their drivers. You may even define multiple stores for the
-    | same cache driver to group types of items stored in your caches.
+    | Define all of the cache "stores" for your application along with their
+    | drivers. You may define multiple stores for the same driver to group
+    | different types of items.
     |
     | Supported drivers: "array", "database", "file", "memcached",
     |                    "redis", "dynamodb", "octane", "null"
     |
     */
-
     'stores' => [
-
         'array' => [
             'driver' => 'array',
             'serialize' => false,
@@ -60,7 +58,7 @@ return [
                 env('MEMCACHED_PASSWORD'),
             ],
             'options' => [
-                // Memcached::OPT_CONNECT_TIMEOUT => 2000,
+                // Example: Memcached::OPT_CONNECT_TIMEOUT => 2000,
             ],
             'servers' => [
                 [
@@ -89,7 +87,6 @@ return [
         'octane' => [
             'driver' => 'octane',
         ],
-
     ],
 
     /*
@@ -97,12 +94,13 @@ return [
     | Cache Key Prefix
     |--------------------------------------------------------------------------
     |
-    | When utilizing the APC, database, memcached, Redis, and DynamoDB cache
-    | stores, there might be other applications using the same cache. For
-    | that reason, you may prefix every cache key to avoid collisions.
+    | When using shared cache stores such as APC, Memcached, Redis, or
+    | DynamoDB, it is recommended to prefix your cache keys to avoid
+    | collisions with other applications.
     |
     */
-
-    'prefix' => env('CACHE_PREFIX', Str::slug(env('APP_NAME', 'laravel'), '_') . '_cache_'),
-
+    'prefix' => env(
+        'CACHE_PREFIX',
+        Str::slug(env('APP_NAME', 'laravel'), '_') . '_cache_'
+    ),
 ];

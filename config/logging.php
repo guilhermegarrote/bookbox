@@ -1,23 +1,23 @@
 <?php
 
+declare(strict_types=1);
+
 use Monolog\Handler\NullHandler;
 use Monolog\Handler\StreamHandler;
 use Monolog\Handler\SyslogUdpHandler;
 use Monolog\Processor\PsrLogMessageProcessor;
 
 return [
-
     /*
     |--------------------------------------------------------------------------
     | Default Log Channel
     |--------------------------------------------------------------------------
     |
-    | This option defines the default log channel that is utilized to write
-    | messages to your logs. The value provided here should match one of
-    | the channels present in the list of "channels" configured below.
+    | This option defines the default log channel that is used to write
+    | messages to your logs. The value should match one of the channels
+    | configured in the "channels" array below.
     |
     */
-
     'default' => env('LOG_CHANNEL', 'stack'),
 
     /*
@@ -25,12 +25,11 @@ return [
     | Deprecations Log Channel
     |--------------------------------------------------------------------------
     |
-    | This option controls the log channel that should be used to log warnings
-    | regarding deprecated PHP and library features. This allows you to get
-    | your application ready for upcoming major versions of dependencies.
+    | This option defines the log channel used to log warnings about
+    | deprecated PHP and library features. Helps prepare your
+    | application for future major releases of dependencies.
     |
     */
-
     'deprecations' => [
         'channel' => env('LOG_DEPRECATIONS_CHANNEL', 'null'),
         'trace' => env('LOG_DEPRECATIONS_TRACE', false),
@@ -42,16 +41,14 @@ return [
     |--------------------------------------------------------------------------
     |
     | Here you may configure the log channels for your application. Laravel
-    | utilizes the Monolog PHP logging library, which includes a variety
-    | of powerful log handlers and formatters that you're free to use.
+    | uses the Monolog PHP logging library, which provides a variety of
+    | powerful log handlers and formatters.
     |
     | Available drivers: "single", "daily", "slack", "syslog",
     |                    "errorlog", "monolog", "custom", "stack"
     |
     */
-
     'channels' => [
-
         'stack' => [
             'driver' => 'stack',
             'channels' => explode(',', env('LOG_STACK', 'single')),
@@ -89,7 +86,7 @@ return [
             'handler_with' => [
                 'host' => env('PAPERTRAIL_URL'),
                 'port' => env('PAPERTRAIL_PORT'),
-                'connectionString' => 'tls://'.env('PAPERTRAIL_URL').':'.env('PAPERTRAIL_PORT'),
+                'connectionString' => 'tls://' . env('PAPERTRAIL_URL') . ':' . env('PAPERTRAIL_PORT'),
             ],
             'processors' => [PsrLogMessageProcessor::class],
         ],
@@ -126,7 +123,5 @@ return [
         'emergency' => [
             'path' => storage_path('logs/laravel.log'),
         ],
-
     ],
-
 ];

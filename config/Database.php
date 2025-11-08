@@ -1,21 +1,21 @@
 <?php
 
+declare(strict_types=1);
+
 use Illuminate\Support\Str;
 
 return [
-
     /*
     |--------------------------------------------------------------------------
     | Default Database Connection Name
     |--------------------------------------------------------------------------
     |
     | Here you may specify which of the database connections below you wish
-    | to use as your default connection for database operations. This is
-    | the connection which will be utilized unless another connection
-    | is explicitly specified when you execute a query / statement.
+    | to use as your default connection for all database operations. This
+    | connection will be used unless another connection is explicitly
+    | specified when executing a query or statement.
     |
     */
-
     'default' => env('DB_CONNECTION', 'sqlite'),
 
     /*
@@ -23,14 +23,12 @@ return [
     | Database Connections
     |--------------------------------------------------------------------------
     |
-    | Below are all of the database connections defined for your application.
-    | An example configuration is provided for each database system which
-    | is supported by Laravel. You're free to add / remove connections.
+    | Here you may configure all of the database connections for your
+    | application. Examples of each supported database system are provided.
+    | You are free to add or remove connections as needed.
     |
     */
-
     'connections' => [
-
         'sqlite' => [
             'driver' => 'sqlite',
             'url' => env('DB_URL'),
@@ -108,10 +106,10 @@ return [
             'charset' => env('DB_CHARSET', 'utf8'),
             'prefix' => '',
             'prefix_indexes' => true,
+            // Optional encryption settings:
             // 'encrypt' => env('DB_ENCRYPT', 'yes'),
             // 'trust_server_certificate' => env('DB_TRUST_SERVER_CERTIFICATE', 'false'),
         ],
-
     ],
 
     /*
@@ -119,12 +117,11 @@ return [
     | Migration Repository Table
     |--------------------------------------------------------------------------
     |
-    | This table keeps track of all the migrations that have already run for
-    | your application. Using this information, we can determine which of
-    | the migrations on disk haven't actually been run on the database.
+    | This table keeps track of all migrations that have already run for
+    | your application. Using this information, Laravel can determine which
+    | migrations on disk haven't been executed yet.
     |
     */
-
     'migrations' => [
         'table' => 'migrations',
         'update_date_on_publish' => true,
@@ -135,19 +132,17 @@ return [
     | Redis Databases
     |--------------------------------------------------------------------------
     |
-    | Redis is an open source, fast, and advanced key-value store that also
-    | provides a richer body of commands than a typical key-value system
-    | such as Memcached. You may define your connection settings here.
+    | Redis is an advanced key-value store which provides richer commands
+    | than typical key-value systems such as Memcached. Here you can
+    | configure Redis connections for general use and caching.
     |
     */
-
     'redis' => [
-
         'client' => env('REDIS_CLIENT', 'phpredis'),
 
         'options' => [
             'cluster' => env('REDIS_CLUSTER', 'redis'),
-            'prefix' => env('REDIS_PREFIX', Str::slug(env('APP_NAME', 'laravel'), '_').'_database_'),
+            'prefix' => env('REDIS_PREFIX', Str::slug(env('APP_NAME', 'laravel'), '_') . '_database_'),
             'persistent' => env('REDIS_PERSISTENT', false),
         ],
 
@@ -168,7 +163,5 @@ return [
             'port' => env('REDIS_PORT', '6379'),
             'database' => env('REDIS_CACHE_DB', '1'),
         ],
-
     ],
-
 ];

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 return [
     /*
     |--------------------------------------------------------------------------
@@ -7,11 +9,10 @@ return [
     |--------------------------------------------------------------------------
     |
     | Here you may specify the default filesystem disk that should be used
-    | by the framework. The "local" disk, as well as a variety of cloud
-    | based disks are available to your application for file storage.
+    | by the framework. The "local" disk, as well as various cloud based
+    | disks, are available to your application for file storage.
     |
     */
-
     'default' => env('FILESYSTEM_DISK', 'local'),
 
     /*
@@ -19,29 +20,27 @@ return [
     | Filesystem Disks
     |--------------------------------------------------------------------------
     |
-    | Below you may configure as many filesystem disks as necessary, and you
-    | may even configure multiple disks for the same driver. Examples for
-    | most supported storage drivers are configured here for reference.
+    | You may configure as many filesystem "disks" as you wish, and even
+    | configure multiple disks of the same driver. Examples of popular
+    | supported drivers are provided below.
     |
     | Supported drivers: "local", "ftp", "sftp", "s3"
     |
     */
-
     'disks' => [
-
         'local' => [
             'driver' => 'local',
-            'root' => storage_path('app/private'),
-            'serve' => true,
-            'throw' => false,
-            'report' => false,
+            'root' => storage_path('app/private'), // directory for private files
+            'serve' => true,                        // allow serving files directly if needed
+            'throw' => false,                        // whether exceptions are thrown on errors
+            'report' => false,                       // control error reporting
         ],
 
         'public' => [
             'driver' => 'local',
-            'root' => storage_path('app/public'),
-            'url' => env('APP_URL').'/storage',
-            'visibility' => 'public',
+            'root' => storage_path('app/public'),    // directory for public files
+            'url' => env('APP_URL') . '/storage',    // public URL for external access
+            'visibility' => 'public',                // files are publicly accessible
             'throw' => false,
             'report' => false,
         ],
@@ -58,7 +57,6 @@ return [
             'throw' => false,
             'report' => false,
         ],
-
     ],
 
     /*
@@ -67,13 +65,11 @@ return [
     |--------------------------------------------------------------------------
     |
     | Here you may configure the symbolic links that will be created when the
-    | `storage:link` Artisan command is executed. The array keys should be
-    | the locations of the links and the values should be their targets.
+    | `php artisan storage:link` command is executed. The array keys should
+    | be the locations of the links and the values should be their targets.
     |
     */
-
     'links' => [
         public_path('storage') => storage_path('app/public'),
     ],
-
 ];
