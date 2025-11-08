@@ -1,53 +1,77 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Traits;
 
 use Illuminate\Support\Facades\Log;
-use Throwable;
 
+/**
+ * Provides standardized and safe error logging with
+ * UTF-8 encoding, sensitive data masking, and controlled stack traces.
+ */
 trait ErrorLoggerTrait
 {
     /**
-     * Standardized error logger with context, encoding and controlled trace.
+     * Logs an error with consistent formatting and context.
      *
-     * @param string $message Descriptive error message
-     * @param \Throwable $exception The thrown exception
-     * @param array $extraContext Additional data to include in the log
-     * @param string|null $channel Optional log channel (e.g. 'classes')
-     * @return void
+     * @param string $message descriptive error message
+     * @param \Throwable $exception the thrown exception
+     * @param array<string,mixed> $context additional context to include in the log
+     * @param null|string $channel Optional log channel (e.g., 'classes').
      */
-    protected function logError(string $message, Throwable $exception, array $extraContext = [], ?string $channel = null): void
+    protected function logError(string $message, \Throwable $exception, array $context = [], ?string $channel = null): void
     {
-        $sensitiveFields = ['password', 'password_confirmation', 'token'];
-        foreach ($sensitiveFields as $field) {
-            if (isset($extraContext[$field])) {
-                $extraContext[$field] = '*****';
-            }
-        }
+        $context = $this->sanitizeSensitiveData($context);
 
-        $extraContext = $this->encodeStringsUtf8($extraContext);
+        $context = $this->encodeStringsUtf8($context);
 
-        $logData = array_merge($extraContext, [
-            'exception_class' => get_class($exception),
-            'error' => $exception->getMessage(),
-            'trace' => config('app.debug') ? $this->getLimitedTrace($exception, 10) : null,
+        $logData = array_merge($context, [
+            'exception_class' => \get_class($exception),
+            'message' => $exception->getMessage(),
+            'file' => $exception->getFile(),
+            'line' => $exception->getLine(),
+            'code' => $exception->getCode(),
+            'trace' => config('app.debug') ? $this->getLimitedTrace($exception, 12) : null,
         ]);
 
-        if ($channel) {
-            Log::channel($channel)->error($message, $logData);
-        } else {
-            Log::error($message, $logData);
-        }
+        $logger = $channel ? Log::channel($channel) : Log::build(['driver' => 'single']);
+        $logger->error($message, $logData);
     }
 
     /**
-     * Recursively converts all strings in the array to UTF-8.
+     * Masks common sensitive fields (e.g., passwords, tokens) in the given context array.
+     *
+     * @param array<string,mixed> $data
+     *
+     * @return array<string,mixed>
+     */
+    protected function sanitizeSensitiveData(array $data): array
+    {
+        $sensitiveKeys = ['password', 'password_confirmation', 'token', 'api_key', 'secret'];
+
+        foreach ($sensitiveKeys as $key) {
+            if (\array_key_exists($key, $data)) {
+                $data[$key] = '*****';
+            }
+        }
+
+        return $data;
+    }
+
+    /**
+     * Recursively converts all string values to UTF-8.
+     *
+     * @param array<string,mixed> $data
+     *
+     * @return array<string,mixed>
      */
     protected function encodeStringsUtf8(array $data): array
     {
-        array_walk_recursive($data, function (&$value) {
-            if (is_string($value)) {
-                $value = mb_convert_encoding($value, 'UTF-8', 'UTF-8');
+        array_walk_recursive($data, function (&$value): void {
+            if (\is_string($value)) {
+                $encoding = mb_detect_encoding($value, ['UTF-8', 'ISO-8859-1', 'ASCII'], true);
+                $value = mb_convert_encoding($value, 'UTF-8', $encoding ?: 'UTF-8');
             }
         });
 
@@ -55,12 +79,12 @@ trait ErrorLoggerTrait
     }
 
     /**
-     * Returns the exception trace limited to a maximum number of lines.
+     * Returns a string representation of the exception trace, limited to the given number of lines.
      */
-    protected function getLimitedTrace(Throwable $exception, int $maxLines = 10): string
+    protected function getLimitedTrace(\Throwable $exception, int $maxLines = 10): string
     {
         $traceLines = explode("\n", $exception->getTraceAsString());
-        $limited = array_slice($traceLines, 0, $maxLines);
-        return implode("\n", $limited);
+
+        return implode("\n", \array_slice($traceLines, 0, $maxLines));
     }
 }
