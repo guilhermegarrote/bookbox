@@ -1,15 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Arr;
+use App\Helpers\Utils;
 use App\Models\Student;
 use App\Models\StudentSchoolClass;
 use App\Models\View\SchoolClass;
-use App\Helpers\Utils;
-use Throwable;
+use Illuminate\Database\Seeder;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\DB;
 
 class StudentsSeeder extends Seeder
 {
@@ -55,7 +56,7 @@ class StudentsSeeder extends Seeder
             'Vitória',
             'Bruno',
             'Manuela',
-            'Gustavo'
+            'Gustavo',
         ];
 
         $lastNames = [
@@ -98,7 +99,7 @@ class StudentsSeeder extends Seeder
             'Peixoto',
             'Cavalcanti',
             'Fonseca',
-            'Tavares'
+            'Tavares',
         ];
 
         $created = 0;
@@ -106,22 +107,23 @@ class StudentsSeeder extends Seeder
         $classes = SchoolClass::all();
 
         if ($classes->isEmpty()) {
-            $this->command->warn("❌ Nenhuma turma encontrada na tabela schoolclass.");
+            $this->command->warn('❌ Nenhuma turma encontrada na tabela schoolclass.');
+
             return;
         }
 
-        for ($i = 1; $i <= 550; $i++) {
+        for ($i = 1; $i <= 550; ++$i) {
             $class = $classes->random();
 
             $name = Arr::random($firstNames) . ' ' . Arr::random($lastNames);
 
             $data = [
-                'name'   => $name,
-                'cpf'    => $this->randomDigits(11),
-                'email'  => "aluno{$i}@example.com",
-                'phone'  => $this->randomPhone(),
+                'name' => $name,
+                'cpf' => $this->randomDigits(11),
+                'email' => "aluno{$i}@example.com",
+                'phone' => $this->randomPhone(),
                 'course' => $class->course,
-                'term'   => $class->term,
+                'term' => $class->term,
                 'period' => $class->period,
             ];
 
@@ -131,13 +133,13 @@ class StudentsSeeder extends Seeder
                 $student = Student::create(Arr::only($data, ['name', 'cpf', 'email', 'phone']));
 
                 StudentSchoolClass::create([
-                    'student_id'      => Utils::convertUuidToBinary($student->id),
+                    'student_id' => Utils::convertUuidToBinary($student->id),
                     'school_class_id' => Utils::convertUuidToBinary($class->id),
                 ]);
 
                 DB::commit();
-                $created++;
-            } catch (Throwable $e) {
+                ++$created;
+            } catch (\Throwable $e) {
                 DB::rollBack();
                 $this->command->error("❗ Erro ao cadastrar {$data['name']}: {$e->getMessage()}");
             }
@@ -154,6 +156,7 @@ class StudentsSeeder extends Seeder
     private function randomPhone(): string
     {
         $ddd = rand(11, 99);
+
         return $ddd . '9' . $this->randomDigits(8);
     }
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
@@ -18,7 +20,7 @@ class DatabaseSeederDev extends Seeder
             GenresSeeder::class,
             BooksSeeder::class,
             CopiesSeeder::class,
-            LoansSeeder::class
+            LoansSeeder::class,
         ]);
     }
 }

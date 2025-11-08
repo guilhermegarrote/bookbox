@@ -1,9 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
 use App\Models\Genre;
+use Illuminate\Database\Seeder;
 
 class GenresSeeder extends Seeder
 {
@@ -44,13 +46,13 @@ class GenresSeeder extends Seeder
         foreach ($genres as $genre) {
             Genre::firstOrCreate(
                 ['name' => $genre],
-                ['color_hex' => $this->randomColor()]
+                ['color_hex' => $this->randomColor()],
             );
         }
     }
 
     private function randomColor(): string
     {
-        return sprintf('%06X', mt_rand(0, 0xFFFFFF));
+        return \sprintf('%06X', mt_rand(0, 0xFFFFFF));
     }
 }

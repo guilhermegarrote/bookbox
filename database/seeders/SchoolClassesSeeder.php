@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
 use App\Models\SchoolClass;
 use Carbon\Carbon;
+use Illuminate\Database\Seeder;
 
 class SchoolClassesSeeder extends Seeder
 {
@@ -52,12 +54,12 @@ class SchoolClassesSeeder extends Seeder
             'Matemática',
             'Física',
             'Química',
-            'Biologia'
+            'Biologia',
         ];
 
         $terms = ['Annual', 'Semester'];
 
-        for ($i = 1; $i <= 50; $i++) {
+        for ($i = 1; $i <= 50; ++$i) {
             $course = $courses[array_rand($courses)];
             $term = $terms[array_rand($terms)];
 

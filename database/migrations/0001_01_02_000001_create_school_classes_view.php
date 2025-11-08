@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Facades\DB;
 
@@ -29,6 +31,6 @@ class CreateSchoolClassesView extends Migration
 
     public function down()
     {
-        DB::statement("DROP VIEW IF EXISTS vw_school_classes");
+        DB::statement('DROP VIEW IF EXISTS vw_school_classes');
     }
 }

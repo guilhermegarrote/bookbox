@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Facades\DB;
 
@@ -8,7 +10,7 @@ class CreateBooksView extends Migration
     public function up(): void
     {
         DB::statement('DROP VIEW IF EXISTS vw_books');
-        DB::statement("
+        DB::statement('
             CREATE VIEW vw_books AS
             SELECT
                 b.id AS id,
@@ -33,7 +35,7 @@ class CreateBooksView extends Migration
                 g.name,
                 g.color_hex,
                 b.publisher
-        ");
+        ');
     }
 
     public function down(): void

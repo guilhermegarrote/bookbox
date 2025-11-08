@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Facades\DB;
 
@@ -8,7 +10,7 @@ class CreateCopiesView extends Migration
     public function up(): void
     {
         DB::statement('DROP VIEW IF EXISTS vw_copies');
-        DB::statement("
+        DB::statement('
             CREATE VIEW vw_copies AS
             SELECT
                 c.id AS id,
@@ -33,7 +35,7 @@ class CreateCopiesView extends Migration
             FROM copies c
             JOIN books b ON c.book_id = b.id
             LEFT JOIN genres g ON b.genre_id = g.id
-        ");
+        ');
     }
 
     public function down(): void

@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Seeders;
 
 use App\Helpers\Utils;
-use Illuminate\Database\Seeder;
 use App\Models\Book;
 use App\Models\Copy;
+use Illuminate\Database\Seeder;
 
 class CopiesSeeder extends Seeder
 {
@@ -14,7 +16,8 @@ class CopiesSeeder extends Seeder
         $books = Book::all();
 
         if ($books->isEmpty()) {
-            $this->command->warn("❌ Nenhum livro encontrado. Rode o BookSeeder primeiro.");
+            $this->command->warn('❌ Nenhum livro encontrado. Rode o BookSeeder primeiro.');
+
             return;
         }
 
@@ -23,13 +26,13 @@ class CopiesSeeder extends Seeder
         foreach ($books as $book) {
             $copiesCount = rand(2, 5);
 
-            for ($i = 1; $i <= $copiesCount; $i++) {
+            for ($i = 1; $i <= $copiesCount; ++$i) {
                 try {
                     Copy::create([
                         'book_id' => Utils::convertUuidToBinary($book->id),
-                        'number'  => $i,
+                        'number' => $i,
                     ]);
-                    $created++;
+                    ++$created;
                 } catch (\Throwable $e) {
                     $this->command->error("❗ Erro ao criar cópia do livro {$book->title}: {$e->getMessage()}");
                 }

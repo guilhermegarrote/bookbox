@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -11,19 +13,24 @@ class CreateSchoolClassesTable extends Migration
         Schema::create('school_classes', function (Blueprint $table) {
             $table->binary('id', 16)
                 ->primary()
-                ->comment('Código de identificação da turma (UUID em formato binário).');
+                ->comment('Código de identificação da turma (UUID em formato binário).')
+            ;
 
             $table->string('course', 150)
-                ->comment('Nome do curso ao qual a turma está integrada.');
+                ->comment('Nome do curso ao qual a turma está integrada.')
+            ;
 
             $table->enum('term', ['Annual', 'Semester'])
-                ->comment('Refime de vigência da turma, definido como anual ou semestral.');
+                ->comment('Refime de vigência da turma, definido como anual ou semestral.')
+            ;
 
             $table->date('start_date')
-                ->comment('Data em que a turma iniciou as aulas.');
+                ->comment('Data em que a turma iniciou as aulas.')
+            ;
 
             $table->date('end_date')
-                ->comment('Data em que a turma concluirá as aulas.');
+                ->comment('Data em que a turma concluirá as aulas.')
+            ;
         });
     }
 
