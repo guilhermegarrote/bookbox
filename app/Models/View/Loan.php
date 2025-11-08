@@ -1,53 +1,106 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models\View;
 
 use App\Helpers\Utils;
 use App\Models\Copy;
 use Carbon\Carbon;
-use Exception;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Facades\DB;
 use Ramsey\Uuid\Uuid;
 
+/**
+ * Class Loan.
+ *
+ * Represents a view model for book loans with decrypted and formatted attributes.
+ * This model is mapped to the database view `vw_loans`, containing joined and derived data
+ * from multiple related entities (students, copies, books, etc.).
+ */
 class Loan extends BaseModel
 {
-    protected $table = 'vw_loans';
+    /** @var bool Indicates if the model should be timestamped. */
     public $timestamps = false;
 
+    /** @var string The database table (view) associated with the model. */
+    protected $table = 'vw_loans';
+
+    /** @var array<int, string> The attributes that aren’t mass assignable. */
     protected $guarded = [];
 
+    /** @var array<int, string> The attributes that should be hidden in serialization. */
     protected $hidden = [
         'cpf_hash',
         'email_hash',
         'phone_hash',
     ];
 
+    /**
+     * Converts binary UUID (bytes) to string.
+     *
+     * @param null|string $value
+     *
+     * @return null|string
+     */
     public function getStudentIdAttribute($value)
     {
         return $value ? Uuid::fromBytes($value)->toString() : null;
     }
 
+    /**
+     * Converts binary UUID (bytes) to string.
+     *
+     * @param null|string $value
+     *
+     * @return null|string
+     */
     public function getBookIdAttribute($value)
     {
         return $value ? Uuid::fromBytes($value)->toString() : null;
     }
 
+    /**
+     * Converts binary UUID (bytes) to string.
+     *
+     * @param null|string $value
+     *
+     * @return null|string
+     */
     public function getCopyIdAttribute($value)
     {
         return $value ? Uuid::fromBytes($value)->toString() : null;
     }
 
+    /**
+     * Converts binary UUID (bytes) to string.
+     *
+     * @param null|string $value
+     *
+     * @return null|string
+     */
     public function getGenreIdAttribute($value)
     {
         return $value ? Uuid::fromBytes($value)->toString() : null;
     }
 
+    /**
+     * Converts binary UUID (bytes) to string.
+     *
+     * @param null|string $value
+     *
+     * @return null|string
+     */
     public function getSchoolClassIdAttribute($value)
     {
         return $value ? Uuid::fromBytes($value)->toString() : null;
     }
 
+    /**
+     * Decrypts and formats CPF number.
+     *
+     * @param null|string $value
+     */
     public function getCpfAttribute($value): ?string
     {
         if (!$value) {
@@ -55,7 +108,6 @@ class Loan extends BaseModel
         }
 
         $decrypted = Utils::decrypt($value);
-
         $numbersOnly = preg_replace('/\D/', '', $decrypted);
 
         if (preg_match('/^(\d{3})(\d{3})(\d{3})(\d{2})$/', $numbersOnly, $matches)) {
@@ -65,11 +117,21 @@ class Loan extends BaseModel
         return $decrypted;
     }
 
+    /**
+     * Decrypts email address.
+     *
+     * @param null|string $value
+     */
     public function getEmailAttribute($value): ?string
     {
         return $value ? Utils::decrypt($value) : null;
     }
 
+    /**
+     * Decrypts and formats phone number.
+     *
+     * @param null|string $value
+     */
     public function getPhoneAttribute($value): ?string
     {
         if (!$value) {
@@ -77,7 +139,6 @@ class Loan extends BaseModel
         }
 
         $decrypted = Utils::decrypt($value);
-
         $numbersOnly = preg_replace('/\D/', '', $decrypted);
 
         if (preg_match('/^(\d{2})(\d{5})(\d{4})$/', $numbersOnly, $matches)) {
@@ -87,6 +148,11 @@ class Loan extends BaseModel
         return $decrypted;
     }
 
+    /**
+     * Formats ISBN number to a readable pattern.
+     *
+     * @param null|string $value
+     */
     public function getIsbnAttribute($value): ?string
     {
         if (!$value) {
@@ -95,20 +161,25 @@ class Loan extends BaseModel
 
         $numbersOnly = preg_replace('/\D/', '', $value);
 
-        if (strlen($numbersOnly) === 13) {
-            return sprintf(
+        if (\strlen($numbersOnly) === 13) {
+            return \sprintf(
                 '%s-%s-%s-%s-%s',
                 substr($numbersOnly, 0, 3),
                 substr($numbersOnly, 3, 1),
                 substr($numbersOnly, 4, 4),
                 substr($numbersOnly, 8, 4),
-                substr($numbersOnly, 12, 1)
+                substr($numbersOnly, 12, 1),
             );
         }
 
         return $numbersOnly;
     }
 
+    /**
+     * Formats the loan start date to "d/m/Y".
+     *
+     * @param null|string $value
+     */
     public function getLoanStartDateAttribute($value): ?string
     {
         if (!$value) {
@@ -122,6 +193,11 @@ class Loan extends BaseModel
         }
     }
 
+    /**
+     * Formats the loan due date to "d/m/Y".
+     *
+     * @param null|string $value
+     */
     public function getLoanDueDateAttribute($value): ?string
     {
         if (!$value) {
@@ -135,20 +211,27 @@ class Loan extends BaseModel
         }
     }
 
+    /**
+     * Defines the relationship between a loan and its student.
+     */
     public function student(): BelongsTo
     {
         return $this->belongsTo(Student::class);
     }
 
+    /**
+     * Defines the relationship between a loan and its copy.
+     */
     public function copy(): BelongsTo
     {
         return $this->belongsTo(Copy::class);
     }
 
     /**
-     * Returns data for filters (genre_name, publisher, course, period, term, active)
+     * Returns distinct values used for filtering loan data in the UI.
      *
-     * @param \Illuminate\Database\Eloquent\Builder|null $query
+     * @param null|\Illuminate\Database\Eloquent\Builder $query
+     *
      * @return \Illuminate\Support\Collection
      */
     public static function getFilterData($query = null)
@@ -161,7 +244,7 @@ class Loan extends BaseModel
             'course',
             'period',
             'term',
-            DB::raw('CASE WHEN loan_returned_date IS NULL THEN true ELSE false END as active')
+            DB::raw('CASE WHEN loan_returned_date IS NULL THEN true ELSE false END as active'),
         )
             ->groupBy('genre_name', 'publisher', 'course', 'period', 'term', 'active')
             ->orderBy('genre_name')
@@ -170,6 +253,7 @@ class Loan extends BaseModel
             ->orderBy('period')
             ->orderBy('term')
             ->orderBy('active')
-            ->get();
+            ->get()
+        ;
     }
 }
