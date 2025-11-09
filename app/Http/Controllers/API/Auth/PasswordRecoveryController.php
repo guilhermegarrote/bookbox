@@ -91,7 +91,7 @@ class PasswordRecoveryController extends Controller
      */
     public function resendCode(Request $request): JsonResponse
     {
-        $email = $request->session()->get(RecoverySessionKey::EMAIL_VERIFIED);
+        $email = $request->session()->get(RecoverySessionKey::EMAIL_VERIFIED->value);
 
         if (empty($email)) {
             return $this->badRequestResponse(['session' => ['Sessão expirada ou e-mail não informado.']]);
@@ -105,7 +105,7 @@ class PasswordRecoveryController extends Controller
 
             $this->dispatchRecoveryCode($email);
 
-            $request->session()->put(RecoverySessionKey::CODE_SENT, true);
+            $request->session()->put(RecoverySessionKey::CODE_SENT->value, true);
 
             return $this->successResponse();
         } catch (ModelNotFoundException) {
@@ -128,7 +128,7 @@ class PasswordRecoveryController extends Controller
      */
     public function validateCode(ValidateCodeRequest $request): JsonResponse
     {
-        $email = $request->session()->get(RecoverySessionKey::EMAIL_VERIFIED);
+        $email = $request->session()->get(RecoverySessionKey::EMAIL_VERIFIED->value);
 
         if (empty($email)) {
             return $this->validationErrorResponse(['email' => ['Email da sessão é obrigatório.']]);
@@ -164,8 +164,8 @@ class PasswordRecoveryController extends Controller
             PasswordResetCode::where('user_id', $userId)->delete();
             Cache::forget($attemptKey);
 
-            $request->session()->put(RecoverySessionKey::CODE_VALIDATED, true);
-            $request->session()->put(RecoverySessionKey::PASSWORD_RESET_EXPIRATION, now()->addMinutes(self::EXPIRATION_MINUTES));
+            $request->session()->put(RecoverySessionKey::CODE_VALIDATED->value, true);
+            $request->session()->put(RecoverySessionKey::PASSWORD_RESET_EXPIRATION->value, now()->addMinutes(self::EXPIRATION_MINUTES));
 
             return response()->json(['redirect' => route('recovery.new-password.form')], 201);
         } catch (ModelNotFoundException) {
@@ -186,15 +186,15 @@ class PasswordRecoveryController extends Controller
      */
     public function resetPassword(ResetPasswordRequest $request): JsonResponse
     {
-        if (!$request->session()->get(RecoverySessionKey::CODE_VALIDATED)) {
+        if (!$request->session()->get(RecoverySessionKey::CODE_VALIDATED->value)) {
             return $this->unauthorizedResponse('Sessão inválida ou expirada.');
         }
 
-        if (now()->greaterThan($request->session()->get(RecoverySessionKey::PASSWORD_RESET_EXPIRATION))) {
+        if (now()->greaterThan($request->session()->get(RecoverySessionKey::PASSWORD_RESET_EXPIRATION->value))) {
             return $this->forbiddenResponse('Tempo para redefinição expirado.');
         }
 
-        $email = $request->session()->get(RecoverySessionKey::EMAIL_VERIFIED);
+        $email = $request->session()->get(RecoverySessionKey::EMAIL_VERIFIED->value);
         $user = User::where('email_hash', hash('sha256', strtolower($email), true))->first();
 
         if (!$user) {
@@ -210,10 +210,10 @@ class PasswordRecoveryController extends Controller
         $user->update(['password' => $newPassword]);
 
         $request->session()->forget([
-            RecoverySessionKey::CODE_SENT,
-            RecoverySessionKey::EMAIL_VERIFIED,
-            RecoverySessionKey::CODE_VALIDATED,
-            RecoverySessionKey::PASSWORD_RESET_EXPIRATION,
+            RecoverySessionKey::CODE_SENT->value,
+            RecoverySessionKey::EMAIL_VERIFIED->value,
+            RecoverySessionKey::CODE_VALIDATED->value,
+            RecoverySessionKey::PASSWORD_RESET_EXPIRATION->value,
         ]);
 
         return response()->json(['redirect' => route('login')]);

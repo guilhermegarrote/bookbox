@@ -32,21 +32,21 @@ class EnsureRecoveryCodeIsValid
      */
     public function handle(Request $request, \Closure $next): RedirectResponse|Response
     {
-        if (!$request->session()->get(RecoverySessionKey::CODE_VALIDATED)) {
+        if (!$request->session()->get(RecoverySessionKey::CODE_VALIDATED->value)) {
             return redirect()
                 ->route('recovery.code.form')
                 ->with('error', 'Valide o código antes de continuar.')
             ;
         }
 
-        $expiresAt = $request->session()->get(RecoverySessionKey::PASSWORD_RESET_EXPIRATION);
+        $expiresAt = $request->session()->get(RecoverySessionKey::PASSWORD_RESET_EXPIRATION->value);
 
         if ($expiresAt && now()->greaterThan($expiresAt)) {
             $request->session()->forget([
-                RecoverySessionKey::CODE_SENT,
-                RecoverySessionKey::CODE_VALIDATED,
-                RecoverySessionKey::EMAIL_VERIFIED,
-                RecoverySessionKey::PASSWORD_RESET_EXPIRATION,
+                RecoverySessionKey::CODE_SENT->value,
+                RecoverySessionKey::CODE_VALIDATED->value,
+                RecoverySessionKey::EMAIL_VERIFIED->value,
+                RecoverySessionKey::PASSWORD_RESET_EXPIRATION->value,
             ]);
 
             return redirect()

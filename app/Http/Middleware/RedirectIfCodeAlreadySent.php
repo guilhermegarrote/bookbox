@@ -26,7 +26,7 @@ class RedirectIfCodeAlreadySent
      */
     public function handle(Request $request, \Closure $next): RedirectResponse|Response
     {
-        if ($request->session()->get(RecoverySessionKey::CODE_SENT) === true) {
+        if ($request->session()->get(RecoverySessionKey::CODE_SENT->value) === true) {
             return redirect()
                 ->route('recovery.code.form')
                 ->with('error', 'Você já solicitou um código.')

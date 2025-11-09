@@ -28,7 +28,7 @@ class EnsureRecoveryCodeWasSent
      */
     public function handle(Request $request, \Closure $next): RedirectResponse|Response
     {
-        if (!$request->session()->get(RecoverySessionKey::CODE_SENT)) {
+        if (!$request->session()->get(RecoverySessionKey::CODE_SENT->value)) {
             return redirect()
                 ->route('recovery.email.form')
                 ->with('error', 'Solicite o código antes de continuar.')
