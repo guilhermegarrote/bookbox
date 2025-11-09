@@ -72,7 +72,7 @@ Route::middleware(['auth.jwt.cookie'])->group(function () {
     ;
 });
 
-Route::prefix('recover')->middleware('users.exist')->group(function () {
+Route::prefix('recover')->middleware(['users.exist', 'guest'])->group(function () {
     Route::post('/send', [PasswordRecoveryController::class, 'sendCode'])
         ->middleware('code.not.sent')
         ->name('recover.send')
@@ -90,5 +90,6 @@ Route::prefix('recover')->middleware('users.exist')->group(function () {
 
     Route::post('/reset-password', [PasswordRecoveryController::class, 'resetPassword'])
         ->middleware('code.valid')
-        ->name('recover.reset.password');
+        ->name('recover.reset.password')
+    ;
 });
