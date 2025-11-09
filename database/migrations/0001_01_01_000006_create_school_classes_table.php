@@ -6,8 +6,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateSchoolClassesTable extends Migration
-{
+return new class extends Migration {
     public function up()
     {
         Schema::create('school_classes', function (Blueprint $table) {
@@ -38,4 +37,4 @@ class CreateSchoolClassesTable extends Migration
     {
         Schema::dropIfExists('school_classes');
     }
-}
+};

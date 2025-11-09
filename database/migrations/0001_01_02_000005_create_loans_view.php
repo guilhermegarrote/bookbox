@@ -5,8 +5,7 @@ declare(strict_types=1);
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Facades\DB;
 
-class CreateLoansView extends Migration
-{
+return new class extends Migration {
     public function up(): void
     {
         DB::statement('DROP VIEW IF EXISTS vw_loans');
@@ -55,4 +54,4 @@ class CreateLoansView extends Migration
     {
         DB::statement('DROP VIEW IF EXISTS vw_loans');
     }
-}
+};
