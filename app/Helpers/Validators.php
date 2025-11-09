@@ -76,13 +76,7 @@ class Validators
      */
     public static function validatePasswordStructure(string $password): bool
     {
-        $regex = '/^
-            (?=.*[a-z])                                     # At least one lowercase letter
-            (?=.*[A-Z])                                     # At least one uppercase letter
-            (?=.*\d)                                        # At least one digit
-            (?=.*[ !"#$%&\'()*+,\-./:;<=>?@\[\\\]^_`{|}~])  # At least one special character
-            [A-Za-z\d !"#$%&\'()*+,\-./:;<=>?@\[\\\]^_`{|}~]{8,16}$  # Allowed chars, length 8–16
-        /x';
+        $regex = '/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z\d]).{8,16}$/';
 
         return (bool) preg_match($regex, $password);
     }
