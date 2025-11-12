@@ -24,7 +24,7 @@
                     $label = 'vencimento em:';
                     $days = $daysDiff;
                 } else {
-                    $color = '#2ecc71';
+                    $color = '#1fbd60ff';
                     $label = 'vencimento em:';
                     $days = $daysDiff;
                 }
