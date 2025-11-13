@@ -36,7 +36,7 @@ return [
         ],
     ],
 
-    'brevo' => [
-        'key' => env('BREVO_API_KEY'),
+    'google_books' => [
+        'key' => env('GOOGLE_BOOKS_API_KEY'),
     ],
 ];
