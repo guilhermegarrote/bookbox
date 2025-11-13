@@ -1,17 +1,12 @@
 import { route } from 'ziggy-js';
+import { api } from '../http-client.js';
 
-export async function validateCode(code, csrfToken) {
-    const response = await fetch(route('recover.validate.code'), {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-            'X-CSRF-TOKEN': csrfToken,
-        },
-        body: JSON.stringify({ code: code }),
-    });
+export async function validateCode(code) {
+    const response = await api.post(route('recover.validate.code'), {code});
 
-    const responseData = await response.json();
+    if (!response.ok) {
+        console.warn('[Recover] Código de recuperação inválido:', response.data);
+    }
 
-    return { ok: response.ok, responseData, status: response.status };
+    return response;
 }

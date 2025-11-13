@@ -1,21 +1,12 @@
 import { route } from 'ziggy-js';
+import { api } from '../http-client.js';
 
 export async function findLoanByBarcode(barcode) {
-    const url = route('loans.findByBarcode', { barcode });
-
-    const response = await fetch(url, {
-        method: 'GET',
-        headers: {
-            'Accept': 'application/json',
-            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-        },
-    });
+    const response = await api.get(route('loans.findByBarcode', { barcode }));
 
     if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.error.message || 'Erro ao consultar empréstimo pelo código de barras');
+        console.warn('[Loans] Falha ao buscar empréstimo por código de barras:', response.status, response.data);
     }
 
-    const data = await response.json();
-    return data;
+    return response;
 }

@@ -1,22 +1,12 @@
 import { route } from 'ziggy-js';
+import { api } from '../http-client.js';
 
 export async function addCopies(bookId, data) {
-    const url = route('books.addCopies', { book: bookId });
-
-    const response = await fetch(url, {
-        method: 'PATCH',
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-        },
-        body: JSON.stringify(data),
-    });
+    const response = await api.patch(route('books.addCopies', { book: bookId }), data);
 
     if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Erro ao cadastrar exemplares');
+        console.warn('[Books] Falha ao adicionar exemplares:', response.status, response.data);
     }
 
-    return await response.json();
+    return response;
 }

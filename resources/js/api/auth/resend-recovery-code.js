@@ -1,16 +1,12 @@
 import { route } from 'ziggy-js';
+import { api } from '../http-client.js';
 
-export async function resendCode(csrfToken) {
-    const response = await fetch(route('recover.resend'), {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-            'X-CSRF-TOKEN': csrfToken,
-        },
-    });
+export async function resendCode() {
+    const response = await api.post(route('recover.resend'));
 
-    const responseData = await response.json();
+    if (!response.ok) {
+        console.warn('[Recover] Falha ao reenviar código de recuperação:', response.data);
+    }
 
-    return { ok: response.ok, responseData, status: response.status };
+    return response;
 }

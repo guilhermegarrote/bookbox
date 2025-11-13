@@ -1,21 +1,12 @@
 import { route } from 'ziggy-js';
+import { api } from '../http-client.js';
 
 export async function findBookByIsbn(isbn) {
-    const url = route('books.findByIsbn', { isbn });
-
-    const response = await fetch(url, {
-        method: 'GET',
-        headers: {
-            'Accept': 'application/json',
-            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-        },
-    });
+    const response = await api.get(route('books.findByIsbn', { isbn }));
 
     if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.error?.message || 'Erro ao consultar livro pelo ISBN');
+        console.warn('[Books] Falha ao buscar livro por ISBN:', isbn, response.data);
     }
 
-    const data = await response.json();
-    return data;
+    return response;
 }

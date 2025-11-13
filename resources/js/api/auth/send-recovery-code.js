@@ -1,17 +1,12 @@
 import { route } from 'ziggy-js';
+import { api } from '../http-client.js';
 
-export async function sendCode(email, csrfToken) {
-    const response = await fetch(route('recover.send'), {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-            'X-CSRF-TOKEN': csrfToken,
-        },
-        body: JSON.stringify({ email: email.trim() }),
-    });
+export async function sendCode(email) {
+    const response = await api.post(route('recover.send'), { email: email.trim() });
 
-    const responseData = await response.json();
+    if (!response.ok) {
+        console.warn('[Recover] Falha ao enviar código:', response.data);
+    }
 
-    return { ok: response.ok, responseData, status: response.status };
+    return response;
 }

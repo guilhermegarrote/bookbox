@@ -1,22 +1,12 @@
 import { route } from 'ziggy-js';
+import { api } from '../http-client.js';
 
 export async function createStudent(data) {
-    const url = route('students.store');
-
-    const response = await fetch(url, {
-        method: 'POST',
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-        },
-        body: JSON.stringify(data),
-    });
+    const response = await api.post(route('students.store'), data);
 
     if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Erro ao criar aluno');
+        console.warn('[Students] Falha ao criar aluno:', response.data);
     }
 
-    return await response.json();
+    return response;
 }

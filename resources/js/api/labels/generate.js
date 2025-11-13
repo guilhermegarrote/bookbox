@@ -1,22 +1,12 @@
 import { route } from 'ziggy-js';
+import { api } from '../http-client.js';
 
 export async function generateLabels(data) {
-    const url = route('labels.generate');
-
-    const response = await fetch(url, {
-        method: 'POST',
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-        },
-        body: JSON.stringify(data),
-    });
+    const response = await api.post(route('labels.generate'), data);
 
     if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Erro ao gerar etiquetas');
+        console.warn('[Labels] Falha ao gerar etiquetas:', response.status, response.data);
     }
 
-    return await response.json();
+    return response;
 }

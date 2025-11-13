@@ -1,33 +1,12 @@
 import { route } from 'ziggy-js';
+import { api } from '../http-client.js';
 
 export async function deleteStudent(studentId) {
-    const url = route('students.destroy', { student: studentId });
-
-    const response = await fetch(url, {
-        method: 'DELETE',
-        headers: {
-            'Accept': 'application/json',
-            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-        },
-    });
+    const response = await api.delete(route('students.destroy', { student: studentId }));
 
     if (!response.ok) {
-        const contentType = response.headers.get('content-type');
-        let errorMessage = 'Erro ao deletar aluno';
-        if (contentType && contentType.includes('application/json')) {
-            const errorData = await response.json();
-            errorMessage = errorData.message || errorMessage;
-        } else {
-            const text = await response.text();
-            if (text) errorMessage = text;
-        }
-        throw new Error(errorMessage);
+        console.warn('[Students] Falha ao deletar aluno:', response.data);
     }
 
-    const contentLength = response.headers.get('content-length');
-    if (contentLength && parseInt(contentLength) > 0) {
-        return await response.json();
-    }
-
-    return null;
+    return response;
 }

@@ -1,18 +1,12 @@
 import { route } from 'ziggy-js';
+import { api } from '../http-client.js';
 
 export async function sendRequest(params = {}) {
-    const url = route('loans.index', params);
-
-    const response = await fetch(url, {
-        method: 'GET',
-        headers: {
-            'Accept': 'application/json',
-        }
-    });
+    const response = await api.get(route('loans.index', params));
 
     if (!response.ok) {
-        throw new Error('Erro na requisição: ' + response.status);
+        console.warn('[Loans] Falha ao buscar empréstimos:', response.status, response.data);
     }
 
-    return await response.json();
+    return response;
 }

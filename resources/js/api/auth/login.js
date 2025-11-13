@@ -1,17 +1,12 @@
 import { route } from 'ziggy-js';
+import { api } from '../http-client.js';
 
-export async function login(data, csrfToken) {
-    const response = await fetch(route('api.login'), {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-            'X-CSRF-TOKEN': csrfToken,
-        },
-        body: JSON.stringify(data),
-    });
+export async function login(data) {
+    const response = await api.post(route('api.login'), data);
 
-    const responseData = await response.json();
+    if (!response.ok) {
+        console.warn('[Login] Falha no login:', response.data);
+    }
 
-    return { ok: response.ok, responseData, status: response.status };
+    return response;
 }

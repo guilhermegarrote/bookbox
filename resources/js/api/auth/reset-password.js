@@ -1,17 +1,12 @@
 import { route } from 'ziggy-js';
+import { api } from '../http-client.js';
 
-export async function resetPassword(data, csrfToken) {
-    const response = await fetch(route('recover.reset.password'), {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-            'X-CSRF-TOKEN': csrfToken,
-        },
-        body: JSON.stringify(data),
-    });
+export async function resetPassword(data) {
+    const response = await api.post(route('recover.reset.password'), data);
 
-    const responseData = await response.json();
+    if (!response.ok) {
+        console.warn('[Recover] Falha ao redefinir senha:', response.data);
+    }
 
-    return { ok: response.ok, responseData, status: response.status };
+    return response;
 }

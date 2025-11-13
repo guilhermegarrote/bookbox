@@ -1,33 +1,12 @@
 import { route } from 'ziggy-js';
+import { api } from '../http-client.js';
 
 export async function finalizeLoan(loanId) {
-    const url = route('loans.finalize', { loan: loanId });
-
-    const response = await fetch(url, {
-        method: 'PATCH',
-        headers: {
-            'Accept': 'application/json',
-            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-        },
-    });
+    const response = await api.patch(route('loans.finalize', { loan: loanId }));
 
     if (!response.ok) {
-        const contentType = response.headers.get('content-type');
-        let errorMessage = 'Erro ao finalizar o emprestimo';
-        if (contentType && contentType.includes('application/json')) {
-            const errorData = await response.json();
-            errorMessage = errorData.message || errorMessage;
-        } else {
-            const text = await response.text();
-            if (text) errorMessage = text;
-        }
-        throw new Error(errorMessage);
+        console.warn('[Loans] Falha ao finalizar empréstimo:', response.status, response.data);
     }
 
-    const contentLength = response.headers.get('content-length');
-    if (contentLength && parseInt(contentLength) > 0) {
-        return await response.json();
-    }
-
-    return null;
+    return response;
 }
