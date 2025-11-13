@@ -19,6 +19,7 @@
     width: 650px;
     border-radius: 6px;
     font-family: var(--font-primary);
+    animation: modal-fadeIn 0.3s ease-out;
 }
 
 .hidden {
@@ -146,17 +147,58 @@
 }
 
 .warning-icon {
-  width: 45px;
-  height: 45px;
-  display: inline-block;
-  vertical-align: middle;
+    width: 45px;
+    height: 45px;
+    display: inline-block;
+    vertical-align: middle;
 }
 
 .warning-icon .warning-icon-background {
-  color: #f1c40e;
+    color: #f1c40e;
 }
 
 .warning-icon .warning-icon-foreground {
-  color: #212121;
+    color: #212121;
 }
 
+@keyframes modal-fadeIn {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.97);
+    }
+
+    to {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+    }
+}
+
+@keyframes modal-fadeOut {
+    from {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+    }
+
+    to {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.97);
+    }
+}
+
+.modal-window.closing {
+    animation: modal-fadeOut 0.25s ease-in forwards;
+}
+
+.modal-overlay.closing {
+    animation: overlay-fadeOut 0.25s ease-in forwards;
+}
+
+@keyframes overlay-fadeOut {
+    from {
+        opacity: 1;
+    }
+
+    to {
+        opacity: 0;
+    }
+}
