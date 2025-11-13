@@ -5,10 +5,10 @@ import { showErrors, notifySuccess, notifyError } from '@/utils/formErrors';
 import { applyInputMasks } from '../../components/ui/input-mask.js';
 import ModalManager from '../../components/managers/modal-manager.js';
 
-import { createBooks } from '../../api/books/create.js';
-import { deleteBooks } from '../../api/books/delete.js';
+import { createBook } from '../../api/books/create.js';
+import { deleteBook } from '../../api/books/delete.js';
 import { findBookByIsbn } from '../../api/books/find-by-isbn.js';
-import { updateBooks } from '../../api/books/update.js';
+import { updateBook } from '../../api/books/update.js';
 import { findLoanByBarcode } from '../../api/loans/find-by-barcode.js';
 
 import booksTable from './table.js';
@@ -31,7 +31,7 @@ async function openCreateModal() {
         modalManager.bindFormSubmit({
             modalId: 'bookCreateModal',
             buttonId: 'submit-create',
-            onSubmit: createBooks,
+            onSubmit: createBook,
             onSuccess: () => {
                 modalManager.removeModal('bookCreateModal');
                 booksTable.updateTable();
@@ -64,7 +64,7 @@ async function openUpdateModal(bookId) {
         modalManager.bindFormSubmit({
             modalId: 'bookUpdateModal',
             buttonId: 'submit-update',
-            onSubmit: (data) => updateBooks(bookId, data),
+            onSubmit: (data) => updateBook(bookId, data),
             onSuccess: () => {
                 openMenuModal(bookId);
                 booksTable.updateTable();
@@ -107,7 +107,7 @@ async function openMenuModal(bookId) {
             if (!confirmed) return;
 
             try {
-                await deleteBooks(bookId);
+                await deleteBook(bookId);
                 modalManager.removeModal('bookMenuModal');
                 booksTable.updateTable();
                 notifySuccess('Livro excluído com sucesso!');
@@ -157,7 +157,7 @@ function bindOpenButtons() {
     const addBtn = document.querySelector('.btn-add');
     if (addBtn) addBtn.addEventListener('click', openCreateModal);
     const labelBtn = document.querySelector('.btn-label');
-    if (labelBtn) addBtn.addEventListener('click', openGeneraLabelModal(modalManager));
+    if (labelBtn) labelBtn.addEventListener('click', () => openGeneraLabelModal(modalManager));
 
     document.querySelectorAll('table.data-table tbody tr').forEach(row => {
         row.addEventListener('click', () => {
