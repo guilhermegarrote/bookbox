@@ -43,6 +43,7 @@ Route::middleware(['auth.jwt.cookie'])->group(function () {
     Route::get('/books/find-by-isbn/{isbn}', [BookController::class, 'findByIsbn'])
         ->name('books.findByIsbn')
     ;
+    Route::get('/books/metadata/{isbn}', [BookController::class, 'fetchMetadata'])->name('books.fetchMetadata');
 
     Route::apiResource('school-classes', SchoolClassController::class);
 

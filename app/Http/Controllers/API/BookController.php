@@ -13,13 +13,20 @@ use App\Models\Book;
 use App\Models\Copy;
 use App\Models\Genre;
 use App\Models\View\Book as ViewBook;
+use App\Services\BookMetadataService;
 use App\Services\CopyService;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
+/**
+ * Controller responsible for managing books (CRUD operations).
+ *
+ * Provides endpoints to list, create, retrieve, update, and delete books.
+ */
 class BookController extends Controller
 {
     /**
@@ -158,6 +165,46 @@ class BookController extends Controller
             $this->logError('Erro ao buscar livro pelo ISBN.', $e, ['isbn' => $isbn]);
 
             return $this->internalErrorResponse($e, 'Erro interno ao buscar livro.');
+        }
+    }
+
+    /**
+     * Retrieve book metadata from external sources (Google Books / OpenLibrary) by ISBN.
+     *
+     * @param string $isbn the ISBN to search for
+     * @param BookMetadataService $metadataService service responsible for fetching book metadata
+     *
+     * @return JsonResponse JSON response containing merged book metadata or error message
+     */
+    public function fetchMetadata(string $isbn, BookMetadataService $metadataService): JsonResponse
+    {
+        try {
+            $cleanIsbn = preg_replace('/[^0-9Xx]/', '', trim($isbn));
+
+            if (!Validators::validateIsbn($cleanIsbn)) {
+                return response()->json([
+                    'error' => [
+                        'isbn' => 'ISBN inválido.',
+                    ],
+                ], 400, [], JSON_UNESCAPED_UNICODE);
+            }
+
+            $metadata = $metadataService->fetch($cleanIsbn);
+
+            if (!$metadata) {
+                return response()->json(['message' => 'Nenhum dado encontrado nas fontes externas.'], 404, [], JSON_UNESCAPED_UNICODE);
+            }
+
+            return response()->json(['data' => $metadata], 200, [], JSON_UNESCAPED_UNICODE);
+        } catch (\Throwable $e) {
+            Log::error('Erro ao buscar metadados do livro: ' . $e->getMessage(), [
+                'isbn' => $isbn,
+                'trace' => $e->getTraceAsString(),
+            ]);
+
+            return response()->json([
+                'error' => 'Erro interno ao buscar metadados do livro.',
+            ], 500, [], JSON_UNESCAPED_UNICODE);
         }
     }
 
