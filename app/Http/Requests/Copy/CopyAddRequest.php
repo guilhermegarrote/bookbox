@@ -9,8 +9,7 @@ use Illuminate\Foundation\Http\FormRequest;
 /**
  * Form request responsible for validating data when adding copies to a book.
  *
- * This request ensures that the provided ISBN exists in the database
- * and that the number of copies (amount) is a valid positive integer.
+ * This request ensures that the number of copies (amount) is a valid positive integer.
  *
  * @method string input(string $key, $default = null)
  * @method void merge(array $input)
@@ -35,13 +34,6 @@ class CopyAddRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'isbn' => [
-                'bail',
-                'required',
-                'string',
-                'regex:/^(97(8|9))?\d{9}(\d|X)$/i',
-                'exists:books,isbn',
-            ],
             'amount' => [
                 'required',
                 'integer',
@@ -59,11 +51,6 @@ class CopyAddRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'isbn.required' => 'O ISBN é obrigatório.',
-            'isbn.string' => 'O ISBN deve ser um texto.',
-            'isbn.regex' => 'O ISBN informado não tem um formato válido.',
-            'isbn.exists' => 'O ISBN informado não foi encontrado na base de livros.',
-
             'amount.required' => 'O número de exemplares é obrigatório.',
             'amount.integer' => 'O número de exemplares deve ser um número inteiro.',
             'amount.min' => 'É necessário cadastrar pelo menos 1 exemplar.',
@@ -80,7 +67,6 @@ class CopyAddRequest extends FormRequest
     protected function prepareForValidation(): void
     {
         $this->merge([
-            'isbn' => trim($this->input('isbn', '')),
             'amount' => (int) $this->input('amount', 1),
         ]);
     }
