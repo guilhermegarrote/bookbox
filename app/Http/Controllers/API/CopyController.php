@@ -70,10 +70,10 @@ class CopyController extends Controller
 
             Book::where('id', $binaryBookId)->firstOrFail();
 
-            $amount = (int) $request->input('amount', 1);
+            $amount = (int) $request->input('amount', 0);
             $copyService->storeCopies($binaryBookId, $amount);
 
-            return $this->successResponse(['added_copies' => $amount]);
+            return $this->successResponse();
         } catch (ModelNotFoundException $e) {
             return $this->notFoundResponse('Livro não encontrado.');
         } catch (\Throwable $e) {
@@ -97,7 +97,7 @@ class CopyController extends Controller
 
             $binaryId = Utils::convertUuidToBinary($id);
 
-            $copy = Cache::remember("copy:{$id}", 300, fn () => Copy::findOrFail($binaryId));
+            $copy = Cache::remember("copy:{$id}", 300, fn () => ViewCopy::findOrFail($binaryId));
 
             return $this->successResponse($copy->toArray());
         } catch (ModelNotFoundException $e) {
