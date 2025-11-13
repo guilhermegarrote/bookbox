@@ -13,7 +13,6 @@
         "guzzlehttp/guzzle": "^7.9",
         "laravel/framework": "^12.0",
         "laravel/tinker": "^2.10.1",
-        "mike42/escpos-php": "dev-development",
         "php-open-source-saver/jwt-auth": "^2.8",
         "phpmailer/phpmailer": "^6.10",
         "picqer/php-barcode-generator": "^3.2",
@@ -22,11 +21,13 @@
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",
+        "friendsofphp/php-cs-fixer": "^3.89",
         "icanhazstring/composer-unused": "^0.9.5",
         "laravel/pail": "^1.2.2",
         "laravel/pint": "^1.13",
         "laravel/sail": "^1.41",
-        "nunomaduro/collision": "^8.6"
+        "nunomaduro/collision": "^8.6",
+        "phpstan/phpstan": "^2.1"
     },
     "autoload": {
         "psr-4": {
@@ -59,13 +60,17 @@
         ],
         "dev": [
             "Composer\\Config::disableProcessTimeout",
-            "npx concurrently -c \"#93c5fd,#c4b5fd,#fb7185,#fdba74\" \"php artisan serve\" \"php artisan queue:listen --tries=1\" \"php artisan pail --timeout=0\" \"npm run dev\" --names=server,queue,logs,vite"
+            "concurrently -c \"#93c5fd,#c4b5fd,#fb7185,#fdba74\" \"php artisan serve\" \"php artisan queue:listen --tries=1\" \"php artisan pail --timeout=0\" \"npm run dev\" --names=server,queue,logs,vite"
         ],
         "test": [
             "@php artisan config:clear --ansi",
-            "@php artisan migrate:fresh --seed",
+            "@php artisan migrate:fresh --seed --env=testing",
             "@php artisan test --parallel"
-        ]
+        ],
+        "analyse": "vendor/bin/phpstan analyse --level=max",
+        "fix": "vendor/bin/php-cs-fixer fix",
+        "lint": "eslint resources/js",
+        "format": "prettier --write ."
     },
     "extra": {
         "laravel": {
