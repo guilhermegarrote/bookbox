@@ -21,7 +21,10 @@ use Illuminate\Support\Facades\Log;
  */
 class PrintLoanReceiptJob implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Dispatchable;
+    use InteractsWithQueue;
+    use Queueable;
+    use SerializesModels;
 
     /**
      * @var string UUID of the loan to print
@@ -36,7 +39,7 @@ class PrintLoanReceiptJob implements ShouldQueue
     /**
      * Create a new job instance.
      *
-     * @param string $loanId   UUID of the loan
+     * @param string $loanId UUID of the loan
      * @param string $userName Name of the user performing the loan
      */
     public function __construct(string $loanId, string $userName)
@@ -49,8 +52,6 @@ class PrintLoanReceiptJob implements ShouldQueue
      * Execute the job.
      *
      * Fetches the loan data and prints a receipt using the thermal printer service.
-     *
-     * @return void
      */
     public function handle(): void
     {
@@ -58,6 +59,7 @@ class PrintLoanReceiptJob implements ShouldQueue
 
         if (!$loan) {
             Log::warning("Loan not found for printing receipt: {$this->loanId}");
+
             return;
         }
 
