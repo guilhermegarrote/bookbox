@@ -2,10 +2,10 @@ import { sendCode } from '../../api/auth/send-recovery-code.js';
 import { showErrors, clearErrors, notifyError } from '@/utils/formErrors';
 import '../../../css/pages/auth.css';
 
+import { validateEmailField } from '@/utils/validators.js';
+
 document.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById('send-recovery-code-form');
-    const csrfMeta = document.querySelector('meta[name="csrf-token"]');
-    const csrfToken = csrfMeta ? csrfMeta.getAttribute('content') : '';
 
     if (!form) {
         console.error('Formulário de envio de código não encontrado.');
@@ -24,12 +24,10 @@ document.addEventListener('DOMContentLoaded', () => {
         event.preventDefault();
         clearErrors();
 
-        if (!form.reportValidity()) {
-            return;
-        }
+        if (!form.reportValidity()) return;
 
         const email = emailInput.value;
-        const validationErrors = validateEmail(email);
+        const validationErrors = validateEmailField(email);
 
         if (validationErrors.length > 0) {
             showErrors(validationErrors);
@@ -37,44 +35,23 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         try {
-            const { ok, responseData } = await sendCode(email, csrfToken);
+            const { ok, data } = await sendCode(email);
 
             if (!ok) {
-                if (responseData.errors) {
-                    showErrors(responseData.errors);
+                if (data.errors) {
+                    showErrors(data.errors);
                 } else {
-                    notifyError(responseData.error || responseData.message || 'Erro desconhecido.');
+                    notifyError(data.error || data.message || 'Erro desconhecido.');
                 }
                 return;
             }
 
-            if (responseData.redirect) {
-                window.location.href = responseData.redirect;
+            if (data.redirect) {
+                window.location.href = data.redirect;
             }
         } catch (error) {
             console.error('Erro ao enviar código:', error);
-            notifyError('Erro inesperado ao redefinir a senha. Tente novamente.');
+            notifyError('Erro inesperado ao enviar o código. Tente novamente.');
         }
     });
 });
-
-function validateEmail(email) {
-    const errors = [];
-
-    if (!email || typeof email !== 'string' || email.trim() === '') {
-        errors.push({ field: 'email', messages: ['O e-mail é obrigatório.'] });
-    } else {
-        const cleanEmail = email.trim();
-
-        if (cleanEmail.length > 320) {
-            errors.push({ field: 'email', messages: ['O e-mail não pode ter mais que 320 caracteres.'] });
-        }
-
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(cleanEmail)) {
-            errors.push({ field: 'email', messages: ['Formato do e-mail inválido.'] });
-        }
-    }
-
-    return errors;
-}

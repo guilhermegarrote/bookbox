@@ -1,11 +1,10 @@
 import { login } from '../../api/auth/login.js';
 import { showErrors, clearErrors, notifyError } from '@/utils/formErrors';
+import { validateEmailField, combineValidations } from '@/utils/validators';
 import '../../../css/pages/login.css';
 
 document.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById('login-form');
-    const csrfMeta = document.querySelector('meta[name="csrf-token"]');
-    const csrfToken = csrfMeta ? csrfMeta.getAttribute('content') : '';
 
     if (!form) {
         console.error('Formulário de login não encontrado.');
@@ -16,9 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
         event.preventDefault();
         clearErrors();
 
-        if (!form.reportValidity()) {
-            return;
-        }
+        if (!form.reportValidity()) return;
 
         const formData = new FormData(form);
         const data = Object.fromEntries(formData.entries());
@@ -30,67 +27,56 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         try {
-            const { ok, responseData, status } = await login(data, csrfToken);
+            const { ok, data: responseData, status } = await login(data);
 
             if (!ok) {
                 if (responseData.errors) {
                     showErrors(responseData.errors);
                 } else if (status === 401 || status === 429) {
-                    notifyError(responseData.error || 'Erro desconhecido.');
+                    notifyError(responseData.error || responseData.message || 'Erro desconhecido.');
+                } else {
+                    notifyError('Erro inesperado no login.');
                 }
                 return;
             }
 
-            if (responseData.data.user) {
+            if (responseData.user) {
                 sessionStorage.setItem('user', JSON.stringify(responseData.user));
             }
 
-            if (responseData.data.redirect) {
-                window.location.href = responseData.data.redirect;
+            if (responseData.redirect) {
+                window.location.href = responseData.redirect;
             }
+
         } catch (error) {
-            console.error('Erro técnico no login:', error);
+            console.error(error);
+            notifyError('Erro técnico ao tentar fazer login. Tente novamente.');
         }
     });
 
     const recoveryLink = document.querySelector('.auth-link');
     const emailInput = document.querySelector('input[name="email"]');
 
-    recoveryLink.addEventListener('click', (e) => {
-        e.preventDefault();
+    if (recoveryLink) {
+        recoveryLink.addEventListener('click', (e) => {
+            e.preventDefault();
 
-        const email = emailInput.value;
-        if (email) {
-            localStorage.setItem('recoveryEmail', email);
-        }
-
-        window.location.href = recoveryLink.getAttribute('href');
-    });
-
-    function validateForm(data) {
-        const errors = [];
-
-        if (!data.email || typeof data.email !== 'string' || data.email.trim() === '') {
-            errors.push({ field: 'email', messages: ['O e-mail é obrigatório.'] });
-        } else {
-            const email = data.email.trim();
-            if (email.length > 320) {
-                errors.push({ field: 'email', messages: ['O e-mail não pode ter mais que 320 caracteres.'] });
+            const email = emailInput?.value?.trim();
+            if (email) {
+                localStorage.setItem('recoveryEmail', email);
             }
-            if (!validateEmail(email)) {
-                errors.push({ field: 'email', messages: ['Formato do e-mail inválido.'] });
-            }
-        }
 
-        if (!data.password || typeof data.password !== 'string' || data.password.trim() === '') {
-            errors.push({ field: 'senha', messages: ['A senha é obrigatória.'] });
-        }
-
-        return errors;
+            window.location.href = recoveryLink.getAttribute('href');
+        });
     }
 
-    function validateEmail(email) {
-        const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        return re.test(email);
+    function validateForm(data) {
+        const emailErrors = validateEmailField(data.email);
+
+        const passwordErrors = !data.password
+            ? [{ field: 'password', messages: ['A senha é obrigatória.'] }]
+            : [];
+
+        return combineValidations(emailErrors, passwordErrors);
     }
 });
