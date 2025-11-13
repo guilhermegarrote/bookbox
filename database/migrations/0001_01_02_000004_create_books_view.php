@@ -20,8 +20,8 @@ return new class extends Migration {
                 g.name AS genre_name,
                 g.color_hex AS genre_color_hex,
                 b.publisher AS publisher,
-                SUM(CASE WHEN c.available = 1 THEN 1 ELSE 0 END) AS available_copies,
-                COUNT(*) AS total_copies
+                CAST(SUM(CASE WHEN c.available = 1 THEN 1 ELSE 0 END) AS UNSIGNED) AS available_copies,
+                CAST(COUNT(*) AS UNSIGNED) AS total_copies
             FROM books b
             JOIN genres g ON b.genre_id = g.id
             LEFT JOIN vw_copies c ON c.book_id = b.id

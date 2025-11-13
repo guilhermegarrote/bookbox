@@ -18,12 +18,14 @@ return new class extends Migration {
                 sc.term,
                 sc.start_date,
                 sc.end_date,
-                CASE
-                    WHEN CURDATE() < sc.start_date THEN 0
-                    WHEN LOWER(sc.term) = 'annual' THEN TIMESTAMPDIFF(YEAR, sc.start_date, LEAST(CURDATE(), sc.end_date)) + 1
-                    WHEN LOWER(sc.term) = 'semester' THEN TIMESTAMPDIFF(MONTH, sc.start_date, LEAST(CURDATE(), sc.end_date)) DIV 6 + 1
-                    ELSE NULL
-                END AS period
+                CAST(
+                    CASE
+                        WHEN CURDATE() < sc.start_date THEN 0
+                        WHEN LOWER(sc.term) = 'annual' THEN TIMESTAMPDIFF(YEAR, sc.start_date, LEAST(CURDATE(), sc.end_date)) + 1
+                        WHEN LOWER(sc.term) = 'semester' THEN TIMESTAMPDIFF(MONTH, sc.start_date, LEAST(CURDATE(), sc.end_date)) DIV 6 + 1
+                        ELSE NULL
+                    END AS UNSIGNED
+                ) AS period
             FROM school_classes sc
         ");
     }
