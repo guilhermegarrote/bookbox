@@ -35,7 +35,7 @@ trait ErrorLoggerTrait
             'trace' => config('app.debug') ? $this->getLimitedTrace($exception, 12) : null,
         ]);
 
-        $logger = $channel ? Log::channel($channel) : Log::build(['driver' => 'single']);
+        $logger = Log::channel($channel ?? 'errors');
         $logger->error($message, $logData);
     }
 

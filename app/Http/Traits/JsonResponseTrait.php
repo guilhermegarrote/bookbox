@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Http\Traits;
 
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Log;
 
 /**
  * Trait JsonResponseTrait.
@@ -143,8 +142,6 @@ trait JsonResponseTrait
      */
     protected function internalErrorResponse(\Throwable $e, string $message = 'Erro interno.'): JsonResponse
     {
-        Log::error($message, ['exception' => $e]);
-
         return response()->json([
             'error' => $message,
             'details' => config('app.debug')
