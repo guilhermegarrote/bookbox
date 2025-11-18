@@ -20,7 +20,7 @@ class BookController extends Controller
      *
      * @see resources/views/pages/books/partials/filters.blade.php
      */
-    public function filter(): View
+    public function filter()
     {
         return view('pages.books.partials.filters');
     }
@@ -39,20 +39,9 @@ class BookController extends Controller
     {
         $filterData = Book::getFilterData();
 
-        $books = Book::select([
-            'id',
-            'isbn',
-            'title',
-            'author',
-            'genre_name',
-            'publisher',
-            'available_copies',
-            'total_copies',
-        ])->orderBy('title')->paginate(10);
-
         $filterUrl = route('books.filter.view');
 
-        return view('pages.books.index', compact('books', 'filterData', 'filterUrl'));
+        return view('pages.books.index', compact('filterData', 'filterUrl'));
     }
 
     /**
