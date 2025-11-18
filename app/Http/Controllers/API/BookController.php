@@ -15,6 +15,7 @@ use App\Models\Genre;
 use App\Models\View\Book as ViewBook;
 use App\Services\BookMetadataService;
 use App\Services\CopyService;
+use App\Traits\HasPaginationSettings;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
@@ -29,39 +30,48 @@ use Illuminate\Support\Facades\Log;
  */
 class BookController extends Controller
 {
+    use HasPaginationSettings;
+
     /**
-     * Display a paginated list of books with optional search and filters.
+     * Retrieve a paginated list of books with optional search terms and filters.
      *
-     * @param Request $request the HTTP request containing query parameters for search, filter, and pagination
+     * This endpoint processes the incoming request, applies search keywords,
+     * filters, and pagination rules, and returns a structured JSON payload
+     * containing the resulting dataset, pagination cursors, and filter metadata
+     * used to build the dynamic UI.
      *
-     * @return JsonResponse JSON response containing HTML table, pagination markup, and filter data
+     * @param Request $request The HTTP request containing query parameters for search, filtering, ordering, and pagination settings
+     *
+     * @throws \Throwable If an unexpected exception occurs while building the query or generating the paginated response
+     *
+     * @return JsonResponse A JSON response containing: - `data`: the paginated list of books - `pagination`: cursor-based pagination metadata - `filterData`: aggregated metadata for dynamic filter components
      */
     public function index(Request $request): JsonResponse
     {
         try {
             $query = $this->buildBookQuery($request);
 
-            $perPage = max(5, min((int) $request->input('perPage', 10), 250));
-
-            $books = $query->select([
-                'id',
-                'isbn',
-                'title',
-                'author',
-                'genre_name',
-                'publisher',
-                'available_copies',
-                'total_copies',
-            ])->paginate($perPage)->appends($request->all());
-
-            $html = view('pages.books.partials.table', compact('books'))->render();
-            $paginationHtml = view('vendor.pagination.custom', ['paginator' => $books])->render();
-            $filterData = ViewBook::getFilterData($query);
+            $books = $this->paginateWithSettings(
+                $query->select([
+                    'id',
+                    'isbn',
+                    'title',
+                    'author',
+                    'genre_name',
+                    'publisher',
+                    'available_copies',
+                    'total_copies',
+                ]),
+                $request,
+            );
 
             return response()->json([
-                'html' => $html,
-                'paginationHtml' => $paginationHtml,
-                'filterData' => $filterData,
+                'data' => $books->items(),
+                'pagination' => [
+                    'next_cursor' => $books->nextCursor()?->encode(),
+                    'has_more' => $books->nextCursor() !== null,
+                ],
+                'filterData' => ViewBook::getFilterData($query),
             ]);
         } catch (\Throwable $e) {
             $this->logError('Erro ao listar livros.', $e);
@@ -370,7 +380,7 @@ class BookController extends Controller
      */
     private function applyBookSorting(Builder $query, Request $request): Builder
     {
-        $sortable = ['title', 'author', 'genre_name', 'publisher'];
+        $sortable = ['available_copies', 'title', 'author', 'genre_name', 'publisher'];
         $sort = \in_array($request->input('sort'), $sortable, true) ? $request->input('sort') : 'title';
         $direction = $request->input('direction') === 'desc' ? 'desc' : 'asc';
 
