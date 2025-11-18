@@ -26,9 +26,12 @@ class BookMetadataService
             return null;
         }
 
+        $finalIsbn = $this->normalizeIsbn($isbn);
+
         return [
+            'isbn' => $finalIsbn,
             'title' => $google['title'] ?? $open['title'] ?? null,
-            'authors' => $this->formatAuthors($google['authors'] ?? $open['authors'] ?? []),
+            'author' => $this->formatAuthors($google['authors'] ?? $open['authors'] ?? []),
             'publisher' => $google['publisher'] ?? $open['publisher'] ?? null,
             'genre' => $this->firstCategory($google['categories'] ?? $open['categories'] ?? []),
         ];
@@ -51,15 +54,25 @@ class BookMetadataService
                 return null;
             }
 
+            $isbn10 = null;
+            $isbn13 = null;
+            if (!empty($book['industryIdentifiers'])) {
+                foreach ($book['industryIdentifiers'] as $identifier) {
+                    if ($identifier['type'] === 'ISBN_10') $isbn10 = $identifier['identifier'];
+                    if ($identifier['type'] === 'ISBN_13') $isbn13 = $identifier['identifier'];
+                }
+            }
+
             return [
                 'title' => $book['title'] ?? null,
                 'authors' => $book['authors'] ?? [],
                 'publisher' => $book['publisher'] ?? null,
                 'categories' => $book['categories'] ?? [],
+                'isbn10' => $isbn10,
+                'isbn13' => $isbn13,
             ];
         } catch (\Throwable $e) {
             Log::warning('Google Books API error: ' . $e->getMessage());
-
             return null;
         }
     }
@@ -101,5 +114,27 @@ class BookMetadataService
     private function firstCategory(array $categories): ?string
     {
         return !empty($categories) ? $categories[0] : null;
+    }
+
+    /**
+     * Normalize ISBN to 13 digits if possible, otherwise keep 10.
+     */
+    private function normalizeIsbn(string $isbn): string
+    {
+        $isbn = preg_replace('/[^0-9Xx]/', '', trim($isbn));
+
+        if (strlen($isbn) === 10) {
+            $isbn13 = '978' . substr($isbn, 0, 9);
+            $sum = 0;
+            for ($i = 0; $i < 12; $i++) {
+                $digit = (int)$isbn13[$i];
+                $sum += ($i % 2 === 0) ? $digit : $digit * 3;
+            }
+            $checkDigit = (10 - ($sum % 10)) % 10;
+            $isbn13 .= $checkDigit;
+            return $isbn13;
+        }
+
+        return $isbn;
     }
 }
