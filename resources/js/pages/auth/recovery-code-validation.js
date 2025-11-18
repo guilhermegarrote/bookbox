@@ -1,8 +1,8 @@
-import { validateCode } from '../../api/auth/recovery-code-validation.js';
-import { resendCode } from '../../api/auth/resend-recovery-code.js';
-import { showErrors, clearErrors, notifyError, notifySuccess } from '@/utils/formErrors';
-import { validateRecoveryCode } from '@/utils/validators.js';
-import '../../../css/pages/recovery-code-validation.css';
+import { validateCode } from '@js/api/auth/recovery-code-validation.js';
+import { resendCode } from '@js/api/auth/resend-recovery-code.js';
+import { showErrors, clearErrors, notifyError, notifySuccess } from '@js/utils/formErrors';
+import { validateRecoveryCode } from '@/utils/validation/auth-validation.js';
+import '@css/pages/recovery-code-validation.css';
 
 document.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById('recovery-code-validation-form');

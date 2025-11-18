@@ -1,7 +1,7 @@
-import { login } from '../../api/auth/login.js';
-import { showErrors, clearErrors, notifyError } from '@/utils/formErrors';
-import { validateEmailField, combineValidations } from '@/utils/validators';
-import '../../../css/pages/login.css';
+import { login } from '@js/api/auth/login.js';
+import { showErrors, clearErrors, notifyError } from '@js/utils/formErrors';
+import { validateEmailField, combineValidations } from '@js/utils/validation/auth-validation.js';
+import '@css/pages/login.css';
 
 document.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById('login-form');

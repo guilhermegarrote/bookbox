@@ -1,6 +1,6 @@
-import { register } from '../../api/auth/register.js';
-import { showErrors, clearErrors, notifyError } from '@/utils/formErrors';
-import '../../../css/pages/auth.css';
+import { register } from '@js/api/auth/register.js';
+import { showErrors, clearErrors, notifyError } from '@js/utils/formErrors';
+import '@css/pages/auth.css';
 
 import {
     validateNameField,
@@ -9,7 +9,7 @@ import {
     validatePasswordConfirmation,
     validateTermsField,
     combineValidations
-} from '@/utils/validators.js';
+} from '@/utils/validation/auth-validation.js';
 
 document.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById('register-form');

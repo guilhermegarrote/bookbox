@@ -1,8 +1,8 @@
-import { sendCode } from '../../api/auth/send-recovery-code.js';
-import { showErrors, clearErrors, notifyError } from '@/utils/formErrors';
-import '../../../css/pages/auth.css';
+import { sendCode } from '@js/api/auth/send-recovery-code.js';
+import { showErrors, clearErrors, notifyError } from '@js/utils/formErrors';
+import '@css/pages/auth.css';
 
-import { validateEmailField } from '@/utils/validators.js';
+import { validateEmailField } from '@/utils/validation/auth-validation.js';
 
 document.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById('send-recovery-code-form');

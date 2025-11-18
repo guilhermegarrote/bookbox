@@ -1,12 +1,12 @@
-import { resetPassword } from '../../api/auth/reset-password.js';
-import { showErrors, clearErrors, notifyError } from '@/utils/formErrors';
-import '../../../css/pages/auth.css';
+import { resetPassword } from '@js/api/auth/reset-password.js';
+import { showErrors, clearErrors, notifyError } from '@js/utils/formErrors';
+import '@css/pages/auth.css';
 
 import {
     validatePasswordField,
     validatePasswordConfirmation,
     combineValidations
-} from '@/utils/validators.js';
+} from '@/utils/validation/auth-validation.js';
 
 document.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById('reset-password-form');
