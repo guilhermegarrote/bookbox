@@ -7,17 +7,11 @@
         <div class="data-container">
             <h2 class="page-title">Livros</h2>
 
-            <div class="table-wrapper" id="data-table-container">
-                @include('pages.books.partials.table', ['books' => $books])
-            </div>
-
-            <div class="pagination-container" id="pagination-wrapper">
-                @include('vendor.pagination.custom', ['paginator' => $books])
-            </div>
+            @include('pages.books.partials.table')
         </div>
     </div>
 @endsection
 
 @push('scripts')
-    @vite('resources/js/pages/books/books.js')
+    @vite('resources/js/pages/books/index.js')
 @endpush
