@@ -75,11 +75,19 @@ async function safeParseJson(response) {
     try {
         if (contentType.includes('application/json')) {
             const json = await response.json();
-            data = json.hasOwnProperty('data') ? json.data : json;
+
+            const keys = Object.keys(json);
+            if (keys.length === 1 && keys[0] === 'data') {
+                data = json.data;
+            } else {
+                data = json;
+            }
+
         } else if (contentType.includes('text/html')) {
             data = await response.text();
         }
-    } catch {
+    } catch (err) {
+        console.error('Erro ao parsear JSON:', err);
         data = null;
     }
 
