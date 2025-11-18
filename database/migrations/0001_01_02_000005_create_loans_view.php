@@ -40,7 +40,7 @@ return new class extends Migration {
                 ssc.start_date AS school_class_start_date,
                 ssc.end_date AS school_class_end_date,
                 ssc.period AS period,
-                ssc.formatted_class_name AS formatted_class,
+                ssc.formatted_class_name AS formatted_class_name,
                 l.start_date AS loan_start_date,
                 l.due_date AS loan_due_date,
                 l.returned_date AS loan_returned_date
