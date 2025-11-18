@@ -11,7 +11,7 @@
                 title="Selecione o gênero do livro" />
             <x-modals.input-field id="publisher" label="Editora" width="360px" required
                 title="Informe a editora do livro" />
-            <x-modals.input-field id="numberOfCopies" label="Quantidade de exemplares" width="240px" required
+            <x-modals.input-field id="number_copies" label="Quantidade de exemplares" width="240px" required
                 title="Informe a quantidate de exemplares" />
         </div>
     </x-slot name="content">
