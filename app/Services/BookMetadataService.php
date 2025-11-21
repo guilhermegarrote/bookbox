@@ -13,9 +13,15 @@ class BookMetadataService
     private string $openLibraryApi = 'https://openlibrary.org/api/books?bibkeys=ISBN:';
 
     /**
-     * Fetch book metadata from Google Books and OpenLibrary.
+     * Retrieve merged book metadata using Google Books and OpenLibrary APIs.
      *
-     * @return null|array<string, mixed> Merged book metadata or null if not found
+     * The method attempts to fetch information from both sources. If at least one
+     * source returns data, a normalized merged array is returned—prioritizing Google
+     * Books data when available.
+     *
+     * @param string $isbn The ISBN to search for (ISBN-10 or ISBN-13).
+     *
+     * @return array<string, mixed>|null Normalized metadata array or null if no data was found.
      */
     public function fetch(string $isbn): ?array
     {
@@ -37,6 +43,16 @@ class BookMetadataService
         ];
     }
 
+    /**
+     * Fetch book metadata from the Google Books API.
+     *
+     * Attempts to retrieve volume information using the Google Books public API.
+     * Returns a normalized array on success or null if no matching book is found.
+     *
+     * @param string $isbn The ISBN to query.
+     *
+     * @return array<string, mixed>|null Parsed Google Books metadata or null on failure.
+     */
     private function fetchFromGoogle(string $isbn): ?array
     {
         try {
@@ -56,10 +72,16 @@ class BookMetadataService
 
             $isbn10 = null;
             $isbn13 = null;
+
             if (!empty($book['industryIdentifiers'])) {
                 foreach ($book['industryIdentifiers'] as $identifier) {
-                    if ($identifier['type'] === 'ISBN_10') $isbn10 = $identifier['identifier'];
-                    if ($identifier['type'] === 'ISBN_13') $isbn13 = $identifier['identifier'];
+                    if ($identifier['type'] === 'ISBN_10') {
+                        $isbn10 = $identifier['identifier'];
+                    }
+
+                    if ($identifier['type'] === 'ISBN_13') {
+                        $isbn13 = $identifier['identifier'];
+                    }
                 }
             }
 
@@ -77,6 +99,16 @@ class BookMetadataService
         }
     }
 
+    /**
+     * Fetch book metadata from the OpenLibrary API.
+     *
+     * Queries OpenLibrary using its ISBN lookup endpoint. Returns a formatted metadata
+     * array or null if the book is not found or parsing fails.
+     *
+     * @param string $isbn The ISBN to query.
+     *
+     * @return array<string, mixed>|null Parsed OpenLibrary metadata or null on failure.
+     */
     private function fetchFromOpenLibrary(string $isbn): ?array
     {
         try {
@@ -95,13 +127,16 @@ class BookMetadataService
             ];
         } catch (\Throwable $e) {
             Log::warning('OpenLibrary API error: ' . $e->getMessage());
-
             return null;
         }
     }
 
     /**
-     * Join author names into a single string.
+     * Convert an array of author names into a comma-separated string.
+     *
+     * @param array<int, string> $authors List of author names.
+     *
+     * @return string|null A formatted string or null if no authors are provided.
      */
     private function formatAuthors(array $authors): ?string
     {
@@ -109,7 +144,11 @@ class BookMetadataService
     }
 
     /**
-     * Return only the first category (genre).
+     * Return the first category value, typically used as the book's primary genre.
+     *
+     * @param array<int, string> $categories List of categories.
+     *
+     * @return string|null First category or null if empty.
      */
     private function firstCategory(array $categories): ?string
     {
@@ -117,21 +156,31 @@ class BookMetadataService
     }
 
     /**
-     * Normalize ISBN to 13 digits if possible, otherwise keep 10.
+     * Normalize the provided ISBN to a valid ISBN-13 when possible.
+     *
+     * If the input is an ISBN-10, it is converted to ISBN-13 with a recalculated
+     * check digit. If already 13 digits or unconvertible, it is returned as-is.
+     *
+     * @param string $isbn Raw ISBN input (possibly containing separators or letters).
+     *
+     * @return string Normalized ISBN-13 or the cleaned input ISBN.
      */
     private function normalizeIsbn(string $isbn): string
     {
         $isbn = preg_replace('/[^0-9Xx]/', '', trim($isbn));
 
-        if (strlen($isbn) === 10) {
+        if (\strlen($isbn) === 10) {
             $isbn13 = '978' . substr($isbn, 0, 9);
             $sum = 0;
-            for ($i = 0; $i < 12; $i++) {
-                $digit = (int)$isbn13[$i];
+
+            for ($i = 0; $i < 12; ++$i) {
+                $digit = (int) $isbn13[$i];
                 $sum += ($i % 2 === 0) ? $digit : $digit * 3;
             }
+
             $checkDigit = (10 - ($sum % 10)) % 10;
             $isbn13 .= $checkDigit;
+
             return $isbn13;
         }
 
