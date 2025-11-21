@@ -236,16 +236,17 @@ class Loan extends BaseModel
      */
     public static function getFilterData($query = null)
     {
-        $query = $query ?? static::query();
+        $query = ($query ?? static::query())->clone();
 
-        return $query->select(
-            'genre_name',
-            'publisher',
-            'course',
-            'period',
-            'term',
-            DB::raw('CASE WHEN loan_returned_date IS NULL THEN true ELSE false END as active'),
-        )
+        return $query
+            ->select(
+                'genre_name',
+                'publisher',
+                'course',
+                'period',
+                'term',
+                DB::raw('CASE WHEN loan_returned_date IS NULL THEN true ELSE false END as active'),
+            )
             ->groupBy('genre_name', 'publisher', 'course', 'period', 'term', 'active')
             ->orderBy('genre_name')
             ->orderBy('publisher')
@@ -253,6 +254,34 @@ class Loan extends BaseModel
             ->orderBy('period')
             ->orderBy('term')
             ->orderBy('active')
+            ->distinct()
+            ->get()
+        ;
+    }
+
+    /**
+     * Retrieves loan information required for rendering the sidebar,
+     * including the title and the number of days until (or since) the due date.
+     *
+     * - Positive "days_diff"   → days until due date.
+     * - Zero                   → due today.
+     * - Negative "days_diff"   → overdue by N days.
+     *
+     * @param null|\Illuminate\Database\Eloquent\Builder $query
+     *
+     * @return \Illuminate\Support\Collection
+     */
+    public static function getSidebarData($query = null)
+    {
+        $query = $query ? clone $query : static::query();
+
+        return $query
+            ->select([
+                'id',
+                'title',
+                DB::raw('DATEDIFF(DATE(loan_due_date), CURDATE()) AS days_diff'),
+            ])
+            ->whereNull('loan_returned_date')
             ->get()
         ;
     }
