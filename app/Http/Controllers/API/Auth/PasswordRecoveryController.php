@@ -10,6 +10,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\ResetPasswordRequest;
 use App\Http\Requests\Auth\SendCodeRequest;
 use App\Http\Requests\Auth\ValidateCodeRequest;
+use App\Jobs\Email\SendRecoveyCodeJob;
 use App\Models\PasswordResetCode;
 use App\Models\User;
 use App\Services\EmailService;
@@ -245,12 +246,14 @@ class PasswordRecoveryController extends Controller
 
         Cache::put($attemptKey, $attempts + 1, self::ATTEMPT_TTL_SECONDS);
 
-        $code = $this->emailService->sendRecoveryCode($email, $user->name);
+        $code = (string) rand(100000, 999999);
 
         PasswordResetCode::create([
             'user_id' => $userId,
             'value' => $code,
             'expiration' => now()->addMinutes(self::EXPIRATION_MINUTES),
         ]);
+
+        dispatch(new SendRecoveyCodeJob($email, $user->name, $code));
     }
 }
