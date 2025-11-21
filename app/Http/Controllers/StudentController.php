@@ -7,6 +7,7 @@ namespace App\Http\Controllers;
 use App\Helpers\Utils;
 use App\Models\View\StudentSchoolClass;
 use Illuminate\Contracts\View\View;
+use Illuminate\Http\Request;
 
 /**
  * Controller responsible for managing student-related pages and modals.
@@ -34,22 +35,13 @@ class StudentController extends Controller
      *
      * @see resources/views/pages/students/index.blade.php
      */
-    public function index(): View
+    public function index(Request $request)
     {
         $filterData = StudentSchoolClass::getFilterData();
 
-        $students = StudentSchoolClass::select([
-            'student_id',
-            'name',
-            'email',
-            'phone',
-            'can_borrow',
-            'formatted_class_name',
-        ])->orderBy('name')->paginate(10);
-
         $filterUrl = route('students.filter.view');
 
-        return view('pages.students.index', compact('students', 'filterData', 'filterUrl'));
+        return view('pages.students.index', compact('filterData', 'filterUrl'));
     }
 
     /**

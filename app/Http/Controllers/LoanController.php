@@ -8,6 +8,7 @@ use App\Helpers\Utils;
 use App\Models\View\Loan;
 use Carbon\Carbon;
 use Illuminate\Contracts\View\View;
+use Illuminate\Http\Request;
 
 /**
  * Controller responsible for managing loan-related pages and modals.
@@ -36,41 +37,13 @@ class LoanController extends Controller
      *
      * @see resources/views/pages/loans/index.blade.php
      */
-    public function index(): View
+    public function index(Request $request)
     {
         $filterData = Loan::getFilterData();
 
-        $loans = Loan::select([
-            'id',
-            'name',
-            'number',
-            'title',
-            'author',
-            'loan_due_date',
-            'loan_returned_date',
-        ])
-            ->whereNull('loan_returned_date')
-            ->orderBy('loan_due_date', 'asc')
-            ->paginate(10)
-        ;
-
-        $loans_sidebar = Loan::select([
-            'id',
-            'name',
-            'number',
-            'title',
-            'author',
-            'loan_due_date',
-            'loan_returned_date',
-        ])
-            ->whereNull('loan_returned_date')
-            ->orderBy('loan_due_date', 'asc')
-            ->get()
-        ;
-
         $filterUrl = route('loans.filter.view');
 
-        return view('pages.loans.index', compact('loans', 'loans_sidebar', 'filterData', 'filterUrl'));
+        return view('pages.loans.index', compact('filterData', 'filterUrl'));
     }
 
     /**
