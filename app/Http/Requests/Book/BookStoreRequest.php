@@ -12,7 +12,6 @@ use Illuminate\Validation\Rule;
 /**
  * Handles validation for creating a new book.
  *
- * @method \Illuminate\Session\Store session() Provides access to the session instance.
  * @method string input(string $key, $default = null)
  * @method void merge(array $input)
  * @method mixed route(string $key = null, $default = null)
@@ -56,13 +55,13 @@ class BookStoreRequest extends FormRequest
                 'required',
                 'string',
                 'max:300',
-                'regex:/^[\pL\s.\'-]+$/u',
+                'regex:/^[\pL\s.\'\-\(\)]+$/u',
             ],
             'publisher' => [
                 'required',
                 'string',
                 'max:150',
-                'regex:/^[\pL\s.\'-]+$/u',
+                'regex:/^[\pL\s.\'\-\(\)]+$/u',
             ],
             'genre_name' => ['required', 'string', 'max:100'],
             'number_copies' => ['required', 'integer', 'min:1', 'max:32767'],

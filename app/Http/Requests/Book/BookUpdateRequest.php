@@ -12,7 +12,6 @@ use Illuminate\Validation\Rule;
 /**
  * Handles validation for updating an existing book.
  *
- * @method \Illuminate\Session\Store session() Provides access to the session instance.
  * @method string input(string $key, $default = null)
  * @method void merge(array $input)
  * @method mixed route(string $key = null, $default = null)
@@ -49,8 +48,8 @@ class BookUpdateRequest extends FormRequest
                 Rule::unique('books', 'isbn')->ignore($binaryId, 'id'),
             ],
             'title' => ['sometimes', 'string', 'max:255', 'regex:/^[\pL\pN\s.,!?\'"-]+$/u'],
-            'author' => ['sometimes', 'string', 'max:300', 'regex:/^[\pL\s.\'-]+$/u'],
-            'publisher' => ['sometimes', 'string', 'max:150', 'regex:/^[\pL\s.\'-]+$/u'],
+            'author' => ['sometimes', 'string', 'max:300', 'regex:/^[\pL\s.\'\-\(\)]+$/u'],
+            'publisher' => ['sometimes', 'string', 'max:150', 'regex:/^[\pL\s.\'\-\(\)]+$/u'],
             'genre_name' => ['sometimes', 'string', 'max:100'],
         ];
     }
