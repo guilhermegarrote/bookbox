@@ -13,29 +13,35 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create('jobs', function (Blueprint $table) {
-
             $table->bigIncrements('id')
-                ->comment('Identificador único do job na fila');
+                ->comment('Identificador único do job na fila')
+            ;
 
             $table->string('queue')
                 ->index()
-                ->comment('Nome da fila onde o job foi enfileirado');
+                ->comment('Nome da fila onde o job foi enfileirado')
+            ;
 
             $table->longText('payload')
-                ->comment('Conteúdo serializado contendo os dados do job');
+                ->comment('Conteúdo serializado contendo os dados do job')
+            ;
 
             $table->unsignedTinyInteger('attempts')
-                ->comment('Quantidade de tentativas já executadas para este job');
+                ->comment('Quantidade de tentativas já executadas para este job')
+            ;
 
             $table->unsignedInteger('reserved_at')
                 ->nullable()
-                ->comment('Timestamp de quando o job foi reservado por um worker');
+                ->comment('Timestamp de quando o job foi reservado por um worker')
+            ;
 
             $table->unsignedInteger('available_at')
-                ->comment('Timestamp indicando quando o job estará disponível para processamento');
+                ->comment('Timestamp indicando quando o job estará disponível para processamento')
+            ;
 
             $table->unsignedInteger('created_at')
-                ->comment('Timestamp de criação do job na fila');
+                ->comment('Timestamp de criação do job na fila')
+            ;
         });
     }
 
