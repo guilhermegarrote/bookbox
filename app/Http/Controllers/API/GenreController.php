@@ -72,7 +72,7 @@ class GenreController extends Controller
     {
         try {
             $binaryId = Utils::convertUuidToBinary($id);
-            $genre = Genre::with('books')->findOrFail($binaryId);
+            $genre = Genre::findOrFail($binaryId);
 
             return $this->successResponse($genre->toArray());
         } catch (ModelNotFoundException $e) {
