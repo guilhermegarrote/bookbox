@@ -8,19 +8,21 @@ use App\Helpers\Utils;
 use App\Helpers\Validators;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Loan\LoanStoreRequest;
+use App\Jobs\Email\SendLoanExtendJob;
+use App\Jobs\Email\SendLoanReceiptJob;
 use App\Jobs\PrintLoanReceiptJob;
 use App\Models\Book;
 use App\Models\Loan;
 use App\Models\View\Copy as ViewCopy;
 use App\Models\View\Loan as ViewLoan;
 use App\Models\View\Student as ViewStudent;
+use App\Traits\HasPaginationSettings;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Cache;
 use PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth;
 
 /**
@@ -30,44 +32,53 @@ use PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth;
  */
 class LoanController extends Controller
 {
+    use HasPaginationSettings;
+
     /**
-     * Display a paginated list of loans with optional filters and sorting.
+     * Retrieve a paginated list of loans with optional search terms and filters.
      *
-     * @param Request $request The current HTTP request containing filter and pagination data.
+     * This endpoint processes the incoming request, applies search keywords,
+     * filters, and pagination rules, and returns a structured JSON payload
+     * containing the resulting dataset, pagination cursors, and filter metadata
+     * used to build the dynamic UI.
      *
-     * @return JsonResponse JSON containing HTML for table, pagination, and filter data.
+     * @param Request $request The HTTP request containing query parameters for search, filtering, ordering, and pagination settings
+     *
+     * @throws \Throwable If an unexpected exception occurs while building the query or generating the paginated response
+     *
+     * @return JsonResponse A JSON response containing: - `data`: the paginated list of loans - `pagination`: cursor-based pagination metadata - `filterData`: aggregated metadata for dynamic filter components
      */
     public function index(Request $request): JsonResponse
     {
         try {
             $query = $this->buildLoanQuery($request);
 
-            $perPage = max(5, min((int) $request->input('perPage', 10), 250));
-
-            $loans = $query->select([
-                'id',
-                'name',
-                'number',
-                'title',
-                'author',
-                'loan_due_date',
-                'loan_returned_date',
-            ])->paginate($perPage)->appends($request->all());
-
-            $html = view('pages.loans.partials.table', compact('loans'))->render();
-            $paginationHtml = view('vendor.pagination.custom', ['paginator' => $loans])->render();
-
-            $filterData = Cache::remember("loan_filters", 300, fn () => ViewLoan::getFilterData($query));
+            $loans = $this->paginateWithSettings(
+                $query->select([
+                    'id',
+                    'name',
+                    'number',
+                    'title',
+                    'author',
+                    'loan_due_date',
+                    'loan_returned_date',
+                ]),
+                $request,
+            );
 
             return response()->json([
-                'html' => $html,
-                'paginationHtml' => $paginationHtml,
-                'filterData' => $filterData,
+                'data' => $loans->items(),
+                'pagination' => [
+                    'next_cursor' => $loans->nextCursor()?->encode(),
+                    'has_more' => $loans->nextCursor() !== null,
+                ],
+                'filterData' => ViewLoan::getFilterData($query),
+                'data_sidebar' => ViewLoan::getSidebarData($query),
             ]);
         } catch (\Throwable $e) {
-            $this->logError('Error listing loans.', $e);
+            $this->logError('Erro ao listar empréstimos.', $e);
 
-            return $this->internalErrorResponse($e, 'Internal error listing loans.');
+            return $this->internalErrorResponse($e, 'Erro interno ao listar empréstimos.');
         }
     }
 
@@ -81,7 +92,7 @@ class LoanController extends Controller
      * - Creates the loan record in a transaction
      * - Dispatches asynchronous printing of receipt
      *
-     * @param LoanStoreRequest $request Validated request containing 'cpf', 'isbn', and 'copy_number'.
+     * @param LoanStoreRequest $request validated request containing 'cpf', 'isbn', and 'copy_number'
      *
      * @return JsonResponse HTTP response indicating success or failure
      */
@@ -95,30 +106,31 @@ class LoanController extends Controller
             $student = ViewStudent::where('cpf_hash', hash('sha256', $data['cpf'], true))->lockForUpdate()->first();
 
             if (!$student) {
-                return $this->notFoundResponse('Student not found.');
+                return $this->notFoundResponse('Aluno não encontrado.');
             }
 
             $book = Book::where('isbn', $data['isbn'])->first();
 
             if (!$book) {
-                return $this->notFoundResponse('Book not found.');
+                return $this->notFoundResponse('Livro não encontrado.');
             }
 
             $copy = ViewCopy::where('book_id', Utils::convertUuidToBinary($book->id))
                 ->where('number', $data['copy_number'])
                 ->lockForUpdate()
-                ->first();
+                ->first()
+            ;
 
             if (!$copy) {
-                return $this->notFoundResponse('Copy not found.');
+                return $this->notFoundResponse('Exemplar não encontrado.');
             }
 
             if (!$copy->available) {
-                return $this->validationErrorResponse(['message' => 'Copy is not available for loan.']);
+                return $this->validationErrorResponse(['message' => 'Exemplar não disponível para empréstimo.']);
             }
 
             if (!$student->can_borrow) {
-                return $this->validationErrorResponse(['message' => 'Student is not allowed to borrow.']);
+                return $this->validationErrorResponse(['message' => 'Aluno não autorizado a realizar empréstimos.']);
             }
 
             $dueDate = Carbon::today()->addDays(config('loans.default_due_days', 14));
@@ -131,24 +143,24 @@ class LoanController extends Controller
 
             DB::commit();
 
-            $loanData = ViewLoan::where('id', Utils::convertUuidToBinary($loan->id))->first();
-            PrintLoanReceiptJob::dispatch($loanData, JWTAuth::user()->name ?? 'Unknown');
+            dispatch(new PrintLoanReceiptJob($loan->id, JWTAuth::user()->name ?? 'Desconhecido'));
+            dispatch(new SendLoanReceiptJob(ViewLoan::find(Utils::convertUuidToBinary($loan->id))));
 
             return $this->createdResponse();
         } catch (\Throwable $e) {
             DB::rollBack();
-            $this->logError('Error creating loan.', $e);
+            $this->logError('Erro ao criar empréstimo.', $e);
 
-            return $this->internalErrorResponse($e, 'Internal error creating loan.');
+            return $this->internalErrorResponse($e, 'Erro interno ao criar empréstimo.');
         }
     }
 
     /**
      * Retrieve a specific loan by its UUID.
      *
-     * @param string $id UUID of the loan.
+     * @param string $id UUID of the loan
      *
-     * @return JsonResponse Loan details in JSON format.
+     * @return JsonResponse loan details in JSON format
      */
     public function show(string $id): JsonResponse
     {
@@ -158,20 +170,20 @@ class LoanController extends Controller
 
             return $this->successResponse($loan->toArray());
         } catch (ModelNotFoundException) {
-            return $this->notFoundResponse('Loan not found.');
+            return $this->notFoundResponse('Empréstimo não encontrado.');
         } catch (\Throwable $e) {
-            $this->logError('Error fetching loan.', $e, ['loan_id' => $id]);
+            $this->logError('Erro ao buscar empréstimo.', $e, ['loan_id' => $id]);
 
-            return $this->internalErrorResponse($e, 'Internal error fetching loan.');
+            return $this->internalErrorResponse($e, 'Erro interno ao buscar empréstimo.');
         }
     }
 
     /**
      * Extend a loan by a configurable number of days.
      *
-     * @param string $id UUID of the loan.
+     * @param string $id UUID of the loan
      *
-     * @return JsonResponse HTTP response indicating success or failure.
+     * @return JsonResponse HTTP response indicating success or failure
      */
     public function extend(string $id): JsonResponse
     {
@@ -180,32 +192,25 @@ class LoanController extends Controller
             $loan = Loan::findOrFail($binaryId);
 
             if ($loan->returned_date !== null) {
-                return $this->badRequestResponse(['message' => 'Loan already finalized.']);
+                return $this->badRequestResponse(['message' => 'Empréstimo já finalizado.']);
             }
 
             $loan->due_date = Carbon::parse($loan->due_date)->addDays(config('loans.extension_days', 7));
             $loan->save();
 
-            $loanData = ViewLoan::where('id', Utils::convertUuidToBinary($loan->id))->first();
-            PrintLoanReceiptJob::dispatch($loanData, JWTAuth::user()->name ?? 'Unknown');
+            dispatch(new PrintLoanReceiptJob($loan->id, JWTAuth::user()->name ?? 'Desconhecido'));
+            dispatch(new SendLoanExtendJob(ViewLoan::find(Utils::convertUuidToBinary($loan->id))));
 
             return $this->noContentResponse();
         } catch (ModelNotFoundException) {
-            return $this->notFoundResponse('Loan not found.');
+            return $this->notFoundResponse('Empréstimo não encontrado.');
         } catch (\Throwable $e) {
-            $this->logError('Error extending loan.', $e);
+            $this->logError('Erro ao estender empréstimo.', $e);
 
-            return $this->internalErrorResponse($e, 'Internal error extending loan.');
+            return $this->internalErrorResponse($e, 'Erro interno ao estender empréstimo.');
         }
     }
 
-    /**
-     * Finalize a loan and mark the copy as available again.
-     *
-     * @param string $id UUID of the loan to finalize.
-     *
-     * @return JsonResponse HTTP response indicating success or failure.
-     */
     public function finalize(string $id): JsonResponse
     {
         try {
@@ -213,7 +218,7 @@ class LoanController extends Controller
             $loan = Loan::findOrFail($binaryId);
 
             if ($loan->returned_date !== null) {
-                return $this->badRequestResponse(['message' => 'Loan already finalized.']);
+                return $this->badRequestResponse(['message' => 'Empréstimo já finalizado.']);
             }
 
             $loan->update([
@@ -222,21 +227,19 @@ class LoanController extends Controller
 
             return $this->noContentResponse();
         } catch (ModelNotFoundException) {
-            return $this->notFoundResponse('Loan not found.');
+            return $this->notFoundResponse('Empréstimo não encontrado.');
         } catch (\Throwable $e) {
             DB::rollBack();
-            $this->logError('Error finalizing loan.', $e);
+            $this->logError('Erro ao finalizar empréstimo.', $e);
 
-            return $this->internalErrorResponse($e, 'Internal error finalizing loan.');
+            return $this->internalErrorResponse($e, 'Erro interno ao finalizar empréstimo.');
         }
     }
 
     /**
-     * Build a query for loans applying search, filters, and sorting.
+     * Finalize a loan and mark the copy as available again.
      *
-     * @param Request $request The current HTTP request containing query parameters.
-     *
-     * @return Builder Eloquent query builder instance.
+     * @return JsonResponse HTTP response indicating success or failure
      */
     private function buildLoanQuery(Request $request): Builder
     {
@@ -254,10 +257,10 @@ class LoanController extends Controller
     /**
      * Apply search conditions for email, CPF, phone, ISBN, or barcode.
      *
-     * @param Builder $query  The Eloquent query builder.
-     * @param string  $search The search string to filter loans.
+     * @param Builder $query the Eloquent query builder
+     * @param string $search the search string to filter loans
      *
-     * @return Builder Modified query builder with applied search conditions.
+     * @return Builder modified query builder with applied search conditions
      */
     private function applySearch(Builder $query, string $search): Builder
     {
@@ -286,14 +289,14 @@ class LoanController extends Controller
     /**
      * Apply filtering conditions based on genre, publisher, course, period, term, and active loans.
      *
-     * @param Builder $query   The Eloquent query builder.
-     * @param Request $request The HTTP request containing filter parameters.
+     * @param Builder $query the Eloquent query builder
+     * @param Request $request the HTTP request containing filter parameters
      *
-     * @return Builder Modified query builder with applied filters.
+     * @return Builder modified query builder with applied filters
      */
     private function applyFilters(Builder $query, Request $request): Builder
     {
-        return $query->when($request->filled('genre'), fn ($q) => $q->where('genre_name', $request->genre))
+        return $query->when($request->filled('genre_name'), fn ($q) => $q->where('genre_name', $request->genre))
             ->when($request->filled('publisher'), fn ($q) => $q->where('publisher', $request->publisher))
             ->when($request->filled('course'), fn ($q) => $q->where('course', $request->course))
             ->when($request->filled('period'), fn ($q) => $q->where('period', $request->period))
@@ -304,21 +307,22 @@ class LoanController extends Controller
                 } else {
                     $q->whereNotNull('loan_returned_date');
                 }
-            });
+            })
+        ;
     }
 
     /**
      * Apply sorting based on allowed columns and direction.
      *
-     * @param Builder $query   The Eloquent query builder.
-     * @param Request $request The HTTP request containing sorting parameters.
+     * @param Builder $query the Eloquent query builder
+     * @param Request $request the HTTP request containing sorting parameters
      *
-     * @return Builder Modified query builder with applied sorting.
+     * @return Builder modified query builder with applied sorting
      */
     private function applySorting(Builder $query, Request $request): Builder
     {
-        $sortable = ['title', 'author', 'name', 'loan_due_date'];
-        $sort = in_array($request->input('sort'), $sortable, true) ? $request->input('sort') : 'title';
+        $sortable = ['title', 'author', 'name', 'number', 'loan_due_date'];
+        $sort = \in_array($request->input('sort'), $sortable, true) ? $request->input('sort') : 'loan_due_date';
         $direction = $request->input('direction') === 'desc' ? 'desc' : 'asc';
 
         return $query->orderBy($sort, $direction);
