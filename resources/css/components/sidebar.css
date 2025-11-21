@@ -77,4 +77,16 @@
     overflow-x: auto;
     max-height: 100%;
     border-radius: 6px;
+    flex-shrink: 0;
+}
+
+.loans-page {
+    display: flex;
+    gap: 1.5rem;
+    align-items: flex-start;
+}
+
+.loans-page>.table-wrapper {
+    flex: 1;
+    min-width: 0;
 }
