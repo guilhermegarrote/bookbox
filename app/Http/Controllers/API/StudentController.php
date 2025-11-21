@@ -15,6 +15,7 @@ use App\Models\StudentSchoolClass;
 use App\Models\View\SchoolClass;
 use App\Models\View\Student as ViewStudent;
 use App\Models\View\StudentSchoolClass as ViewStudentSchoolClass;
+use App\Traits\HasPaginationSettings;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
@@ -28,42 +29,49 @@ use Illuminate\Support\Facades\DB;
  */
 class StudentController extends Controller
 {
+    use HasPaginationSettings;
+
     /**
-     * Retrieve a paginated list of students with optional filters, search, and sorting.
+     * Retrieve a paginated list of students with optional search terms and filters.
      *
-     * @param Request $request the HTTP request containing search, filter, and pagination parameters
+     * This endpoint processes the incoming request, applies search keywords,
+     * filters, and pagination rules, and returns a structured JSON payload
+     * containing the resulting dataset, pagination cursors, and filter metadata
+     * used to build the dynamic UI.
      *
-     * @return JsonResponse JSON response containing the rendered HTML table, pagination, and filter data,
-     *                      or an internal error message in case of failure
+     * @param Request $request The HTTP request containing query parameters for search, filtering, ordering, and pagination settings
+     *
+     * @throws \Throwable If an unexpected exception occurs while building the query or generating the paginated response
+     *
+     * @return JsonResponse A JSON response containing: - `data`: the paginated list of students - `pagination`: cursor-based pagination metadata - `filterData`: aggregated metadata for dynamic filter components
      */
     public function index(Request $request): JsonResponse
     {
         try {
             $query = $this->buildStudentQuery($request);
 
-            $perPage = max(5, min((int) $request->input('perPage', 10), 250));
-
-            $students = $query->select([
-                'student_id',
-                'name',
-                'email',
-                'phone',
-                'can_borrow',
-                'formatted_class_name',
-                'course',
-                'period',
-                'term',
-            ])->paginate($perPage)->appends($request->all());
-
-            $html = view('pages.students.partials.table', compact('students'))->render();
-            $paginationHtml = view('vendor.pagination.custom', ['paginator' => $students])->render();
-
-            $filterData = ViewStudentSchoolClass::getFilterData($query);
+            $students = $this->paginateWithSettings(
+                $query->select([
+                    'student_id AS id',
+                    'name',
+                    'email',
+                    'phone',
+                    'can_borrow',
+                    'formatted_class_name',
+                    'course',
+                    'period',
+                    'term',
+                ]),
+                $request,
+            );
 
             return response()->json([
-                'html' => $html,
-                'paginationHtml' => $paginationHtml,
-                'filterData' => $filterData,
+                'data' => $students->items(),
+                'pagination' => [
+                    'next_cursor' => $students->nextCursor()?->encode(),
+                    'has_more' => $students->nextCursor() !== null,
+                ],
+                'filterData' => ViewStudentSchoolClass::getFilterData($query),
             ]);
         } catch (\Throwable $e) {
             $this->logError('Erro ao listar alunos.', $e);
