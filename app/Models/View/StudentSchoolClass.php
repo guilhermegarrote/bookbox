@@ -149,6 +149,7 @@ class StudentSchoolClass extends BaseModel
             ->orderBy('course')
             ->orderBy('period')
             ->orderBy('term')
+            ->distinct()
             ->get()
         ;
     }

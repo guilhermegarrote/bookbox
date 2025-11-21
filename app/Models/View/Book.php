@@ -96,6 +96,7 @@ class Book extends BaseModel
             ->groupBy('genre_name', 'publisher')
             ->orderBy('genre_name')
             ->orderBy('publisher')
+            ->distinct()
             ->get()
         ;
     }
