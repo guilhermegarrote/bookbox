@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Jobs;
 
+use App\Helpers\Utils;
 use App\Models\View\Loan as ViewLoan;
 use App\Services\ThermalPrinterService;
 use Illuminate\Bus\Queueable;
@@ -55,7 +56,7 @@ class PrintLoanReceiptJob implements ShouldQueue
      */
     public function handle(): void
     {
-        $loan = ViewLoan::find($this->loanId);
+        $loan = ViewLoan::find(Utils::convertUuidToBinary($this->loanId));
 
         if (!$loan) {
             Log::warning("Loan not found for printing receipt: {$this->loanId}");
