@@ -22,4 +22,14 @@
 
     /* Fonts */
     --font-primary: 'Urbanist', sans-serif;
+
+    /* Scroll */
+    --scroll-size: 12px;
+    --scroll-radius: 20px;
+    --scroll-track: var(--color-base-gray-454);
+    --scroll-thumb-color: var(--color-base-white);
+    --scroll-thumb-pattern: linear-gradient(rgb(255 255 255 / 30%) 20%, transparent 20%,
+            transparent 40%, rgb(255 255 255 / 30%) 40%,
+            rgb(255 255 255 / 30%) 60%, transparent 60%,
+            transparent 80%, rgb(255 255 255 / 30%) 80%);
 }
