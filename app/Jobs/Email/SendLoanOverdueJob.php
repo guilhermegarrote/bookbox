@@ -24,7 +24,10 @@ use Illuminate\Queue\SerializesModels;
  */
 class SendLoanOverdueJob implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Dispatchable;
+    use InteractsWithQueue;
+    use Queueable;
+    use SerializesModels;
 
     /**
      * The unique identifier of the loan, used to fetch the necessary information.
@@ -48,7 +51,7 @@ class SendLoanOverdueJob implements ShouldQueue
      * This method fetches the loan data and sends the overdue notification email
      * using the injected email service.
      *
-     * @param EmailService $emailService The service responsible for sending the overdue email.
+     * @param EmailService $emailService the service responsible for sending the overdue email
      */
     public function handle(EmailService $emailService): void
     {

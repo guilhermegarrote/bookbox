@@ -14,15 +14,13 @@ use Illuminate\Foundation\Http\FormRequest;
  *
  * @method mixed input(string $key, mixed $default = null) Retrieve an input item from the request.
  * @method void merge(array $input) Merge new input into the request's data.
- *
- * @package App\Http\Requests\Loan
  */
 class LoanStoreRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      *
-     * @return bool True if the user is authorized.
+     * @return bool true if the user is authorized
      */
     public function authorize(): bool
     {
@@ -62,8 +60,6 @@ class LoanStoreRequest extends FormRequest
      *
      * Sanitizes the CPF by removing non-digits and the ISBN by
      * removing all characters except digits and 'X'.
-     *
-     * @return void
      */
     protected function prepareForValidation(): void
     {

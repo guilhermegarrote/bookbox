@@ -8,17 +8,14 @@ use App\Helpers\Utils;
 use App\Models\Copy;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 use Ramsey\Uuid\Uuid;
 
 /**
- * Class Loan
+ * Class Loan.
  *
  * Represents a view model for book loans with decrypted and formatted attributes.
  * This model maps to the database view `vw_loans` and includes joined/derived data
  * from students, copies, books, genres, and related entities.
- *
- * @package App\Models\View
  */
 class Loan extends BaseModel
 {
@@ -41,8 +38,9 @@ class Loan extends BaseModel
     /**
      * Get student UUID as string from binary.
      *
-     * @param string|null $value Binary UUID from the database.
-     * @return string|null UUID as string or null if value is null.
+     * @param null|string $value binary UUID from the database
+     *
+     * @return null|string UUID as string or null if value is null
      */
     public function getStudentIdAttribute(?string $value): ?string
     {
@@ -52,8 +50,9 @@ class Loan extends BaseModel
     /**
      * Get book UUID as string from binary.
      *
-     * @param string|null $value Binary UUID from the database.
-     * @return string|null UUID as string or null if value is null.
+     * @param null|string $value binary UUID from the database
+     *
+     * @return null|string UUID as string or null if value is null
      */
     public function getBookIdAttribute(?string $value): ?string
     {
@@ -63,8 +62,9 @@ class Loan extends BaseModel
     /**
      * Get copy UUID as string from binary.
      *
-     * @param string|null $value Binary UUID from the database.
-     * @return string|null UUID as string or null if value is null.
+     * @param null|string $value binary UUID from the database
+     *
+     * @return null|string UUID as string or null if value is null
      */
     public function getCopyIdAttribute(?string $value): ?string
     {
@@ -74,8 +74,9 @@ class Loan extends BaseModel
     /**
      * Get genre UUID as string from binary.
      *
-     * @param string|null $value Binary UUID from the database.
-     * @return string|null UUID as string or null if value is null.
+     * @param null|string $value binary UUID from the database
+     *
+     * @return null|string UUID as string or null if value is null
      */
     public function getGenreIdAttribute(?string $value): ?string
     {
@@ -85,8 +86,9 @@ class Loan extends BaseModel
     /**
      * Get school class UUID as string from binary.
      *
-     * @param string|null $value Binary UUID from the database.
-     * @return string|null UUID as string or null if value is null.
+     * @param null|string $value binary UUID from the database
+     *
+     * @return null|string UUID as string or null if value is null
      */
     public function getSchoolClassIdAttribute(?string $value): ?string
     {
@@ -96,8 +98,9 @@ class Loan extends BaseModel
     /**
      * Decrypts and formats CPF number as XXX.XXX.XXX-XX.
      *
-     * @param string|null $value Encrypted CPF from the database.
-     * @return string|null Formatted CPF or null if value is null.
+     * @param null|string $value encrypted CPF from the database
+     *
+     * @return null|string formatted CPF or null if value is null
      */
     public function getCpfAttribute(?string $value): ?string
     {
@@ -118,8 +121,9 @@ class Loan extends BaseModel
     /**
      * Decrypts email address.
      *
-     * @param string|null $value Encrypted email from the database.
-     * @return string|null Decrypted email or null if value is null.
+     * @param null|string $value encrypted email from the database
+     *
+     * @return null|string decrypted email or null if value is null
      */
     public function getEmailAttribute(?string $value): ?string
     {
@@ -129,8 +133,9 @@ class Loan extends BaseModel
     /**
      * Decrypts and formats phone number as (XX) XXXXX-XXXX.
      *
-     * @param string|null $value Encrypted phone from the database.
-     * @return string|null Formatted phone or decrypted raw value if pattern doesn't match.
+     * @param null|string $value encrypted phone from the database
+     *
+     * @return null|string formatted phone or decrypted raw value if pattern doesn't match
      */
     public function getPhoneAttribute(?string $value): ?string
     {
@@ -151,8 +156,9 @@ class Loan extends BaseModel
     /**
      * Formats ISBN-13 number as XXX-X-XXXX-XXXX-X.
      *
-     * @param string|null $value Raw ISBN value.
-     * @return string|null Formatted ISBN or numbers-only string if not 13 digits.
+     * @param null|string $value raw ISBN value
+     *
+     * @return null|string formatted ISBN or numbers-only string if not 13 digits
      */
     public function getIsbnAttribute(?string $value): ?string
     {
@@ -162,8 +168,8 @@ class Loan extends BaseModel
 
         $numbersOnly = preg_replace('/\D/', '', $value);
 
-        if (strlen($numbersOnly) === 13) {
-            return sprintf(
+        if (\strlen($numbersOnly) === 13) {
+            return \sprintf(
                 '%s-%s-%s-%s-%s',
                 substr($numbersOnly, 0, 3),
                 substr($numbersOnly, 3, 1),
@@ -178,8 +184,6 @@ class Loan extends BaseModel
 
     /**
      * Defines the relationship between a loan and its student.
-     *
-     * @return BelongsTo
      */
     public function student(): BelongsTo
     {
@@ -188,8 +192,6 @@ class Loan extends BaseModel
 
     /**
      * Defines the relationship between a loan and a copy.
-     *
-     * @return BelongsTo
      */
     public function copy(): BelongsTo
     {
@@ -199,7 +201,8 @@ class Loan extends BaseModel
     /**
      * Retrieves distinct values for filtering loan data.
      *
-     * @param \Illuminate\Database\Eloquent\Builder|null $query Optional query builder instance.
+     * @param null|\Illuminate\Database\Eloquent\Builder $query optional query builder instance
+     *
      * @return \Illuminate\Support\Collection
      */
     public static function getFilterData($query = null)
@@ -213,7 +216,7 @@ class Loan extends BaseModel
                 'course',
                 'period',
                 'term',
-                DB::raw('CASE WHEN loan_returned_date IS NULL THEN true ELSE false END as active')
+                DB::raw('CASE WHEN loan_returned_date IS NULL THEN true ELSE false END as active'),
             )
             ->groupBy('genre_name', 'publisher', 'course', 'period', 'term', 'active')
             ->orderBy('genre_name')
@@ -222,7 +225,8 @@ class Loan extends BaseModel
             ->orderBy('period')
             ->orderBy('term')
             ->orderBy('active')
-            ->get();
+            ->get()
+        ;
     }
 
     /**
@@ -232,7 +236,8 @@ class Loan extends BaseModel
      *   - If it returns results, use them.
      *   - If it returns no results, fallback to the default dataset.
      *
-     * @param \Illuminate\Database\Eloquent\Builder|null $query Optional query builder instance.
+     * @param null|\Illuminate\Database\Eloquent\Builder $query optional query builder instance
+     *
      * @return \Illuminate\Support\Collection
      */
     public static function getSidebarData($query = null)
@@ -247,7 +252,8 @@ class Loan extends BaseModel
             $customResults = (clone $query)
                 ->select($selectColumns)
                 ->whereNull('loan_returned_date')
-                ->get();
+                ->get()
+            ;
 
             if ($customResults->isNotEmpty()) {
                 return $customResults;
@@ -257,6 +263,8 @@ class Loan extends BaseModel
         return static::query()
             ->select($selectColumns)
             ->whereNull('loan_returned_date')
-            ->get();
+            ->orderby('loan_due_date')
+            ->get()
+        ;
     }
 }

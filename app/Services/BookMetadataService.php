@@ -19,9 +19,9 @@ class BookMetadataService
      * source returns data, a normalized merged array is returned—prioritizing Google
      * Books data when available.
      *
-     * @param string $isbn The ISBN to search for (ISBN-10 or ISBN-13).
+     * @param string $isbn the ISBN to search for (ISBN-10 or ISBN-13)
      *
-     * @return array<string, mixed>|null Normalized metadata array or null if no data was found.
+     * @return null|array<string, mixed> normalized metadata array or null if no data was found
      */
     public function fetch(string $isbn): ?array
     {
@@ -49,9 +49,9 @@ class BookMetadataService
      * Attempts to retrieve volume information using the Google Books public API.
      * Returns a normalized array on success or null if no matching book is found.
      *
-     * @param string $isbn The ISBN to query.
+     * @param string $isbn the ISBN to query
      *
-     * @return array<string, mixed>|null Parsed Google Books metadata or null on failure.
+     * @return null|array<string, mixed> parsed Google Books metadata or null on failure
      */
     private function fetchFromGoogle(string $isbn): ?array
     {
@@ -95,6 +95,7 @@ class BookMetadataService
             ];
         } catch (\Throwable $e) {
             Log::warning('Google Books API error: ' . $e->getMessage());
+
             return null;
         }
     }
@@ -105,9 +106,9 @@ class BookMetadataService
      * Queries OpenLibrary using its ISBN lookup endpoint. Returns a formatted metadata
      * array or null if the book is not found or parsing fails.
      *
-     * @param string $isbn The ISBN to query.
+     * @param string $isbn the ISBN to query
      *
-     * @return array<string, mixed>|null Parsed OpenLibrary metadata or null on failure.
+     * @return null|array<string, mixed> parsed OpenLibrary metadata or null on failure
      */
     private function fetchFromOpenLibrary(string $isbn): ?array
     {
@@ -127,6 +128,7 @@ class BookMetadataService
             ];
         } catch (\Throwable $e) {
             Log::warning('OpenLibrary API error: ' . $e->getMessage());
+
             return null;
         }
     }
@@ -134,9 +136,9 @@ class BookMetadataService
     /**
      * Convert an array of author names into a comma-separated string.
      *
-     * @param array<int, string> $authors List of author names.
+     * @param array<int, string> $authors list of author names
      *
-     * @return string|null A formatted string or null if no authors are provided.
+     * @return null|string a formatted string or null if no authors are provided
      */
     private function formatAuthors(array $authors): ?string
     {
@@ -146,9 +148,9 @@ class BookMetadataService
     /**
      * Return the first category value, typically used as the book's primary genre.
      *
-     * @param array<int, string> $categories List of categories.
+     * @param array<int, string> $categories list of categories
      *
-     * @return string|null First category or null if empty.
+     * @return null|string first category or null if empty
      */
     private function firstCategory(array $categories): ?string
     {
@@ -161,9 +163,9 @@ class BookMetadataService
      * If the input is an ISBN-10, it is converted to ISBN-13 with a recalculated
      * check digit. If already 13 digits or unconvertible, it is returned as-is.
      *
-     * @param string $isbn Raw ISBN input (possibly containing separators or letters).
+     * @param string $isbn raw ISBN input (possibly containing separators or letters)
      *
-     * @return string Normalized ISBN-13 or the cleaned input ISBN.
+     * @return string normalized ISBN-13 or the cleaned input ISBN
      */
     private function normalizeIsbn(string $isbn): string
     {

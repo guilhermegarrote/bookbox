@@ -24,7 +24,10 @@ use Illuminate\Queue\SerializesModels;
  */
 class SendLoanReminderJob implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Dispatchable;
+    use InteractsWithQueue;
+    use Queueable;
+    use SerializesModels;
 
     /**
      * The unique identifier of the loan, used to fetch the necessary data.
@@ -48,7 +51,7 @@ class SendLoanReminderJob implements ShouldQueue
      * This method retrieves the loan data based on the provided loan ID and triggers
      * the email service to send the reminder to the user.
      *
-     * @param EmailService $emailService The service responsible for sending the reminder email.
+     * @param EmailService $emailService the service responsible for sending the reminder email
      */
     public function handle(EmailService $emailService): void
     {

@@ -12,7 +12,6 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Facades\Log;
 
 /**
  * Job responsible for sending a loan receipt email asynchronously.
@@ -25,12 +24,13 @@ use Illuminate\Support\Facades\Log;
  */
 class SendLoanReceiptJob implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Dispatchable;
+    use InteractsWithQueue;
+    use Queueable;
+    use SerializesModels;
 
     /**
      * The unique identifier of the loan, used to fetch the necessary data for the receipt.
-     *
-     * @var string
      */
     protected string $loanId;
 
@@ -51,9 +51,9 @@ class SendLoanReceiptJob implements ShouldQueue
      * This method fetches the loan from the database using its binary UUID and
      * passes it to the EmailService for sending the loan receipt email.
      *
-     * @param EmailService $emailService The service responsible for sending the loan receipt email.
+     * @param EmailService $emailService the service responsible for sending the loan receipt email
      *
-     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException If the loan cannot be found.
+     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException if the loan cannot be found
      */
     public function handle(EmailService $emailService): void
     {

@@ -25,15 +25,13 @@ class EmailService
 {
     /**
      * PHPMailer instance configured for SMTP.
-     *
-     * @var PHPMailer
      */
     protected PHPMailer $mailer;
 
     /**
      * EmailService constructor.
      *
-     * @param PHPMailer $mailer Fully configured PHPMailer instance.
+     * @param PHPMailer $mailer fully configured PHPMailer instance
      */
     public function __construct(PHPMailer $mailer)
     {
@@ -43,27 +41,25 @@ class EmailService
     /**
      * Sends a 6-digit recovery code to a user.
      *
-     * @param string $to Recipient email address.
-     * @param string $name Recipient full name.
-     * @param string $code Recovery code.
+     * @param string $to recipient email address
+     * @param string $name recipient full name
+     * @param string $code recovery code
      *
-     * @return void
-     * @throws Exception If sending the email fails.
+     * @throws Exception if sending the email fails
      */
     public function sendRecoveryCode(string $to, string $name, string $code): void
     {
         $subject = 'Código de Recuperação';
         $htmlBody = View::make('emails.auth.recovery-code', compact('name', 'code'))->render();
-        $altBody  = "Olá {$name}, seu código de recuperação é: {$code}.";
+        $altBody = "Olá {$name}, seu código de recuperação é: {$code}.";
         $this->sendEmail($to, $name, $subject, $htmlBody, $altBody);
     }
 
     /**
      * Sends a reminder email for a loan approaching its due date.
      *
-     * @param Loan $loan Loan instance.
+     * @param Loan $loan loan instance
      *
-     * @return void
      * @throws Exception
      */
     public function sendLoanReminder(Loan $loan): void
@@ -74,7 +70,7 @@ class EmailService
 
         $subject = 'Lembrete de Empréstimo';
         $htmlBody = View::make('emails.loans.reminder', $data)->render();
-        $altBody = "Olá {$data['student_name']}, seu empréstimo vence em {$data['loan_remaining_days']} dia" . ($data['loan_remaining_days'] > 1 ? 's' : '') . ".";
+        $altBody = "Olá {$data['student_name']}, seu empréstimo vence em {$data['loan_remaining_days']} dia" . ($data['loan_remaining_days'] > 1 ? 's' : '') . '.';
 
         $this->sendEmail($data['email'], $data['student_name'], $subject, $htmlBody, $altBody);
     }
@@ -82,9 +78,8 @@ class EmailService
     /**
      * Sends a notification email for overdue loans.
      *
-     * @param Loan $loan Loan instance.
+     * @param Loan $loan loan instance
      *
-     * @return void
      * @throws Exception
      */
     public function sendLoanOverdue(Loan $loan): void
@@ -95,7 +90,7 @@ class EmailService
 
         $subject = 'Notificação de Empréstimo Vencido';
         $htmlBody = View::make('emails.loans.overdue', $data)->render();
-        $altBody = "Olá {$data['student_name']}, seu empréstimo está vencido há {$data['loan_days_late']} dia" . ($data['loan_days_late'] > 1 ? 's' : '') . ".";
+        $altBody = "Olá {$data['student_name']}, seu empréstimo está vencido há {$data['loan_days_late']} dia" . ($data['loan_days_late'] > 1 ? 's' : '') . '.';
 
         $this->sendEmail($data['email'], $data['student_name'], $subject, $htmlBody, $altBody);
     }
@@ -103,9 +98,8 @@ class EmailService
     /**
      * Sends a loan receipt email immediately after loan creation.
      *
-     * @param Loan $loan Loan instance.
+     * @param Loan $loan loan instance
      *
-     * @return void
      * @throws Exception
      */
     public function sendLoanReceipt(Loan $loan): void
@@ -124,9 +118,8 @@ class EmailService
     /**
      * Sends an email notifying the borrower of a loan due-date extension.
      *
-     * @param Loan $loan Loan instance.
+     * @param Loan $loan loan instance
      *
-     * @return void
      * @throws Exception
      */
     public function sendLoanExtend(Loan $loan): void
@@ -150,9 +143,9 @@ class EmailService
     /**
      * Prepares loan data array for email templates.
      *
-     * @param Loan $loan Loan instance.
+     * @param Loan $loan loan instance
      *
-     * @return array<string,mixed> Associative array of loan details.
+     * @return array<string,mixed> associative array of loan details
      */
     protected function prepareLoanData(Loan $loan): array
     {
@@ -172,14 +165,13 @@ class EmailService
     /**
      * Sends an email using PHPMailer.
      *
-     * @param string $to Recipient email address.
-     * @param string $name Recipient full name.
-     * @param string $subject Email subject.
-     * @param string $htmlBody HTML content of the email.
-     * @param string $altBody Plain-text alternative content.
+     * @param string $to recipient email address
+     * @param string $name recipient full name
+     * @param string $subject email subject
+     * @param string $htmlBody HTML content of the email
+     * @param string $altBody plain-text alternative content
      *
-     * @return void
-     * @throws Exception If sending the email fails.
+     * @throws Exception if sending the email fails
      */
     protected function sendEmail(string $to, string $name, string $subject, string $htmlBody, string $altBody): void
     {
@@ -197,6 +189,7 @@ class EmailService
             $this->mailer->Subject = $subject;
 
             $logoPath = public_path('images/logo/logotype-light.png');
+
             if (file_exists($logoPath)) {
                 $this->mailer->addEmbeddedImage($logoPath, 'logo_cid');
             }
@@ -206,6 +199,7 @@ class EmailService
             $this->mailer->send();
         } catch (Exception $e) {
             Log::error("Failed to send email to {$to}: " . $e->getMessage());
+
             throw $e;
         }
     }

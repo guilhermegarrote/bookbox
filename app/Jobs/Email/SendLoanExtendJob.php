@@ -25,7 +25,10 @@ use Illuminate\Queue\SerializesModels;
  */
 class SendLoanExtendJob implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Dispatchable;
+    use InteractsWithQueue;
+    use Queueable;
+    use SerializesModels;
 
     /**
      * The unique identifier of the loan, used to fetch the necessary data.
@@ -49,8 +52,8 @@ class SendLoanExtendJob implements ShouldQueue
      * This method retrieves the loan based on the provided ID and requests
      * the email service to send the extension email with the relevant details.
      *
-     * @param EmailService $emailService Service responsible for composing
-     *                                   and dispatching the extension email.
+     * @param EmailService $emailService service responsible for composing
+     *                                   and dispatching the extension email
      */
     public function handle(EmailService $emailService): void
     {

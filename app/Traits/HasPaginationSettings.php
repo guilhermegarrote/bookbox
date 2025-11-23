@@ -12,10 +12,7 @@ trait HasPaginationSettings
     /**
      * Paginate query results dynamically using cursor pagination.
      *
-     * @param Builder $query
-     * @param Request $request
      * @param int $maxLimit Maximum items per page (default 250)
-     * @return \Illuminate\Pagination\CursorPaginator
      */
     public function paginateWithSettings(Builder $query, Request $request, int $maxLimit = 250): \Illuminate\Pagination\CursorPaginator
     {

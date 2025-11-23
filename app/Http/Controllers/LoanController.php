@@ -99,7 +99,8 @@ class LoanController extends Controller
 
         $extendedDate = Carbon::parse($loan->loan_due_date)
             ->addDays(7)
-            ->format('d/m/Y');
+            ->format('d/m/Y')
+        ;
 
         return view('pages.loans.partials.extend-modal', compact('currentDate', 'extendedDate'))->render();
     }
