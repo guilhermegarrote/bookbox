@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Jobs\Email;
 
+use App\Helpers\Utils;
 use App\Models\View\Loan;
 use App\Services\EmailService;
 use Illuminate\Bus\Queueable;
@@ -11,44 +12,53 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Log;
 
 /**
- * Job responsible for sending a loan receipt email.
+ * Job responsible for sending a loan receipt email asynchronously.
  *
- * This job asynchronously sends a receipt confirming that the loan was successfully created.
- * Delegating this process to a queued job avoids delay in the user's workflow.
+ * This job sends a confirmation receipt to the borrower after a loan is created.
+ * By queuing this task, the system ensures the user's workflow is not delayed,
+ * providing a faster response time while the email is processed in the background.
  *
  * @see EmailService::sendLoanReceipt()
  */
 class SendLoanReceiptJob implements ShouldQueue
 {
-    use Dispatchable;
-    use InteractsWithQueue;
-    use Queueable;
-    use SerializesModels;
+    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     /**
-     * Loan instance containing the data needed for the receipt email.
+     * The unique identifier of the loan, used to fetch the necessary data for the receipt.
+     *
+     * @var string
      */
-    protected Loan $loan;
+    protected string $loanId;
 
     /**
      * Create a new job instance.
      *
-     * @param Loan $loan The loan to be used for generating the receipt email
+     * @param string $loanId The ID of the loan used to generate the receipt email.
+     *                       This ID is a UUID that will be converted to binary format for database queries.
      */
-    public function __construct(Loan $loan)
+    public function __construct(string $loanId)
     {
-        $this->loan = $loan;
+        $this->loanId = $loanId;
     }
 
     /**
-     * Execute the job.
+     * Execute the job to send the loan receipt email.
      *
-     * @param EmailService $emailService Injected email service that handles sending the receipt email
+     * This method fetches the loan from the database using its binary UUID and
+     * passes it to the EmailService for sending the loan receipt email.
+     *
+     * @param EmailService $emailService The service responsible for sending the loan receipt email.
+     *
+     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException If the loan cannot be found.
      */
     public function handle(EmailService $emailService): void
     {
-        $emailService->sendLoanReceipt($this->loan);
+        $loan = Loan::findOrFail(Utils::convertUuidToBinary($this->loanId));
+
+        $emailService->sendLoanReceipt($loan);
     }
 }

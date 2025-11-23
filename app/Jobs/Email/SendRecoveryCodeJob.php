@@ -17,7 +17,7 @@ use Illuminate\Queue\SerializesModels;
  * This job delegates the actual sending logic to the EmailService and ensures
  * that the operation is executed through Laravel's queue system.
  */
-class SendRecoveyCodeJob implements ShouldQueue
+class SendRecoveryCodeJob implements ShouldQueue
 {
     use Dispatchable;
     use InteractsWithQueue;

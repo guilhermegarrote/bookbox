@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Jobs\Email;
 
+use App\Helpers\Utils;
 use App\Models\View\Loan;
 use App\Services\EmailService;
 use Illuminate\Bus\Queueable;
@@ -15,40 +16,44 @@ use Illuminate\Queue\SerializesModels;
 /**
  * Job responsible for sending an overdue loan notification.
  *
- * This queued job sends an email informing the user that the loan period has expired.
- * The process runs asynchronously to avoid slowing down the application flow.
+ * This queued job sends an email notifying the user that the loan period has expired.
+ * The job is processed asynchronously to prevent delays in the application flow
+ * while handling email dispatch.
  *
  * @see EmailService::sendLoanOverdue()
  */
 class SendLoanOverdueJob implements ShouldQueue
 {
-    use Dispatchable;
-    use InteractsWithQueue;
-    use Queueable;
-    use SerializesModels;
+    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     /**
-     * Loan instance containing user and overdue information.
+     * The unique identifier of the loan, used to fetch the necessary information.
      */
-    protected Loan $loan;
+    protected string $loanId;
 
     /**
      * Create a new job instance.
      *
-     * @param Loan $loan The overdue loan instance
+     * @param string $loanId The ID of the overdue loan.
+     *                       This ID is converted from UUID to binary format for database access.
      */
-    public function __construct(Loan $loan)
+    public function __construct(string $loanId)
     {
-        $this->loan = $loan;
+        $this->loanId = $loanId;
     }
 
     /**
-     * Execute the job.
+     * Execute the job to send the overdue loan notification email.
      *
-     * @param EmailService $emailService Injected email service responsible for sending the overdue notification
+     * This method fetches the loan data and sends the overdue notification email
+     * using the injected email service.
+     *
+     * @param EmailService $emailService The service responsible for sending the overdue email.
      */
     public function handle(EmailService $emailService): void
     {
-        $emailService->sendLoanOverdue($this->loan);
+        $loan = Loan::findOrFail(Utils::convertUuidToBinary($this->loanId));
+
+        $emailService->sendLoanOverdue($loan);
     }
 }

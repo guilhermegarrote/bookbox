@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Jobs\Email;
 
+use App\Helpers\Utils;
 use App\Models\View\Loan;
 use App\Services\EmailService;
 use Illuminate\Bus\Queueable;
@@ -15,41 +16,44 @@ use Illuminate\Queue\SerializesModels;
 /**
  * Job responsible for sending a loan reminder email.
  *
- * This queued job sends a reminder notifying the user that the loan due date is approaching.
- * The job delegates the task to the EmailService, ensuring asynchronous processing and
- * preventing delays in HTTP requests.
+ * This queued job sends an email to remind the user that the loan due date is approaching.
+ * By delegating this task to the EmailService, we ensure asynchronous processing, avoiding
+ * delays in the HTTP request and improving user experience.
  *
  * @see EmailService::sendLoanReminder()
  */
 class SendLoanReminderJob implements ShouldQueue
 {
-    use Dispatchable;
-    use InteractsWithQueue;
-    use Queueable;
-    use SerializesModels;
+    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     /**
-     * The loan instance containing user and book data.
+     * The unique identifier of the loan, used to fetch the necessary data.
      */
-    protected Loan $loan;
+    protected string $loanId;
 
     /**
      * Create a new job instance.
      *
-     * @param Loan $loan The loan information used to generate the reminder email
+     * @param string $loanId The ID of the loan used to generate the reminder email.
+     *                       The ID is converted from UUID to binary for database access.
      */
-    public function __construct(Loan $loan)
+    public function __construct(string $loanId)
     {
-        $this->loan = $loan;
+        $this->loanId = $loanId;
     }
 
     /**
-     * Execute the job.
+     * Execute the job to send the loan reminder email.
      *
-     * @param EmailService $emailService Injected email service responsible for sending the reminder
+     * This method retrieves the loan data based on the provided loan ID and triggers
+     * the email service to send the reminder to the user.
+     *
+     * @param EmailService $emailService The service responsible for sending the reminder email.
      */
     public function handle(EmailService $emailService): void
     {
-        $emailService->sendLoanReminder($this->loan);
+        $loan = Loan::findOrFail(Utils::convertUuidToBinary($this->loanId));
+
+        $emailService->sendLoanReminder($loan);
     }
 }

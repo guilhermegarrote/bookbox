@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Jobs\Email;
 
+use App\Helpers\Utils;
 use App\Models\View\Loan;
 use App\Services\EmailService;
 use Illuminate\Bus\Queueable;
@@ -24,36 +25,37 @@ use Illuminate\Queue\SerializesModels;
  */
 class SendLoanExtendJob implements ShouldQueue
 {
-    use Dispatchable;
-    use InteractsWithQueue;
-    use Queueable;
-    use SerializesModels;
+    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     /**
-     * Loan instance containing the data required to generate
-     * the due date extension email.
+     * The unique identifier of the loan, used to fetch the necessary data.
      */
-    protected Loan $loan;
+    protected string $loanId;
 
     /**
      * Create a new job instance.
      *
-     * @param Loan $loan The loan whose due date was extended.
-     *                   Includes borrower, book and renewal details.
+     * @param string $loanId The loan whose due date was extended.
+     *                       This ID is converted from UUID to binary for database access.
      */
-    public function __construct(Loan $loan)
+    public function __construct(string $loanId)
     {
-        $this->loan = $loan;
+        $this->loanId = $loanId;
     }
 
     /**
-     * Execute the job.
+     * Execute the job to send the due date extension email.
      *
-     * @param EmailService $emailService service responsible for composing
-     *                                   and dispatching the extension email
+     * This method retrieves the loan based on the provided ID and requests
+     * the email service to send the extension email with the relevant details.
+     *
+     * @param EmailService $emailService Service responsible for composing
+     *                                   and dispatching the extension email.
      */
     public function handle(EmailService $emailService): void
     {
-        $emailService->sendLoanExtend($this->loan);
+        $loan = Loan::findOrFail(Utils::convertUuidToBinary($this->loanId));
+
+        $emailService->sendLoanExtend($loan);
     }
 }
