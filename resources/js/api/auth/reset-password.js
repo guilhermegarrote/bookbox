@@ -1,12 +1,13 @@
 import { route } from 'ziggy-js';
 import { api } from '../http-client.js';
 
+/**
+ * Resets a user's password via the API.
+ *
+ * @param {Object} data - Password reset data (e.g., email, code, new password).
+ * @returns {Promise<Object>} - API response object.
+ * @throws {Error} - Throws if the network request or API call fails.
+ */
 export async function resetPassword(data) {
-    const response = await api.post(route('recover.reset.password'), data);
-
-    if (!response.ok) {
-        console.warn('[Recover] Falha ao redefinir senha:', response.data);
-    }
-
-    return response;
+    return api.post(route('recover.reset.password'), data);
 }

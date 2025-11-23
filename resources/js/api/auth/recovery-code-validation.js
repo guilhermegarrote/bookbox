@@ -1,12 +1,13 @@
 import { route } from 'ziggy-js';
 import { api } from '../http-client.js';
 
+/**
+ * Validates a recovery code with the API.
+ *
+ * @param {string} code - The recovery code to validate.
+ * @returns {Promise<Object>} - API response object.
+ * @throws {Error} - Throws if the network request or API call fails.
+ */
 export async function validateCode(code) {
-    const response = await api.post(route('recover.validate.code'), {code});
-
-    if (!response.ok) {
-        console.warn('[Recover] Código de recuperação inválido:', response.data);
-    }
-
-    return response;
+    return api.post(route('recover.validate.code'), { code });
 }

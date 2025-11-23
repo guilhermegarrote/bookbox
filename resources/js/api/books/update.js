@@ -1,12 +1,14 @@
 import { route } from 'ziggy-js';
 import { api } from '../http-client.js';
 
+/**
+ * Updates a book via the API.
+ *
+ * @param {number|string} bookId - The ID of the book to update.
+ * @param {Object} data - The updated book data (e.g., title, author, ISBN).
+ * @returns {Promise<Object>} - API response object.
+ * @throws {Error} - Throws if the network request or API call fails.
+ */
 export async function updateBook(bookId, data) {
-    const response = await api.patch(route('books.update', { book: bookId }), data);
-
-    if (!response.ok) {
-        console.warn('[Books] Falha ao atualizar livro:', response.status, response.data);
-    }
-
-    return response;
+    return api.patch(route('books.update', { book: bookId }), data);
 }

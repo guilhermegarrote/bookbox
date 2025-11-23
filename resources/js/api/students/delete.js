@@ -1,12 +1,13 @@
 import { route } from 'ziggy-js';
 import { api } from '../http-client.js';
 
+/**
+ * Deletes a student via the API.
+ *
+ * @param {number|string} studentId - The ID of the student to delete.
+ * @returns {Promise<Object>} - API response object.
+ * @throws {Error} - Throws if the network request or API call fails.
+ */
 export async function deleteStudent(studentId) {
-    const response = await api.delete(route('students.destroy', { student: studentId }));
-
-    if (!response.ok) {
-        console.warn('[Students] Falha ao deletar aluno:', response.data);
-    }
-
-    return response;
+    return api.delete(route('students.destroy', { student: studentId }));
 }

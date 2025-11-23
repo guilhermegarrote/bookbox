@@ -1,22 +1,22 @@
 import { route } from 'ziggy-js';
 import { api } from '../http-client.js';
 
+/**
+ * Logs out the current user.
+ *
+ * Sends a logout request to the API, clears session and local storage,
+ * and redirects to the login page.
+ *
+ * @returns {Promise<Object>} - API response object.
+ * @throws {Error} - Throws if the network request or API call fails.
+ */
 export async function logout() {
-    try {
-        const response = await api.post(route('api.logout'));
+    const response = await api.post(route('api.logout'));
 
-        if (!response.ok) {
-            console.warn('[Auth] Falha ao fazer logout:', response.data);
-        }
+    sessionStorage.removeItem('user');
+    localStorage.removeItem('recoveryEmail');
 
-        sessionStorage.removeItem('user');
-        localStorage.removeItem('recoveryEmail');
+    window.location.href = route('login');
 
-        window.location.href = route('login');
-
-        return response;
-    } catch (error) {
-        console.error('[Auth] Erro ao fazer logout:', error);
-        return { ok: false, error };
-    }
+    return response;
 }

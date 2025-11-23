@@ -1,12 +1,13 @@
 import { route } from 'ziggy-js';
 import { api } from '../http-client.js';
 
+/**
+ * Creates a new loan via the API.
+ *
+ * @param {Object} data - Loan data (e.g., book_id, user_id, due_date).
+ * @returns {Promise<Object>} - API response object.
+ * @throws {Error} - Throws if the network request or API call fails.
+ */
 export async function createLoan(data) {
-    const response = await api.post(route('loans.store'), data);
-
-    if (!response.ok) {
-        console.warn('[Loans] Falha ao cadastrar empréstimo:', response.status, response.data);
-    }
-
-    return response;
+    return api.post(route('loans.store'), data);
 }

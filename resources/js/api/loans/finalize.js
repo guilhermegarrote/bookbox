@@ -1,12 +1,13 @@
 import { route } from 'ziggy-js';
 import { api } from '../http-client.js';
 
+/**
+ * Finalizes a loan via the API.
+ *
+ * @param {number|string} loanId - The ID of the loan to finalize.
+ * @returns {Promise<Object>} - API response object.
+ * @throws {Error} - Throws if the network request or API call fails.
+ */
 export async function finalizeLoan(loanId) {
-    const response = await api.patch(route('loans.finalize', { loan: loanId }));
-
-    if (!response.ok) {
-        console.warn('[Loans] Falha ao finalizar empréstimo:', response.status, response.data);
-    }
-
-    return response;
+    return api.patch(route('loans.finalize', { loan: loanId }));
 }

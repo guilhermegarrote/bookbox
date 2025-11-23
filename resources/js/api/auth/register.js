@@ -1,12 +1,13 @@
 import { route } from 'ziggy-js';
 import { api } from '../http-client.js';
 
+/**
+ * Registers a new user.
+ *
+ * @param {Object} data - User registration data (e.g., name, email, password).
+ * @returns {Promise<Object>} - API response object.
+ * @throws {Error} - Throws if the network request or API call fails.
+ */
 export async function register(data) {
-    const response = await api.post(route('api.register'), data);
-
-    if (!response.ok) {
-        console.warn('[Auth] Falha ao registrar usuário:', response.data);
-    }
-
-    return response;
+    return api.post(route('api.register'), data);
 }

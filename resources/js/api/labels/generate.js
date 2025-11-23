@@ -1,12 +1,13 @@
 import { route } from 'ziggy-js';
 import { api } from '../http-client.js';
 
+/**
+ * Generates labels via the API.
+ *
+ * @param {Object} data - Data required to generate the labels.
+ * @returns {Promise<Object>} - API response object.
+ * @throws {Error} - Throws if the network request or API call fails.
+ */
 export async function generateLabels(data) {
-    const response = await api.post(route('labels.generate'), data);
-
-    if (!response.ok) {
-        console.warn('[Labels] Falha ao gerar etiquetas:', response.status, response.data);
-    }
-
-    return response;
+    return api.post(route('labels.generate'), data);
 }

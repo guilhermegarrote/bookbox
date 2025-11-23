@@ -1,12 +1,13 @@
 import { route } from 'ziggy-js';
 import { api } from '../http-client.js';
 
+/**
+ * Fetches metadata for a book by ISBN from the API.
+ *
+ * @param {string} isbn - The ISBN of the book.
+ * @returns {Promise<Object>} - API response object.
+ * @throws {Error} - Throws if the network request or API call fails.
+ */
 export async function fetchMetadata(isbn) {
-    const response = await api.get(route('books.fetchMetadata', isbn));
-
-    if (!response.ok) {
-        console.warn('[Books] Falha ao consultar dados do livro:', response.data);
-    }
-
-    return response;
+    return api.get(route('books.fetchMetadata', isbn));
 }

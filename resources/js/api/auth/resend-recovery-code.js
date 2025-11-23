@@ -1,12 +1,12 @@
 import { route } from 'ziggy-js';
 import { api } from '../http-client.js';
 
+/**
+ * Resends a recovery code via the API.
+ *
+ * @returns {Promise<Object>} - API response object.
+ * @throws {Error} - Throws if the network request or API call fails.
+ */
 export async function resendCode() {
-    const response = await api.post(route('recover.resend'));
-
-    if (!response.ok) {
-        console.warn('[Recover] Falha ao reenviar código de recuperação:', response.data);
-    }
-
-    return response;
+    return api.post(route('recover.resend'));
 }
