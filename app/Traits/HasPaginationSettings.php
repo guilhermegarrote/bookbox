@@ -10,12 +10,14 @@ use Illuminate\Http\Request;
 trait HasPaginationSettings
 {
     /**
-     * Paginate query results dynamically.
+     * Paginate query results dynamically using cursor pagination.
      *
-     * Uses the frontend-provided perPage value (from JS)
-     * and cursor pagination for infinite scroll.
+     * @param Builder $query
+     * @param Request $request
+     * @param int $maxLimit Maximum items per page (default 250)
+     * @return \Illuminate\Pagination\CursorPaginator
      */
-    public function paginateWithSettings(Builder $query, Request $request, int $maxLimit = 250)
+    public function paginateWithSettings(Builder $query, Request $request, int $maxLimit = 250): \Illuminate\Pagination\CursorPaginator
     {
         $perPage = max(5, min((int) $request->input('perPage', 15), $maxLimit));
 
