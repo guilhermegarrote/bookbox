@@ -48,7 +48,7 @@ class Kernel extends ConsoleKernel
             ;
 
             foreach ($loans as $loan) {
-                SendLoanReminderJob::dispatch($loan);
+                SendLoanReminderJob::dispatch($loan->id);
             }
         })->dailyAt('03:00');
 
@@ -69,7 +69,7 @@ class Kernel extends ConsoleKernel
                 $daysOverdue = now()->startOfDay()->diffInDays($loan->loan_due_date);
 
                 if ($daysOverdue === 1 || ($daysOverdue > 1 && ($daysOverdue - 1) % 3 === 0)) {
-                    SendLoanOverdueJob::dispatch($loan);
+                    SendLoanOverdueJob::dispatch($loan->id);
                 }
             }
         })->dailyAt('03:15');
