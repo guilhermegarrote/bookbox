@@ -7,17 +7,11 @@
         <div class="data-container">
             <h2 class="page-title">Alunos</h2>
 
-            <div class="table-wrapper" id="data-table-container">
-                @include('pages.students.partials.table', ['students' => $students])
-            </div>
-
-            <div class="pagination-container" id="pagination-wrapper">
-                @include('vendor.pagination.custom', ['paginator' => $students])
-            </div>
+            @include('pages.students.partials.table')
         </div>
     </div>
 @endsection
 
 @push('scripts')
-    @vite('resources/js/pages/students/students.js')
+    @vite('resources/js/pages/students/index.js')
 @endpush
