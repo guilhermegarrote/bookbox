@@ -41,7 +41,7 @@ return new class extends Migration {
                 ->comment('Data em que o exemplar foi devolvido.')
             ;
 
-            $table->unique('copy_id');
+            $table->index('copy_id');
             $table->index('student_id');
 
             $table->foreign('student_id')->references('id')->on('students')->onDelete('cascade');
