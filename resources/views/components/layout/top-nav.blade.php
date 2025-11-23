@@ -38,5 +38,5 @@
 </header>
 
 @push('scripts')
-    @vite('resources/js/components/ui/top-nav.js')
+    @vite('resources/js/components/common/top-nav/index.js')
 @endpush
