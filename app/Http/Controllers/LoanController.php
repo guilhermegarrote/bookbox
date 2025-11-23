@@ -73,23 +73,10 @@ class LoanController extends Controller
     {
         $loan = Loan::where('id', Utils::convertUuidToBinary($id))->firstOrFail();
 
-        return view('pages.loans.partials.menu-modal', compact('loan'))->render();
-    }
+        $loan_start_date = Carbon::parse($loan->loan_start_date)->format('d/m/Y');
+        $loan_due_date = Carbon::parse($loan->loan_due_date)->format('d/m/Y');
 
-    /**
-     * Display the update modal for a specific loan.
-     *
-     * @param string $id the UUID of the loan
-     *
-     * @return string the rendered HTML for the loan update modal
-     *
-     * @see resources/views/pages/loans/partials/update-modal.blade.php
-     */
-    public function updateModal(string $id): string
-    {
-        $loan = Loan::where('id', Utils::convertUuidToBinary($id))->firstOrFail();
-
-        return view('pages.loans.partials.update-modal', compact('loan'))->render();
+        return view('pages.loans.partials.menu-modal', compact('loan', 'loan_start_date', 'loan_due_date'))->render();
     }
 
     /**
@@ -108,12 +95,11 @@ class LoanController extends Controller
     {
         $loan = Loan::where('id', Utils::convertUuidToBinary($id))->firstOrFail();
 
-        $currentDate = Carbon::createFromFormat('d/m/Y', $loan->loan_due_date)->format('d/m/Y');
+        $currentDate = Carbon::parse($loan->loan_due_date)->format('d/m/Y');
 
-        $extendedDate = Carbon::createFromFormat('d/m/Y', $loan->loan_due_date)
+        $extendedDate = Carbon::parse($loan->loan_due_date)
             ->addDays(7)
-            ->format('d/m/Y')
-        ;
+            ->format('d/m/Y');
 
         return view('pages.loans.partials.extend-modal', compact('currentDate', 'extendedDate'))->render();
     }
