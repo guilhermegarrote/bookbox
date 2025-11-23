@@ -12,7 +12,7 @@
                     title="Informe o código ISBN do livro" />
             <x-modals.input-field id="title" label="Título do livro" width="440px" readonly
                 title="Título do livro" />
-            <x-modals.select-field id="copy_number" label="Exemplar" width="150px" required
+            <x-modals.select-field id="copy_number" label="Exemplar" width="150px" readonly
                 title="Informe o número do exemplar" />
             <x-modals.input-field id="loan_due_date" label="Data de devolução" width="165px" readonly
                 title="Data de devolução do empréstimo" />
