@@ -10,7 +10,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\ResetPasswordRequest;
 use App\Http\Requests\Auth\SendCodeRequest;
 use App\Http\Requests\Auth\ValidateCodeRequest;
-use App\Jobs\Email\SendRecoveyCodeJob;
+use App\Jobs\Email\SendRecoveryCodeJob;
 use App\Models\PasswordResetCode;
 use App\Models\User;
 use App\Services\EmailService;
@@ -254,6 +254,6 @@ class PasswordRecoveryController extends Controller
             'expiration' => now()->addMinutes(self::EXPIRATION_MINUTES),
         ]);
 
-        dispatch(new SendRecoveyCodeJob($email, $user->name, $code));
+        dispatch(new SendRecoveryCodeJob($email, $user->name, $code));
     }
 }
