@@ -10,7 +10,7 @@
     Seu código de recuperação é:
 </p>
 
-<div class="email-code">
+<div class="highlight-recovery-code">
     {{ $code }}
 </div>
 

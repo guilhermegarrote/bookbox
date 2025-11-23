@@ -2,22 +2,27 @@
 
 @section('content')
     <p class="email-text">
-        Olá <strong>{{ $student_name }}</strong> (Turma: <strong>{{ $student_school_class }}</strong>),
+        Olá <strong>{{ $student_name }}</strong>,<br />
+        Você está matriculado(a) na <strong>{{ $student_school_class }}</strong>.
     </p>
 
     <p class="email-text">
-        Este é o seu comprovante de empréstimo referente ao livro abaixo:
+        Abaixo está o comprovante de empréstimo do livro solicitado:
     </p>
 
     <ul>
+        <li><strong>ISBN:</strong> {{ $book_isbn }}</li>
         <li><strong>Título:</strong> {{ $book_title }}</li>
         <li><strong>Autor:</strong> {{ $book_author }}</li>
-        <li><strong>Exemplar:</strong> {{ $book_copy_number }}</li>
-        <li><strong>Data do Empréstimo:</strong> {{ $loan_start_date }}</li>
-        <li><strong>Data de Devolução:</strong> {{ $loan_due_date }}</li>
+        <li><strong>Exemplar nº:</strong> {{ $book_copy_number }}</li>
+        <li><strong>Data do empréstimo:</strong> {{ $loan_start_date }}</li>
     </ul>
 
+    <p class="highlight-due-date">
+        <strong>Data prevista para devolução:</strong> <span class="due-date">{{ $loan_due_date }}</span>
+    </p>
+
     <div class="email-highlight">
-        Por favor, mantenha este e-mail como comprovante do empréstimo.
+        <p>Guarde este e-mail como comprovante do seu empréstimo.</p>
     </div>
 @endsection
