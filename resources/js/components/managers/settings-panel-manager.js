@@ -1,6 +1,6 @@
-import '../../../css/pages/settings.css';
-import { logout } from '../../api/auth/logout.js';
-import ModalManager from './modal-manager.js';
+import '@css/pages/settings.css';
+import { logout } from '@js/api/auth/logout.js';
+import ModalManager from '@js/components/ui/modal-manager.js';
 import { route } from 'ziggy-js';
 
 export default class SettingsPanelManager {

@@ -1,4 +1,4 @@
-import '../../../css/components/sidebar.css';
+import '@css/components/sidebar.css';
 
 export function setupSidebarPage() {
     document.addEventListener('DOMContentLoaded', () => {
@@ -26,11 +26,12 @@ function resizeSidebarWrapper() {
     const title = document.querySelector('.page-title');
     const pagination = document.querySelector('.pagination-container');
     const sidebarWrapper = document.querySelector('.sidebar-wrapper');
+    const panel = document.querySelector('.panel');
     if (!sidebarWrapper) return;
     const headerSpace = getTotalVerticalSpace(header);
     const titleSpace = getTotalVerticalSpace(title);
     const paginationSpace = getTotalVerticalSpace(pagination);
-    const extraSpacing = 0;
+    const extraSpacing = panel ? parseFloat(getComputedStyle(panel).marginRight) || 0 : 0;
     const availableHeight = windowHeight - headerSpace - titleSpace - paginationSpace - extraSpacing;
     sidebarWrapper.style.height = `${availableHeight}px`;
 }

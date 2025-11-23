@@ -1,12 +1,12 @@
 import { initLoansModals } from './loans-modals';
-import { FilterUI } from '../../components/ui/filter-ui';
-import loansTable from './table';
-import { setupTablePage } from '../../components/setups/page-table-setup';
-import { setupSidebarPage } from '../../components/setups/page-sidebar-setup';
+import { FilterUI } from '@js/components/common/filter/filter-ui';
+import loansTable from '@js/components/managers/table/instances/loans-table';
+import { setupTablePage } from '@js/components/setups/page-table-setup';
+import { setupSidebarPage } from '@js/components/setups/page-sidebar-setup';
 
 setupTablePage({
     initFilterUI: () => {
-        return new FilterUI({
+        const filterUI = new FilterUI({
             filterData: window.App.filterData,
             onParamsChange: (params) => loansTable.updateTable(params),
             fields: [
@@ -18,11 +18,17 @@ setupTablePage({
                 { key: 'active', element: null, placeholder: 'Status', formatLabel: v => v === 1 ? 'Ativo' : 'Finalizado' },
             ]
         });
+
+        filterUI.init();
+
+        window.App.filterUIInstance = filterUI;
+
+        return filterUI;
     },
     updateTable: (params) => loansTable.updateTable(params),
     filterStateKey: 'loansFilterState',
     filterData: window.App.filterData,
-    initModals: initLoansModals
+    initModals: modalManager => initLoansModals({ modalManager, table: loansTable })
 });
 
 setupSidebarPage();

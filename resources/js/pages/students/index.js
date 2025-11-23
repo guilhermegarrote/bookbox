@@ -1,11 +1,11 @@
 import { initStudentsModals } from './students-modals';
-import { FilterUI } from '../../components/ui/filter-ui';
-import studentsTable from './table';
-import { setupTablePage } from '../../components/setups/page-table-setup';
+import { FilterUI } from '@js/components/common/filter/filter-ui';
+import studentsTable from '@js/components/managers/table/instances/students-table';
+import { setupTablePage } from '@js/components/setups/page-table-setup';
 
 setupTablePage({
     initFilterUI: () => {
-        return new FilterUI({
+        const filterUI = new FilterUI({
             filterData: window.App.filterData,
             onParamsChange: (params) => studentsTable.updateTable(params),
             fields: [
@@ -15,9 +15,15 @@ setupTablePage({
                 { key: 'can_borrow', element: null, placeholder: 'Status', formatLabel: v => v === 1 ? 'Autorizado' : 'Bloqueado' },
             ]
         });
+
+        filterUI.init();
+
+        window.App.filterUIInstance = filterUI;
+
+        return filterUI;
     },
     updateTable: (params) => studentsTable.updateTable(params),
     filterStateKey: 'studentsFilterState',
     filterData: window.App.filterData,
-    initModals: initStudentsModals
+    initModals: modalManager => initStudentsModals({ modalManager, table: studentsTable })
 });

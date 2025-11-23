@@ -1,0 +1,38 @@
+export function bindOpenButtons({
+    openMenuModal,
+    openCreateModal
+}) {
+    const addBtn = document.querySelector('.btn-add');
+    if (addBtn && !addBtn.dataset.bound) {
+        addBtn.dataset.bound = "1";
+        addBtn.addEventListener('click', () =>
+            openCreateModal()
+        );
+    }
+
+    const tableElem = document.querySelector('table.data-table tbody');
+    if (tableElem && !tableElem.dataset.bound) {
+        tableElem.dataset.bound = "1";
+
+        tableElem.addEventListener('click', e => {
+            const row = e.target.closest('tr[data-id]');
+            if (!row) return;
+
+            const id = row.dataset.id;
+            openMenuModal(id);
+        });
+    }
+
+    const sidebar = document.querySelector('.loan-list');
+    if (sidebar && !sidebar.dataset.bound) {
+        sidebar.dataset.bound = "1";
+
+        sidebar.addEventListener('click', e => {
+            const item = e.target.closest('li[data-loan-id]');
+            if (!item) return;
+
+            const id = item.dataset.loanId;
+            openMenuModal(id);
+        });
+    }
+}
