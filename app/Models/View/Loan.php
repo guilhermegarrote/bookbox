@@ -6,21 +6,23 @@ namespace App\Models\View;
 
 use App\Helpers\Utils;
 use App\Models\Copy;
-use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Ramsey\Uuid\Uuid;
 
 /**
- * Class Loan.
+ * Class Loan
  *
  * Represents a view model for book loans with decrypted and formatted attributes.
- * This model is mapped to the database view `vw_loans`, containing joined and derived data
- * from multiple related entities (students, copies, books, etc.).
+ * This model maps to the database view `vw_loans` and includes joined/derived data
+ * from students, copies, books, genres, and related entities.
+ *
+ * @package App\Models\View
  */
 class Loan extends BaseModel
 {
-    /** @var bool Indicates if the model should be timestamped. */
+    /** @var bool Indicates if the model should be timestamped (disabled). */
     public $timestamps = false;
 
     /** @var string The database table (view) associated with the model. */
@@ -29,7 +31,7 @@ class Loan extends BaseModel
     /** @var array<int, string> The attributes that aren’t mass assignable. */
     protected $guarded = [];
 
-    /** @var array<int, string> The attributes that should be hidden in serialization. */
+    /** @var array<int, string> The attributes that should be hidden when serializing the model. */
     protected $hidden = [
         'cpf_hash',
         'email_hash',
@@ -37,71 +39,67 @@ class Loan extends BaseModel
     ];
 
     /**
-     * Converts binary UUID (bytes) to string.
+     * Get student UUID as string from binary.
      *
-     * @param null|string $value
-     *
-     * @return null|string
+     * @param string|null $value Binary UUID from the database.
+     * @return string|null UUID as string or null if value is null.
      */
-    public function getStudentIdAttribute($value)
+    public function getStudentIdAttribute(?string $value): ?string
     {
         return $value ? Uuid::fromBytes($value)->toString() : null;
     }
 
     /**
-     * Converts binary UUID (bytes) to string.
+     * Get book UUID as string from binary.
      *
-     * @param null|string $value
-     *
-     * @return null|string
+     * @param string|null $value Binary UUID from the database.
+     * @return string|null UUID as string or null if value is null.
      */
-    public function getBookIdAttribute($value)
+    public function getBookIdAttribute(?string $value): ?string
     {
         return $value ? Uuid::fromBytes($value)->toString() : null;
     }
 
     /**
-     * Converts binary UUID (bytes) to string.
+     * Get copy UUID as string from binary.
      *
-     * @param null|string $value
-     *
-     * @return null|string
+     * @param string|null $value Binary UUID from the database.
+     * @return string|null UUID as string or null if value is null.
      */
-    public function getCopyIdAttribute($value)
+    public function getCopyIdAttribute(?string $value): ?string
     {
         return $value ? Uuid::fromBytes($value)->toString() : null;
     }
 
     /**
-     * Converts binary UUID (bytes) to string.
+     * Get genre UUID as string from binary.
      *
-     * @param null|string $value
-     *
-     * @return null|string
+     * @param string|null $value Binary UUID from the database.
+     * @return string|null UUID as string or null if value is null.
      */
-    public function getGenreIdAttribute($value)
+    public function getGenreIdAttribute(?string $value): ?string
     {
         return $value ? Uuid::fromBytes($value)->toString() : null;
     }
 
     /**
-     * Converts binary UUID (bytes) to string.
+     * Get school class UUID as string from binary.
      *
-     * @param null|string $value
-     *
-     * @return null|string
+     * @param string|null $value Binary UUID from the database.
+     * @return string|null UUID as string or null if value is null.
      */
-    public function getSchoolClassIdAttribute($value)
+    public function getSchoolClassIdAttribute(?string $value): ?string
     {
         return $value ? Uuid::fromBytes($value)->toString() : null;
     }
 
     /**
-     * Decrypts and formats CPF number.
+     * Decrypts and formats CPF number as XXX.XXX.XXX-XX.
      *
-     * @param null|string $value
+     * @param string|null $value Encrypted CPF from the database.
+     * @return string|null Formatted CPF or null if value is null.
      */
-    public function getCpfAttribute($value): ?string
+    public function getCpfAttribute(?string $value): ?string
     {
         if (!$value) {
             return null;
@@ -110,8 +108,8 @@ class Loan extends BaseModel
         $decrypted = Utils::decrypt($value);
         $numbersOnly = preg_replace('/\D/', '', $decrypted);
 
-        if (preg_match('/^(\d{3})(\d{3})(\d{3})(\d{2})$/', $numbersOnly, $matches)) {
-            return "{$matches[1]}.{$matches[2]}.{$matches[3]}-{$matches[4]}";
+        if (preg_match('/^(\d{3})(\d{3})(\d{3})(\d{2})$/', $numbersOnly, $m)) {
+            return "{$m[1]}.{$m[2]}.{$m[3]}-{$m[4]}";
         }
 
         return $decrypted;
@@ -120,19 +118,21 @@ class Loan extends BaseModel
     /**
      * Decrypts email address.
      *
-     * @param null|string $value
+     * @param string|null $value Encrypted email from the database.
+     * @return string|null Decrypted email or null if value is null.
      */
-    public function getEmailAttribute($value): ?string
+    public function getEmailAttribute(?string $value): ?string
     {
         return $value ? Utils::decrypt($value) : null;
     }
 
     /**
-     * Decrypts and formats phone number.
+     * Decrypts and formats phone number as (XX) XXXXX-XXXX.
      *
-     * @param null|string $value
+     * @param string|null $value Encrypted phone from the database.
+     * @return string|null Formatted phone or decrypted raw value if pattern doesn't match.
      */
-    public function getPhoneAttribute($value): ?string
+    public function getPhoneAttribute(?string $value): ?string
     {
         if (!$value) {
             return null;
@@ -141,19 +141,20 @@ class Loan extends BaseModel
         $decrypted = Utils::decrypt($value);
         $numbersOnly = preg_replace('/\D/', '', $decrypted);
 
-        if (preg_match('/^(\d{2})(\d{5})(\d{4})$/', $numbersOnly, $matches)) {
-            return "({$matches[1]}) {$matches[2]}-{$matches[3]}";
+        if (preg_match('/^(\d{2})(\d{5})(\d{4})$/', $numbersOnly, $m)) {
+            return "({$m[1]}) {$m[2]}-{$m[3]}";
         }
 
         return $decrypted;
     }
 
     /**
-     * Formats ISBN number to a readable pattern.
+     * Formats ISBN-13 number as XXX-X-XXXX-XXXX-X.
      *
-     * @param null|string $value
+     * @param string|null $value Raw ISBN value.
+     * @return string|null Formatted ISBN or numbers-only string if not 13 digits.
      */
-    public function getIsbnAttribute($value): ?string
+    public function getIsbnAttribute(?string $value): ?string
     {
         if (!$value) {
             return null;
@@ -161,8 +162,8 @@ class Loan extends BaseModel
 
         $numbersOnly = preg_replace('/\D/', '', $value);
 
-        if (\strlen($numbersOnly) === 13) {
-            return \sprintf(
+        if (strlen($numbersOnly) === 13) {
+            return sprintf(
                 '%s-%s-%s-%s-%s',
                 substr($numbersOnly, 0, 3),
                 substr($numbersOnly, 3, 1),
@@ -176,43 +177,9 @@ class Loan extends BaseModel
     }
 
     /**
-     * Formats the loan start date to "d/m/Y".
-     *
-     * @param null|string $value
-     */
-    public function getLoanStartDateAttribute($value): ?string
-    {
-        if (!$value) {
-            return null;
-        }
-
-        try {
-            return Carbon::parse($value)->format('d/m/Y');
-        } catch (\Exception $e) {
-            return null;
-        }
-    }
-
-    /**
-     * Formats the loan due date to "d/m/Y".
-     *
-     * @param null|string $value
-     */
-    public function getLoanDueDateAttribute($value): ?string
-    {
-        if (!$value) {
-            return null;
-        }
-
-        try {
-            return Carbon::parse($value)->format('d/m/Y');
-        } catch (\Exception $e) {
-            return null;
-        }
-    }
-
-    /**
      * Defines the relationship between a loan and its student.
+     *
+     * @return BelongsTo
      */
     public function student(): BelongsTo
     {
@@ -220,7 +187,9 @@ class Loan extends BaseModel
     }
 
     /**
-     * Defines the relationship between a loan and its copy.
+     * Defines the relationship between a loan and a copy.
+     *
+     * @return BelongsTo
      */
     public function copy(): BelongsTo
     {
@@ -228,10 +197,9 @@ class Loan extends BaseModel
     }
 
     /**
-     * Returns distinct values used for filtering loan data in the UI.
+     * Retrieves distinct values for filtering loan data.
      *
-     * @param null|\Illuminate\Database\Eloquent\Builder $query
-     *
+     * @param \Illuminate\Database\Eloquent\Builder|null $query Optional query builder instance.
      * @return \Illuminate\Support\Collection
      */
     public static function getFilterData($query = null)
@@ -245,7 +213,7 @@ class Loan extends BaseModel
                 'course',
                 'period',
                 'term',
-                DB::raw('CASE WHEN loan_returned_date IS NULL THEN true ELSE false END as active'),
+                DB::raw('CASE WHEN loan_returned_date IS NULL THEN true ELSE false END as active')
             )
             ->groupBy('genre_name', 'publisher', 'course', 'period', 'term', 'active')
             ->orderBy('genre_name')
@@ -254,35 +222,41 @@ class Loan extends BaseModel
             ->orderBy('period')
             ->orderBy('term')
             ->orderBy('active')
-            ->distinct()
-            ->get()
-        ;
+            ->get();
     }
 
     /**
-     * Retrieves loan information required for rendering the sidebar,
-     * including the title and the number of days until (or since) the due date.
+     * Retrieves lightweight loan info for sidebar rendering.
      *
-     * - Positive "days_diff"   → days until due date.
-     * - Zero                   → due today.
-     * - Negative "days_diff"   → overdue by N days.
+     * If a custom query is provided:
+     *   - If it returns results, use them.
+     *   - If it returns no results, fallback to the default dataset.
      *
-     * @param null|\Illuminate\Database\Eloquent\Builder $query
-     *
+     * @param \Illuminate\Database\Eloquent\Builder|null $query Optional query builder instance.
      * @return \Illuminate\Support\Collection
      */
     public static function getSidebarData($query = null)
     {
-        $query = $query ? clone $query : static::query();
+        $selectColumns = [
+            'id',
+            'title',
+            DB::raw('DATEDIFF(DATE(loan_due_date), CURDATE()) AS days_diff'),
+        ];
 
-        return $query
-            ->select([
-                'id',
-                'title',
-                DB::raw('DATEDIFF(DATE(loan_due_date), CURDATE()) AS days_diff'),
-            ])
+        if ($query) {
+            $customResults = (clone $query)
+                ->select($selectColumns)
+                ->whereNull('loan_returned_date')
+                ->get();
+
+            if ($customResults->isNotEmpty()) {
+                return $customResults;
+            }
+        }
+
+        return static::query()
+            ->select($selectColumns)
             ->whereNull('loan_returned_date')
-            ->get()
-        ;
+            ->get();
     }
 }
