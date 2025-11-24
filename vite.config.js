@@ -7,8 +7,6 @@ const jsApi = fg.sync('resources/js/api/**/*.js');
 const jsComponents = fg.sync('resources/js/components/**/*.js');
 const jsPages = fg.sync('resources/js/pages/**/*.js');
 
-const cssEmails = 'resources/css/emails/style.css';
-
 export default defineConfig({
     resolve: {
         alias: {
@@ -24,7 +22,6 @@ export default defineConfig({
                 ...jsApi,
                 ...jsComponents,
                 ...jsPages,
-                cssEmails,
             ],
             refresh: true,
         }),
