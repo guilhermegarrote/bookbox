@@ -2,7 +2,7 @@
 export function bindOpenButtons({
     openMenuModal,
     openCreateModal,
-    openGeneraLabelModal
+    openGenerateLabelModal
 }) {
     const addBtn = document.querySelector('.btn-add');
     if (addBtn && !addBtn.dataset.bound) {
@@ -20,7 +20,7 @@ export function bindOpenButtons({
             const modal = document.querySelector('.modal.show');
             if (modal) return;
 
-            openGeneraLabelModal();
+            openGenerateLabelModal();
         });
     }
 

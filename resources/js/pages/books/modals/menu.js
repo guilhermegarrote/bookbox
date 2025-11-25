@@ -2,7 +2,7 @@ import { route } from 'ziggy-js';
 import { deleteBook } from '@js/api/books/delete.js';
 import { notifySuccess, notifyError } from '@js/utils/formErrors';
 import { openUpdateModal } from './update';
-import { openGeneraLabelModal } from '../../labels/labels-modals.js';
+import { openGenerateLabelModal } from '../../labels/labels-modals.js';
 import { openManagerCopiesModal } from '../../copies/copies-modals.js';
 
 export async function openMenuModal(modalManager, bookId, booksTable) {
@@ -20,7 +20,7 @@ export async function openMenuModal(modalManager, bookId, booksTable) {
         });
 
         document.getElementById('open-generate-label-modal')?.addEventListener('click', () => {
-            openGeneraLabelModal(modalManager);
+            openGenerateLabelModal(modalManager);
         });
 
         document.getElementById('submit-delete')?.addEventListener('click', async () => {

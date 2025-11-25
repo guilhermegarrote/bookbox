@@ -1,6 +1,6 @@
-import { generateLabels } from "../../api/labels/generate";
+import { generateLabels } from "@js/api/labels/generate";
 
-export async function openGeneraLabelModal(modalManager) {
+export async function openGenerateLabelModal(modalManager) {
     const url = route('labels.generateModal');
 
     try {
