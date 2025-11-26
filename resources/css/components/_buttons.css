@@ -15,3 +15,35 @@
     background: var(--color-base-gray-949);
     color: var(--color-base-gray-dark);
 }
+
+.btn-trash {
+    border: none;
+    cursor: pointer;
+    color: var(--color-base-gray-dark);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 30px;
+    height: 30px;
+    padding: 0;
+}
+
+.btn-trash:hover {
+    color: var(--color-base-gray-dark);
+}
+
+.btn-trash svg {
+    width: 20px;
+    height: 20px;
+    display: block;
+}
+
+.btn-trash svg path {
+    fill: black;
+    transition: fill 0.3s ease;
+}
+
+.btn-trash:hover svg path {
+    fill: var(--color-base-gray-dark);
+}
