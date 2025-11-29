@@ -14,149 +14,134 @@ use Illuminate\Support\Facades\DB;
 
 class StudentsSeeder extends Seeder
 {
+    private array $generatedCpfs = [];
+    private array $generatedEmails = [];
+
     public function run(): void
     {
         $firstNames = [
-            'Ana',
-            'João',
-            'Maria',
-            'Carlos',
-            'Fernanda',
-            'Pedro',
-            'Juliana',
-            'Lucas',
-            'Patrícia',
-            'Rafael',
-            'Camila',
-            'Rodrigo',
-            'Larissa',
-            'Gabriel',
-            'Aline',
-            'Thiago',
-            'Beatriz',
-            'Felipe',
-            'Mariana',
-            'André',
-            'Clara',
-            'Diego',
-            'Bianca',
-            'Eduardo',
-            'Letícia',
-            'Marcelo',
-            'Natália',
-            'Vinícius',
-            'Sofia',
-            'Fábio',
-            'Isabela',
-            'Leandro',
-            'Mônica',
-            'Otávio',
-            'Helena',
-            'Daniel',
-            'Vitória',
-            'Bruno',
-            'Manuela',
-            'Gustavo',
+            'Ana','João','Maria','Carlos','Fernanda','Pedro','Juliana','Lucas','Patrícia','Rafael',
+            'Camila','Rodrigo','Larissa','Gabriel','Aline','Thiago','Beatriz','Felipe','Mariana','André',
+            'Clara','Diego','Bianca','Eduardo','Letícia','Marcelo','Natália','Vinícius','Sofia','Fábio',
+            'Isabela','Leandro','Mônica','Otávio','Helena','Daniel','Vitória','Bruno','Manuela','Gustavo',
         ];
 
         $lastNames = [
-            'Silva',
-            'Santos',
-            'Oliveira',
-            'Souza',
-            'Lima',
-            'Costa',
-            'Pereira',
-            'Ferreira',
-            'Almeida',
-            'Nascimento',
-            'Araújo',
-            'Rocha',
-            'Martins',
-            'Barbosa',
-            'Ribeiro',
-            'Dias',
-            'Teixeira',
-            'Carvalho',
-            'Gomes',
-            'Melo',
-            'Castro',
-            'Mendes',
-            'Correia',
-            'Cardoso',
-            'Monteiro',
-            'Moreira',
-            'Pinto',
-            'Araújo',
-            'Batista',
-            'Campos',
-            'Freitas',
-            'Vieira',
-            'Machado',
-            'Farias',
-            'Rezende',
-            'Ramos',
-            'Peixoto',
-            'Cavalcanti',
-            'Fonseca',
-            'Tavares',
+            'Silva','Santos','Oliveira','Souza','Lima','Costa','Pereira','Ferreira','Almeida',
+            'Nascimento','Araújo','Rocha','Martins','Barbosa','Ribeiro','Dias','Teixeira','Carvalho',
+            'Gomes','Melo','Castro','Mendes','Correia','Cardoso','Monteiro','Moreira','Pinto','Batista',
+            'Campos','Freitas','Vieira','Machado','Farias','Rezende','Ramos','Peixoto','Cavalcanti',
+            'Fonseca','Tavares',
         ];
-
-        $created = 0;
 
         $classes = SchoolClass::all();
 
         if ($classes->isEmpty()) {
             $this->command->warn('❌ Nenhuma turma encontrada na tabela schoolclass.');
-
             return;
         }
 
-        for ($i = 1; $i <= 550; ++$i) {
+        $created = 0;
+
+        for ($i = 1; $i <= 200; $i++) {
+
+            $name = Arr::random($firstNames) . ' '
+                . Arr::random($lastNames)
+                . (rand(0, 1) ? ' ' . Arr::random($lastNames) : '');
+
+            $cpf = $this->generateUniqueCpf();
+            $email = $this->generateUniqueEmail($name, $i);
+            $phone = $this->generatePhone();
+
             $class = $classes->random();
-
-            $name = Arr::random($firstNames) . ' ' . Arr::random($lastNames);
-
-            $data = [
-                'name' => $name,
-                'cpf' => $this->randomDigits(11),
-                'email' => "aluno{$i}@example.com",
-                'phone' => $this->randomPhone(),
-                'course' => $class->course,
-                'term' => $class->term,
-                'period' => $class->period,
-            ];
 
             try {
                 DB::beginTransaction();
 
-                $student = Student::create(Arr::only($data, ['name', 'cpf', 'email', 'phone']));
+                $student = Student::create([
+                    'name'  => $name,
+                    'cpf'   => $cpf,
+                    'email' => $email,
+                    'phone' => $phone,
+                ]);
 
                 StudentSchoolClass::create([
-                    'student_id' => Utils::convertUuidToBinary($student->id),
+                    'student_id'      => Utils::convertUuidToBinary($student->id),
                     'school_class_id' => Utils::convertUuidToBinary($class->id),
                 ]);
 
                 DB::commit();
-                ++$created;
+                $created++;
+
             } catch (\Throwable $e) {
                 DB::rollBack();
-                $this->command->error("❗ Erro ao cadastrar {$data['name']}: {$e->getMessage()}");
+                $this->command->error("❗ Erro ao cadastrar {$name}: {$e->getMessage()}");
             }
         }
 
-        $this->command->info("✅ Seeder finalizado. {$created} alunos criados.");
+        $this->command->info("🎓 Seeder finalizado. {$created} alunos criados com sucesso!");
     }
 
-    private function randomDigits(int $length): string
+    private function generateUniqueCpf(): string
     {
-        return substr(str_shuffle(str_repeat('0123456789', (int) ceil($length / 10))), 0, $length);
+        do {
+            $cpf = $this->generateValidCpf();
+        } while (isset($this->generatedCpfs[$cpf]));
+
+        $this->generatedCpfs[$cpf] = true;
+        return $cpf;
     }
 
-    private function randomPhone(): string
+    private function generateValidCpf(): string
     {
-        $ddd = rand(11, 99);
+        $numbers = [];
 
-        return $ddd . '9' . $this->randomDigits(8);
+        for ($i = 0; $i < 9; $i++) {
+            $numbers[$i] = rand(0, 9);
+        }
+
+        $d1 = 0;
+        for ($i = 0, $j = 10; $i < 9; $i++, $j--) {
+            $d1 += $numbers[$i] * $j;
+        }
+        $d1 = ($d1 % 11 < 2) ? 0 : 11 - ($d1 % 11);
+
+        $d2 = 0;
+        for ($i = 0, $j = 11; $i < 9; $i++, $j--) {
+            $d2 += $numbers[$i] * $j;
+        }
+        $d2 += $d1 * 2;
+        $d2 = ($d2 % 11 < 2) ? 0 : 11 - ($d2 % 11);
+
+        return implode('', $numbers) . $d1 . $d2;
+    }
+
+    private function generateUniqueEmail(string $name, int $index): string
+    {
+        $base = strtolower(str_replace(' ', '.', $name));
+
+        do {
+            $email = "{$base}.{$index}@example.com";
+            $index++;
+        } while (isset($this->generatedEmails[$email]));
+
+        $this->generatedEmails[$email] = true;
+
+        return $email;
+    }
+
+    private function generatePhone(): string
+    {
+        $dddValidos = [
+            11,12,13,14,15,16,17,18,19,21,22,24,27,28,
+            31,32,33,34,35,37,38,41,42,43,44,45,46,47,48,49,
+            51,53,54,55,61,62,64,63,65,66,67,68,69,71,73,74,
+            75,77,79,81,87,82,83,84,85,88,86,89,91,93,94,92,
+            95,96,97,98,99
+        ];
+
+        $ddd = Arr::random($dddValidos);
+
+        return sprintf('%d9%08d', $ddd, rand(0, 99999999));
     }
 }

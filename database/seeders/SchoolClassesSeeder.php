@@ -14,60 +14,25 @@ class SchoolClassesSeeder extends Seeder
     {
         $courses = [
             'Administração',
-            'Engenharia Civil',
-            'Direito',
-            'Medicina',
-            'Arquitetura',
-            'Psicologia',
-            'Ciência da Computação',
-            'Economia',
-            'Fisioterapia',
-            'Enfermagem',
-            'Engenharia de Produção',
-            'Engenharia Elétrica',
-            'Engenharia Mecânica',
-            'Engenharia de Software',
-            'Sistemas de Informação',
-            'Análise e Desenvolvimento de Sistemas',
-            'Contabilidade',
-            'Gestão de Recursos Humanos',
-            'Marketing',
-            'Publicidade e Propaganda',
-            'Jornalismo',
-            'Pedagogia',
-            'Educação Física',
-            'Farmácia',
-            'Biomedicina',
-            'Odontologia',
-            'Veterinária',
-            'Nutrição',
-            'Design Gráfico',
-            'Design de Interiores',
-            'Moda',
-            'Relações Internacionais',
-            'Serviço Social',
-            'Turismo',
-            'Hotelaria',
-            'Letras',
-            'História',
-            'Geografia',
-            'Matemática',
-            'Física',
-            'Química',
-            'Biologia',
+            'Desenvolvimento de Sistemas',
+            'Eletrotécnica',
+            'Manutenção e Suporte em Informática',
         ];
 
-        $terms = ['Annual', 'Semester'];
+        $annualCourses = [
+            'Administração',
+            'Desenvolvimento de Sistemas',
+        ];
 
-        for ($i = 1; $i <= 50; ++$i) {
-            $course = $courses[array_rand($courses)];
-            $term = $terms[array_rand($terms)];
+        foreach ($courses as $course) {
 
-            $startDate = Carbon::now()->subDays(rand(0, 365));
+            $startDate = Carbon::now()->subDays(rand(0, 120));
 
-            if ($term === 'Annual') {
+            if (in_array($course, $annualCourses)) {
+                $term = 'Annual';
                 $endDate = (clone $startDate)->addYear();
             } else {
+                $term = 'Semester';
                 $endDate = (clone $startDate)->addMonths(6);
             }
 
@@ -78,5 +43,7 @@ class SchoolClassesSeeder extends Seeder
                 'end_date' => $endDate->format('Y-m-d'),
             ]);
         }
+
+        $this->command->info("✅ Classes cadastradas com sucesso!");
     }
 }

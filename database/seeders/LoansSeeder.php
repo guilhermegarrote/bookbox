@@ -16,60 +16,64 @@ class LoansSeeder extends Seeder
     public function run(): void
     {
         $students = Student::all();
-        $copies = Copy::all();
+        $copies   = Copy::all();
 
         if ($students->isEmpty() || $copies->isEmpty()) {
-            $this->command->warn('❌ Não há alunos ou cópias disponíveis. Rode os seeders de Student e Copy primeiro.');
-
+            $this->command->warn('❌ Não há alunos ou cópias disponíveis.');
             return;
         }
 
+        $total = 40;
+        $perGroup = (int) ($total / 4);
+
+        $countFinished = $perGroup;
+        $count14to7    = $perGroup;
+        $count7to0     = $perGroup;
+        $countLate     = $perGroup;
+
         $created = 0;
-        $total = 50;
 
-        $activeTarget = (int) ceil($total * 0.2);
-        $activeCount = 0;
+        foreach (range(1, $total) as $i) {
 
-        for ($i = 1; $i <= $total; ++$i) {
-            try {
-                $student = $students->shuffle()->shift();
-                $copy = $copies->shuffle()->shift();
+            $student = $students->random();
+            $copy    = $copies->random();
 
-                $start = Carbon::now()->subDays(rand(1, 60));
+            $start = Carbon::now()->subDays(rand(10, 40));
+            $returned = null;
+
+            if ($countFinished > 0) {
                 $due = (clone $start)->addDays(rand(7, 15));
+                $returned = (clone $due)->subDays(rand(0, 5));
 
+                $countFinished--;
+            } elseif ($count14to7 > 0) {
+                $due = Carbon::now()->addDays(rand(7, 14));
                 $returned = null;
-                $active = false;
 
-                if ($activeCount < $activeTarget) {
-                    $active = true;
-                    $returned = null;
-                    ++$activeCount;
-                } else {
-                    if (rand(0, 1)) {
-                        $returned = (clone $start)->addDays(rand(1, max(1, $due->diffInDays($start))));
-                        $active = false;
-                    } else {
-                        $returned = null;
-                        $active = false;
-                        $due = Carbon::now()->subDays(rand(1, 5));
-                    }
-                }
+                $count14to7--;
+            } elseif ($count7to0 > 0) {
+                $due = Carbon::now()->addDays(rand(0, 7));
+                $returned = null;
 
-                Loan::create([
-                    'student_id' => Utils::convertUuidToBinary($student->id),
-                    'copy_id' => Utils::convertUuidToBinary($copy->id),
-                    'start_date' => $start,
-                    'due_date' => $due,
-                    'returned_date' => $returned,
-                ]);
+                $count7to0--;
+            } else {
+                $due = Carbon::now()->subDays(rand(1, 15));
+                $returned = null;
 
-                ++$created;
-            } catch (\Throwable $e) {
-                $this->command->error("❗ Erro ao criar empréstimo: {$e->getMessage()}");
+                $countLate--;
             }
+
+            Loan::create([
+                'student_id'    => Utils::convertUuidToBinary($student->id),
+                'copy_id'       => Utils::convertUuidToBinary($copy->id),
+                'start_date'    => $start,
+                'due_date'      => $due,
+                'returned_date' => $returned,
+            ]);
+
+            $created++;
         }
 
-        $this->command->info("✅ Seeder de empréstimos finalizado. {$created} empréstimos criados ({$activeCount} ativos).");
+        $this->command->info("✅ Seeder finalizado. {$created} empréstimos gerados (4 estados equilibrados).");
     }
 }

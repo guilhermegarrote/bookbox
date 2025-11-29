@@ -9,9 +9,7 @@ return new class extends Migration {
     public function up()
     {
         DB::statement('DROP VIEW IF EXISTS vw_school_classes');
-
-        DB::statement("
-            CREATE OR REPLACE VIEW vw_school_classes AS
+        DB::statement("CREATE OR REPLACE VIEW vw_school_classes AS
             SELECT
                 sc.id,
                 sc.course,

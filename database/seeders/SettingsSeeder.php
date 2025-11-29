@@ -6,32 +6,36 @@ namespace Database\Seeders;
 
 use App\Models\Setting;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Log;
 
 /**
  * Seeder for application settings.
  *
- * Inserts default settings into the database if they do not already exist.
- * Currently seeds the 'max_book_loans' setting.
+ * Inserts default settings defined in the `settings.php` configuration file
+ * into the database if they do not already exist.
  */
 class SettingsSeeder extends Seeder
 {
     /**
      * Run the seeder.
      *
-     * Checks if the setting with key 'max_book_loans' exists. If not, it creates
-     * a new setting record with a UUID as the primary key and default value.
+     * For each configuration defined in `config('settings')`, checks if a corresponding
+     * record exists in the database. If it does not exist, creates a new setting
+     * using the default value defined in the configuration.
      */
     public function run(): void
     {
-        $key = 'max_book_loans';
+        $settingsConfig = config('settings');
 
-        if (!Setting::where('key', $key)->exists()) {
-            Setting::create([
-                'id' => hex2bin(str_replace('-', '', (string) Str::uuid())),
-                'key' => $key,
-                'value' => '3',
-            ]);
+        foreach ($settingsConfig as $key => $config) {
+            $defaultValue = $config['default'] ?? null;
+
+            if ($defaultValue !== null && !Setting::where('key', $key)->exists()) {
+                Setting::create([
+                    'key' => $key,
+                    'value' => (string) $defaultValue,
+                ]);
+            }
         }
     }
 }

@@ -9,8 +9,7 @@ return new class extends Migration {
     public function up(): void
     {
         DB::statement('DROP VIEW IF EXISTS vw_student_school_class');
-        DB::statement("
-            CREATE VIEW vw_student_school_class AS
+        DB::statement("CREATE VIEW vw_student_school_class AS
             SELECT
                 ssc.id,
                 ssc.student_id,
@@ -33,7 +32,7 @@ return new class extends Migration {
                     CASE sc.term
                         WHEN 'Semester' THEN 'Semestre - '
                         WHEN 'Annual'   THEN 'Ano - '
-                        ELSE CONCAT(sc.term, ' - ') -- fallback, mostra o valor cru
+                        ELSE CONCAT(sc.term, ' - ')
                     END,
                     sc.course
                 ) AS formatted_class_name
