@@ -46,15 +46,10 @@ export async function apiFetch(url, options = {}) {
 
         const parsed = await safeParseJson(response);
 
-        // Throw error if API returned ok === false
-        if (!parsed.ok) {
-            throw new Error(parsed?.data?.error || `API request failed with status ${parsed.status}`);
-        }
-
         return parsed;
     } catch (err) {
         console.error('[API] Request error:', err);
-        throw err; // rethrow to allow try/catch in calling code
+        throw err;
     }
 }
 
