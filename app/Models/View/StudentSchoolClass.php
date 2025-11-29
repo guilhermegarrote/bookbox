@@ -144,6 +144,8 @@ class StudentSchoolClass extends BaseModel
     {
         $query = $query ?? static::query();
 
+        $query->getQuery()->orders = null;
+
         return $query->select('course', 'period', 'term', 'can_borrow')
             ->groupBy('course', 'period', 'term', 'can_borrow')
             ->orderBy('course')

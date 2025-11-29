@@ -209,6 +209,8 @@ class Loan extends BaseModel
     {
         $query = ($query ?? static::query())->clone();
 
+        $query->getQuery()->orders = null;
+
         return $query
             ->select(
                 'genre_name',
@@ -252,8 +254,7 @@ class Loan extends BaseModel
             $customResults = (clone $query)
                 ->select($selectColumns)
                 ->whereNull('loan_returned_date')
-                ->get()
-            ;
+                ->get();
 
             if ($customResults->isNotEmpty()) {
                 return $customResults;

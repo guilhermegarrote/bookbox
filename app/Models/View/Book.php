@@ -92,11 +92,12 @@ class Book extends BaseModel
     {
         $query = $query ?? static::query();
 
-        return $query->select('genre_name', 'publisher')
-            ->groupBy('genre_name', 'publisher')
+        $query->getQuery()->orders = null;
+
+        return $query
+            ->select('genre_name', 'publisher')
             ->orderBy('genre_name')
             ->orderBy('publisher')
-            ->get()
-        ;
+            ->get();
     }
 }
