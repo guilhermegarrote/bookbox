@@ -18,11 +18,11 @@ class AuthController extends Controller
      *
      * @return View the registration view for new users
      *
-     * @see resources/views/auth/register.blade.php
+     * @see resources/views/pages/auth/register.blade.php
      */
     public function showRegisterForm(): View
     {
-        return view('auth.register');
+        return view('pages.auth.register');
     }
 
     /**
@@ -30,10 +30,10 @@ class AuthController extends Controller
      *
      * @return View the login view for existing users
      *
-     * @see resources/views/auth/login.blade.php
+     * @see resources/views/pages/auth/login.blade.php
      */
     public function showLoginForm(): View
     {
-        return view('auth.login');
+        return view('pages.auth.login');
     }
 }
