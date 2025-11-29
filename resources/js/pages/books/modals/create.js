@@ -27,7 +27,6 @@ async function loadBookModal(url, modalManager, booksTable, isbn = null) {
                     const field = document.getElementById('isbn');
                     if (field) {
                         field.value = isbn;
-                        field.classList.add('has-value');
 
                         field.dispatchEvent(new Event('input'));
                         field.dispatchEvent(new Event('keyup'));

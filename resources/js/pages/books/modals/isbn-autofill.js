@@ -1,5 +1,6 @@
 import { fetchMetadata } from '@js/api/books/fetch-metadata.js';
 import { isValidISBN } from '@js/utils/validation/app-validation.js';
+import { notifyError } from '@js/utils/formErrors';
 
 let lastIsbn = null;
 let lastData = null;
@@ -34,12 +35,17 @@ async function autofill(isbn) {
 
     try {
         const response = await fetchMetadata(isbn);
-        const data = response?.data || {};
 
-        lastIsbn = isbn;
-        lastData = data;
+        if (response?.ok) {
+            const data = response?.data || {};
 
-        applyMetadata(data);
+            lastIsbn = isbn;
+            lastData = data;
+
+            applyMetadata(data);
+        } else {
+            notifyError(response?.data?.message);
+        }
     } catch (e) {
         console.error(e);
     }
