@@ -3,10 +3,10 @@ import { deleteBook } from '@js/api/books/delete.js';
 import { notifySuccess, notifyError } from '@js/utils/formErrors';
 import { openUpdateModal } from './update';
 import { openGenerateLabelModal } from '../../labels/labels-modals.js';
-import { openManagerCopiesModal } from '../../copies/copies-modals.js';
+import { openManagerCopiesModal } from '../../copies/modals/manager.js';
 
 export async function openMenuModal(modalManager, bookId, booksTable) {
-    const url = route('books.menuModal', { book: bookId });
+    const url = route('books.menu-modal', { book: bookId });
 
     try {
         await modalManager.loadModalContent(url, 'bookMenuModal');
@@ -16,7 +16,7 @@ export async function openMenuModal(modalManager, bookId, booksTable) {
         });
 
         document.getElementById('open-manager-copies-modal')?.addEventListener('click', () => {
-            openManagerCopiesModal(bookId, modalManager);
+            openManagerCopiesModal(modalManager, bookId, booksTable);
         });
 
         document.getElementById('open-generate-label-modal')?.addEventListener('click', () => {
@@ -41,7 +41,6 @@ export async function openMenuModal(modalManager, bookId, booksTable) {
                 notifyError(err.message || 'Erro ao excluir o livro');
             }
         });
-
     } catch (err) {
         console.error(err);
     }

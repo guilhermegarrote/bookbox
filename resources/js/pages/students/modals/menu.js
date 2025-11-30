@@ -4,7 +4,7 @@ import { notifySuccess, notifyError } from '@js/utils/formErrors';
 import { openUpdateModal } from './update';
 
 export async function openMenuModal(modalManager, studentId, studentsTable) {
-    const url = route('students.menuModal', { student: studentId });
+    const url = route('students.menu-modal', { student: studentId });
 
     try {
         await modalManager.loadModalContent(url, 'studentMenuModal');

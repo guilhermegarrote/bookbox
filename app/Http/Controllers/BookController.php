@@ -39,7 +39,7 @@ class BookController extends Controller
     {
         $filterData = Book::getFilterData();
 
-        $filterUrl = route('books.filter.view');
+        $filterUrl = route('books.filter');
 
         return view('pages.books.index', compact('filterData', 'filterUrl'));
     }

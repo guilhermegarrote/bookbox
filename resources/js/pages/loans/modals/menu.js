@@ -4,7 +4,7 @@ import { extendLoan } from '@js/api/loans/extend.js';
 import { notifySuccess, notifyError } from '@/utils/formErrors';
 
 export async function openMenuModal(modalManager, loanId, loansTable) {
-    const url = route('loans.menuModal', { loan: loanId });
+    const url = route('loans.menu-modal', { loan: loanId });
 
     try {
         await modalManager.loadModalContent(url, 'loanMenuModal');
@@ -12,7 +12,7 @@ export async function openMenuModal(modalManager, loanId, loansTable) {
         document.getElementById('open-extend-modal')?.addEventListener('click', async () => {
             const confirmed = await new Promise(async (resolve) => {
                 const modalId = 'loanExtendModal';
-                const url = route('loans.extendModal', { loan: loanId });
+                const url = route('loans.extend-modal', { loan: loanId });
 
                 await modalManager.loadModalContent(url, modalId);
                 const modal = modalManager.activeModals.get(modalId);

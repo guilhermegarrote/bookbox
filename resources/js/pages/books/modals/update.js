@@ -6,7 +6,7 @@ import { initBooksSelects } from './selects';
 import { openMenuModal } from './menu';
 
 export async function openUpdateModal(modalManager, bookId, booksTable) {
-    const url = route('books.updateModal', { book: bookId });
+    const url = route('books.update-modal', { book: bookId });
 
     try {
         await modalManager.loadModalContent(url, 'bookUpdateModal', {

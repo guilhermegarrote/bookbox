@@ -5,7 +5,7 @@ import { createStudent } from '@js/api/students/create.js';
 import { initStudentsSelects } from './selects';
 
 export async function openCreateModal(modalManager, studentsTable) {
-    const url = route('students.createModal');
+    const url = route('students.create-modal');
 
     try {
         await modalManager.loadModalContent(url, 'studentCreateModal', {

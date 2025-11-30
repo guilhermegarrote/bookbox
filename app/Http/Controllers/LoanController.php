@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use App\Helpers\Utils;
+use App\Models\Setting;
 use App\Models\View\Loan;
 use Carbon\Carbon;
 use Illuminate\Contracts\View\View;
@@ -41,7 +42,7 @@ class LoanController extends Controller
     {
         $filterData = Loan::getFilterData();
 
-        $filterUrl = route('loans.filter.view');
+        $filterUrl = route('loans.filter');
 
         return view('pages.loans.index', compact('filterData', 'filterUrl'));
     }
@@ -95,12 +96,13 @@ class LoanController extends Controller
     {
         $loan = Loan::where('id', Utils::convertUuidToBinary($id))->firstOrFail();
 
+        $extensionDays = Setting::where('key', 'extension_days')->value('value');
+
         $currentDate = Carbon::parse($loan->loan_due_date)->format('d/m/Y');
 
         $extendedDate = Carbon::parse($loan->loan_due_date)
-            ->addDays(7)
-            ->format('d/m/Y')
-        ;
+            ->addDays((int) $extensionDays)
+            ->format('d/m/Y');
 
         return view('pages.loans.partials.extend-modal', compact('currentDate', 'extendedDate'))->render();
     }

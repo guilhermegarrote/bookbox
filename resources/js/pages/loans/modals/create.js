@@ -6,11 +6,11 @@ import { initCpfAutoFill } from './cpf-autofill';
 import { initIsbnAutoFill } from './isbn-autofill';
 
 export function openCreateModal(modalManager, loansTable) {
-    return loadLoanModal(route('loans.createModal'), modalManager, loansTable);
+    return loadLoanModal(route('loans.create-modal'), modalManager, loansTable);
 }
 
 export function openCreateModalWithIsbn(modalManager, loansTable, isbn) {
-    return loadLoanModal(route('loans.createModal'), modalManager, loansTable, isbn);
+    return loadLoanModal(route('loans.create-modal'), modalManager, loansTable, isbn);
 }
 
 export async function loadLoanModal(url, modalManager, loansTable, isbn = null) {

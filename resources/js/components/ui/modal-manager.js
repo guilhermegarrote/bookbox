@@ -187,7 +187,7 @@ export default class ModalManager {
     } = {}) {
         return new Promise(async (resolve) => {
             const modalId = 'modal-message';
-            const url = route('modals.modalMessage');
+            const url = route('modals.message');
 
             await this.loadModalContent(url, modalId);
             const modal = this.activeModals.get(modalId);

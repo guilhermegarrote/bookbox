@@ -6,12 +6,12 @@ import { initBooksSelects } from './selects';
 import { initIsbnAutoFill } from './isbn-autofill.js';
 
 export async function openCreateModal(modalManager, booksTable) {
-    const url = route('books.createModal');
+    const url = route('books.create-modal');
     await loadBookModal(url, modalManager, booksTable);
 }
 
 export async function openCreateModalWithIsbn(modalManager, booksTable, isbn) {
-    const url = route('books.createModal');
+    const url = route('books.create-modal');
     await loadBookModal(url, modalManager, booksTable, isbn);
 }
 

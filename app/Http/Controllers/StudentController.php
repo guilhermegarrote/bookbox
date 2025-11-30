@@ -39,7 +39,7 @@ class StudentController extends Controller
     {
         $filterData = StudentSchoolClass::getFilterData();
 
-        $filterUrl = route('students.filter.view');
+        $filterUrl = route('students.filter');
 
         return view('pages.students.index', compact('filterData', 'filterUrl'));
     }

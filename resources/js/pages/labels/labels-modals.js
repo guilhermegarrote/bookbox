@@ -1,7 +1,7 @@
 import { generateLabels } from "@js/api/labels/generate";
 
 export async function openGenerateLabelModal(modalManager) {
-    const url = route('labels.generateModal');
+    const url = route('labels.generate-modal');
 
     try {
         await modalManager.loadModalContent(url, 'labelGenerateModal');
