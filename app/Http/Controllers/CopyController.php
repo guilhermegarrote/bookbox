@@ -48,8 +48,6 @@ class CopyController extends Controller
             'total_copies',
         ])->orderBy('title')->paginate(10);
 
-        $filterUrl = route('books.filter.view');
-
         return view('pages.books.index', compact('books', 'filterData', 'filterUrl'));
     }
 
@@ -78,8 +76,22 @@ class CopyController extends Controller
      */
     public function managerModal(string $id): string
     {
-        $copies = Copy::where('book_id', Utils::convertUuidToBinary($id))->firstOrFail();
+        $book = Book::select('id', 'isbn', 'title')
+            ->where('id', Utils::convertUuidToBinary($id))
+            ->firstOrFail();
 
-        return view('pages.copies.partials.manager-modal', compact('copies'))->render();
+        $copies = Copy::where('book_id', Utils::convertUuidToBinary($book->id))
+            ->orderBy('number')
+            ->get(['id', 'number', 'available']);
+
+        return view('pages.copies.partials.manager-modal', [
+            'book'   => $book,
+            'copies' => $copies
+        ])->render();
+    }
+
+    public function addModal(): string
+    {
+        return view('pages.copies.partials.add-modal')->render();
     }
 }

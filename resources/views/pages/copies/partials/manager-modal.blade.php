@@ -3,35 +3,11 @@
         --scroll-size: 6px;
         --scroll-radius: 6px;
         --scroll-track: var(--color-base-gray-454);
-        ;
         --scroll-thumb-color: #ffffffff;
         --scroll-thumb-pattern: none;
     }
 
-    .modal-wrapper {
-        padding: 12px;
-        display: flex;
-        flex-direction: column;
-        gap: 16px;
-    }
-
-    .search-box {
-        display: flex;
-        align-items: center;
-        background: #fff;
-        border-radius: 8px;
-        padding: 8px 12px;
-        border: 1px solid #cfcfcf;
-    }
-
-    .search-box input {
-        width: 100%;
-        border: none;
-        outline: none;
-        font-size: 14px;
-    }
-
-    .generate-table-wrapper {
+    .manager-copies-wrapper {
         overflow: auto;
         max-width: 100%;
         max-height: 240px;
@@ -39,132 +15,106 @@
         border-radius: 6px;
         scrollbar-width: thin;
         scrollbar-color: var(--scroll-thumb-color) var(--scroll-track);
-        background: #fff;
     }
 
-    .generate-table-wrapper::-webkit-scrollbar {
+    .manager-copies-wrapper::-webkit-scrollbar {
         width: var(--scroll-size);
         height: var(--scroll-size);
     }
 
-    .generate-table-wrapper::-webkit-scrollbar-track {
+    .manager-copies-wrapper::-webkit-scrollbar-track {
         background: var(--scroll-track);
         border-radius: var(--scroll-radius);
     }
 
-    .generate-table-wrapper::-webkit-scrollbar-thumb {
+    .manager-copies-wrapper::-webkit-scrollbar-thumb {
         background-color: var(--scroll-thumb-color);
-        background-image: var(--scroll-thumb-pattern);
         border-radius: var(--scroll-radius);
         border: 2px solid var(--scroll-track);
     }
 
-    .generate-table-wrapper::-webkit-scrollbar-thumb:hover {
+    .manager-copies-wrapper::-webkit-scrollbar-thumb:hover {
         background-color: var(--scroll-thumb-color);
         filter: brightness(0.9);
     }
 
-    table {
-        width: 100%;
-        border-collapse: collapse;
-        font-size: 14px;
+    .btn-trash {
+        background-color: transparent;
+        width: 30px;
+        height: 30px;
+        padding: 0;
     }
 
-    thead {
-        background: #2b2b2b;
-        color: #fff;
-        position: sticky;
-        top: 0;
-        z-index: 5;
+    .btn-trash svg {
+        width: 25px;
+        height: 25px;
+        display: block;
     }
 
-    th {
-        padding: 10px;
-        text-align: left;
+    .btn-trash svg path {
+        fill: var(--color-base-gray-dark);
+        transition: fill 0.3s ease;
     }
 
-    thead th {
-        font-size: 18px;
-        font-weight: 600;
+    .btn-trash:hover svg path {
+        fill: #500d0d;
     }
 
-    td {
-        padding: 10px;
+    .status-active,
+    .status-blocked {
+        transition: color 0.3s ease;
     }
 
-    .center {
-        text-align: center;
+    .data-table tbody tr:hover .status-active {
+        color: #28a745;
     }
 
-    .input-exemplares {
-        width: 100%;
-        padding: 6px;
-        border-radius: 6px;
-        border: 1px solid #cfcfcf;
-    }
-
-    .footer-btn-wrapper {
-        display: flex;
-        justify-content: center;
-        gap: 30px;
-    }
-
-    .modal-button {
-        padding: 10px 20px;
-        border-radius: 8px;
-        border: 1px solid #2b2b2b;
-        background: #fff;
-        cursor: pointer;
-        font-size: 14px;
+    .data-table tbody tr:hover .status-blocked {
+        color: #dc3545;
     }
 </style>
 
-
 <x-modals.modal id="copyManagerModal" title="Gerenciar Exemplares">
-
     <x-slot name="content">
         <div>
-            <h3 style="font-size: 1.2rem; font-weight: normal; margin-bottom: 5px; color:#5c5a5a; ">
-                Título
+            <h3 style="font-size: 1.4rem; font-weight: normal; margin-bottom: 5px; color:#4d4b4b; ">
+                {{ $book->title }}
             </h3>
-            <h2 style="font-size: 1.5rem; font-weight: normal; margin-bottom: 15px; color:#5c5a5a; ">
-                A jornada do conhecimento
+            <h2 style="font-size: 1rem; font-weight: normal; margin-bottom: 15px; color:#4d4b4b; ">
+                ISBN: {{ $book->isbn }}
             </h2>
 
-            <div class="generate-table-wrapper">
-                <table>
+            <div class="manager-copies-wrapper">
+                <table class="data-table">
                     <thead>
                         <tr>
-                            <th>N Exemplares</th>
+                            <th>Exemplar</th>
                             <th>Status</th>
-                            <th>Data de Cadastro</th>
                             <th>Ações</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr style="font-size: 1.3rem; font-weight: normal; color:#5c5a5a;">
-                            <td>001</td>
-                            <td style="font-weight: bold; ">Disponivel</td>
-                            <td>10/01/2025</td>
-                            <td>
-                                <button data-icon="trash" class="btn-trash" title="Excluir exemplar">
-                                    <x-icons.icon name="trash" />
-                                </button>
-                            </td>
-                        </tr>
+                        @foreach ($copies as $copy)
+                            <tr>
+                                <td>{{ $copy->number }}</td>
+                                <td class="{{ $copy->available === 1 ? 'status-active' : 'status-blocked' }}">
+                                    {{ $copy->available === 1 ? 'Disponível' : 'Indisponível' }}
+                                </td>
+                                <td>
+                                    <button data-id="{{ $copy->id }}" class="btn-trash" title="Excluir exemplar">
+                                        <x-icons.icon name="trash" />
+                                    </button>
+                                </td>
+                            </tr>
+                        @endforeach
                     </tbody>
                 </table>
             </div>
-
         </div>
     </x-slot>
 
     <x-slot name="footer">
-             <div style="width: 100%; text-align: right;">
-                <button type="button" class="modal-button" id="open-add-modal" title="Adicionar exemplares">
-                    + Adicionar
-                </button>
-             </div>
-    </x-slot>
-
+        <button type="button" class="modal-button" id="btn-close" title="Fechar o menu de exemplares">Fechar</button>
+        <button type="button" class="modal-button" id="open-add-modal" title="Adicionar exemplares">Adicionar</button>
+    </x-slot name="footer">
 </x-modals.modal>

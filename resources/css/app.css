@@ -11,22 +11,3 @@ body {
     overflow-y: hidden;
     overflow-x: hidden;
 }
-
-.quantity-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
-    margin-top: 10px;
-}
-
-.quantity-btn {
-    background-color: #2c2c2c;
-    color: white;
-    font-size: 20px;
-    width: 40px;
-    height: 40px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-}

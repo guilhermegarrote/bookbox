@@ -6,69 +6,100 @@ use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Auth\PasswordRecoveryController;
 use App\Http\Controllers\BookController;
 use App\Http\Controllers\CopyController;
+use App\Http\Controllers\GenreController;
 use App\Http\Controllers\LabelController;
 use App\Http\Controllers\LoanController;
+use App\Http\Controllers\SchoolClassController;
+use App\Http\Controllers\SettingController;
 use App\Http\Controllers\StudentController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth.jwt.cookie')->group(function () {
-    Route::get('/', [LoanController::class, 'index'])->name('loans.view');
-    Route::get('/loans', [LoanController::class, 'index'])->name('loans.view');
-    Route::get('/loans/filter', [LoanController::class, 'filter'])->name('loans.filter.view');
-    Route::get('/loans/create-modal', [LoanController::class, 'createModal'])->name('loans.createModal');
-    Route::get('/loans/{loan}/update-modal', [LoanController::class, 'updateModal'])->name('loans.updateModal');
-    Route::get('/loans/{loan}/menu-modal', [LoanController::class, 'menuModal'])->name('loans.menuModal');
-    Route::get('/loans/{loan}/extend-modal', [LoanController::class, 'extendModal'])->name('loans.extendModal');
+    Route::redirect('/', '/loans');
 
-    Route::get('/books', [BookController::class, 'index'])->name('books.view');
-    Route::get('/books/filter', [BookController::class, 'filter'])->name('books.filter.view');
-    Route::get('/books/create-modal', [BookController::class, 'createModal'])->name('books.createModal');
-    Route::get('/books/{book}/update-modal', [BookController::class, 'updateModal'])->name('books.updateModal');
-    Route::get('/books/{book}/menu-modal', [BookController::class, 'menuModal'])->name('books.menuModal');
+    Route::prefix('loans')->name('loans.')->group(function () {
+        Route::get('/', [LoanController::class, 'index'])->name('view');
+        Route::get('/filter', [LoanController::class, 'filter'])->name('filter');
+        Route::get('/create-modal', [LoanController::class, 'createModal'])->name('create-modal');
+        Route::get('/{loan}/update-modal', [LoanController::class, 'updateModal'])->name('update-modal');
+        Route::get('/{loan}/menu-modal', [LoanController::class, 'menuModal'])->name('menu-modal');
+        Route::get('/{loan}/extend-modal', [LoanController::class, 'extendModal'])->name('extend-modal');
+    });
 
-    Route::get('/students', [StudentController::class, 'index'])->name('students.view');
-    Route::get('/students/filter', [StudentController::class, 'filter'])->name('students.filter.view');
-    Route::get('/students/create-modal', [StudentController::class, 'createModal'])->name('students.createModal');
-    Route::get('/students/{student}/update-modal', [StudentController::class, 'updateModal'])->name('students.updateModal');
-    Route::get('/students/{student}/menu-modal', [StudentController::class, 'menuModal'])->name('students.menuModal');
+    Route::prefix('books')->name('books.')->group(function () {
+        Route::get('/', [BookController::class, 'index'])->name('view');
+        Route::get('/filter', [BookController::class, 'filter'])->name('filter');
+        Route::get('/create-modal', [BookController::class, 'createModal'])->name('create-modal');
+        Route::get('/{book}/update-modal', [BookController::class, 'updateModal'])->name('update-modal');
+        Route::get('/{book}/menu-modal', [BookController::class, 'menuModal'])->name('menu-modal');
+    });
 
-    Route::get('/copies/{book}/manager-modal', [CopyController::class, 'managerModal'])->name('copies.managerModal');
-    Route::get('/labels/generate-modal', [LabelController::class, 'generateLabelModal'])->name('labels.generateModal');
+    Route::prefix('students')->name('students.')->group(function () {
+        Route::get('/', [StudentController::class, 'index'])->name('view');
+        Route::get('/filter', [StudentController::class, 'filter'])->name('filter');
+        Route::get('/create-modal', [StudentController::class, 'createModal'])->name('create-modal');
+        Route::get('/{student}/update-modal', [StudentController::class, 'updateModal'])->name('update-modal');
+        Route::get('/{student}/menu-modal', [StudentController::class, 'menuModal'])->name('menu-modal');
+    });
 
-    Route::get('/modals/modal-message', function () {
-        return view('components.modals.modal-message');
-    })->name('modals.modalMessage');
+    Route::prefix('school-classes')->name('school-classes.')->group(function () {
+        Route::get('/create-modal', [SchoolClassController::class, 'createModal'])->name('create-modal');
+        Route::get('/{school_class}/update-modal', [SchoolClassController::class, 'updateModal'])->name('update-modal');
+    });
 
-    Route::get('/settings/modal', function () {
-        return view('settings.index');
-    })->name('settings.view');
+    Route::prefix('genres')->name('genres.')->group(function () {
+        Route::get('/create-modal', [GenreController::class, 'createModal'])->name('create-modal');
+        Route::get('/{genre}/update-modal', [GenreController::class, 'updateModal'])->name('update-modal');
+    });
+
+    Route::prefix('users')->name('users.')->group(function () {
+        Route::get('/create-modal', [UserController::class, 'createModal'])->name('create-modal');
+        Route::get('/{user}/update-modal', [UserController::class, 'updateModal'])->name('update-modal');
+    });
+
+    Route::prefix('copies')->name('copies.')->group(function () {
+        Route::get('/{book}/manager-modal', [CopyController::class, 'managerModal'])->name('manager-modal');
+        Route::get('/add-modal', [CopyController::class, 'addModal'])->name('add-modal');
+    });
+
+    Route::prefix('labels')->name('labels.')->group(function () {
+        Route::get('/generate-modal', [LabelController::class, 'generateLabelModal'])->name('generate-modal');
+    });
+
+    Route::prefix('settings')->name('settings.')->group(function () {
+        Route::get('/', [SettingController::class, 'index'])->name('view');
+        Route::get('/genres', [SettingController::class, 'genres'])->name('genres');
+        Route::get('/classes', [SettingController::class, 'classes'])->name('classes');
+        Route::get('/users', [SettingController::class, 'users'])->name('users');
+        Route::get('/config', [SettingController::class, 'config'])->name('config');
+    });
+
+    Route::get('/modals/message', fn () =>
+        view('components.modals.modal-message')
+    )->name('modals.message');
 });
 
 Route::middleware('guest')->group(function () {
     Route::middleware('prevent.registration')->group(function () {
-        Route::get('/register', [AuthController::class, 'showRegisterForm'])
-            ->name('register.form')
-        ;
+        Route::get('/register', [AuthController::class, 'showRegisterForm'])->name('register.form');
     });
 
     Route::middleware('users.exist')->group(function () {
         Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
 
-        Route::prefix('recover')->group(function () {
+        Route::prefix('recover')->name('recovery.')->group(function () {
             Route::get('/', [PasswordRecoveryController::class, 'showSendRecoveryCodeForm'])
                 ->middleware('code.not.sent')
-                ->name('recovery.email.form')
-            ;
+                ->name('email.form');
 
             Route::get('/code', [PasswordRecoveryController::class, 'showRecoveryCodeValidationForm'])
                 ->middleware('code.sent')
-                ->name('recovery.code.form')
-            ;
+                ->name('code.form');
 
             Route::get('/new-password', [PasswordRecoveryController::class, 'showResetPasswordForm'])
                 ->middleware('code.valid')
-                ->name('recovery.new-password.form')
-            ;
+                ->name('new-password.form');
         });
     });
 });
