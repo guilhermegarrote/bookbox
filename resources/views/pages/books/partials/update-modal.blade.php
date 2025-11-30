@@ -5,12 +5,12 @@
                 title="Código ISBN do livro" />
             <x-modals.input-field id="title" label="Título" width="440px" :value="$book->title"
                 title="Título do livro" />
-            <x-modals.input-field id="author" label="Autor" width="400px" data-value="{{ $book->author }}"
-                :value="$book->author" title="Autor do livro" />
+            <x-modals.input-field id="author" label="Autor" width="400px" :value="$book->author"
+                title="Autor do livro" />
             <x-modals.select-field id="genre_name" label="Gênero" width="200px" data-value="{{ $book->genre_name }}"
                 :value="$book->genre_name" title="Gênero do livro" />
-            <x-modals.input-field id="publisher" label="Editora" width="360px" data-value="{{ $book->publisher }}"
-                :value="$book->publisher" title="Editora do livro" />
+            <x-modals.input-field id="publisher" label="Editora" width="360px" :value="$book->publisher"
+                title="Editora do livro" />
         </div>
     </x-slot name="content">
 

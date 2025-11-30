@@ -6,7 +6,7 @@
             <x-modals.input-field id="title" label="Título" width="440px" required
                 title="Informe o título do livro" />
             <x-modals.input-field id="author" label="Autor" width="400px" required
-                title="infrome o autor do livro" />
+                title="Informe o autor do livro" />
             <x-modals.select-field id="genre_name" label="Gênero" width="200px" required
                 title="Selecione o gênero do livro" />
             <x-modals.input-field id="publisher" label="Editora" width="360px" required
