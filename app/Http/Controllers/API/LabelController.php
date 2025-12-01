@@ -6,9 +6,8 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Label\LabelGenerateRequest;
+use App\Models\View\Copy;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Spatie\Browsershot\Browsershot;
@@ -32,17 +31,9 @@ class LabelController extends Controller
         $books = $request->input('books', []);
         $isbns = collect($books)->pluck('isbn')->unique();
 
-        $copies = Cache::remember(
-            'copies_for_labels_' . md5($isbns->join(',')),
-            300,
-            function () use ($isbns) {
-                return DB::table('copies')
-                    ->select('id', 'number', 'isbn', 'title', 'author', 'genre_name', 'genre_color_hex', 'publisher')
-                    ->whereIn('isbn', $isbns)
-                    ->get()
-                ;
-            },
-        );
+        $copies = Copy::select('id', 'number', 'isbn', 'title', 'author', 'genre_name', 'genre_color_hex', 'publisher')
+            ->whereIn('isbn', $isbns)
+            ->get();
 
         $labels = [];
 
@@ -50,10 +41,14 @@ class LabelController extends Controller
             $copyNumbers = $this->parseCopyNumbers((string) ($book['copies'] ?? ''));
 
             foreach ($copyNumbers as $copyNumber) {
-                $label = $copies->firstWhere(fn ($c) => $c->isbn === $book['isbn'] && $c->number === $copyNumber);
+                $label = $copies->firstWhere(
+                    fn($c) =>
+                    str_replace('-', '', $c->isbn) === $book['isbn']
+                        && (int) $c->number === (int) $copyNumber
+                );
 
                 if ($label) {
-                    $labels[] = (array) $label;
+                    $labels[] = $label->toArray();
                 }
             }
         }
@@ -62,41 +57,39 @@ class LabelController extends Controller
             return response()->json(['error' => 'Nenhuma etiqueta encontrada para os dados informados.'], 404);
         }
 
-        $html = view('pdf.label', ['etiquetas' => $labels])->render();
-        $html = e($html);
+        $html = view('pdf.label', ['labels' => $labels])->render();
 
         $pdfFilename = 'labels/labels_' . time() . '.pdf';
-        $storagePath = storage_path('app/private/' . $pdfFilename);
-        $chromiumPath = env('BROWSERSHOT_CHROME_PATH', null);
+
+        Storage::disk('public')->makeDirectory('labels');
+
+        $storagePath = Storage::disk('public')->path($pdfFilename);
+        $chromiumPath = env('BROWSERSHOT_CHROME_PATH');
 
         if (!$chromiumPath || !file_exists($chromiumPath)) {
-            return response()->json([
-                'error' => 'Chromium não encontrado. Verifique a instalação e o arquivo .env',
-            ], 500);
+            Log::error('Chromium não encontrado', ['path' => $chromiumPath]);
+            return response()->json(['error' => 'Chromium não encontrado.'], 500);
         }
 
         try {
-            dispatch(function () use ($html, $chromiumPath, $storagePath) {
-                Browsershot::html($html)
-                    ->setChromePath($chromiumPath)
-                    ->noSandbox()
-                    ->format('A4')
-                    ->pdfOptions(['printBackground' => true, 'preferCSSPageSize' => true, 'scale' => 0.95])
-                    ->save($storagePath)
-                ;
-            });
+            Browsershot::html($html)
+                ->setChromePath($chromiumPath)
+                ->noSandbox()
+                ->format('A4')
+                ->pdfOptions([
+                    'printBackground' => true,
+                    'preferCSSPageSize' => true,
+                    'scale' => 0.95,
+                ])
+                ->save($storagePath);
         } catch (\Throwable $e) {
-            Log::error('PDF generation failed.', ['exception' => $e->getMessage()]);
-
-            return response()->json([
-                'error' => 'Falha ao gerar etiquetas em PDF.',
-                'details' => $e->getMessage(),
-            ], 500);
+            Log::error('PDF generation failed.', ['exception' => $e]);
+            return response()->json(['error' => 'Falha ao gerar PDF.'], 500);
         }
 
-        $publicUrl = Storage::temporaryUrl($pdfFilename, now()->addMinutes(30));
+        $publicUrl = Storage::disk('public')->url($pdfFilename);
 
-        return response()->json(['url' => $publicUrl], 200);
+        return response()->json(['url' => $publicUrl]);
     }
 
     /**

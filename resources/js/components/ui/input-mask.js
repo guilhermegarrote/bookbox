@@ -25,4 +25,13 @@ export function applyInputMasks() {
             ]
         });
     }
+
+    const labelInput = document.getElementById('input-copies-for-labels');
+    if (labelInput) {
+        IMask(labelInput, {
+            mask: /^[0-9,\-]*$/,
+            lazy: false,
+        });
+    }
+
 }

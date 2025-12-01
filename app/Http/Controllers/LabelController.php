@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use App\Models\View\Book;
-use Illuminate\Contracts\View\View;
 
 /**
  * Controller responsible for generating label-related modals and views.
@@ -23,19 +22,17 @@ class LabelController extends Controller
      */
     public function generateLabelModal(): string
     {
-        $books = Book::select([
-            'id',
-            'isbn',
-            'title',
-            'author',
-            'genre_name',
-            'publisher',
-            'available_copies',
-            'total_copies',
-        ])
+        $books = Book::with(['copies' => function ($q) {
+            $q->select('id', 'book_id', 'number');
+        }])
+            ->select([
+                'id',
+                'isbn',
+                'title',
+                'author',
+            ])
             ->orderBy('title')
-            ->paginate(10)
-        ;
+            ->get();
 
         return view('pages.labels.partials.generate-label-modal', compact('books'))->render();
     }
