@@ -1,5 +1,10 @@
 <h2 class="config-title">Gerenciar Turmas</h2>
 
+<div class="search-add">
+    <input type="search" placeholder="Buscar..." />
+    <button type="button">Adicionar</button>
+</div>
+
 <div class="settings-card-list">
     @foreach ($classes as $class)
         <div class="settings-card improved-class-card">

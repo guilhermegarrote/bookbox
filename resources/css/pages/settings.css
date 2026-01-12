@@ -151,7 +151,6 @@
     padding: 2rem;
     display: flex;
     flex-direction: column;
-    overflow-y: auto;
 }
 
 .settings-header {
@@ -159,14 +158,6 @@
     justify-content: space-between;
     align-items: center;
     margin-bottom: 1.5rem;
-}
-
-.settings-search {
-    width: 75%;
-    padding: 0.5rem 1rem;
-    border: 1px solid var(--color-base-gray-light);
-    border-radius: 0.5rem;
-    font-size: 0.95rem;
 }
 
 .settings-btn-add,
@@ -204,6 +195,8 @@
     display: flex;
     flex-direction: column;
     gap: 1rem;
+    overflow-y: auto;
+    height: 90%;
 }
 
 .settings-card {
@@ -228,6 +221,7 @@
 }
 
 .settings-page {
+    height: 100%;
     display: none;
 }
 
@@ -248,11 +242,6 @@
         justify-content: space-around;
         width: 100%;
         padding: 1rem;
-    }
-
-    .settings-search {
-        width: 100%;
-        margin-bottom: 1rem;
     }
 }
 
@@ -381,4 +370,43 @@
 
 .config-item input[type="number"]:focus {
     outline: none;
+}
+
+.search-add {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.search-add input[type="search"] {
+    font-family: var(--font-primary);
+    flex: 1;
+    padding: 0.45rem 0.6rem;
+    background: #f9fafb;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    color: var(--color-base-gray-dark);
+    font-size: 0.9rem;
+}
+
+.search-add input[type="search"]:focus {
+    outline: none;
+    border-color: var(--color-base-gray-dark);
+}
+
+.search-add button {
+    font-family: var(--font-primary);
+    padding: 0.45rem 0.75rem;
+    background: var(--color-base-gray-dark);
+    border: none;
+    border-radius: 6px;
+    color: #ffffff;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.search-add button:hover {
+    background: var(--color-base-gray-535);
 }
