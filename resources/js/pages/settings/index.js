@@ -34,10 +34,50 @@ async function loadSettingsPage(page) {
     try {
         const res = await fetch(`/settings/${page}`);
         if (!res.ok) throw new Error(`Erro ao carregar página: ${res.status}`);
+
         const html = await res.text();
         const section = document.getElementById(page);
         if (!section) throw new Error(`Seção ${page} não encontrada`);
+
         section.innerHTML = html;
+
+        const input = section.querySelector('#item-search');
+        const list = section.querySelector('.settings-card-list');
+
+        if (!input || !list) return;
+
+        let debounceTimer = null;
+
+        input.addEventListener('input', () => {
+            const value = input.value.trim();
+            const entity = input.dataset.entity;
+
+            clearTimeout(debounceTimer);
+
+            debounceTimer = setTimeout(async () => {
+                if (!entity) return;
+
+                if (value === '') {
+                    const res = await fetch(
+                        `/settings/${entity}`,
+                        { headers: { 'X-Requested-With': 'XMLHttpRequest' } }
+                    );
+
+                    if (res.ok) {
+                        list.innerHTML = await res.text();
+                    }
+                    return;
+                }
+
+                const res = await fetch(
+                    `/settings/${entity}?search=${encodeURIComponent(value)}`,
+                    { headers: { 'X-Requested-With': 'XMLHttpRequest' } }
+                );
+
+                if (!res.ok) return;
+                list.innerHTML = await res.text();
+            }, 400);
+        });
     } catch (err) {
         console.error(err);
         modalManager.showModalMessage({
