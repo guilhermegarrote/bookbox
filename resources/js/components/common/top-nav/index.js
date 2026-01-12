@@ -35,7 +35,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const settingsBtn = document.getElementById('open-settings');
     if (settingsBtn) {
         const settingsManager = new SettingsPanelManager();
-        settingsBtn.addEventListener('click', () => settingsManager.open());
+        settingsBtn.addEventListener('click', async () => {
+            settingsManager.open();
+        });
     }
 });
 

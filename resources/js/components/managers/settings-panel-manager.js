@@ -1,6 +1,7 @@
 import '@css/pages/settings.css';
 import { logout } from '@js/api/auth/logout.js';
 import ModalManager from '@js/components/ui/modal-manager.js';
+import { initSettingsNavigation } from "@js/pages/settings/index.js";
 import { route } from 'ziggy-js';
 
 export default class SettingsPanelManager {
@@ -24,6 +25,8 @@ export default class SettingsPanelManager {
         document.getElementById('submit-logout')?.addEventListener('click', () => {
             logout();
         });
+
+        initSettingsNavigation();
     }
 
     _bindSettingsEvents(modal) {
