@@ -19,6 +19,6 @@ return [
         'type' => 'integer',
         'min' => 1,
         'max' => 180,
-        'default' => 7,
+        'default' => 14,
     ],
 ];
