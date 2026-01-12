@@ -18,17 +18,8 @@
             <x-auth.input label="Nome e sobrenome" name="name" type="text" title="Digite seu nome completo" />
             <x-auth.input label="Email" name="email" type="email" title="Digite seu endereço de e-mail válido" />
             <x-auth.input-password label="Senha" name="password" autocomplete="off" title="Crie uma senha segura" />
-            <x-auth.input-password label="Confirmar senha" name="password_confirmation" autocomplete="off" title="Confirme sua senha" />
-
-            <div class="form-group terms">
-                <label title="Você deve aceitar os Termos de Condição e a Política de Privacidade para se registrar">
-                    <input type="checkbox" id="terms" name="terms"
-                        title="Aceitar os Termos de Condição e a Política de Privacidade">
-                    Li e aceito os
-                    <a href="{{-- route('terms') --}}" target="_blank">Termos de Condição</a> e a
-                    <a href="{{-- route('privacy') --}}" target="_blank">Política de Privacidade</a>.
-                </label>
-            </div>
+            <x-auth.input-password label="Confirmar senha" name="password_confirmation" autocomplete="off"
+                title="Confirme sua senha" />
 
             <button type="submit" id="submit-button" class="auth-button" title="Finalizar registro">→</button>
         </form>

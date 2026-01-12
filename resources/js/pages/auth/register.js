@@ -7,7 +7,6 @@ import {
     validateEmailField,
     validatePasswordField,
     validatePasswordConfirmation,
-    validateTermsField,
     combineValidations
 } from '@/utils/validation/auth-validation.js';
 
@@ -32,7 +31,6 @@ document.addEventListener('DOMContentLoaded', () => {
             validateEmailField(formValues.email),
             validatePasswordField(formValues.password),
             validatePasswordConfirmation(formValues.password, formValues.password_confirmation),
-            validateTermsField()
         );
 
         if (validationErrors.length > 0) {
@@ -47,7 +45,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (response.data?.errors) {
                     showErrors(response.data.errors);
                 } else {
-                    notifyError(response.data?.error || response.data?.message || 'Erro desconhecido.');
+                    if (response.data?.error || response.data?.message) {
+                        notifyError(response.data?.error || response.data?.message);
+                    }
                 }
                 return;
             }
