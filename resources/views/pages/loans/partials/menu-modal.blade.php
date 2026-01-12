@@ -1,3 +1,65 @@
+@php
+    use Carbon\Carbon;
+
+    $loggedUserName = auth()->user()?->name ?? 'Biblioteca';
+
+    $phone = preg_replace('/\D/', '', $loan->phone);
+
+    $startDate = Carbon::parse($loan->loan_start_date);
+    $dueDate = Carbon::parse($loan->loan_due_date);
+    $today = Carbon::today();
+
+    $loanDuration = max(1, $startDate->diffInDays($dueDate));
+
+    $daysLate = $today->greaterThan($dueDate) ? $dueDate->diffInDays($today) : 0;
+
+    $lateRatio = $daysLate / $loanDuration;
+
+    $header = "Olá, {$loan->name}!";
+
+    $loanInfo =
+        "* *Empréstimo:* {$loan->barcode_code}\n" .
+        "* *Livro:* {$loan->title}\n" .
+        "* *Autor:* {$loan->author}\n" .
+        "* *Data do empréstimo:* {$loan_start_date}\n" .
+        "* *Data prevista para devolução:* {$loan_due_date}\n\n";
+
+    $signature = "\n\nAtenciosamente,\n" . "{$loggedUserName}";
+
+    if ($daysLate <= 0) {
+        $body =
+            "\n\n" .
+            "Este é apenas um lembrete referente ao empréstimo do livro abaixo:\n\n" .
+            $loanInfo .
+            'Pedimos, por gentileza, que realize a devolução até a data informada ' .
+            'ou nos avise caso precise de prorrogação.';
+    } elseif ($lateRatio <= 0.25) {
+        $body =
+            "\n\n" .
+            "Identificamos que o prazo de devolução do livro abaixo venceu recentemente:\n\n" .
+            $loanInfo .
+            'Pedimos, por gentileza, que realize a devolução o quanto antes ou ' .
+            'entre em contato caso necessite de prorrogação.';
+    } elseif ($lateRatio <= 0.75) {
+        $body =
+            "\n\n" .
+            "Consta em nosso sistema que o livro abaixo encontra-se em atraso:\n\n" .
+            $loanInfo .
+            'Solicitamos a devolução o quanto antes ou que entre em contato com a biblioteca ' .
+            'para regularizar a situação.';
+    } else {
+        $body =
+            "\n\n" .
+            'Até o momento, não registramos a devolução do livro abaixo, ' .
+            "cujo prazo de devolução já foi excedido de forma significativa:\n\n" .
+            $loanInfo .
+            'Solicitamos que entre em contato com a biblioteca com urgência ' .
+            'para regularização da pendência.';
+    }
+
+    $message = rawurlencode($header . $body . $signature);
+@endphp
+
 <x-modals.modal id="loanMenuModal" title="Menu do Empréstimo {{ $loan->loan_returned_date ? '(Finalizado)' : '' }}">
 
     <x-slot name="content">
@@ -36,13 +98,19 @@
     </x-slot>
 
     <x-slot name="footer">
-        <button type="button" class="modal-button" id="btn-close" title="Fechar o menu do empréstimoi">Fechar</button>
-
         @unless ($loan->loan_returned_date)
             <button type="button" class="modal-button" id="submit-finalize"
                 title="Finalizar este empréstimo">Finalizar</button>
             <button type="button" class="modal-button" id="open-extend-modal" title="Prorrogar devolução">Prorrogar
                 devolução</button>
+
+            <a href="https://web.whatsapp.com/send?phone=55{{ $phone }}&text={{ $message }}" target="_blank"
+                rel="noopener noreferrer" class="modal-button" style="text-decoration: none;"
+                title="Avisar aluno pelo WhatsApp">
+                Avisar no WhatsApp
+            </a>
         @endunless
+
+        <button type="button" class="modal-button" id="btn-close" title="Fechar o menu do empréstimo">Fechar</button>
     </x-slot>
 </x-modals.modal>
