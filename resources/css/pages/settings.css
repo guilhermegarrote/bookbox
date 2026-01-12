@@ -22,11 +22,12 @@
 
 .settings-container {
     position: relative;
+    font-family: var(--font-primary);
     width: min(90vw, 1000px);
     height: min(90vh, 700px);
     display: flex;
-    background-color: #f9fafb;
-    color: #111827;
+    background-color: var(--color-base-gray);
+    color: var(--color-base-gray-dark);
     border-radius: 1rem;
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
     overflow: hidden;
@@ -63,12 +64,11 @@
     animation: settings-fadeOut 0.25s ease-in forwards;
 }
 
-/* === SIDEBAR === */
 .settings-sidebar {
     width: 16rem;
     min-width: 250px;
-    background-color: #1a1f2e;
-    color: #f3f4f6;
+    background-color: var(--color-base-gray-dark);
+    color: var(--color-base-white);
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -87,26 +87,21 @@
     gap: 0.75rem;
     background: none;
     border: none;
-    color: #e5e7eb;
+    color: var(--color-base-gray-light);
     font-size: 1rem;
     font-weight: 500;
+    font-family: var(--font-primary);
     border-radius: 0.5rem;
     padding: 0.75rem 1rem;
     cursor: pointer;
     transition: background-color 0.2s ease, transform 0.1s ease;
 }
 
-.settings-nav-btn i {
-    font-size: 1.1rem;
-    opacity: 0.85;
-}
-
 .settings-nav-btn:hover {
-    background-color: #2a3144;
+    background-color: var(--color-base-gray-535);
     transform: translateX(3px);
 }
 
-/* === LOGOUT & CLOSE === */
 .settings-logout {
     margin-top: auto;
     padding-top: 1rem;
@@ -118,6 +113,7 @@
 
 .settings-btn-close,
 .settings-btn-logout {
+    font-family: var(--font-primary);
     display: flex;
     align-items: center;
     gap: 0.5rem;
@@ -131,26 +127,25 @@
 }
 
 .settings-btn-close {
-    color: #9ca3af;
+    color: var(--color-base-gray-medium);
 }
 
 .settings-btn-close:hover {
-    background-color: #2a3144;
-    color: #f87171;
+    background-color: var(--color-base-gray-535);
+    color: var(--color-status-error);
     transform: translateX(3px);
 }
 
 .settings-btn-logout {
-    color: #f87171;
+    color: var(--color-status-error);
 }
 
 .settings-btn-logout:hover {
-    background-color: #2a3144;
+    background-color: var(--color-base-gray-535);
     color: #ef4444;
     transform: translateX(3px);
 }
 
-/* === MAIN CONTENT === */
 .settings-content {
     flex: 1;
     padding: 2rem;
@@ -169,7 +164,7 @@
 .settings-search {
     width: 75%;
     padding: 0.5rem 1rem;
-    border: 1px solid #d1d5db;
+    border: 1px solid var(--color-base-gray-light);
     border-radius: 0.5rem;
     font-size: 0.95rem;
 }
@@ -185,27 +180,26 @@
 }
 
 .settings-btn-add {
-    background-color: #1a1f2e;
-    color: #fff;
+    background-color: var(--color-base-gray-dark);
+    color: var(--color-base-white);
 }
 
 .settings-btn-add:hover {
-    background-color: #2a3144;
+    background-color: var(--color-base-gray-535);
     transform: translateY(-1px);
 }
 
 .settings-btn-finalize {
-    background: #fff;
-    color: #111827;
-    border: 1px solid #d1d5db;
+    background: var(--color-base-white);
+    color: var(--color-base-gray-dark);
+    border: 1px solid var(--color-base-gray-light);
 }
 
 .settings-btn-finalize:hover {
-    background-color: #f3f4f6;
+    background-color: var(--color-base-gray);
     transform: translateY(-1px);
 }
 
-/* === LIST === */
 .settings-card-list {
     display: flex;
     flex-direction: column;
@@ -213,8 +207,8 @@
 }
 
 .settings-card {
-    background-color: #fff;
-    border: 1px solid #d1d5db;
+    background-color: var(--color-base-white);
+    border: 1px solid var(--color-base-gray-light);
     border-radius: 0.5rem;
     padding: 1rem;
     display: flex;
@@ -224,7 +218,7 @@
 
 .settings-actions {
     display: flex;
-    gap: 0.5rem;
+    gap: 1rem;
 }
 
 .settings-footer {
@@ -241,7 +235,6 @@
     display: block;
 }
 
-/* === RESPONSIVE === */
 @media (max-width: 768px) {
     .settings-container {
         flex-direction: column;
@@ -281,12 +274,12 @@
 }
 
 .settings-btn-close svg path {
-    fill: #9ca3af;
+    fill: var(--color-base-gray-medium);
     transition: fill 0.3s ease;
 }
 
 .settings-btn-close:hover svg path {
-    fill: #f87171;
+    fill: var(--color-status-error);
 }
 
 .settings-btn-logout svg {
@@ -296,10 +289,96 @@
 }
 
 .settings-btn-logout svg path {
-    fill: #f87171;
+    fill: var(--color-status-error);
     transition: fill 0.3s ease;
 }
 
 .settings-btn-logout:hover svg path {
     fill: #ef4444;
+}
+
+.config-title {
+    margin-bottom: 20px;
+}
+
+.btn-list-config {
+    border-radius: 6px;
+    border: 1px solid var(--color-base-gray-medium);
+    padding: 4px;
+}
+
+.btn-list-config svg {
+    width: 25px;
+    height: 25px;
+    padding: 2px;
+    display: block;
+}
+
+.btn-list-config svg path {
+    fill: var(--color-base-gray-medium);
+    transition: fill 0.3s ease;
+}
+
+.btn-list-config:hover svg path {
+    fill: var(--color-base-gray-dark);
+}
+
+.improved-class-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.25rem;
+    border-radius: 0.75rem;
+    border: 1px solid #e5e7eb;
+    background: #fff;
+    transition: 0.2s ease;
+}
+
+.configs-card {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 0rem 1.25rem;
+    max-width: 100%;
+    border: 1px solid #e5e7eb;
+}
+
+.config-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 0;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.config-item:last-child {
+    border-bottom: none;
+}
+
+.config-label {
+    color: #111827;
+    font-size: 0.95rem;
+    font-weight: 500;
+}
+
+.config-description {
+    display: block;
+    margin-top: 0.25rem;
+    color: #6b7280;
+    font-size: 0.8rem;
+    line-height: 1.3;
+}
+
+.config-item input[type="number"] {
+    width: 80px;
+    padding: 0.35rem 0.5rem;
+    background: #f9fafb;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    color: #111827;
+    text-align: center;
+    font-size: 0.9rem;
+}
+
+.config-item input[type="number"]:focus {
+    outline: none;
 }
