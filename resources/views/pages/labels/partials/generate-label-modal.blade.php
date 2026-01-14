@@ -33,6 +33,7 @@
         border: none;
         outline: none;
         font-size: 14px;
+        font-family: var(--font-primary);
     }
 
     .generate-table-wrapper {
@@ -48,6 +49,7 @@
         padding: 6px;
         border-radius: 6px;
         border: 1px solid #cfcfcf;
+        font-family: var(--font-primary);
     }
 
     .footer-btn-wrapper {
