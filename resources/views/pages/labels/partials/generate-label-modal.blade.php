@@ -62,7 +62,7 @@
         <div class="modal-wrapper">
 
             <div class="search-box">
-                <input type="text" placeholder="Pesquisa" />
+                <input type="text" id="item-search" placeholder="Pesquisa" />
             </div>
 
             <div class="table-wrapper generate-table-wrapper">
@@ -77,23 +77,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($books as $book)
-                            <tr>
-                                <td class="center">
-                                    <input type="checkbox" name="selected_books[]" value="{{ $book->id }}">
-                                </td>
-
-                                <td>{{ $book->title }}</td>
-                                <td>{{ $book->author }}</td>
-                                <td>{{ $book->isbn }}</td>
-
-                                <td>
-                                    <input type="text" class="input-copies" data-copies-input
-                                        name="exemplares[{{ $book->id }}]"
-                                        placeholder="{{ $book->placeholderCopies() }}" />
-                                </td>
-                            </tr>
-                        @endforeach
+                        @include('pages.labels.partials.generate-label-modal-list', ['books' => $books])
                     </tbody>
                 </table>
             </div>
