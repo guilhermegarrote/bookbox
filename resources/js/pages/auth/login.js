@@ -1,4 +1,5 @@
 import { login } from '@js/api/auth/login.js';
+import { setAccessToken } from '@js/api/http-client';
 import { showErrors, clearErrors, notifyError } from '@js/utils/formErrors';
 import { validateEmailField, combineValidations } from '@js/utils/validation/auth-validation.js';
 import '@css/pages/login.css';
@@ -40,8 +41,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            if (responseData.user) {
-                sessionStorage.setItem('user', JSON.stringify(responseData.user));
+            if (responseData.token) {
+                setAccessToken(responseData.token);
             }
 
             if (responseData.redirect) {

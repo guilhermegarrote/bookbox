@@ -1,3 +1,23 @@
+let accessToken = null;
+let isRefreshing = false;
+let refreshQueue = [];
+
+/**
+ * Stores the current JWT access token in memory.
+ *
+ * @param {string} token The JWT access token to store
+ */
+export function setAccessToken(token) {
+    accessToken = token;
+}
+
+/**
+ * Clears the stored JWT access token from memory.
+ */
+export function clearAccessToken() {
+    accessToken = null;
+}
+
 /**
  * Global HTTP handler for API requests.
  *
@@ -14,59 +34,97 @@
  * @throws {Error} - Throws an error if the request fails, if the token refresh fails, or if the API response is unsuccessful.
  */
 export async function apiFetch(url, options = {}) {
+    const headers = {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'X-XSRF-TOKEN': getCookie('XSRF-TOKEN') || '',
+        ...(options.headers || {}),
+    };
+
+    if (accessToken) {
+        headers.Authorization = `Bearer ${accessToken}`;
+    }
+
     const config = {
         credentials: 'include',
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-            'X-XSRF-TOKEN': getCookie('XSRF-TOKEN') || '',
-            ...(options.headers || {})
-        },
-        ...options
+        headers,
+        ...options,
     };
 
     try {
         const start = performance.now();
         let response = await fetch(url, config);
         const time = (performance.now() - start).toFixed(1);
+
         console.info(`[API] ${config.method || 'GET'} ${url} → ${response.status} (${time}ms)`);
 
-        if (response.status === 401) {
-            console.warn('[Auth] Token expired. Trying refresh...');
-            const refreshed = await tryRefreshToken();
+        if (response.status === 401 && !url.includes('/auth/refresh')) {
+            console.warn('[Auth] Access token expirado. Tentando refresh...');
 
-            if (refreshed) {
-                response = await fetch(url, config);
-            } else {
-                console.warn('[Auth] Session expired. Redirecting...');
+            const refreshed = await handleRefresh();
+
+            if (!refreshed) {
+                console.warn('[Auth] Sessão expirada. Redirecionando para login...');
+                clearAccessToken();
                 redirectToLogin();
                 return makeErrorResponse('Sessão expirada', 401);
             }
+
+            response = await fetch(url, config);
         }
 
-        const parsed = await safeParseJson(response);
-
-        return parsed;
+        return await safeParseJson(response);
     } catch (err) {
-        console.error('[API] Request error:', err);
+        console.error('[API] Erro de requisição:', err);
         throw err;
     }
 }
 
 /**
- * Refreshes the JWT token by calling the /api/auth/refresh endpoint.
+ * Attempts to refresh the JWT access token by calling the `/api/auth/refresh` endpoint.
  *
- * @returns {boolean} - Returns true if the token was successfully refreshed, otherwise false.
+ * Ensures only one refresh request runs at a time. Any concurrent calls
+ * while a refresh is in progress are queued and resolved once the refresh completes.
+ *
+ * On success, updates the stored access token via `setAccessToken`.
+ *
+ * @async
+ * @returns {Promise<boolean>} Resolves to `true` if the token was successfully refreshed, `false` otherwise.
  */
-async function tryRefreshToken() {
+async function handleRefresh() {
+    if (isRefreshing) {
+        return new Promise((resolve) => refreshQueue.push(resolve));
+    }
+
+    isRefreshing = true;
+
     try {
         const res = await fetch('/api/auth/refresh', {
             method: 'POST',
             credentials: 'include',
+            headers: { 'Accept': 'application/json' },
         });
-        return res.ok;
+
+        if (!res.ok) return false;
+
+        const json = await res.json();
+
+        if (json?.data?.token) {
+            setAccessToken(json.data.token);
+        } else {
+            return false;
+        }
+
+        refreshQueue.forEach((resolve) => resolve(true));
+        refreshQueue = [];
+
+        return true;
     } catch {
+        refreshQueue.forEach((resolve) => resolve(false));
+        refreshQueue = [];
         return false;
+    } finally {
+        isRefreshing = false;
     }
 }
 
@@ -93,26 +151,31 @@ async function safeParseJson(response) {
         return { ok: response.ok, status: response.status, data: null };
     }
 
-    let data = null;
     try {
         if (contentType.includes('application/json')) {
             const json = await response.json();
+            return {
+                ok: response.ok,
+                status: response.status,
+                data:
+                    Object.keys(json).length === 1 && json.hasOwnProperty('data')
+                        ? json.data
+                        : json,
+            };
+        }
 
-            const keys = Object.keys(json);
-            if (keys.length === 1 && keys[0] === 'data') {
-                data = json.data;
-            } else {
-                data = json;
-            }
-        } else if (contentType.includes('text/html')) {
-            data = await response.text();
+        if (contentType.includes('text/html')) {
+            return {
+                ok: response.ok,
+                status: response.status,
+                data: await response.text(),
+            };
         }
     } catch (err) {
-        console.error('Error parsing JSON:', err);
-        data = null;
+        console.error('[API] Erro ao parsear resposta:', err);
     }
 
-    return { ok: response.ok, status: response.status, data };
+    return { ok: false, status: response.status, data: null };
 }
 
 /**

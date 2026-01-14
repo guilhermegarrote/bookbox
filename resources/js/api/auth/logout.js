@@ -1,5 +1,5 @@
 import { route } from 'ziggy-js';
-import { api } from '../http-client.js';
+import { api, clearAccessToken } from '../http-client.js';
 
 /**
  * Logs out the current user.
@@ -11,12 +11,14 @@ import { api } from '../http-client.js';
  * @throws {Error} - Throws if the network request or API call fails.
  */
 export async function logout() {
-    const response = await api.post(route('api.logout'));
+    try {
+        await api.post(route('api.logout'));
+    } finally {
+        clearAccessToken();
 
-    sessionStorage.removeItem('user');
-    localStorage.removeItem('recoveryEmail');
+        sessionStorage.removeItem('user');
+        localStorage.removeItem('recoveryEmail');
 
-    window.location.href = route('login');
-
-    return response;
+        window.location.href = route('login');
+    }
 }

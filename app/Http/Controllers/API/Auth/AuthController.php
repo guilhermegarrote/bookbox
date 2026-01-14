@@ -10,6 +10,7 @@ use App\Http\Requests\User\UserStoreRequest;
 use App\Http\Traits\JsonResponseTrait;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Cookie as FacadesCookie;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\RateLimiter;
 use PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth;
@@ -73,7 +74,7 @@ class AuthController extends Controller
         try {
             $userData = array_filter(
                 array_intersect_key($validatedData, array_flip(['name', 'email', 'password'])),
-                static fn ($v) => $v !== null && $v !== '',
+                static fn($v) => $v !== null && $v !== '',
             );
 
             User::create($userData);
@@ -87,18 +88,25 @@ class AuthController extends Controller
     }
 
     /**
-     * Authenticates a user and issues a JWT token.
+     * Authenticates a user and issues JWT access and refresh tokens via secure cookies.
      *
-     * Validates email and password. If successful, returns a secure JWT cookie
-     * and basic user data. Implements rate limiting to prevent brute-force attacks.
+     * Validates email and password, enforces rate limiting, and returns a JSON response
+     * with basic user information and secure cookies for access and refresh tokens.
      *
-     * @param LoginRequest $request validated login credentials
+     * Security features:
+     * - Access and refresh cookies are HttpOnly and Secure in non-local environments.
+     * - SameSite=Strict is used to mitigate CSRF attacks.
      *
-     * @return JsonResponse HTTP 200 response with token and user info, or error message
+     * @param LoginRequest $request Validated login credentials
+     *
+     * @return JsonResponse HTTP 200 response with user info and secure JWT cookies,
+     *                      or an error response if authentication fails or rate limit is exceeded
      *
      * @see self::tooManyAttempts()
      * @see self::validateCredentials()
      * @see \PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth::fromUser()
+     * @see self::makeAccessCookie()
+     * @see self::makeRefreshCookie()
      */
     public function login(LoginRequest $request): JsonResponse
     {
@@ -121,18 +129,22 @@ class AuthController extends Controller
 
         $this->clearAttempts($key);
 
-        $token = JWTAuth::fromUser($user);
-        $cookie = $this->makeJwtCookie($token);
+        $accessToken  = JWTAuth::fromUser($user);
+        $refreshToken = JWTAuth::claims(['typ' => 'refresh'])->fromUser($user);
+
+        $accessCookie = $this->makeAccessCookie($accessToken);
+        $refreshCookie = $this->makeRefreshCookie($refreshToken);
 
         return $this->successResponse([
-            'token' => $token,
+            'token' => $accessToken,
             'user' => [
                 'id' => $user->id,
                 'name' => $user->name,
                 'email' => $user->email,
             ],
             'redirect' => route('loans.view'),
-        ])->cookie($cookie);
+        ])->cookie($accessCookie)
+            ->cookie($refreshCookie);
     }
 
     /**
@@ -164,13 +176,14 @@ class AuthController extends Controller
     }
 
     /**
-     * Logs out the authenticated user.
+     * Logs out the authenticated user by invalidating the current JWT and clearing authentication cookies.
      *
-     * Invalidates the current JWT and removes it from the client.
+     * The access and refresh cookies are removed to prevent further authenticated requests.
      *
-     * @return JsonResponse HTTP 200 with cookie cleared
+     * @return JsonResponse HTTP 200 response with cleared cookies
      *
      * @see \PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth::invalidate()
+     * @see cookie()->forget()
      */
     public function logout(): JsonResponse
     {
@@ -181,8 +194,8 @@ class AuthController extends Controller
         }
 
         return $this->successResponse()
-            ->cookie(cookie()->forget(env('JWT_COOKIE_NAME', 'jwt_token')))
-        ;
+            ->cookie(cookie()->forget('access_token'))
+            ->cookie(cookie()->forget('refresh_token'));
     }
 
     /**
@@ -195,33 +208,82 @@ class AuthController extends Controller
     public function refresh(): JsonResponse
     {
         try {
-            $token = JWTAuth::refresh(JWTAuth::getToken());
-            $cookie = $this->makeJwtCookie($token);
+            $oldRefreshToken = request()->cookie('refresh_token');
 
-            return $this->successResponse(['token' => $token])->cookie($cookie);
+            if (!$oldRefreshToken) {
+                return $this->unauthorizedResponse('Refresh token ausente.');
+            }
+
+            $user = JWTAuth::setToken($oldRefreshToken)->authenticate();
+
+            if (!$user) {
+                return $this->unauthorizedResponse('Refresh token inválido.');
+            }
+
+            JWTAuth::setToken($oldRefreshToken)->invalidate();
+
+            $newAccessToken  = JWTAuth::fromUser($user);
+            $newRefreshToken = JWTAuth::claims(['typ' => 'refresh'])->fromUser($user);
+
+            $cookie = $this->makeRefreshCookie($newRefreshToken);
+
+            return $this->successResponse([
+                'token' => $newAccessToken
+            ])->cookie($cookie);
         } catch (\Throwable $e) {
-            $this->logError('Erro ao atualizar token.', $e);
+            $this->logError('Erro ao rotacionar refresh token.', $e);
 
-            return $this->unauthorizedResponse('Não foi possível atualizar o token.');
+            return $this->unauthorizedResponse('Refresh token expirado ou inválido.');
         }
     }
 
     /**
-     * Creates a secure HTTP-only cookie for storing the JWT token.
+     * Creates a secure HTTP-only cookie for storing the JWT access token.
      *
-     * @param string $token JWT token to embed in the cookie
+     * The access cookie contains the short-lived JWT access token used to
+     * authenticate API requests. It is marked as HttpOnly to prevent access
+     * from JavaScript, Secure outside local environments, and uses
+     * SameSite=Strict to help mitigate CSRF attacks.
      *
-     * @return Cookie secure cookie instance with SameSite=Strict
+     * @param string $token JWT access token to embed in the cookie
+     *
+     * @return Cookie Secure access cookie instance with SameSite=Strict
      */
-    private function makeJwtCookie(string $token): Cookie
+    private function makeAccessCookie(string $token): Cookie
     {
-        return cookie(
-            env('JWT_COOKIE_NAME', 'jwt_token'),
+        return FacadesCookie::make(
+            config('jwt.access_cookie'),
             $token,
-            env('JWT_COOKIE_TTL', JWTAuth::factory()->getTTL()),
-            env('JWT_COOKIE_PATH', '/'),
-            env('JWT_COOKIE_DOMAIN', null),
-            config('app.env') !== 'local', // Secure in production only
+            config('ttl'),
+            config('cookie_path'),
+            config('cookie_domain'),
+            config('app.env') !== 'local',
+            true,
+            false,
+            'Strict',
+        );
+    }
+
+    /**
+     * Creates a secure HTTP-only cookie for storing the JWT refresh token.
+     *
+     * The refresh cookie is used to obtain a new access token when the current
+     * access token expires. It is marked as HttpOnly and Secure (outside local
+     * environments) and uses SameSite=Strict to mitigate CSRF attacks.
+     *
+     * @param string $token JWT refresh token to embed in the cookie
+     *
+     * @return Cookie Secure refresh cookie instance with SameSite=Strict
+     */
+    private function makeRefreshCookie(string $token): Cookie
+    {
+        return FacadesCookie::make(
+            config('jwt.refresh_cookie'),
+            $token,
+            config('jwt.refresh_ttl'),
+            '/',
+            null,
+            config('app.env') !== 'local',
             true,
             false,
             'Strict',

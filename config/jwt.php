@@ -188,7 +188,9 @@ return [
     | Name of the cookie used to store the JWT.
     |
     */
-    'cookie_key_name' => env('JWT_COOKIE_NAME', 'token'),
+    'cookie_key_name' => env('JWT_COOKIE_NAME', 'jwt_token'),
+    'access_cookie' => env('JWT_ACCESS_COOKIE', 'access_token'),
+    'refresh_cookie' => env('JWT_REFRESH_COOKIE', 'refresh_token'),
 
     /*
     |--------------------------------------------------------------------------
