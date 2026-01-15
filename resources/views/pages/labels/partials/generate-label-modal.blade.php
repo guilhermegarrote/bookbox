@@ -3,7 +3,6 @@
         --scroll-size: 6px;
         --scroll-radius: 6px;
         --scroll-track: var(--color-base-gray-454);
-        ;
         --scroll-thumb-color: #ffffffff;
         --scroll-thumb-pattern: none;
     }
@@ -57,6 +56,17 @@
         justify-content: center;
         gap: 30px;
     }
+
+    .label-counter {
+        margin-top: 8px;
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid black;
+        padding: 8px;
+        border-radius: 6px;
+    }
 </style>
 
 <x-modals.modal id="labelGenerateModal" title="Gerar etiquetas">
@@ -82,6 +92,10 @@
                         @include('pages.labels.partials.generate-label-modal-list', ['books' => $books])
                     </tbody>
                 </table>
+            </div>
+
+            <div id="label-counter" class="label-counter">
+                Nenhuma etiqueta selecionada
             </div>
         </div>
     </x-slot>

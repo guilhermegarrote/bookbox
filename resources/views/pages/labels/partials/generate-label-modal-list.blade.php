@@ -9,7 +9,7 @@
         <td>{{ $book->isbn }}</td>
 
         <td>
-            <input type="text" class="input-copies" data-copies-input id="input-copies-for-labels" name="exemplares[{{ $book->id }}]"
+            <input type="text" class="input-copies" data-copies-input name="exemplares[{{ $book->id }}]"
                 placeholder="{{ $book->placeholderCopies() }}" />
         </td>
     </tr>

@@ -23,7 +23,10 @@ export async function openGenerateLabelModal(modalManager) {
             onSubmit: () => {
                 collectBooksForGenerateLabel();
 
-                const booksArray = Object.entries(selectedBooks).map(([isbn, copies]) => ({ isbn, copies }));
+                const booksArray = Object.entries(selectedBooks).map(
+                    ([isbn, copies]) => ({ isbn, copies })
+                );
+
                 generateLabels({ books: booksArray });
             },
             onSuccess: () => {
@@ -91,7 +94,7 @@ function collectBooksForGenerateLabel() {
         const checkbox = row.querySelector('input[type="checkbox"]');
         const isbn = row.querySelector('td:nth-child(4)').textContent.trim().replace(/-/g, '');
         const copiesInput = row.querySelector('[data-copies-input]');
-        const copies = copiesInput?.value.trim() || null;
+        const copies = copiesInput?.value.trim() || copiesInput.placeholder.replace(/^Ex:\s*/i, '');
 
         if (checkbox?.checked) {
             selectedBooks[isbn] = copies;
@@ -148,6 +151,7 @@ function bindCheckboxAndCopiesEvents() {
             } else {
                 delete selectedBooks[isbn];
             }
+            updateLabelCounter();
         });
 
         if (copiesInput) {
@@ -159,7 +163,68 @@ function bindCheckboxAndCopiesEvents() {
                     checkbox.checked = false;
                     selectedBooks[isbn] = null;
                 }
+                updateLabelCounter();
             });
         }
     });
 }
+
+function updateLabelCounter() {
+    const rows = document.querySelectorAll('#labelGenerateModal tbody tr');
+    let totalLabels = 0;
+
+    rows.forEach(row => {
+        const checkbox = row.querySelector('input[type="checkbox"]');
+        const copiesInput = row.querySelector('[data-copies-input]');
+        const placeholder = copiesInput?.placeholder;
+
+        if (checkbox?.checked) {
+            let copies = parseInt(copiesInput.value, 10);
+
+            if (isNaN(copies) || copiesInput.value.trim() === '') {
+                copies = countCopiesFromInput(placeholder);
+            } else {
+                copies = countCopiesFromInput(copiesInput.value.trim());
+            }
+
+            totalLabels += copies;
+        }
+    });
+
+    const labelsPerSheet = 16;
+    const fullSheets = Math.floor(totalLabels / labelsPerSheet);
+    const remainingLabels = totalLabels % labelsPerSheet;
+
+    const counter = document.getElementById('label-counter');
+    if (!counter) return;
+
+    if (totalLabels === 0) {
+        counter.textContent = 'Nenhuma etiqueta selecionada';
+    } else {
+        counter.textContent = `Total: ${totalLabels} etiquetas | ${fullSheets} folha(s) completa(s) + ${remainingLabels} etiqueta(s) na folha seguinte`;
+    }
+}
+
+function countCopiesFromInput(value) {
+    if (!value || value.toLowerCase().includes('sem')) return 0;
+
+    const clean = value.replace(/Ex:\s*/i, '');
+    const parts = clean.split(',');
+    let total = 0;
+
+    parts.forEach(part => {
+        if (part.includes('-')) {
+            const [start, end] = part.split('-').map(Number);
+            if (!isNaN(start) && !isNaN(end)) {
+                total += end - start + 1;
+            }
+        } else {
+            const n = Number(part);
+            if (!isNaN(n)) total += 1;
+        }
+    });
+
+    return total;
+}
+
+
