@@ -44,8 +44,7 @@ class Kernel extends ConsoleKernel
 
             $loans = Loan::whereNull('loan_returned_date')
                 ->whereDate('loan_due_date', $targetDates)
-                ->get()
-            ;
+                ->get();
 
             foreach ($loans as $loan) {
                 SendLoanReminderJob::dispatch($loan->id);
@@ -62,8 +61,7 @@ class Kernel extends ConsoleKernel
         $schedule->call(function (): void {
             $loans = Loan::whereNull('loan_returned_date')
                 ->where('loan_due_date', '<', now()->startOfDay())
-                ->get()
-            ;
+                ->get();
 
             foreach ($loans as $loan) {
                 $daysOverdue = now()->startOfDay()->diffInDays($loan->loan_due_date);
@@ -73,6 +71,8 @@ class Kernel extends ConsoleKernel
                 }
             }
         })->dailyAt('03:15');
+
+        $schedule->command('labels:cleanup')->dailyAt('02:00');
     }
 
     /**

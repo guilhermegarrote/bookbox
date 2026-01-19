@@ -10,6 +10,8 @@ use App\Models\View\Copy;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Str;
 use Spatie\Browsershot\Browsershot;
 
 /**
@@ -59,11 +61,11 @@ class LabelController extends Controller
 
         $html = view('pdf.label', ['labels' => $labels])->render();
 
-        $pdfFilename = 'labels/labels_' . time() . '.pdf';
+        $pdfFilename = 'labels_' . Str::uuid() . '.pdf';
 
-        Storage::disk('public')->makeDirectory('labels');
+        Storage::disk('labels')->makeDirectory('/');
+        $storagePath = Storage::disk('labels')->path($pdfFilename);
 
-        $storagePath = Storage::disk('public')->path($pdfFilename);
         $chromiumPath = env('BROWSERSHOT_CHROME_PATH');
 
         if (!$chromiumPath || !file_exists($chromiumPath)) {
@@ -87,9 +89,15 @@ class LabelController extends Controller
             return response()->json(['error' => 'Falha ao gerar PDF.'], 500);
         }
 
-        $publicUrl = Storage::disk('public')->url($pdfFilename);
+        $viewUrl = URL::temporarySignedRoute(
+            'labels.view',
+            now()->addMinutes(10),
+            ['file' => $pdfFilename]
+        );
 
-        return response()->json(['url' => $publicUrl]);
+        return response()->json([
+            'url' => $viewUrl
+        ])->deleteFileAfterSend();
     }
 
     /**

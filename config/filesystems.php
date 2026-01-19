@@ -57,6 +57,12 @@ return [
             'throw' => false,
             'report' => false,
         ],
+
+        'labels' => [
+            'driver' => 'local',
+            'root' => storage_path('app/labels'),
+            'visibility' => 'private',
+        ],
     ],
 
     /*

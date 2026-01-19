@@ -14,6 +14,7 @@ use App\Http\Controllers\SettingController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Storage;
 
 Route::middleware('auth.jwt.cookie')->group(function () {
     Route::redirect('/', '/loans');
@@ -66,6 +67,22 @@ Route::middleware('auth.jwt.cookie')->group(function () {
     Route::prefix('labels')->name('labels.')->group(function () {
         Route::get('/generate-modal', [LabelController::class, 'generateLabelModal'])->name('generate-modal');
     });
+    Route::get('/labels/view/{file}', function (string $file) {
+        abort_unless(request()->hasValidSignature(), 403);
+
+        if (!Storage::disk('labels')->exists($file)) {
+            abort(404);
+        }
+
+        return response()->file(
+            Storage::disk('labels')->path($file),
+            [
+                'Content-Type' => 'application/pdf',
+                'Content-Disposition' => 'inline; filename="' . $file . '"',
+            ]
+        );
+    })->where('file', '.*')
+        ->name('labels.view');
 
     Route::prefix('settings')->name('settings.')->group(function () {
         Route::get('/', [SettingController::class, 'index'])->name('view');
@@ -75,7 +92,9 @@ Route::middleware('auth.jwt.cookie')->group(function () {
         Route::get('/config', [SettingController::class, 'config'])->name('config');
     });
 
-    Route::get('/modals/message', fn () =>
+    Route::get(
+        '/modals/message',
+        fn() =>
         view('components.modals.modal-message')
     )->name('modals.message');
 });
