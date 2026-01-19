@@ -1,7 +1,7 @@
 @foreach ($books as $book)
-    <tr>
+    <tr style="cursor: default;">
         <td class="center">
-            <input type="checkbox" name="selected_books[]">
+            <input type="checkbox" name="selected_books[]" style="cursor: pointer; width: 18px; height: 18px;">
         </td>
 
         <td>{{ $book->title }}</td>
