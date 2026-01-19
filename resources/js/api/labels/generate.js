@@ -9,11 +9,16 @@ import { api } from '../http-client.js';
  * @throws {Error} - Throws if the network request or API call fails.
  */
 export async function generateLabels(data) {
+    const newWindow = window.open('', '_blank');
+
     const response = await api.post(route('labels.generate'), data);
 
     if (response?.data?.url) {
-        window.open(response.data.url, '_blank');
+        newWindow.location.href = response.data.url;
+    } else {
+        newWindow.close();
     }
 
     return response;
 }
+
