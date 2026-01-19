@@ -33,24 +33,23 @@
         }
 
         .sheet {
-            width: 210mm;
-            height: 297mm;
             background: #bebebe;
             display: grid;
             grid-template-columns: repeat(2, 1fr);
+            padding: 0.8mm;
         }
 
         .label-card {
             display: flex;
             background-color: #fff;
-            width: 104.4mm;
-            height: 36.5mm;
+            width: 104.15mm;
+            height: 37mm;
             overflow: hidden;
-            outline: 0.58mm solid #000;
+            outline: 0.8mm solid #000;
             position: relative;
             page-break-inside: avoid;
         }
-
+        
         .content {
             display: flex;
             padding: 2.28mm 4.55mm;
@@ -58,19 +57,6 @@
             position: relative;
             align-items: center;
             gap: 9.1mm;
-        }
-
-        .left-column,
-        .right-column {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            gap: 2.5mm;
-            color: #333;
-        }
-
-        .right-column {
-            flex-shrink: 0;
         }
 
         .label-title {
@@ -85,7 +71,7 @@
             display: flex;
             flex-direction: column;
             justify-content: center;
-            gap: 2.5mm;
+            gap: 2.75mm;
             color: #333;
             flex-shrink: 0;
             max-width: 45%;
@@ -169,7 +155,6 @@
                 </div>
             </div>
         @endforeach
-
     </div>
 </body>
 
