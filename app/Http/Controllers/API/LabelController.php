@@ -97,7 +97,7 @@ class LabelController extends Controller
 
         return response()->json([
             'url' => $viewUrl
-        ])->deleteFileAfterSend();
+        ]);
     }
 
     /**

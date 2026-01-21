@@ -3,6 +3,8 @@ import { applyInputMasks } from '@js/components/ui/input-mask.js';
 import { notifySuccess, notifyError } from '@js/utils/formErrors';
 
 let selectedBooks = {};
+let remainingLabels = null;
+const labelsPerSheet = 16;
 
 export async function openGenerateLabelModal(modalManager) {
     const url = route('labels.generate-modal');
@@ -10,9 +12,18 @@ export async function openGenerateLabelModal(modalManager) {
     try {
         await modalManager.loadModalContent(url, 'labelGenerateModal', {
             onInit: () => {
+                const modal = document.getElementById('labelGenerateModal');
+                if (!modal) return;
+
                 applyInputMasks();
                 initSearch();
                 bindCheckboxAndCopiesEvents();
+
+                const tbody = modal.querySelector('tbody');
+                if (tbody && Object.keys(selectedBooks).length > 0) {
+                    restoreSelectedBooks(tbody);
+                    updateLabelCounter();
+                }
             }
         });
 
@@ -20,20 +31,44 @@ export async function openGenerateLabelModal(modalManager) {
             modalId: 'labelGenerateModal',
             buttonId: 'submit-generate-label',
 
-            onSubmit: () => {
+            onSubmit: async () => {
                 collectBooksForGenerateLabel();
 
+                if (remainingLabels > 0) {
+                    const missingLabels = labelsPerSheet - remainingLabels;
+
+                    const message =
+                        `Faltam ${missingLabels} etiquetas para completar a última folha. Deseja prosseguir mesmo assim?`;
+
+                    const confirmed = await modalManager.showModalMessage({
+                        message,
+                        acceptText: 'Continuar',
+                        declineText: 'Cancelar'
+                    });
+
+                    if (!confirmed) {
+                        openGenerateLabelModal(modalManager);
+                        throw new Error('SUBMIT_CANCELLED');
+                    }
+                }
+
                 const booksArray = Object.entries(selectedBooks).map(
-                    ([isbn, copies]) => ({ isbn, copies })
+                    ([isbn, bookData]) => ({ isbn, copies: bookData.value })
                 );
 
-                generateLabels({ books: booksArray });
+                selectedBooks = {};
+
+                return generateLabels({ books: booksArray });
             },
+
             onSuccess: () => {
                 modalManager.removeModal('labelGenerateModal');
                 notifySuccess('Etiquetas geradas com sucesso!');
             },
+
             onError: (err) => {
+                if (err.message === 'SUBMIT_CANCELLED') return;
+
                 err.errors
                     ? showErrors(err.errors)
                     : notifyError(err.message || 'Erro ao gerar etiquetas');
@@ -94,10 +129,13 @@ function collectBooksForGenerateLabel() {
         const checkbox = row.querySelector('input[type="checkbox"]');
         const isbn = row.querySelector('td:nth-child(4)').textContent.trim().replace(/-/g, '');
         const copiesInput = row.querySelector('[data-copies-input]');
-        const copies = copiesInput?.value.trim() || copiesInput.placeholder.replace(/^Ex:\s*/i, '');
+        const value = copiesInput?.value.trim() || copiesInput?.placeholder.replace(/^Ex:\s*/i, '');
 
         if (checkbox?.checked) {
-            selectedBooks[isbn] = copies;
+            selectedBooks[isbn] = {
+                value: value,
+                placeholder: copiesInput?.placeholder || ''
+            };
         } else {
             delete selectedBooks[isbn];
         }
@@ -119,7 +157,9 @@ function restoreSelectedBooks(list) {
 
         if (isbn in selectedBooks) {
             checkbox.checked = true;
-            copiesInput.value = selectedBooks[isbn] ?? '';
+            const bookData = selectedBooks[isbn];
+            copiesInput.value = bookData.value || '';
+            copiesInput.placeholder = bookData.placeholder || copiesInput.placeholder;
             selectedRows.push(row);
         } else {
             checkbox.checked = false;
@@ -145,55 +185,57 @@ function bindCheckboxAndCopiesEvents() {
 
         if (!checkbox) return;
 
-        checkbox.addEventListener('change', () => {
+        const updateSelectedBook = () => {
             if (checkbox.checked) {
-                selectedBooks[isbn] = copiesInput?.value.trim() || null;
+                selectedBooks[isbn] = {
+                    value: copiesInput?.value.trim() || '',
+                    placeholder: copiesInput?.placeholder || ''
+                };
             } else {
                 delete selectedBooks[isbn];
             }
+
             updateLabelCounter();
+        };
+
+        checkbox.addEventListener('change', () => {
+            updateSelectedBook();
         });
 
         if (copiesInput) {
             copiesInput.addEventListener('input', () => {
                 if (copiesInput.value.trim() !== '') {
                     checkbox.checked = true;
-                    selectedBooks[isbn] = copiesInput.value.trim();
                 } else {
                     checkbox.checked = false;
-                    selectedBooks[isbn] = null;
                 }
-                updateLabelCounter();
+                updateSelectedBook();
             });
         }
     });
 }
 
+/**
+ * Calculates the total number of labels selected based on user input,
+ * determines how many full sheets are needed, and updates the label counter UI.
+ */
 function updateLabelCounter() {
-    const rows = document.querySelectorAll('#labelGenerateModal tbody tr');
     let totalLabels = 0;
 
-    rows.forEach(row => {
-        const checkbox = row.querySelector('input[type="checkbox"]');
-        const copiesInput = row.querySelector('[data-copies-input]');
-        const placeholder = copiesInput?.placeholder;
+    Object.values(selectedBooks).forEach(book => {
+        let copies = parseInt(book.value, 10);
 
-        if (checkbox?.checked) {
-            let copies = parseInt(copiesInput.value, 10);
-
-            if (isNaN(copies) || copiesInput.value.trim() === '') {
-                copies = countCopiesFromInput(placeholder);
-            } else {
-                copies = countCopiesFromInput(copiesInput.value.trim());
-            }
-
-            totalLabels += copies;
+        if (isNaN(copies) || book.value.trim() === '') {
+            copies = countCopiesFromInput(book.placeholder);
+        } else {
+            copies = countCopiesFromInput(book.value.trim());
         }
+
+        totalLabels += copies;
     });
 
-    const labelsPerSheet = 16;
     const fullSheets = Math.floor(totalLabels / labelsPerSheet);
-    const remainingLabels = totalLabels % labelsPerSheet;
+    remainingLabels = totalLabels % labelsPerSheet;
 
     const counter = document.getElementById('label-counter');
     if (!counter) return;
@@ -205,6 +247,19 @@ function updateLabelCounter() {
     }
 }
 
+/**
+ * Parses a string representing label copy ranges or individual values
+ * and returns the total number of copies calculated from it.
+ *
+ * Examples:
+ * - "1,2,3" → 3
+ * - "1-5" → 5
+ * - "1-3,5,7-9" → 7
+ * - "sem etiquetas" → 0
+ *
+ * @param {string} value - The input string containing copy information
+ * @returns {number} The total number of calculated copies
+ */
 function countCopiesFromInput(value) {
     if (!value || value.toLowerCase().includes('sem')) return 0;
 
@@ -226,5 +281,3 @@ function countCopiesFromInput(value) {
 
     return total;
 }
-
-
