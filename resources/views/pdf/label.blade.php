@@ -20,10 +20,6 @@
             padding: 0;
         }
 
-        html {
-
-        }
-
         body {
             font-family: "Urbanist", sans-serif;
             display: flex;
@@ -36,20 +32,20 @@
             background: #bebebe;
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            padding: 0.8mm;
+            grid-auto-rows: 37.1mm;
         }
 
         .label-card {
             display: flex;
             background-color: #fff;
-            width: 104.15mm;
-            height: 37mm;
+            width: 105mm;
+            height: 37.1mm;
             overflow: hidden;
-            outline: 0.8mm solid #000;
+            border: 1mm solid #000;
             position: relative;
             page-break-inside: avoid;
         }
-        
+
         .content {
             display: flex;
             padding: 2.28mm 4.55mm;
