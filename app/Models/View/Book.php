@@ -116,7 +116,7 @@ class Book extends BaseModel
 
         $ranges[] = ($start == $prev) ? $start : "$start-$prev";
 
-        return 'Ex: ' . implode(', ', $ranges);
+        return 'Ex: ' . implode(',', $ranges);
     }
 
     /**
