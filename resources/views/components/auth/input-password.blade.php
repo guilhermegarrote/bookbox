@@ -1,51 +1,29 @@
-@props([
-'label',
-'name',
-'value' => '',
-'required' => true,
-])
+@props(['label', 'name', 'value' => '', 'required' => true])
 
 @php
-$inputId = $attributes->get('id', $name);
+    $inputId = $attributes->get('id', $name);
 @endphp
 
 <div class="input-group2" style="position: relative;">
-    @if($label)
-    <label for="{{ $inputId }}" class="auth-label">
-        {{ $label }}{{ $required ? '*' : '' }}
-    </label>
+    @if ($label)
+        <label for="{{ $inputId }}" class="auth-label">
+            {{ $label }}{{ $required ? '*' : '' }}
+        </label>
     @endif
 
-    <input
-        id="{{ $inputId }}"
-        name="{{ $name }}"
-        type="password"
-        value="{{ old($name, $value) }}"
+    <input id="{{ $inputId }}" name="{{ $name }}" type="password" value="{{ old($name, $value) }}"
         {{ $attributes->merge([
             'class' => 'auth-input with-password-toggle ' . ($errors->has($name) ? 'input-error' : ''),
             'aria-describedby' => "erro-{$name}",
             'aria-invalid' => $errors->has($name) ? 'true' : 'false',
         ]) }}
-        @if($required) required @endif
-        autocomplete="current-password">
+        @if ($required) required @endif autocomplete="current-password">
 
-    <button
-        type="button"
-        aria-label="Mostrar ou ocultar senha"
-        aria-pressed="false"
-        onclick="togglePasswordVisibility('{{ $inputId }}', this)"
-        tabindex="0"
-        class="password-toggle-btn"
-        onmouseenter="this.classList.add('hovered')"
-        onmouseleave="this.classList.remove('hovered')"
-        onfocus="this.classList.add('hovered')"
-        onblur="this.classList.remove('hovered')">
-        <svg
-            viewBox="0 0 24 24"
-            xmlns="http://www.w3.org/2000/svg"
-            aria-hidden="true"
-            role="img"
-            class="icon-eye">
+    <button type="button" aria-label="Mostrar ou ocultar senha" aria-pressed="false"
+        onclick="togglePasswordVisibility('{{ $inputId }}', this)" tabindex="0" class="password-toggle-btn"
+        onmouseenter="this.classList.add('hovered')" onmouseleave="this.classList.remove('hovered')"
+        onfocus="this.classList.add('hovered')" onblur="this.classList.remove('hovered')">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" class="icon-eye">
             <path class="eye-path" d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
             <circle class="eye-pupil" cx="12" cy="12" r="3" />
         </svg>
@@ -128,6 +106,19 @@ $inputId = $attributes->get('id', $name);
     .eye-visible .eye-pupil {
         fill: var(--color-base-gray-light);
     }
+
+    /* Chrome / Edge / Opera */
+    input[type="password"]::-webkit-textfield-decoration-container {
+        visibility: hidden;
+    }
+
+    input[type="password"]::-webkit-credentials-auto-fill-button {
+        visibility: hidden;
+    }
+
+    input[type="password"]::-ms-reveal {
+        display: none !important;
+    }
 </style>
 
 <script>
@@ -137,9 +128,10 @@ $inputId = $attributes->get('id', $name);
 
         const svg = button.querySelector('svg');
         if (!svg) return;
-
+        
         const isPassword = input.type === 'password';
         input.type = isPassword ? 'text' : 'password';
+
         button.setAttribute('aria-pressed', isPassword ? 'true' : 'false');
 
         if (isPassword) {
