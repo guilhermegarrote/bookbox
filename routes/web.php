@@ -99,7 +99,7 @@ Route::middleware('auth.jwt.cookie')->group(function () {
     )->name('modals.message');
 });
 
-Route::middleware('guest')->group(function () {
+Route::middleware('guest:web,api')->group(function () {
     Route::middleware('prevent.registration')->group(function () {
         Route::get('/register', [AuthController::class, 'showRegisterForm'])->name('register.form');
     });

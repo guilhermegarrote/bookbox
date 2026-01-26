@@ -26,7 +26,20 @@ class EncryptCookies extends Middleware
      *
      * @var array<int, string>
      */
-    protected $except = [
-        'jwt_token',
-    ];
+    protected $except = [];
+
+    /**
+     * Create a new EncryptCookies middleware instance.
+     *
+     * The cookie names are resolved at runtime using the application
+     * configuration, since PHP does not allow function calls (such as
+     * config()) in property default values.
+     */
+    public function __construct()
+    {
+        $this->except = [
+            config('jwt.access_cookie'),
+            config('jwt.refresh_cookie'),
+        ];
+    }
 }

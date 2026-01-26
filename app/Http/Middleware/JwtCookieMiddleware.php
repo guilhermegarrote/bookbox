@@ -27,13 +27,15 @@ class JwtCookieMiddleware
     public function handle(Request $request, \Closure $next)
     {
         try {
-            $accessToken = $request->cookie('access_token');
-            $refreshToken = $request->cookie('refresh_token');
+            $accessToken = $request->cookie(config('jwt.access_cookie'));
+            $refreshToken = $request->cookie(config('jwt.refresh_cookie'));
 
             $tokenToUse = $accessToken ?? $refreshToken;
 
             if (!$tokenToUse) {
-                return response()->json(['message' => 'Não autorizado'], 401);
+                return $request->expectsJson()
+                    ? response()->json(['message' => 'Não autorizado'], 401)
+                    : redirect()->route('login');
             }
 
             JWTAuth::setToken($tokenToUse);
@@ -41,18 +43,24 @@ class JwtCookieMiddleware
             $user = JWTAuth::authenticate();
 
             if (!$user) {
-                return response()->json(['message' => 'Não autorizado'], 401);
+                return $request->expectsJson()
+                    ? response()->json(['message' => 'Não autorizado'], 401)
+                    : redirect()->route('login');
             }
 
             $request->setUserResolver(fn() => $user);
         } catch (TokenExpiredException $e) {
             Log::info('JWT token expired.');
 
-            return response()->json(['message' => 'Token expirado'], 401);
+            return $request->expectsJson()
+                ? response()->json(['message' => 'Token expirado'], 401)
+                : redirect()->route('login');
         } catch (JWTException $e) {
             Log::error('Erro ao autenticar token JWT.', ['exception' => $e]);
 
-            return response()->json(['message' => 'Token inválido'], 401);
+            return $request->expectsJson()
+                ? response()->json(['message' => 'Token inválido'], 401)
+                : redirect()->route('login');
         }
 
         return $next($request);

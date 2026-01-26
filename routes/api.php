@@ -73,7 +73,7 @@ Route::middleware(['auth.jwt.cookie'])->group(function () {
     ;
 });
 
-Route::prefix('recover')->middleware(['users.exist', 'guest'])->group(function () {
+Route::prefix('recover')->middleware(['users.exist', 'guest:api'])->group(function () {
     Route::post('/send', [PasswordRecoveryController::class, 'sendCode'])
         ->middleware('code.not.sent')
         ->name('recover.send')
