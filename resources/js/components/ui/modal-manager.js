@@ -10,7 +10,7 @@ export default class ModalManager {
             if (!response.ok) throw new Error('Erro ao carregar modal');
 
             const html = await response.text();
-            this.insertModalHtml(html, modalId);
+            await this.insertModalHtml(html, modalId);
             this.bindCloseEvents(modalId);
             this.showModal(modalId);
             this.updateFloatingLabels(modalId);
@@ -22,8 +22,8 @@ export default class ModalManager {
         }
     }
 
-    insertModalHtml(html, modalId) {
-        this.closeAll({ remove: true });
+    async insertModalHtml(html, modalId) {
+        await this.closeAll({ remove: true });
 
         const overlay = document.createElement('div');
         overlay.id = `${modalId}-overlay`;
@@ -32,6 +32,7 @@ export default class ModalManager {
         overlay.setAttribute('role', 'dialog');
         overlay.setAttribute('aria-modal', 'true');
         overlay.innerHTML = html;
+
         document.body.appendChild(overlay);
 
         const modalWrapper = overlay.querySelector(`#${modalId}`);
@@ -109,9 +110,13 @@ export default class ModalManager {
         modal.setAttribute('inert', '');
     }
 
-    closeAll({ remove = true } = {}) {
-        for (const modalId of this.activeModals.keys()) {
-            remove ? this.removeModal(modalId) : this.hideModal(modalId);
+    async closeAll({ remove = true } = {}) {
+        for (const modalId of [...this.activeModals.keys()]) {
+            if (remove) {
+                await this.removeModal(modalId);
+            } else {
+                this.hideModal(modalId);
+            }
         }
     }
 
