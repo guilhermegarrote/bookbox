@@ -13,6 +13,7 @@ use App\Jobs\Email\SendLoanReceiptJob;
 use App\Jobs\PrintLoanReceiptJob;
 use App\Models\Book;
 use App\Models\Loan;
+use App\Models\Setting;
 use App\Models\View\Copy as ViewCopy;
 use App\Models\View\Loan as ViewLoan;
 use App\Models\View\Student as ViewStudent;
@@ -53,6 +54,9 @@ class LoanController extends Controller
         try {
             $query = $this->buildLoanQuery($request);
 
+            $filterData = ViewLoan::getFilterData(clone $query);
+            $data_sidebar = ViewLoan::getSidebarData(clone $query);
+
             $loans = $this->paginateWithSettings(
                 $query->select([
                     'id',
@@ -72,8 +76,8 @@ class LoanController extends Controller
                     'next_cursor' => $loans->nextCursor()?->encode(),
                     'has_more' => $loans->nextCursor() !== null,
                 ],
-                'filterData' => ViewLoan::getFilterData($query),
-                'data_sidebar' => ViewLoan::getSidebarData($query),
+                'filterData' => $filterData,
+                'data_sidebar' => $data_sidebar,
             ]);
         } catch (\Throwable $e) {
             $this->logError('Erro ao listar empréstimos.', $e);
@@ -133,7 +137,8 @@ class LoanController extends Controller
                 return $this->validationErrorResponse(['message' => 'Aluno não autorizado a realizar empréstimos.']);
             }
 
-            $dueDate = Carbon::today()->addDays(config('loans.default_due_days', 14));
+            $dueDays = Setting::where('key', 'default_due_days')->value('value');
+            $dueDate = Carbon::today()->addDays((int) $dueDays);
 
             $loan = Loan::create([
                 'student_id' => Utils::convertUuidToBinary($student->id),
@@ -144,7 +149,7 @@ class LoanController extends Controller
             DB::commit();
 
             dispatch(new PrintLoanReceiptJob($loan->id, JWTAuth::user()->name ?? 'Desconhecido'));
-            dispatch(new SendLoanReceiptJob(ViewLoan::find(Utils::convertUuidToBinary($loan->id))));
+            dispatch(new SendLoanReceiptJob($loan->id));
 
             return $this->createdResponse();
         } catch (\Throwable $e) {
@@ -195,11 +200,12 @@ class LoanController extends Controller
                 return $this->badRequestResponse(['message' => 'Empréstimo já finalizado.']);
             }
 
-            $loan->due_date = Carbon::parse($loan->due_date)->addDays(config('loans.extension_days', 7));
+            $extensionDays = Setting::where('key', 'extension_days')->value('value');
+            $loan->due_date = Carbon::parse($loan->due_date)->addDays($extensionDays);
             $loan->save();
 
             dispatch(new PrintLoanReceiptJob($loan->id, JWTAuth::user()->name ?? 'Desconhecido'));
-            dispatch(new SendLoanExtendJob(ViewLoan::find(Utils::convertUuidToBinary($loan->id))));
+            dispatch(new SendLoanExtendJob($loan->id));
 
             return $this->noContentResponse();
         } catch (ModelNotFoundException) {
@@ -325,6 +331,10 @@ class LoanController extends Controller
         $sort = \in_array($request->input('sort'), $sortable, true) ? $request->input('sort') : 'loan_due_date';
         $direction = $request->input('direction') === 'desc' ? 'desc' : 'asc';
 
-        return $query->orderBy($sort, $direction);
+        $idDirection = $direction === 'desc' ? 'asc' : 'desc';
+
+        return $query->orderBy($sort, $direction)
+            ->orderBy('id', $idDirection)
+        ;
     }
 }

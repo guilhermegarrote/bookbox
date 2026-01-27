@@ -50,6 +50,8 @@ class StudentController extends Controller
         try {
             $query = $this->buildStudentQuery($request);
 
+            $filterData = ViewStudentSchoolClass::getFilterData(clone $query);
+
             $students = $this->paginateWithSettings(
                 $query->select([
                     'student_id AS id',
@@ -65,13 +67,14 @@ class StudentController extends Controller
                 $request,
             );
 
+
             return response()->json([
                 'data' => $students->items(),
                 'pagination' => [
                     'next_cursor' => $students->nextCursor()?->encode(),
                     'has_more' => $students->nextCursor() !== null,
                 ],
-                'filterData' => ViewStudentSchoolClass::getFilterData($query),
+                'filterData' => $filterData,
             ]);
         } catch (\Throwable $e) {
             $this->logError('Erro ao listar alunos.', $e);
@@ -348,6 +351,10 @@ class StudentController extends Controller
         $sort = \in_array($request->input('sort'), $sortable, true) ? $request->input('sort') : 'name';
         $direction = $request->input('direction') === 'desc' ? 'desc' : 'asc';
 
-        return $query->orderBy($sort, $direction);
+        $idDirection = $direction === 'desc' ? 'asc' : 'desc';
+
+        return $query->orderBy($sort, $direction)
+            ->orderBy('id', $idDirection)
+        ;
     }
 }

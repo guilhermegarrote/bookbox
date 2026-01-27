@@ -51,6 +51,8 @@ class BookController extends Controller
         try {
             $query = $this->buildBookQuery($request);
 
+            $filterData = ViewBook::getFilterData(clone $query);
+
             $books = $this->paginateWithSettings(
                 $query->select([
                     'id',
@@ -71,7 +73,7 @@ class BookController extends Controller
                     'next_cursor' => $books->nextCursor()?->encode(),
                     'has_more' => $books->nextCursor() !== null,
                 ],
-                'filterData' => ViewBook::getFilterData($query),
+                'filterData' => $filterData,
             ]);
         } catch (\Throwable $e) {
             $this->logError('Erro ao listar livros.', $e);
@@ -384,6 +386,9 @@ class BookController extends Controller
         $sort = \in_array($request->input('sort'), $sortable, true) ? $request->input('sort') : 'title';
         $direction = $request->input('direction') === 'desc' ? 'desc' : 'asc';
 
-        return $query->orderBy($sort, $direction);
+        $idDirection = $direction === 'desc' ? 'asc' : 'desc';
+
+        return $query->orderBy($sort, $direction)
+            ->orderBy('id', $idDirection);
     }
 }
