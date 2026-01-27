@@ -63,8 +63,13 @@ class BookMetadataService
                 $url .= "&key={$key}";
             }
 
-            $response = Http::get($url)->json();
-            $book = $response['items'][0]['volumeInfo'] ?? null;
+            $response = Http::timeout(10)->get($url)->json();
+
+            if (!is_array($response)) {
+                return null;
+            }
+
+            $book = data_get($response, 'items.0.volumeInfo');
 
             if (!$book) {
                 return null;
@@ -73,15 +78,12 @@ class BookMetadataService
             $isbn10 = null;
             $isbn13 = null;
 
-            if (!empty($book['industryIdentifiers'])) {
-                foreach ($book['industryIdentifiers'] as $identifier) {
-                    if ($identifier['type'] === 'ISBN_10') {
-                        $isbn10 = $identifier['identifier'];
-                    }
-
-                    if ($identifier['type'] === 'ISBN_13') {
-                        $isbn13 = $identifier['identifier'];
-                    }
+            foreach (data_get($book, 'industryIdentifiers', []) as $identifier) {
+                if (($identifier['type'] ?? null) === 'ISBN_10') {
+                    $isbn10 = $identifier['identifier'] ?? null;
+                }
+                if (($identifier['type'] ?? null) === 'ISBN_13') {
+                    $isbn13 = $identifier['identifier'] ?? null;
                 }
             }
 
@@ -94,8 +96,7 @@ class BookMetadataService
                 'isbn13' => $isbn13,
             ];
         } catch (\Throwable $e) {
-            Log::warning('Google Books API error: ' . $e->getMessage());
-
+            Log::warning('Google Books API error', ['error' => $e->getMessage()]);
             return null;
         }
     }
