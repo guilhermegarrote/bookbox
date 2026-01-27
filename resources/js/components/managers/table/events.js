@@ -12,6 +12,7 @@ export default class Events {
 
         document.addEventListener('filtersUpdated', (e) => {
             const params = e.detail || {};
+            
             clearTimeout(this.filtersTimeout);
 
             this.filtersTimeout = setTimeout(() => {

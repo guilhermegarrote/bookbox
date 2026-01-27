@@ -23,10 +23,9 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         document.addEventListener('click', (event) => {
-            if (event.target.closest('#filter-clean-btn')) {
-                filterUI?.clearAllFilters();
-                hidePopup();
-            } else if (!popup.contains(event.target) && event.target !== btnFilter) {
+            if (!event.isTrusted) return;
+
+            if (!popup.contains(event.target) && event.target !== btnFilter) {
                 hidePopup();
             }
         });

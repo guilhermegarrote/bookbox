@@ -84,13 +84,13 @@ export const openFilterPopup = async (filterUIInstance) => {
         filterUIInstance.initSelectsWithCurrentData();
         filterUIInstance.applyFilter();
 
-        const clearBtn = popupFilter.querySelector('#clear-filters-btn');
+        const clearBtn = popupFilter.querySelector('#filter-clean-btn');
+
         if (clearBtn) {
             clearBtn.onclick = (e) => {
                 e.preventDefault();
+                e.stopPropagation()
                 filterUIInstance.clearAllFilters();
-                hidePopup();
-                setTimeout(() => openFilterPopup(filterUIInstance), 100);
             };
         }
 

@@ -15,7 +15,7 @@ export default class TableData {
         const loader = document.getElementById('loader');
         if (loader) loader.style.display = 'block';
 
-        m.currentParams = { ...m.currentParams, ...params };
+        m.currentParams = append ? { ...m.currentParams, ...params } : { ...params };
 
         try {
             const queryParams = {

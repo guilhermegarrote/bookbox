@@ -52,11 +52,7 @@ export async function apiFetch(url, options = {}) {
     };
 
     try {
-        const start = performance.now();
         let response = await fetch(url, config);
-        const time = (performance.now() - start).toFixed(1);
-
-        console.info(`[API] ${config.method || 'GET'} ${url} → ${response.status} (${time}ms)`);
 
         if (response.status === 401 && !url.includes('/auth/refresh')) {
             console.warn('[Auth] Access token expirado. Tentando refresh...');

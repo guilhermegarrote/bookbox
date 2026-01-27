@@ -92,8 +92,6 @@ export class FilterUI {
         const emptyParams = {};
         this.onParamsChange?.(emptyParams);
         document.dispatchEvent(new CustomEvent('filtersUpdated', { detail: emptyParams }));
-
-        this.refreshTable();
     }
 
     uniqueBy(array, key) {
@@ -146,46 +144,45 @@ export class FilterUI {
         return params;
     }
 
-    applyFilter(changedField) {
+    applyFilter() {
         if (!Array.isArray(this.filterData)) this.filterData = [];
-        let filtered = [...this.filterData];
-
-        this.fields.forEach(f => {
-            if (!f.element) return;
-            const val = f.element.value?.trim();
-            if (val) filtered = filtered.filter(d => String(d[f.key]) === String(val));
-        });
-
-        this.fields.forEach(f => {
-            if (!f.element) return;
-            if (!changedField || f !== changedField) {
-                if (f.element.tagName === 'SELECT') {
-                    let filteredForSelect = [...this.filterData];
-                    this.fields.forEach(other => {
-                        if (!other.element || other === f) return;
-                        const val = other.element.value?.trim();
-                        if (val) filteredForSelect = filteredForSelect.filter(d => String(d[other.key]) === String(val));
-                    });
-
-                    const currentVal = f.element.value;
-                    if (currentVal && !filteredForSelect.some(d => String(d[f.key]) === currentVal)) {
-                        const original = this.filterData.find(d => String(d[f.key]) === currentVal);
-                        if (original) filteredForSelect.push(original);
-                    }
-
-                    const uniqueItems = this.uniqueBy(filteredForSelect, f.key)
-                        .map(item => ({ value: item[f.key], label: f.formatLabel ? f.formatLabel(item[f.key]) : item[f.key] }));
-
-                    this.populateSelect(f.element, uniqueItems, 'value', 'label', f.placeholder);
-                }
-            }
-        });
 
         const params = this.getCurrentParams();
+
+        let filtered = [...this.filterData];
+        Object.keys(params).forEach(key => {
+            filtered = filtered.filter(d => String(d[key]) === String(params[key]));
+        });
+
+        this.fields.forEach(f => {
+            if (!f.element || f.element.tagName !== 'SELECT') return;
+
+            let filteredOptions = [...this.filterData];
+            this.fields.forEach(other => {
+                if (!other.element || other === f) return;
+                const val = other.element.value?.trim();
+                if (val) filteredOptions = filteredOptions.filter(d => String(d[other.key]) === val);
+            });
+
+            const currentVal = f.element.value;
+            if (currentVal && !filteredOptions.some(d => String(d[f.key]) === currentVal)) {
+                const original = this.filterData.find(d => String(d[f.key]) === currentVal);
+                if (original) filteredOptions.push(original);
+            }
+
+            const uniqueItems = this.uniqueBy(filteredOptions, f.key)
+                .map(item => ({
+                    value: item[f.key],
+                    label: f.formatLabel ? f.formatLabel(item[f.key]) : item[f.key]
+                }));
+
+            this.populateSelect(f.element, uniqueItems, 'value', 'label', f.placeholder);
+
+            if (currentVal) f.element.value = currentVal;
+        });
+
         this.onParamsChange?.(params);
         document.dispatchEvent(new CustomEvent('filtersUpdated', { detail: params }));
-
-        this.refreshTable();
     }
 
     updateData(newData, applyFilter = false) {
@@ -201,7 +198,6 @@ export class FilterUI {
             const savedFilters = this.getSavedFilters();
             const currentValue = savedFilters[field.key] || '';
 
-            // Gerar opções com base nos dados atuais
             const optionsData = this.uniqueBy(this.filterData, field.key)
                 .map(item => ({
                     value: item[field.key],
@@ -210,7 +206,6 @@ export class FilterUI {
 
             this.populateSelect(field.element, optionsData, 'value', 'label', field.placeholder);
 
-            // Restaurar valor
             if (currentValue && optionsData.some(opt => opt.value == currentValue)) {
                 field.element.value = currentValue;
             }
@@ -222,32 +217,6 @@ export class FilterUI {
             return JSON.parse(localStorage.getItem('lastFilters') || '{}');
         } catch {
             return {};
-        }
-    }
-
-    refreshTable() {
-        // Se você tem uma função global para carregar a tabela:
-        if (typeof window.loadTable === 'function') {
-            window.loadTable();
-            return;
-        }
-
-        // Ou se usa fetch com params:
-        const params = this.getCurrentParams();
-        const url = new URL(window.location);
-        Object.keys(params).forEach(key => {
-            if (params[key]) {
-                url.searchParams.set(key, params[key]);
-            } else {
-                url.searchParams.delete(key);
-            }
-        });
-
-        // Recarregar página com novos params (ou fetch)
-        history.replaceState(null, '', url);
-        // Se for SPA, chame sua função de busca:
-        if (typeof window.searchWithFilters === 'function') {
-            window.searchWithFilters();
         }
     }
 }
