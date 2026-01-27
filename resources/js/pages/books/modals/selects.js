@@ -1,17 +1,8 @@
 export function initBooksSelects(filterData) {
-    console.log('filterData recebido =', filterData);
-    console.log('Total itens:', filterData?.length);
-
-    if (typeof filterData === 'string') {
-        filterData = JSON.parse(filterData);
-    }
-
     const genreNameSelect = document.getElementById('genre_name');
     if (!genreNameSelect) return;
 
     const populateSelect = (select, items, valueKey, textKey, placeholder, presetValue) => {
-        const currentValue = presetValue || select.dataset.value || '';
-
         select.innerHTML = '';
         select.appendChild(new Option(placeholder, ''));
 
@@ -19,6 +10,7 @@ export function initBooksSelects(filterData) {
             select.appendChild(new Option(item[textKey], item[valueKey]));
         });
 
+        const currentValue = presetValue || select.dataset.value || '';
         if (currentValue && items.some(i => i[valueKey] == currentValue)) {
             select.value = currentValue;
         }
@@ -34,8 +26,6 @@ export function initBooksSelects(filterData) {
             .filter(Boolean)
             .map(name => ({ value: name, label: name }));
 
-        console.log("genreNames gerado:", genreNames);
-
         populateSelect(
             genreNameSelect,
             genreNames,
@@ -46,5 +36,5 @@ export function initBooksSelects(filterData) {
         );
     }
 
-    updateSelects();
+    updateSelects({ genre_name: genreNameSelect.value });
 }
