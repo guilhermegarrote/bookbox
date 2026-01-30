@@ -17,8 +17,8 @@
     </x-slot name="content">
 
     <x-slot name="footer">
-        <button type="button" class="modal-button" id="btn-close" title="Fechar o menu do aluno">Fechar</button>
-        <button type="button" class="modal-button" id="submit-delete" title="Excluir este aluno">Excluir</button>
-        <button type="button" class="modal-button" id="open-edit-modal" title="Abrir modal de edição">Editar</button>
+        <button type="button" class="modal-button" id="btn-close" title="Fechar o menu do aluno" aria-label="Fechar o menu do aluno">Fechar</button>
+        <button type="button" class="modal-button" id="submit-delete" title="Excluir este aluno" aria-label="Excluir este aluno">Excluir</button>
+        <button type="button" class="modal-button" id="open-edit-modal" title="Abrir modal de edição" aria-label="Abrir modal de edição">Editar</button>
     </x-slot name="footer">
 </x-modals.modal>

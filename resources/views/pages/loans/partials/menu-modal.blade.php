@@ -71,16 +71,16 @@
             <x-modals.input-field id="formatted_class_name" label="Turma" width="650px" :value="$loan->formatted_class_name" readonly
                 title="Turma do aluno" />
             <x-modals.input-field id="isbn" label="Código ISBN" width="160px" :value="$loan->isbn" readonly
-                title="Código IBSN do livro" />
+                title="Código ISBN do livro" />
             <x-modals.input-field id="title" label="Título" width="440px" :value="$loan->title" readonly
                 title="Título do livro" />
             <x-modals.input-field id="number" label="Exemplar" width="120px" :value="$loan->number" readonly
-                title="Quantidade de exemplar do livro" />
+                title="Número do exemplar" />
             <x-modals.input-field id="author" label="Autor" width="480px" :value="$loan->author" readonly
                 title="Autor do livro" />
             <div class="form-group" style="width: 200px; display: flex; align-items: center;">
                 <input type="text" id="genre_name" name="genre_name" class="form-input"
-                    value="{{ $loan->genre_name }}" readonly aria-label="Gênero do livro"
+                    value="{{ $loan->genre_name }}" readonly
                     style="width: 165px; border-radius: 6px 0 0 6px;" title="Gênero do livro">
                 <label class="form-label" for="genre_name"
                     style="display: flex; justify-content: space-between; align-items: center; padding-left: 8px;">
@@ -100,8 +100,8 @@
     <x-slot name="footer">
         @unless ($loan->loan_returned_date)
             <button type="button" class="modal-button" id="submit-finalize"
-                title="Finalizar este empréstimo">Finalizar</button>
-            <button type="button" class="modal-button" id="open-extend-modal" title="Prorrogar devolução">Prorrogar
+                title="Finalizar este empréstimo" aria-label="Finalizar empréstimo">Finalizar</button>
+            <button type="button" class="modal-button" id="open-extend-modal" title="Prorrogar devolução" aria-label="Prorrogar devolução">Prorrogar
                 devolução</button>
 
             <a href="https://web.whatsapp.com/send?phone=55{{ $phone }}&text={{ $message }}" target="_blank"
@@ -111,6 +111,6 @@
             </a>
         @endunless
 
-        <button type="button" class="modal-button" id="btn-close" title="Fechar o menu do empréstimo">Fechar</button>
+        <button type="button" class="modal-button" id="btn-close" title="Fechar o menu do empréstimo" aria-label="Fechar o menu do empréstimo">Fechar</button>
     </x-slot>
 </x-modals.modal>
