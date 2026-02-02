@@ -8,8 +8,8 @@ use Illuminate\Support\Facades\DB;
 return new class extends Migration {
     public function up(): void
     {
-        DB::statement('DROP VIEW IF EXISTS vw_students');
-        DB::statement("CREATE VIEW vw_students AS
+        $this->down();
+        DB::unprepared("CREATE VIEW vw_students AS
             SELECT
                 s.id,
                 s.name,
@@ -46,6 +46,6 @@ return new class extends Migration {
 
     public function down(): void
     {
-        DB::statement('DROP VIEW IF EXISTS vw_students');
+        DB::unprepared('DROP VIEW IF EXISTS vw_students');
     }
 };

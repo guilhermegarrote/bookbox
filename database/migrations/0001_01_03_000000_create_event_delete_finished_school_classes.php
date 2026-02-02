@@ -12,9 +12,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::unprepared("
-            DROP EVENT IF EXISTS event_delete_finished_school_classes;
-            CREATE EVENT ev_delete_finished_school_classes
+        $this->down();
+        DB::unprepared("CREATE EVENT ev_delete_finished_school_classes
                 ON SCHEDULE EVERY 1 DAY
                 STARTS CURRENT_TIMESTAMP
             DO

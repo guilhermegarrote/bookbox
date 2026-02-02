@@ -8,8 +8,8 @@ use Illuminate\Support\Facades\DB;
 return new class extends Migration {
     public function up(): void
     {
-        DB::statement('DROP VIEW IF EXISTS vw_copies');
-        DB::statement('CREATE VIEW vw_copies AS
+        $this->down();
+        DB::unprepared("CREATE VIEW vw_copies AS
             SELECT
                 c.id AS id,
                 b.id AS book_id,
@@ -33,11 +33,11 @@ return new class extends Migration {
             FROM copies c
             JOIN books b ON c.book_id = b.id
             LEFT JOIN genres g ON b.genre_id = g.id
-        ');
+        ");
     }
 
     public function down(): void
     {
-        DB::statement('DROP VIEW IF EXISTS vw_copies');
+        DB::unprepared('DROP VIEW IF EXISTS vw_copies');
     }
 };
