@@ -37,7 +37,7 @@ return new class extends Migration {
             $table->longText('exception')
                 ->comment('Informação detalhada da exceção que causou a falha')
             ;
-            
+
             $table->timestamp('failed_at')
                 ->useCurrent()
                 ->comment('Data e hora em que o job falhou')
