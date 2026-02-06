@@ -6,6 +6,14 @@ import { initScannerListener } from './modals/scanner';
 import { bindOpenButtons } from '@js/components/books/handlers/bind-buttons';
 import { openGenerateLabelModal } from '@js/pages/labels/labels-modals.js';
 
+/**
+ * Initializes all book-related modals and event bindings.
+ * Sets up button handlers, scanner listener, and rebinds events after table updates.
+ *
+ * @param {Object} params
+ * @param {Object} params.modalManager Modal manager instance used to open and control modals.
+ * @param {Object} params.table Table instance used to refresh data after modal actions.
+ */
 export function initBooksModals({ modalManager, table }) {
     const handlers = {
         openMenuModal: (id) => openMenuModal(modalManager, id, table),
@@ -24,10 +32,3 @@ export function initBooksModals({ modalManager, table }) {
         bindOpenButtons(handlers);
     });
 }
-
-export {
-    openCreateModal,
-    openUpdateModal,
-    openMenuModal,
-    initBooksSelects
-};

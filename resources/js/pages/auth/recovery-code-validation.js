@@ -4,9 +4,14 @@ import { showErrors, clearErrors, notifyError, notifySuccess } from '@js/utils/f
 import { validateRecoveryCode } from '@/utils/validation/auth-validation.js';
 import '@css/pages/recovery-code-validation.css';
 
+/**
+ * Handles recovery code validation and resend actions.
+ */
 document.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById('recovery-code-validation-form');
+
     const resendLink = document.getElementById('resend-code-btn');
+
     const inputs = document.querySelectorAll('.verification-input');
 
     if (!form || !resendLink) {
@@ -17,10 +22,12 @@ document.addEventListener('DOMContentLoaded', () => {
     inputs.forEach((input, index) => {
         input.addEventListener('input', (e) => {
             const value = e.target.value;
+
             if (!/^\d$/.test(value)) {
                 e.target.value = '';
                 return;
             }
+
             if (value && index < inputs.length - 1) {
                 inputs[index + 1].focus();
             }

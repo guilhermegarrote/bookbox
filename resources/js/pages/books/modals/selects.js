@@ -1,3 +1,9 @@
+/**
+ * Initializes the book form selects using provided select data.
+ * Populates the genre select (`#genre_name`) with unique genre names.
+ *
+ * @param {Array<Object>} selectData List of book-related data used to build select options.
+ */
 export function initBooksSelects(selectData) {
     const genreNameSelect = document.getElementById('genre_name');
     if (!genreNameSelect) return;

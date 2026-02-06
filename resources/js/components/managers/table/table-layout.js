@@ -1,9 +1,23 @@
+/**
+ * Handles table layout calculations and resize updates.
+ */
 export default class TableLayout {
+    /**
+     * @param {Object} manager Table manager instance.
+     */
     constructor(manager) {
         this.manager = manager;
+
+        this.resizeObserver = null;
+
         this.initResizeObserver();
     }
 
+    /**
+     * Calculates how many rows should be displayed based on wrapper height.
+     *
+     * @returns {number}
+     */
     calculateVisibleRows() {
         const wrapper = document.querySelector('.table-wrapper');
         if (!wrapper) return 15;
@@ -26,18 +40,23 @@ export default class TableLayout {
 
         if (!row && table) {
             const tbody = table.querySelector('tbody');
+
             if (tbody) {
                 createdTempRow = true;
+
                 const tr = document.createElement('tr');
                 const thCount = table.querySelectorAll('thead th').length || 6;
+
                 for (let i = 0; i < thCount; i++) {
                     const td = document.createElement('td');
                     td.innerHTML = 'X';
                     tr.appendChild(td);
                 }
+
                 tr.style.visibility = 'hidden';
                 tr.style.position = 'hidden';
                 tr.style.pointerEvents = 'none';
+
                 tbody.appendChild(tr);
                 row = tr;
             }
@@ -45,18 +64,24 @@ export default class TableLayout {
 
         const rowHeight = row ? row.getBoundingClientRect().height || row.offsetHeight : 42;
 
-        if (createdTempRow && row && row.parentElement) row.parentElement.removeChild(row);
+        if (createdTempRow && row && row.parentElement) {
+            row.parentElement.removeChild(row);
+        }
 
         const visibleRows = rowHeight > 0 ? Math.round(availableForRows / rowHeight) : 0;
         return visibleRows >= 5 ? visibleRows * 2 : 15;
     }
 
+    /**
+     * Initializes ResizeObserver to update table pagination on resize.
+     */
     initResizeObserver() {
         const wrapper = document.querySelector('.table-wrapper');
         if (!wrapper) return;
 
         this.resizeObserver = new ResizeObserver(() => {
             const newPerPage = this.calculateVisibleRows();
+
             if (Math.abs(newPerPage - this.manager.perPage) >= 2) {
                 this.manager.perPage = newPerPage;
                 this.manager.resetPagination();

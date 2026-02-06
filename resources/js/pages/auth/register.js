@@ -1,7 +1,6 @@
+import '@css/pages/auth.css';
 import { register } from '@js/api/auth/register.js';
 import { showErrors, clearErrors, notifyError } from '@js/utils/formErrors';
-import '@css/pages/auth.css';
-
 import {
     validateNameField,
     validateEmailField,
@@ -10,8 +9,12 @@ import {
     combineValidations
 } from '@/utils/validation/auth-validation.js';
 
+/**
+ * Handles user registration form validation and submission.
+ */
 document.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById('register-form');
+
     if (!form) {
         console.error('Formulário de registro não encontrado.');
         return;
@@ -44,11 +47,10 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!response.ok) {
                 if (response.data?.errors) {
                     showErrors(response.data.errors);
-                } else {
-                    if (response.data?.error || response.data?.message) {
-                        notifyError(response.data?.error || response.data?.message);
-                    }
+                } else if (response.data?.error || response.data?.message) {
+                    notifyError(response.data.error || response.data.message);
                 }
+
                 return;
             }
 

@@ -3,6 +3,15 @@ import { finalizeLoan } from '@js/api/loans/finalize.js';
 import { extendLoan } from '@js/api/loans/extend.js';
 import { notifySuccess, notifyError } from '@js/utils/formErrors';
 
+/**
+ * Opens the loan menu modal and binds action handlers.
+ *
+ * @async
+ * @param {Object} modalManager - Modal controller instance.
+ * @param {number|string} loanId - Loan ID to manage.
+ * @param {Object} loansTable - Table instance used to refresh results.
+ * @returns {Promise<void>}
+ */
 export async function openMenuModal(modalManager, loanId, loansTable) {
     const url = route('loans.menu-modal', { loan: loanId });
 
@@ -24,7 +33,7 @@ export async function openMenuModal(modalManager, loanId, loansTable) {
             if (!confirmed) return;
 
             try {
-                const { ok, data: responseData, status } = await extendLoan(loanId);
+                const { ok, data: responseData } = await extendLoan(loanId);
 
                 if (!ok) {
                     notifyError(responseData?.error || 'Erro ao prolongar o empréstimo');
@@ -49,7 +58,7 @@ export async function openMenuModal(modalManager, loanId, loansTable) {
             if (!confirmed) return;
 
             try {
-                const { ok, data: responseData, status } = await finalizeLoan(loanId);
+                const { ok, data: responseData } = await finalizeLoan(loanId);
 
                 if (!ok) {
                     notifyError(responseData?.error || 'Erro ao finalizar o empréstimo');
@@ -67,4 +76,3 @@ export async function openMenuModal(modalManager, loanId, loansTable) {
         console.error(err);
     }
 }
-

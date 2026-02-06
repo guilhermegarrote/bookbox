@@ -1,3 +1,14 @@
+/**
+ * Renders the loans sidebar list.
+ *
+ * Each loan is displayed with:
+ * - Color-coded status indicator
+ * - Title
+ * - Status label (overdue, today, upcoming)
+ * - Days remaining or overdue
+ *
+ * @param {Array<Object>} loans - List of loan objects with at least { id, title, days_diff }.
+ */
 export function renderSidebar(loans) {
     const list = document.getElementById('loan-list');
     if (!list) return;
@@ -59,6 +70,12 @@ export function renderSidebar(loans) {
     list.appendChild(fragment);
 }
 
+/**
+ * Determines the status of a loan based on days difference.
+ *
+ * @param {number} daysDiff - Days until due date (negative = overdue, 0 = today).
+ * @returns {Object} { color, label, days, quantity } for UI display.
+ */
 function calculateLoanStatus(daysDiff) {
     let color, label, days, quantity;
 

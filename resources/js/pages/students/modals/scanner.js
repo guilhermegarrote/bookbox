@@ -1,6 +1,8 @@
-import { notifyError } from '@js/utils/formErrors';
-import { findLoanByBarcode } from '@js/api/loans/find-by-barcode.js';
-
+/**
+ * Initializes a global barcode scanner listener for student loans.
+ *
+ * @param {Function} openMenuModal - Callback to open the student menu modal (expects studentId)
+ */
 export function initBarcodeScannerListener(openMenuModal) {
     let barcodeBuffer = '';
     let barcodeTimer = null;

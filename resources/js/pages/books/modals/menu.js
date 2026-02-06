@@ -5,6 +5,14 @@ import { openUpdateModal } from './update';
 import { openGenerateLabelModal } from '../../labels/labels-modals.js';
 import { openManagerCopiesModal } from '../../copies/modals/manager.js';
 
+/**
+ * Opens the book menu modal and binds its action buttons (edit, manage copies,
+ * generate labels, and delete).
+ *
+ * @param {Object} modalManager
+ * @param {number|string} bookId
+ * @param {Object} booksTable
+ */
 export async function openMenuModal(modalManager, bookId, booksTable) {
     const url = route('books.menu-modal', { book: bookId });
 
@@ -33,7 +41,7 @@ export async function openMenuModal(modalManager, bookId, booksTable) {
             if (!confirmed) return;
 
             try {
-                const { ok, data: responseData, status } = await deleteBook(bookId);
+                const { ok, data: responseData } = await deleteBook(bookId);
 
                 if (!ok) {
                     notifyError(responseData?.error || 'Erro desconhecido.');

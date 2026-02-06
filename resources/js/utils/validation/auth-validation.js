@@ -1,11 +1,13 @@
 /**
- * Global form validators for authentication-related forms.
+ * Global form validators for authentication forms.
  * Each function returns an array of objects in the format:
  * [{ field: 'field_name', messages: ['Error message 1', 'Error message 2'] }]
  */
 
 /**
- * Validate email format and length.
+ * Validate an email field for presence, length, and format.
+ * @param {string} email
+ * @returns {Array} Array of error objects
  */
 export function validateEmailField(email) {
     const errors = [];
@@ -22,7 +24,9 @@ export function validateEmailField(email) {
 }
 
 /**
- * Validate name field: at least two words, letters only, 3–100 characters.
+ * Validate a name field: must be 3–100 characters, at least two words, letters only.
+ * @param {string} name
+ * @returns {Array} Array of error objects
  */
 export function validateNameField(name) {
     const errors = [];
@@ -40,7 +44,9 @@ export function validateNameField(name) {
 }
 
 /**
- * Validate password complexity and length.
+ * Validate password complexity: length 8–16, uppercase, lowercase, number, special character.
+ * @param {string} password
+ * @returns {Array} Array of error objects
  */
 export function validatePasswordField(password) {
     const errors = [];
@@ -60,7 +66,10 @@ export function validatePasswordField(password) {
 }
 
 /**
- * Validate password confirmation (must match password).
+ * Validate password confirmation: must match password.
+ * @param {string} password
+ * @param {string} confirmation
+ * @returns {Array} Array of error objects
  */
 export function validatePasswordConfirmation(password, confirmation) {
     const errors = [];
@@ -77,17 +86,24 @@ export function validatePasswordConfirmation(password, confirmation) {
 }
 
 /**
- * Validate terms acceptance checkbox.
+ * Validate acceptance of terms checkbox.
+ * @param {boolean} [termsChecked=document.getElementById('terms')?.checked]
+ * @returns {Array} Array of error objects
  */
 export function validateTermsField(termsChecked = document.getElementById('terms')?.checked) {
     if (!termsChecked) {
-        return [{ field: 'terms', messages: ['Você deve aceitar os Termos de Condição e a Política de Privacidade.'] }];
+        return [{
+            field: 'terms',
+            messages: ['Você deve aceitar os Termos de Condição e a Política de Privacidade.']
+        }];
     }
     return [];
 }
 
 /**
  * Validate 6-digit numeric recovery code.
+ * @param {string} code
+ * @returns {Array} Array of error objects
  */
 export function validateRecoveryCode(code) {
     const errors = [];
@@ -103,7 +119,9 @@ export function validateRecoveryCode(code) {
 }
 
 /**
- * Combine multiple validation results into a single array.
+ * Combine multiple validator results into a single array.
+ * @param {...Array} validators
+ * @returns {Array} Flattened array of errors
  */
 export function combineValidations(...validators) {
     return validators.flat();

@@ -1,7 +1,11 @@
 import IMask from 'imask';
 
+/**
+ * Applies input masks to form fields (CPF, phone, ISBN, and label copies).
+ */
 export function applyInputMasks() {
     const cpfInput = document.getElementById('cpf');
+
     if (cpfInput) {
         IMask(cpfInput, {
             mask: '000.000.000-00'
@@ -9,6 +13,7 @@ export function applyInputMasks() {
     }
 
     const phoneInput = document.getElementById('phone');
+
     if (phoneInput) {
         IMask(phoneInput, {
             mask: [
@@ -18,6 +23,7 @@ export function applyInputMasks() {
     }
 
     const isbnInput = document.getElementById('isbn');
+
     if (isbnInput) {
         IMask(isbnInput, {
             mask: [
@@ -27,6 +33,7 @@ export function applyInputMasks() {
     }
 
     const labelInputs = document.querySelectorAll('[data-copies-input]');
+
     labelInputs.forEach(element => {
         IMask(element, {
             mask: /^\d*(?:-\d*)?(?:,\d*(?:-\d*)?)*$/,

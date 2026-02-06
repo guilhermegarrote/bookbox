@@ -1,6 +1,12 @@
 import { findStudentByCpf } from '@js/api/students/find-by-cpf.js';
 import { notifyError } from '@/utils/formErrors';
 
+/**
+ * Initializes CPF auto-fill behavior.
+ * Should be called after the form is loaded in the DOM.
+ *
+ * @returns {void}
+ */
 export function initCpfAutoFill() {
     const cpfInput = document.getElementById('cpf');
     if (!cpfInput) return;
@@ -23,9 +29,18 @@ export function initCpfAutoFill() {
     cpfInput.addEventListener('blur', async () => {
         const cpf = cpfInput.value.replace(/\D/g, '');
         if (cpf.length < 11) return;
+
         await autofillFromCpf(cpf);
     });
 
+    /**
+     * Fetches student data by CPF and applies it into the form.
+     * Uses caching to avoid duplicate requests for the same CPF.
+     *
+     * @async
+     * @param {string} cpf - CPF number (digits only).
+     * @returns {Promise<void>}
+     */
     async function autofillFromCpf(cpf) {
         const nameInput = document.getElementById('name');
         const statusInput = document.getElementById('can_borrow');
@@ -58,6 +73,12 @@ export function initCpfAutoFill() {
     }
 }
 
+/**
+ * Applies student data into the form fields and updates UI classes.
+ *
+ * @param {Object} student - Student data object returned by API.
+ * @returns {void}
+ */
 function applyStudentData(student) {
     const nameInput = document.getElementById('name');
     const statusInput = document.getElementById('can_borrow');
@@ -79,6 +100,11 @@ function applyStudentData(student) {
     });
 }
 
+/**
+ * Clears student-related fields and resets UI state.
+ *
+ * @returns {void}
+ */
 function clearStudentFields() {
     const nameInput = document.getElementById('name');
     const statusInput = document.getElementById('can_borrow');

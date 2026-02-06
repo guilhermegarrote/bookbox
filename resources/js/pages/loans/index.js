@@ -4,6 +4,7 @@ import loansTable from '@js/components/managers/table/instances/loans-table';
 import { setupTablePage } from '@js/components/setups/page-table-setup';
 import { setupSidebarPage } from '@js/components/setups/page-sidebar-setup';
 
+// Setup table page with filtering, table updates, and modals
 setupTablePage({
     initFilterUI: () => {
         const filterUI = new FilterUI({

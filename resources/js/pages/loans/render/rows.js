@@ -1,3 +1,10 @@
+/**
+ * Renders HTML table rows based on a table definition and a list of items.
+ *
+ * @param {Object} definition - Table definition object (columns + actions).
+ * @param {Array<Object>} items - List of row objects returned from backend.
+ * @returns {string} HTML string containing rendered <tr> rows.
+ */
 export function renderTableRows(definition, items) {
     return items.map(item => {
         const isReturned = item.loan_returned_date !== null;

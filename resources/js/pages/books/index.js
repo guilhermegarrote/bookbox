@@ -3,6 +3,10 @@ import { FilterUI } from '@js/components/common/filter/filter-ui/index';
 import booksTable from '@js/components/managers/table/instances/books-table';
 import { setupTablePage } from '@js/components/setups/page-table-setup';
 
+/**
+ * Initializes the books page table setup.
+ * Configures filter UI, table updates, filter persistence key, and modal initialization.
+ */
 setupTablePage({
     initFilterUI: () => {
         const filterUI = new FilterUI({

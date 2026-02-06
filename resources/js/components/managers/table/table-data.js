@@ -1,17 +1,36 @@
+/**
+ * Handles table data loading and rendering.
+ */
 export default class TableData {
+    /**
+     * @param {Object} manager Table manager instance.
+     */
     constructor(manager) {
         this.manager = manager;
     }
 
+    /**
+     * Loads the initial table data.
+     *
+     * @returns {Promise<void>}
+     */
     async loadInitialTable() {
         await this.updateTable({}, false);
     }
 
+    /**
+     * Updates the table data.
+     *
+     * @param {Object} [params]
+     * @param {boolean} [append=false] Appends rows instead of replacing.
+     * @returns {Promise<any>}
+     */
     async updateTable(params = {}, append = false) {
         const m = this.manager;
         if (m.isLoading || (!m.hasMore && append)) return;
 
         m.isLoading = true;
+
         const loader = document.getElementById('loader');
         if (loader) loader.style.display = 'block';
 
@@ -41,6 +60,12 @@ export default class TableData {
         }
     }
 
+    /**
+     * Handles successful table response.
+     *
+     * @param {any} data
+     * @param {boolean} [append=false]
+     */
     handleResponse(data, append = false) {
         const m = this.manager;
 
@@ -53,23 +78,27 @@ export default class TableData {
 
         const existingMessage = tableWrapper.querySelector('.data-empty');
         if (existingMessage) existingMessage.remove();
+
         const sentinel = tableWrapper.querySelector('#infinite-scroll-sentinel');
         if (sentinel) sentinel.remove();
 
         if (!rowsData.length) {
             if (!append) {
                 tbody.innerHTML = '';
+
                 const msgDiv = document.createElement('div');
                 msgDiv.className = 'data-empty';
                 msgDiv.innerHTML = `<h1>${m.notFoundMessage}</h1>`;
                 tableWrapper.appendChild(msgDiv);
             }
+
             m.hasMore = false;
             if (loader) loader.style.display = 'none';
             return;
         }
 
         const newRows = m.renderRows(rowsData);
+
         if (append) tbody.insertAdjacentHTML('beforeend', newRows);
         else tbody.innerHTML = newRows;
 
@@ -90,16 +119,21 @@ export default class TableData {
         }
 
         if (loader) loader.style.display = 'none';
+
         m.sortingModule.updateSortIcons();
         document.dispatchEvent(new Event('tableUpdated'));
     }
 
+    /**
+     * Displays the error message inside the table wrapper.
+     */
     handleError() {
         const m = this.manager;
         const tbody = m.tableContainer.querySelector('tbody');
         const tableWrapper = document.getElementById('data-table-container');
 
         tbody.innerHTML = '';
+
         const existingMessage = tableWrapper.querySelector('.data-empty');
         if (existingMessage) existingMessage.remove();
 

@@ -1,3 +1,8 @@
+/**
+ * Initializes and populates the student select dropdowns: course, period, and term.
+ *
+ * @param {Array<Object>} selectData - Array of objects containing { course, period, term } for populating selects
+ */
 export function initStudentsSelects(selectData) {
     const courseSelect = document.getElementById('course');
     const periodSelect = document.getElementById('period');

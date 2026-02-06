@@ -3,6 +3,14 @@ import { findBookByIsbn } from '@js/api/books/find-by-isbn.js';
 import { findLoanByBarcode } from '@js/api/loans/find-by-barcode.js';
 import { isValidISBN } from '@js/utils/validation/app-validation.js';
 
+/**
+ * Initializes a keyboard-based scanner listener.
+ * Captures fast typed input (barcode/ISBN), detects when Enter is pressed,
+ * and opens the correct modal depending on the scanned code.
+ *
+ * @param {Function} openMenuModal Opens the book menu modal using a book id.
+ * @param {Function} openCreateModalWithIsbn Opens the create modal with the scanned ISBN filled in.
+ */
 export function initScannerListener(openMenuModal, openCreateModalWithIsbn) {
     let buffer = '';
     let timer = null;

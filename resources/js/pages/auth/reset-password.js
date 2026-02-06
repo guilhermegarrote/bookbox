@@ -8,6 +8,9 @@ import {
     combineValidations
 } from '@/utils/validation/auth-validation.js';
 
+/**
+ * Handles password reset form validation and submission.
+ */
 document.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById('reset-password-form');
 

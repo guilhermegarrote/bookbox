@@ -1,4 +1,16 @@
-
+/**
+ * Binds click handlers to UI elements responsible for opening modals.
+ *
+ * @param {Object} params
+ * @param {Function} params.openMenuModal
+ *        Callback invoked with the row ID when a table row is clicked.
+ * @param {Function} params.openCreateModal
+ *        Callback invoked when the "add" button is clicked.
+ * @param {Function} params.openGenerateLabelModal
+ *        Callback invoked when the "label" button is clicked.
+ *
+ * @returns {void}
+ */
 export function bindOpenButtons({
     openMenuModal,
     openCreateModal,

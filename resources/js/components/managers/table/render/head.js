@@ -1,5 +1,13 @@
 import { getButtonHTML } from "@js/components/utils/table-builder";
 
+/**
+ * Renders the table header HTML.
+ *
+ * @param {Object} definition
+ * @param {Array} definition.columns
+ * @param {Array} definition.actions
+ * @returns {string}
+ */
 export function renderTableHead(definition) {
     return `
         <tr>

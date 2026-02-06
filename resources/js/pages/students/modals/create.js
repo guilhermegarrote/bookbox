@@ -1,9 +1,9 @@
-import { route } from 'ziggy-js';
-import { applyInputMasks } from '@js/components/ui/input-mask.js';
-import { showErrors, notifySuccess, notifyError } from '@js/utils/formErrors';
-import { createStudent } from '@js/api/students/create.js';
-import { initStudentsSelects } from './selects';
-
+/**
+ * Opens the "Create Student" modal and handles its behavior.
+ *
+ * @param {Object} modalManager - Modal controller instance
+ * @param {Object} studentsTable - Table instance for updating after creation
+ */
 export async function openCreateModal(modalManager, studentsTable) {
     const url = route('students.create-modal');
 

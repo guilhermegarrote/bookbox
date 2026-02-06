@@ -1,21 +1,37 @@
+/**
+ * Handles infinite scroll loading for the table.
+ */
 export default class InfiniteScroll {
+    /**
+     * @param {Object} manager Table manager instance.
+     */
     constructor(manager) {
         this.manager = manager;
+
         this.initInfiniteScroll();
     }
 
+    /**
+     * Initializes IntersectionObserver to load more table data when reaching the bottom.
+     */
     initInfiniteScroll() {
         const m = this.manager;
         const wrapper = m.tableContainer;
         if (!wrapper) return;
 
+        /**
+         * Creates and appends the sentinel element used to detect scroll end.
+         *
+         * @returns {HTMLElement|null}
+         */
         const createSentinel = () => {
             if (!m.hasMore) return null;
 
             const sentinel = document.createElement('div');
             sentinel.id = 'infinite-scroll-sentinel';
-            sentinel.style.height = '1px'; 
+            sentinel.style.height = '1px';
             sentinel.style.width = '100%';
+
             wrapper.appendChild(sentinel);
             return sentinel;
         };

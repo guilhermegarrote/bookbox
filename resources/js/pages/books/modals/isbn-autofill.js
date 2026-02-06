@@ -5,6 +5,9 @@ import { notifyError } from '@js/utils/formErrors';
 let lastIsbn = null;
 let lastData = null;
 
+/**
+ * Initializes ISBN autofill by listening to user input and fetching metadata.
+ */
 export function initIsbnAutoFill() {
     const isbnInput = document.getElementById('isbn');
     if (!isbnInput) return;
@@ -23,10 +26,22 @@ export function initIsbnAutoFill() {
     });
 }
 
+/**
+ * Normalizes ISBN input by removing special characters and forcing uppercase.
+ *
+ * @param {string} value
+ * @returns {string}
+ */
 function normalizeIsbn(value) {
     return value.replace(/[^0-9Xx]/g, '').toUpperCase();
 }
 
+/**
+ * Fetches metadata for the given ISBN and applies it to the form fields.
+ * Uses cached data if the ISBN was already fetched.
+ *
+ * @param {string} isbn
+ */
 async function autofill(isbn) {
     if (isbn === lastIsbn && lastData) {
         applyMetadata(lastData);
@@ -51,6 +66,11 @@ async function autofill(isbn) {
     }
 }
 
+/**
+ * Fills form fields using metadata keys as element IDs.
+ *
+ * @param {Object} data
+ */
 function applyMetadata(data) {
     Object.entries(data).forEach(([key, value]) => {
         const field = document.getElementById(key);

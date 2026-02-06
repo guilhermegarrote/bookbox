@@ -4,6 +4,9 @@ import { showErrors, clearErrors, notifyError } from '@js/utils/formErrors';
 import { validateEmailField, combineValidations } from '@js/utils/validation/auth-validation.js';
 import '@css/pages/login.css';
 
+/**
+ * Handles login form submit and validation.
+ */
 document.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById('login-form');
 
@@ -48,7 +51,6 @@ document.addEventListener('DOMContentLoaded', () => {
             if (responseData.redirect) {
                 window.location.href = responseData.redirect;
             }
-
         } catch (error) {
             console.error(error);
             notifyError('Erro técnico ao tentar fazer login. Tente novamente.');
@@ -56,6 +58,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     const recoveryLink = document.querySelector('.auth-link');
+
     const emailInput = document.querySelector('input[name="email"]');
 
     if (recoveryLink) {
@@ -71,6 +74,12 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    /**
+     * Validates login form fields.
+     *
+     * @param {Object} data
+     * @returns {Array}
+     */
     function validateForm(data) {
         const emailErrors = validateEmailField(data.email);
 

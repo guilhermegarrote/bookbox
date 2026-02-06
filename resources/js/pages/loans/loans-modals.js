@@ -4,6 +4,13 @@ import { initBarcodeScannerListener } from './modals/scanner';
 import { bindOpenButtons } from '@js/components/loans/handlers/bind-buttons';
 import { renderSidebar } from './render/sidebar';
 
+/**
+ * Initializes all loan modals and relevant UI behaviors.
+ *
+ * @param {Object} param0
+ * @param {Object} param0.modalManager - Modal controller instance.
+ * @param {Object} param0.table - Loans table instance (used to update table/sidebar).
+ */
 export function initLoansModals({ modalManager, table }) {
     const handlers = {
         openMenuModal: (loanId) => openMenuModal(modalManager, loanId, table),

@@ -5,6 +5,15 @@ import { updateBook } from '@js/api/books/update.js';
 import { initBooksSelects } from './selects';
 import { openMenuModal } from './menu';
 
+/**
+ * Opens the update book modal and binds form submission logic.
+ * On success, it reopens the book menu modal and refreshes the table.
+ *
+ * @param {Object} modalManager Modal manager instance used to load and control modals.
+ * @param {string|number} bookId Book ID to be updated.
+ * @param {Object} booksTable Table instance used to refresh the list after update.
+ * @returns {Promise<void>}
+ */
 export async function openUpdateModal(modalManager, bookId, booksTable) {
     const url = route('books.update-modal', { book: bookId });
 
@@ -38,3 +47,4 @@ export async function openUpdateModal(modalManager, bookId, booksTable) {
         console.error(err);
     }
 }
+

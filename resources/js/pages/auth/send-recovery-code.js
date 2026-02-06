@@ -4,6 +4,9 @@ import '@css/pages/auth.css';
 
 import { validateEmailField } from '@/utils/validation/auth-validation.js';
 
+/**
+ * Handles sending recovery code form validation and submission.
+ */
 document.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById('send-recovery-code-form');
 
@@ -13,6 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     const emailInput = form.querySelector('input[name="email"]');
+
     const savedEmail = localStorage.getItem('recoveryEmail');
 
     if (savedEmail && emailInput) {
@@ -26,7 +30,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (!form.reportValidity()) return;
 
-        const email = emailInput.value;
+        const email = emailInput?.value?.trim() || '';
         const validationErrors = validateEmailField(email);
 
         if (validationErrors.length > 0) {

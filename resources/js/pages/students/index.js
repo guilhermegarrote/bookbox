@@ -3,6 +3,9 @@ import { FilterUI } from '@js/components/common/filter/filter-ui/index';
 import studentsTable from '@js/components/managers/table/instances/students-table';
 import { setupTablePage } from '@js/components/setups/page-table-setup';
 
+/**
+ * Initializes the Students page with table, filters, and modals.
+ */
 setupTablePage({
     initFilterUI: () => {
         const filterUI = new FilterUI({
@@ -17,7 +20,6 @@ setupTablePage({
         });
 
         filterUI.init();
-
         window.App.filterUIInstance = filterUI;
 
         return filterUI;

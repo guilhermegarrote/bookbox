@@ -6,6 +6,12 @@ let selectedBooks = {};
 let remainingLabels = null;
 const labelsPerSheet = 16;
 
+/**
+ * Opens and initializes the label generation modal.
+ *
+ * @param {Object} modalManager - Modal controller instance.
+ * @returns {Promise<void>}
+ */
 export async function openGenerateLabelModal(modalManager) {
     const url = route('labels.generate-modal');
 
@@ -81,8 +87,8 @@ export async function openGenerateLabelModal(modalManager) {
 }
 
 /**
- * Handles live search with debounce, reloads table via AJAX,
- * and restores selected books.
+ * Enables live search with debounce and reloads tbody content.
+ * Restores selected books after reloading results.
  */
 function initSearch() {
     const modal = document.getElementById('labelGenerateModal');
@@ -101,7 +107,9 @@ function initSearch() {
         debounceTimer = setTimeout(async () => {
             collectBooksForGenerateLabel();
 
-            const fetchUrl = value === '' ? route('labels.generate-modal') : `${route('labels.generate-modal')}?search=${encodeURIComponent(value)}`;
+            const fetchUrl = value === ''
+                ? route('labels.generate-modal')
+                : `${route('labels.generate-modal')}?search=${encodeURIComponent(value)}`;
 
             try {
                 const res = await fetch(fetchUrl, { headers: { 'X-Requested-With': 'XMLHttpRequest' } });
@@ -120,7 +128,7 @@ function initSearch() {
 }
 
 /**
- * Collects all selected books and their copies into memory
+ * Saves selected books (isbn + copies) from the current table into memory.
  */
 function collectBooksForGenerateLabel() {
     const rows = document.querySelectorAll('#labelGenerateModal tbody tr');
@@ -133,7 +141,7 @@ function collectBooksForGenerateLabel() {
 
         if (checkbox?.checked) {
             selectedBooks[isbn] = {
-                value: value,
+                value,
                 placeholder: copiesInput?.placeholder || ''
             };
         } else {
@@ -143,7 +151,10 @@ function collectBooksForGenerateLabel() {
 }
 
 /**
- * Restores checkbox and copies state, and moves selected rows to the top
+ * Restores checkbox + copies input values based on selectedBooks memory.
+ * Selected rows are moved to the top.
+ *
+ * @param {HTMLElement} list - tbody element
  */
 function restoreSelectedBooks(list) {
     const rows = Array.from(list.querySelectorAll('tr'));
@@ -158,8 +169,10 @@ function restoreSelectedBooks(list) {
         if (isbn in selectedBooks) {
             checkbox.checked = true;
             const bookData = selectedBooks[isbn];
+
             copiesInput.value = bookData.value || '';
             copiesInput.placeholder = bookData.placeholder || copiesInput.placeholder;
+
             selectedRows.push(row);
         } else {
             checkbox.checked = false;
@@ -173,7 +186,8 @@ function restoreSelectedBooks(list) {
 }
 
 /**
- * Binds events to checkboxes and copies inputs to update memory in real-time
+ * Binds checkbox and copies input events.
+ * Keeps selectedBooks updated and refreshes the label counter.
  */
 function bindCheckboxAndCopiesEvents() {
     const rows = document.querySelectorAll('#labelGenerateModal tbody tr');
@@ -198,17 +212,11 @@ function bindCheckboxAndCopiesEvents() {
             updateLabelCounter();
         };
 
-        checkbox.addEventListener('change', () => {
-            updateSelectedBook();
-        });
+        checkbox.addEventListener('change', updateSelectedBook);
 
         if (copiesInput) {
             copiesInput.addEventListener('input', () => {
-                if (copiesInput.value.trim() !== '') {
-                    checkbox.checked = true;
-                } else {
-                    checkbox.checked = false;
-                }
+                checkbox.checked = copiesInput.value.trim() !== '';
                 updateSelectedBook();
             });
         }
@@ -216,8 +224,8 @@ function bindCheckboxAndCopiesEvents() {
 }
 
 /**
- * Calculates the total number of labels selected based on user input,
- * determines how many full sheets are needed, and updates the label counter UI.
+ * Updates the label counter based on selectedBooks.
+ * Also calculates how many labels remain on the last sheet.
  */
 function updateLabelCounter() {
     let totalLabels = 0;
@@ -240,25 +248,16 @@ function updateLabelCounter() {
     const counter = document.getElementById('label-counter');
     if (!counter) return;
 
-    if (totalLabels === 0) {
-        counter.textContent = 'Nenhuma etiqueta selecionada';
-    } else {
-        counter.textContent = `Total: ${totalLabels} etiquetas | ${fullSheets} folha(s) completa(s) + ${remainingLabels} etiqueta(s) na folha seguinte`;
-    }
+    counter.textContent = totalLabels === 0
+        ? 'Nenhuma etiqueta selecionada'
+        : `Total: ${totalLabels} etiquetas | ${fullSheets} folha(s) completa(s) + ${remainingLabels} etiqueta(s) na folha seguinte`;
 }
 
 /**
- * Parses a string representing label copy ranges or individual values
- * and returns the total number of copies calculated from it.
+ * Converts copy inputs like "1-3,5,7-9" into a numeric count.
  *
- * Examples:
- * - "1,2,3" → 3
- * - "1-5" → 5
- * - "1-3,5,7-9" → 7
- * - "sem etiquetas" → 0
- *
- * @param {string} value - The input string containing copy information
- * @returns {number} The total number of calculated copies
+ * @param {string} value
+ * @returns {number}
  */
 function countCopiesFromInput(value) {
     if (!value || value.toLowerCase().includes('sem')) return 0;

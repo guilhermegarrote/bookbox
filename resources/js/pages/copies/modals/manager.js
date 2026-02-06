@@ -3,6 +3,15 @@ import { addCopies } from '@js/api/copies/add.js';
 import { deleteCopy } from '@js/api/copies/delete.js';
 import { openMenuModal } from '@js/pages/books/modals/menu.js';
 
+/**
+ * Opens the modal for managing book copies.
+ * Allows deleting copies and opening the add copies modal.
+ *
+ * @param {Object} modalManager Modal manager instance used to control modals.
+ * @param {string|number} bookId Book ID used to load and manage copies.
+ * @param {Object} booksTable Table instance used to refresh the books list.
+ * @returns {Promise<void>}
+ */
 export async function openManagerCopiesModal(modalManager, bookId, booksTable) {
     const url = route('copies.manager-modal', { book: bookId });
 
@@ -45,6 +54,15 @@ export async function openManagerCopiesModal(modalManager, bookId, booksTable) {
     }
 }
 
+/**
+ * Opens the modal for adding multiple copies of a book.
+ * Provides increment/decrement controls and validates the quantity input.
+ *
+ * @param {Object} modalManager Modal manager instance used to control modals.
+ * @param {string|number} bookId Book ID used when creating new copies.
+ * @param {Object} booksTable Table instance used to refresh the books list.
+ * @returns {Promise<void>}
+ */
 async function openAddModal(modalManager, bookId, booksTable) {
     const url = route('copies.add-modal');
 
@@ -99,6 +117,13 @@ async function openAddModal(modalManager, bookId, booksTable) {
     }
 }
 
+/**
+ * Removes any previously attached event listeners from the modal close button
+ * by cloning and replacing the element.
+ *
+ * @param {HTMLElement} modal Modal element containing the close button.
+ * @returns {HTMLElement} The new close button element with no previous listeners.
+ */
 function clearCloseButtonListener(modal) {
     const closeButton = modal.querySelector('#btn-close');
     const newCloseButton = closeButton.cloneNode(true);

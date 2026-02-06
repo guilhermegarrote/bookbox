@@ -1,3 +1,10 @@
+/**
+ * Binds click events for opening modals.
+ *
+ * @param {Object} params
+ * @param {Function} params.openMenuModal Opens the menu modal.
+ * @param {Function} params.openCreateModal Opens the create modal.
+ */
 export function bindOpenButtons({
     openMenuModal,
     openCreateModal
