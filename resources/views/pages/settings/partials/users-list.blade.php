@@ -5,14 +5,16 @@
                 <small>{{ $user->email }}</small>
             </div>
 
-            <div class="settings-actions">
-                <button data-icon="pencil" class="btn-list-config" title="Editar usuário">
-                    <x-icons.icon name="pencil" />
-                </button>
+            @if ($user->email = auth()->user()->email)
+                <div class="settings-actions">
+                    <button data-icon="pencil" class="btn-list-config" title="Editar usuário">
+                        <x-icons.icon name="pencil" />
+                    </button>
 
-                <button data-icon="trash" class="btn-list-config" title="Excluir usuário">
-                    <x-icons.icon name="trash" />
-                </button>
-            </div>
+                    <button data-icon="trash" class="btn-list-config" title="Excluir usuário">
+                        <x-icons.icon name="trash" />
+                    </button>
+                </div>
+            @endif
         </div>
     @endforeach
