@@ -137,11 +137,6 @@ class AuthController extends Controller
 
         return $this->successResponse([
             'token' => $accessToken,
-            'user' => [
-                'id' => $user->id,
-                'name' => $user->name,
-                'email' => $user->email,
-            ],
             'redirect' => route('loans.view'),
         ])->cookie($accessCookie)
             ->cookie($refreshCookie);
