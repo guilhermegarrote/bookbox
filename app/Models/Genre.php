@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
 /**
  * Represents a book genre in the system.
@@ -45,5 +46,13 @@ class Genre extends BaseModel
     public function books(): HasMany
     {
         return $this->hasMany(Book::class);
+    }
+
+    public function copies(): HasManyThrough
+    {
+        return $this->hasManyThrough(
+            Copy::class,
+            Book::class
+        );
     }
 }
