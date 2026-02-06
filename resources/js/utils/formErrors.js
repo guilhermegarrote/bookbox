@@ -54,10 +54,23 @@ function createTooltip(input, messages) {
     }).show();
 }
 
+function formatMessage(message) {
+    if (typeof message === 'string') return message;
+    if (typeof message === 'number' || typeof message === 'boolean') return String(message);
+    if (Array.isArray(message)) return message.map(formatMessage).filter(Boolean).join(' - ');
+    if (message && typeof message === 'object') {
+        if (message.error) return formatMessage(message.error);
+        if (message.message) return formatMessage(message.message);
+        const vals = Object.values(message);
+        if (vals.length > 0) return formatMessage(vals[0]);
+    }
+    return 'Erro desconhecido.';
+}
+
 export function notifySuccess(message) {
-    notyf.success(message);
+    notyf.success(formatMessage(message));
 }
 
 export function notifyError(message) {
-    notyf.error(message);
+    notyf.error(formatMessage(message));
 }
