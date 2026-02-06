@@ -4,7 +4,34 @@ export default class ModalManager {
         this._escListener = null;
     }
 
-    async loadModalContent(url, modalId, { onInit } = {}) {
+    saveModalState(key, modalId) {
+        const data = this.getModalData(modalId);
+        try {
+            sessionStorage.setItem(key, JSON.stringify({ modalId, data }));
+        } catch (e) { }
+    }
+
+    getSavedModalState(key) {
+        try {
+            return JSON.parse(sessionStorage.getItem(key));
+        } catch {
+            return null;
+        }
+    }
+
+    clearSavedModalState(key) {
+        try { sessionStorage.removeItem(key); } catch (e) { }
+    }
+
+    dispatchSavedModalEvent(key, eventName = 'reopenModal') {
+        const saved = this.getSavedModalState(key);
+        if (saved) {
+            window.dispatchEvent(new CustomEvent(eventName, { detail: saved }));
+            this.clearSavedModalState(key);
+        }
+    }
+
+    async loadModalContent(url, modalId, { onInit, restoreKey = null, initialData = null } = {}) {
         try {
             const response = await fetch(url);
             if (!response.ok) throw new Error('Erro ao carregar modal');
@@ -14,6 +41,31 @@ export default class ModalManager {
             this.bindCloseEvents(modalId);
             this.showModal(modalId);
             this.updateFloatingLabels(modalId);
+
+            const restoredData = restoreKey ? (this.getSavedModalState(restoreKey)?.data ?? null) : null;
+            let saved;
+            if (initialData && restoredData) {
+                saved = { ...initialData, ...restoredData };
+            } else {
+                saved = initialData ?? restoredData;
+            }
+
+            if (saved) {
+                setTimeout(() => this.restoreFormData(modalId, saved), 0);
+            }
+
+            if (restoreKey) {
+                const modal = this.activeModals.get(modalId);
+                if (modal) {
+                    const inputs = modal.querySelectorAll('input,textarea,select');
+                    const saveHandler = () => {
+                        const data = this.getModalData(modalId);
+                        try { sessionStorage.setItem(restoreKey, JSON.stringify({ modalId, data })); } catch (e) { }
+                    };
+                    inputs.forEach(i => i.addEventListener('input', saveHandler));
+                    modal.__modalManagerSaveHandler = saveHandler;
+                }
+            }
 
             if (typeof onInit === 'function') onInit(this.activeModals.get(modalId));
         } catch (err) {
@@ -84,14 +136,30 @@ export default class ModalManager {
         });
     }
 
-    async removeModal(modalId) {
+    async removeModal(modalId, { pendingKey, eventName } = {}) {
         const overlay = document.getElementById(`${modalId}-overlay`);
         if (!overlay) return;
 
         await this.animateClose(modalId);
 
+        const modal = this.activeModals.get(modalId);
+        if (modal && modal.__modalManagerSaveHandler) {
+            modal.querySelectorAll('input,textarea,select').forEach(i =>
+                i.removeEventListener('input', modal.__modalManagerSaveHandler)
+            );
+            delete modal.__modalManagerSaveHandler;
+        }
+
         overlay.remove();
         this.activeModals.delete(modalId);
+
+        if (pendingKey) {
+            const saved = this.getSavedModalState(pendingKey);
+            if (saved) {
+                window.dispatchEvent(new CustomEvent(eventName || 'reopenModal', { detail: saved }));
+                this.clearSavedModalState(pendingKey);
+            }
+        }
     }
 
     hideModal(modalId) {
@@ -129,11 +197,120 @@ export default class ModalManager {
 
         elements.forEach(el => {
             if (!el.id) return;
-            let value = el.value?.trim() || '';
+            if (el.disabled) return;
+            if (el.hasAttribute('readonly')) return;
+
+            let value;
+            if (el.tagName === 'INPUT') {
+                const type = (el.getAttribute('type') || '').toLowerCase();
+                if (type === 'checkbox') {
+                    value = el.checked;
+                } else if (type === 'radio') {
+                    if (!el.checked) return;
+                    value = el.value ?? '';
+                } else {
+                    value = el.value?.trim() || '';
+                }
+            } else if (el.tagName === 'TEXTAREA') {
+                value = el.value?.trim() || '';
+            } else if (el.tagName === 'SELECT') {
+                if (el.multiple) {
+                    value = Array.from(el.selectedOptions).map(o => o.value);
+                } else {
+                    value = el.value ?? '';
+                }
+            } else {
+                value = el.value?.trim() || '';
+            }
+
             data[el.id] = value;
         });
 
         return data;
+    }
+
+    restoreFormData(modalId, data = {}) {
+        const modal = this.activeModals.get(modalId);
+        if (!modal || !data) return;
+
+        const callNativeSetter = (el, prop, value) => {
+            try {
+                const proto = Object.getPrototypeOf(el);
+                const desc = Object.getOwnPropertyDescriptor(proto, prop) || Object.getOwnPropertyDescriptor(el, prop);
+                const setter = desc && desc.set;
+                if (setter) {
+                    setter.call(el, value);
+                } else {
+                    el[prop] = value;
+                }
+            } catch (e) { el[prop] = value; }
+        };
+
+        const dispatch = (el, type) => {
+            try {
+                const ev = new Event(type, { bubbles: true });
+                el.dispatchEvent(ev);
+            } catch (e) {}
+        };
+
+        for (const [key, rawValue] of Object.entries(data)) {
+            const el = modal.querySelector(`#${CSS.escape(key)}`);
+            if (!el) continue;
+
+            const value = rawValue;
+
+            if (el.tagName === 'INPUT') {
+                const type = (el.getAttribute('type') || '').toLowerCase();
+                if (type === 'checkbox') {
+                    const checked = (value === true || value === 'true' || value === '1' || value === 'on');
+                    callNativeSetter(el, 'checked', checked);
+                    dispatch(el, 'input');
+                    dispatch(el, 'change');
+                } else if (type === 'radio') {
+                    const name = el.name;
+                    if (name) {
+                        const radios = modal.querySelectorAll(`input[type="radio"][name="${CSS.escape(name)}"]`);
+                        radios.forEach(r => {
+                            const should = (r.value == value);
+                            callNativeSetter(r, 'checked', should);
+                            if (should) { dispatch(r, 'input'); dispatch(r, 'change'); }
+                        });
+                    } else {
+                        callNativeSetter(el, 'value', value);
+                        dispatch(el, 'input'); dispatch(el, 'change');
+                    }
+                } else if (type === 'file') {
+                    continue;
+                } else {
+                    try { el.focus?.(); } catch {}
+                    callNativeSetter(el, 'value', value ?? '');
+                    dispatch(el, 'input'); dispatch(el, 'change');
+                    try { el.blur?.(); } catch {}
+                }
+            } else if (el.tagName === 'TEXTAREA') {
+                try { el.focus?.(); } catch {}
+                callNativeSetter(el, 'value', value ?? '');
+                dispatch(el, 'input'); dispatch(el, 'change');
+                try { el.blur?.(); } catch {}
+            } else if (el.tagName === 'SELECT') {
+                if (el.multiple) {
+                    const vals = Array.isArray(value) ? value.map(v => (v ?? '').toString()) : (typeof value === 'string' ? value.split(',') : [(value ?? '').toString()]);
+                    Array.from(el.options).forEach(opt => {
+                        callNativeSetter(opt, 'selected', vals.includes(opt.value));
+                    });
+                } else {
+                    callNativeSetter(el, 'value', value ?? '');
+                }
+                dispatch(el, 'input'); dispatch(el, 'change');
+            } else {
+                try { callNativeSetter(el, 'value', value ?? ''); dispatch(el, 'input'); dispatch(el, 'change'); } catch (e) {}
+            }
+
+            if (el.classList && el.classList.contains('form-input')) {
+                const has = (el.type === 'checkbox' || el.type === 'radio') ? (el.checked) : ((el.value ?? '').toString().trim() !== '');
+                el.classList.toggle('has-value', !!has);
+            }
+        }
     }
 
     toggleFields(fields, enable) {
@@ -248,8 +425,24 @@ export default class ModalManager {
             btn.disabled = true;
 
             try {
-                await onSubmit(data);
-                if (onSuccess) onSuccess();
+                const res = await onSubmit(data);
+
+                let ok = true;
+                if (res && typeof res === 'object') {
+                    if (typeof res.ok === 'boolean') {
+                        ok = res.ok;
+                    } else if (typeof res.status === 'number') {
+                        ok = res.status >= 200 && res.status < 300;
+                    }
+                }
+
+                if (!ok) {
+                    const payload = res?.data ?? res?.error ?? res?.message ?? res;
+                    if (onError) onError(payload);
+                    return;
+                }
+
+                if (onSuccess) onSuccess(res);
             } catch (err) {
                 if (onError) onError(err);
             } finally {
