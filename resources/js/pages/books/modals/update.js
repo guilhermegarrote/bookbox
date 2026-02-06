@@ -12,7 +12,7 @@ export async function openUpdateModal(modalManager, bookId, booksTable) {
         await modalManager.loadModalContent(url, 'bookUpdateModal', {
             onInit: () => {
                 applyInputMasks();
-                if (window.App?.filterData) initBooksSelects(window.App.filterData);
+                if (window.App?.selectData) initBooksSelects(window.App.selectData);
             }
         });
 

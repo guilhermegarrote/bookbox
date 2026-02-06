@@ -1,8 +1,12 @@
-export function initStudentsSelects(filterData) {
+export function initStudentsSelects(selectData) {
     const courseSelect = document.getElementById('course');
     const periodSelect = document.getElementById('period');
     const termSelect = document.getElementById('term');
     if (!courseSelect || !periodSelect || !termSelect) return;
+
+    selectData = selectData.filter(item =>
+        item.course && item.period && item.term
+    );
 
     const uniqueBy = (array, key) =>
         [...new Map(array.map(item => [item[key], item])).values()];
@@ -26,10 +30,10 @@ export function initStudentsSelects(filterData) {
         const selectedPeriod = selected.period || periodSelect.value || periodSelect.dataset.value || '';
         const selectedTerm = selected.term || termSelect.value || termSelect.dataset.value || '';
 
-        const courses = uniqueBy(filterData, 'course').map(c => ({ value: c.course, label: c.course }));
+        const courses = uniqueBy(selectData, 'course').map(c => ({ value: c.course, label: c.course }));
         populateSelect(courseSelect, courses, 'value', 'label', 'Curso', selectedCourse);
 
-        const filtered = selectedCourse ? filterData.filter(d => d.course === selectedCourse) : filterData;
+        const filtered = selectedCourse ? selectData.filter(d => d.course === selectedCourse) : selectData;
 
         const periods = uniqueBy(filtered, 'period').map(p => ({ value: p.period, label: `${p.period}°` }));
         populateSelect(periodSelect, periods, 'value', 'label', 'Período', selectedPeriod);

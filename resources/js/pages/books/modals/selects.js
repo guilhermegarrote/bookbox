@@ -1,4 +1,4 @@
-export function initBooksSelects(filterData) {
+export function initBooksSelects(selectData) {
     const genreNameSelect = document.getElementById('genre_name');
     if (!genreNameSelect) return;
 
@@ -22,7 +22,7 @@ export function initBooksSelects(filterData) {
             genreNameSelect.dataset.value ??
             '';
 
-        const genreNames = [...new Set(filterData.map(i => i.genre_name))]
+        const genreNames = [...new Set(selectData.map(i => i.genre_name))]
             .filter(Boolean)
             .map(name => ({ value: name, label: name }));
 

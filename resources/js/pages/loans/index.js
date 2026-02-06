@@ -28,6 +28,7 @@ setupTablePage({
     updateTable: (params) => loansTable.updateTable(params),
     filterStateKey: 'loansFilterState',
     filterData: window.App.filterData,
+    selectData: window.App.selectData,
     initModals: modalManager => initLoansModals({ modalManager, table: loansTable })
 });
 

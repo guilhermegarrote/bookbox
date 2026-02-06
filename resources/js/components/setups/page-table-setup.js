@@ -1,11 +1,12 @@
 import ModalManager from '@js/components/ui/modal-manager.js';
 
-export function setupTablePage({ initFilterUI, updateTable, filterStateKey, filterData, initModals }) {
+export function setupTablePage({ initFilterUI, updateTable, filterStateKey, filterData, selectData, initModals }) {
     window.App = {
         initFilterUI,
         updateTable,
         filterStateKey,
-        filterData: filterData || {}
+        filterData: filterData || {},
+        selectData: selectData || {}
     };
 
     document.addEventListener('DOMContentLoaded', () => {

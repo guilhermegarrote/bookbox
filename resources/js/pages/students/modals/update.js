@@ -12,7 +12,7 @@ export async function openUpdateModal(modalManager, studentId, studentsTable) {
         await modalManager.loadModalContent(url, 'studentUpdateModal', {
             onInit: () => {
                 applyInputMasks();
-                if (window.App?.filterData) initStudentsSelects(window.App.filterData);
+                if (window.App?.selectData) initStudentsSelects(window.App.selectData);
             }
         });
 

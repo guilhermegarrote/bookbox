@@ -11,7 +11,7 @@ export async function openCreateModal(modalManager, studentsTable) {
         await modalManager.loadModalContent(url, 'studentCreateModal', {
             onInit: () => {
                 applyInputMasks();
-                if (window.App?.filterData) initStudentsSelects(window.App.filterData);
+                if (window.App?.selectData) initStudentsSelects(window.App.selectData);
             }
         });
 
@@ -20,6 +20,8 @@ export async function openCreateModal(modalManager, studentsTable) {
             buttonId: 'submit-create',
             onSubmit: createStudent,
             onSuccess: () => {
+                modalManager.dispatchSavedModalEvent('loan:create:pending', 'reopenLoanModal');
+
                 modalManager.removeModal('studentCreateModal');
                 studentsTable.updateTable();
                 notifySuccess('Aluno cadastrado com sucesso!');

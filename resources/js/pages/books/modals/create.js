@@ -20,7 +20,7 @@ async function loadBookModal(url, modalManager, booksTable, isbn = null) {
         await modalManager.loadModalContent(url, 'bookCreateModal', {
             onInit: () => {
                 applyInputMasks();
-                if (window.App?.filterData) initBooksSelects(window.App.filterData);
+                if (window.App?.selectData) initBooksSelects(window.App.selectData);
                 initIsbnAutoFill();
 
                 if (isbn) {
@@ -40,6 +40,8 @@ async function loadBookModal(url, modalManager, booksTable, isbn = null) {
             buttonId: 'submit-create',
             onSubmit: createBook,
             onSuccess: () => {
+                modalManager.dispatchSavedModalEvent('loan:create:pending', 'reopenLoanModal');
+
                 modalManager.removeModal('bookCreateModal');
                 booksTable.updateTable();
                 notifySuccess('Livro cadastrado com sucesso!');

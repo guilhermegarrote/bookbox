@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use App\Helpers\Utils;
+use App\Models\Genre;
 use App\Models\View\Book;
 use Illuminate\Contracts\View\View;
 
@@ -41,7 +42,9 @@ class BookController extends Controller
 
         $filterUrl = route('books.filter');
 
-        return view('pages.books.index', compact('filterData', 'filterUrl'));
+        $selectData = Genre::orderBy('name')->get('name as genre_name');
+
+        return view('pages.books.index', compact('filterData', 'filterUrl', 'selectData'));
     }
 
     /**
@@ -53,9 +56,7 @@ class BookController extends Controller
      */
     public function createModal(): string
     {
-        $filterData = Book::getFilterData();
-
-        return view('pages.books.partials.create-modal', compact('filterData'))->render();
+        return view('pages.books.partials.create-modal')->render();
     }
 
     /**

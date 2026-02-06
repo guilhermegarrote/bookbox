@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use App\Helpers\Utils;
+use App\Models\Genre;
 use App\Models\Setting;
 use App\Models\View\Loan;
+use App\Models\View\SchoolClass;
 use Carbon\Carbon;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
@@ -44,7 +46,20 @@ class LoanController extends Controller
 
         $filterUrl = route('loans.filter');
 
-        return view('pages.loans.index', compact('filterData', 'filterUrl'));
+        $selectData = Genre::orderBy('name')
+            ->get(['name as genre_name'])
+            ->toArray();
+
+        $selectData = array_merge(
+            $selectData,
+            SchoolClass::whereDate('end_date', '>', now())
+                ->orderBy('course')
+                ->orderBy('start_date')
+                ->get(['course', 'term', 'start_date', 'end_date', 'period'])
+                ->toArray()
+        );
+
+        return view('pages.loans.index', compact('filterData', 'filterUrl', 'selectData'));
     }
 
     /**

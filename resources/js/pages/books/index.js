@@ -23,5 +23,6 @@ setupTablePage({
     updateTable: params => booksTable.updateTable(params),
     filterStateKey: 'booksFilterState',
     filterData: window.App.filterData,
+    selectData: window.App.selectData,
     initModals: modalManager => initBooksModals({ modalManager, table: booksTable })
 });

@@ -5,9 +5,11 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use App\Helpers\Utils;
+use App\Models\View\SchoolClass;
 use App\Models\View\StudentSchoolClass;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 /**
  * Controller responsible for managing student-related pages and modals.
@@ -41,7 +43,12 @@ class StudentController extends Controller
 
         $filterUrl = route('students.filter');
 
-        return view('pages.students.index', compact('filterData', 'filterUrl'));
+        $selectData = SchoolClass::whereDate('end_date', '>', now())
+            ->orderBy('course')
+            ->orderBy('start_date')
+            ->get();
+
+        return view('pages.students.index', compact('filterData', 'filterUrl', 'selectData'));
     }
 
     /**
@@ -53,9 +60,7 @@ class StudentController extends Controller
      */
     public function createModal(): string
     {
-        $filterData = StudentSchoolClass::getFilterData();
-
-        return view('pages.students.partials.create-modal', compact('filterData'))->render();
+        return view('pages.students.partials.create-modal')->render();
     }
 
     /**
