@@ -1,7 +1,7 @@
 import { route } from 'ziggy-js';
 import { finalizeLoan } from '@js/api/loans/finalize.js';
 import { extendLoan } from '@js/api/loans/extend.js';
-import { notifySuccess, notifyError } from '@/utils/formErrors';
+import { notifySuccess, notifyError } from '@js/utils/formErrors';
 
 export async function openMenuModal(modalManager, loanId, loansTable) {
     const url = route('loans.menu-modal', { loan: loanId });
@@ -24,12 +24,18 @@ export async function openMenuModal(modalManager, loanId, loansTable) {
             if (!confirmed) return;
 
             try {
-                await extendLoan(loanId);
-                modalManager.removeModal('loanMenuModal');
-                loansTable.updateTable();
-                notifySuccess('Empréstimo prolongado com sucesso!');
+                const { ok, data: responseData, status } = await extendLoan(loanId);
+
+                if (!ok) {
+                    notifyError(responseData?.error || 'Erro ao prolongar o empréstimo');
+                } else {
+                    modalManager.removeModal('loanMenuModal');
+                    loansTable.updateTable();
+                    notifySuccess('Empréstimo prolongado com sucesso!');
+                }
             } catch (err) {
-                notifyError(err.message || 'Erro ao prolongar o empréstimo');
+                console.error(err);
+                notifyError('Erro técnico ao tentar prolongar o empréstimo. Tente novamente.');
             }
         });
 
@@ -43,12 +49,18 @@ export async function openMenuModal(modalManager, loanId, loansTable) {
             if (!confirmed) return;
 
             try {
-                await finalizeLoan(loanId);
-                modalManager.removeModal('loanMenuModal');
-                loansTable.updateTable();
-                notifySuccess('Empréstimo finalizado com sucesso!');
+                const { ok, data: responseData, status } = await finalizeLoan(loanId);
+
+                if (!ok) {
+                    notifyError(responseData?.error || 'Erro ao finalizar o empréstimo');
+                } else {
+                    modalManager.removeModal('loanMenuModal');
+                    loansTable.updateTable();
+                    notifySuccess('Empréstimo finalizado com sucesso!');
+                }
             } catch (err) {
-                notifyError(err.message || 'Erro ao finalizar o empréstimo');
+                console.error(err);
+                notifyError('Erro técnico ao tentar finalizar o empréstimo. Tente novamente.');
             }
         });
     } catch (err) {

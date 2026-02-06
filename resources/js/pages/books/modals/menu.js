@@ -33,12 +33,18 @@ export async function openMenuModal(modalManager, bookId, booksTable) {
             if (!confirmed) return;
 
             try {
-                await deleteBook(bookId);
-                modalManager.removeModal('bookMenuModal');
-                booksTable.updateTable();
-                notifySuccess('Livro excluído com sucesso!');
-            } catch (err) {
-                notifyError(err.message || 'Erro ao excluir o livro');
+                const { ok, data: responseData, status } = await deleteBook(bookId);
+
+                if (!ok) {
+                    notifyError(responseData?.error || 'Erro desconhecido.');
+                } else {
+                    modalManager.removeModal('bookMenuModal');
+                    booksTable.updateTable();
+                    notifySuccess('Livro excluído com sucesso!');
+                }
+            } catch (error) {
+                console.error(error);
+                notifyError('Erro técnico ao tentar excluir o livro. Tente novamente.');
             }
         });
     } catch (err) {

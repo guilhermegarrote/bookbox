@@ -23,12 +23,18 @@ export async function openMenuModal(modalManager, studentId, studentsTable) {
             if (!confirmed) return;
 
             try {
-                await deleteStudent(studentId);
-                modalManager.removeModal('studentMenuModal');
-                studentsTable.updateTable();
-                notifySuccess('Aluno excluído com sucesso!');
+                const { ok, data: responseData, status } = await deleteStudent(studentId);
+
+                if (!ok) {
+                    notifyError(responseData?.error || 'Erro ao excluir aluno');
+                } else {
+                    modalManager.removeModal('studentMenuModal');
+                    studentsTable.updateTable();
+                    notifySuccess('Aluno excluído com sucesso!');
+                }
             } catch (err) {
-                notifyError(err.message || 'Erro ao excluir aluno');
+                console.error(err);
+                notifyError('Erro técnico ao tentar excluir o aluno. Tente novamente.');
             }
         });
     } catch (err) {
