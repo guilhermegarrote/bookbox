@@ -17,8 +17,8 @@
                     <span>Curso</span>
                 </label>
                 <div class="btn-input-side-wrapper">
-                    <button id="open-create-school-classes-modal" class="btn-dark btn-input-side" style="border-radius: 0;"
-                        title="Clique para adicionar turma" aria-label="Adicionar turma">
+                    <button id="open-create-school-classes-modal" class="btn-dark btn-input-side"
+                        style="border-radius: 0;" title="Clique para adicionar turma" aria-label="Adicionar turma">
                         <x-icons.icon name="plus" class="" />
                     </button>
                 </div>
@@ -36,9 +36,9 @@
     </x-slot name="content">
 
     <x-slot name="footer">
-        <button type="button" class="modal-button" id="btn-cancel-update"
-            title="Cancelar atualização" aria-label="Cancelar atualização">Cancelar</button>
-        <button type="button" class="modal-button" id="submit-update"
-            title="Salvar alterações do aluno" aria-label="Salvar alterações do aluno">Salvar</button>
+        <button type="button" class="modal-button" id="btn-cancel-update" title="Cancelar atualização"
+            aria-label="Cancelar atualização">Cancelar</button>
+        <button type="button" class="modal-button" id="submit-update" title="Salvar alterações do aluno"
+            aria-label="Salvar alterações do aluno">Salvar</button>
     </x-slot name="footer">
 </x-modals.modal>

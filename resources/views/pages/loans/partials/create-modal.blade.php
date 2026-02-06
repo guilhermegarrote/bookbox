@@ -13,7 +13,7 @@
                 <label class="form-label" for="cpf"
                     style="display: flex; justify-content: space-between; align-items: center; padding-left: 8px;">CPF</label>
                 <div class="btn-input-side-wrapper">
-                    <button id="open-create-students-modal" class="btn-dark btn-input-side" style="border-radius: 0;"
+                    <button id="open-create-student-modal" class="btn-dark btn-input-side" style="border-radius: 0;"
                         title="Clique para adicionar aluno" aria-label="Adicionar aluno">
                         <x-icons.icon name="plus" class="" />
                     </button>
@@ -31,7 +31,7 @@
                 <label class="form-label" for="isbn"
                     style="display: flex; justify-content: space-between; align-items: center; padding-left: 8px;">ISBN</label>
                 <div class="btn-input-side-wrapper">
-                    <button id="open-create-books-modal" class="btn-dark btn-input-side" style="border-radius: 0;"
+                    <button id="open-create-book-modal" class="btn-dark btn-input-side" style="border-radius: 0;"
                         title="Clique para adicionar livro" aria-label="Adicionar livro">
                         <x-icons.icon name="plus" class="" />
                     </button>
