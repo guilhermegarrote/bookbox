@@ -1,5 +1,5 @@
 import { initLoansModals } from './loans-modals';
-import { FilterUI } from '@js/components/common/filter/filter-ui';
+import { FilterUI } from '@js/components/common/filter/filter-ui/index';
 import loansTable from '@js/components/managers/table/instances/loans-table';
 import { setupTablePage } from '@js/components/setups/page-table-setup';
 import { setupSidebarPage } from '@js/components/setups/page-sidebar-setup';

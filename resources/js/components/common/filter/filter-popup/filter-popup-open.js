@@ -1,40 +1,31 @@
-export const btnFilter = document.getElementById('btn-filter');
-const popupFilter = document.getElementById('popup-filter');
+/**
+ * Filter Popup Open Logic
+ * -----------------------
+ * Main popup initialization logic: fetch, sanitize, restore values,
+ * bind events, and apply filters.
+ */
 
-const sanitizeHTML = html => {
-    const template = document.createElement('template');
-    template.innerHTML = html;
-    template.content.querySelectorAll('script, iframe, object, [onload], [onclick], [onerror]').forEach(el => el.remove());
-    return template.content;
-};
+import { btnFilter, popupFilter, showPopup } from './filter-popup-dom.js';
+import { fetchFilterHTML } from './filter-popup-fetch.js';
+import { sanitizeHTML } from './filter-popup-sanitize.js';
+import { positionPopup } from './filter-popup-position.js';
 
-const fetchFilterHTML = async url => {
-    const response = await fetch(url, { credentials: 'same-origin' });
-    if (!response.ok) throw new Error('Erro ao carregar o filtro');
-    return response.text();
-};
-
-const positionPopup = () => {
-    const rect = btnFilter.getBoundingClientRect();
-    popupFilter.style.top = `${rect.bottom + window.scrollY}px`;
-    popupFilter.style.left = `${rect.left + window.scrollX}px`;
-};
-
-export const showPopup = () => popupFilter.classList.add('visible');
-export const hidePopup = () => {
-    popupFilter.classList.remove('visible');
-    popupFilter.innerHTML = '';
-};
-
-export const openFilterPopup = async (filterUIInstance) => {
+/**
+ * Opens the filter popup and initializes its UI.
+ *
+ * @param {Object} filterUIInstance - FilterUI instance responsible for filtering logic.
+ * @returns {Promise<void>}
+ */
+export const openFilterPopup = async filterUIInstance => {
     const filterUrl = btnFilter?.dataset.filterUrl;
-    if (!filterUrl) return;
+    if (!filterUrl || !popupFilter) return;
 
     try {
         const html = await fetchFilterHTML(filterUrl);
+
         popupFilter.innerHTML = '';
-        const content = sanitizeHTML(html);
-        popupFilter.appendChild(content);
+        popupFilter.appendChild(sanitizeHTML(html));
+
         positionPopup();
 
         let savedFilters = {};
@@ -51,16 +42,30 @@ export const openFilterPopup = async (filterUIInstance) => {
             f.element = newElement;
 
             const savedValue = savedFilters[f.key] || '';
-            if (f.element.tagName === 'SELECT' || (f.element.tagName === 'INPUT' && f.element.type !== 'checkbox' && f.element.type !== 'radio')) {
+
+            // restore saved value
+            if (
+                f.element.tagName === 'SELECT' ||
+                (f.element.tagName === 'INPUT' &&
+                    f.element.type !== 'checkbox' &&
+                    f.element.type !== 'radio')
+            ) {
                 f.element.value = savedValue;
             } else if (f.element.type === 'checkbox' || f.element.type === 'radio') {
                 f.element.checked = !!savedValue;
             }
 
+            // remove old listeners safely
             f.element.replaceWith(f.element.cloneNode(true));
             f.element = document.getElementById(`filter-${f.key}`);
 
-            if (f.element.tagName === 'SELECT' || (f.element.tagName === 'INPUT' && f.element.type !== 'checkbox' && f.element.type !== 'radio')) {
+            // restore again after cloning
+            if (
+                f.element.tagName === 'SELECT' ||
+                (f.element.tagName === 'INPUT' &&
+                    f.element.type !== 'checkbox' &&
+                    f.element.type !== 'radio')
+            ) {
                 f.element.value = savedValue;
             } else if (f.element.type === 'checkbox' || f.element.type === 'radio') {
                 f.element.checked = !!savedValue;
@@ -85,11 +90,10 @@ export const openFilterPopup = async (filterUIInstance) => {
         filterUIInstance.applyFilter();
 
         const clearBtn = popupFilter.querySelector('#filter-clean-btn');
-
         if (clearBtn) {
-            clearBtn.onclick = (e) => {
+            clearBtn.onclick = e => {
                 e.preventDefault();
-                e.stopPropagation()
+                e.stopPropagation();
                 filterUIInstance.clearAllFilters();
             };
         }
@@ -97,8 +101,8 @@ export const openFilterPopup = async (filterUIInstance) => {
         showPopup();
     } catch (err) {
         console.error(err);
+
         popupFilter.innerHTML = '<p>Não foi possível carregar o filtro.</p>';
         showPopup();
     }
 };
-

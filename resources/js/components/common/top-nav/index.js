@@ -1,5 +1,5 @@
 import SettingsPanelManager from "@js/components/managers/settings-panel-manager";
-import { openFilterPopup, hidePopup, btnFilter } from "../filter/filter-popup";
+import { openFilterPopup, hidePopup, btnFilter } from "../filter/filter-popup/index";
 import { initSearch } from "./search";
 
 document.addEventListener('DOMContentLoaded', () => {

@@ -1,5 +1,5 @@
 import { initBooksModals } from './books-modals';
-import { FilterUI } from '@js/components/common/filter/filter-ui';
+import { FilterUI } from '@js/components/common/filter/filter-ui/index';
 import booksTable from '@js/components/managers/table/instances/books-table';
 import { setupTablePage } from '@js/components/setups/page-table-setup';
 

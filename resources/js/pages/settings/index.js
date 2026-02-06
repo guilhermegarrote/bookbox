@@ -2,8 +2,6 @@ import modalManager from '@js/components/ui/modal-manager';
 
 document.addEventListener('DOMContentLoaded', () => {
     initSettingsNavigation();
-    const addBtn = document.querySelector('.settings-btn-add');
-    addBtn?.addEventListener('click', () => openCreateUserModal());
 });
 
 export function initSettingsNavigation() {
@@ -153,8 +151,11 @@ function attachClassActions() {
 }
 
 function attachGenreActions() {
-    document.querySelectorAll('.card-genre').forEach(card =>
-        card.addEventListener('click', () => console.log('Gênero clicado:', card.querySelector('span').textContent))
+    document.querySelectorAll('#submit-delete').forEach(btn =>
+        btn.addEventListener('click', () => openUserEditModal(btn.dataset.editUser))
+    );
+    document.querySelectorAll('[data-delete-user]').forEach(btn =>
+        btn.addEventListener('click', () => deleteUser(btn.dataset.deleteUser))
     );
 }
 

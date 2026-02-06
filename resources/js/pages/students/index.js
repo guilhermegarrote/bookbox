@@ -1,5 +1,5 @@
 import { initStudentsModals } from './students-modals';
-import { FilterUI } from '@js/components/common/filter/filter-ui';
+import { FilterUI } from '@js/components/common/filter/filter-ui/index';
 import studentsTable from '@js/components/managers/table/instances/students-table';
 import { setupTablePage } from '@js/components/setups/page-table-setup';
 
