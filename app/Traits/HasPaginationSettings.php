@@ -16,7 +16,7 @@ trait HasPaginationSettings
      */
     public function paginateWithSettings(Builder $query, Request $request, int $maxLimit = 250): \Illuminate\Pagination\CursorPaginator
     {
-        $perPage = max(5, min((int) $request->input('perPage', 15), $maxLimit));
+        $perPage = max(5, min((int) $request->input('perPage', 20), $maxLimit));
 
         return $query->cursorPaginate($perPage)->withQueryString();
     }

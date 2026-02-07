@@ -36,7 +36,7 @@ export default class TableManager {
         this.nextCursor = null;
         this.sortColumn = null;
         this.sortDirection = "asc";
-        this.perPage = 15;
+        this.perPage = 20;
         this.currentParams = {};
         this.lastResponse = null;
 
