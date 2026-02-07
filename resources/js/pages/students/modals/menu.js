@@ -1,3 +1,8 @@
+import { route } from 'ziggy-js';
+import { deleteStudent } from '@js/api/students/delete';
+import { notifySuccess, notifyError } from '@js/utils/formErrors';
+import { openUpdateModal } from './update';
+
 /**
  * Opens the "Student Menu" modal, providing actions for the selected student.
  *

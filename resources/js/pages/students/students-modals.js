@@ -1,3 +1,10 @@
+import { openCreateModal } from './modals/create';
+import { openUpdateModal } from './modals/update';
+import { openMenuModal } from './modals/menu';
+import { initStudentsSelects } from './modals/selects';
+import { initBarcodeScannerListener } from './modals/scanner';
+import { bindOpenButtons } from '@js/components/students/handlers/bind-buttons';
+
 /**
  * Initializes the Students modals and related handlers for the page.
  *

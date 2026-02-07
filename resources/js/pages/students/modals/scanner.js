@@ -1,3 +1,6 @@
+import { notifyError } from '@js/utils/formErrors';
+import { findLoanByBarcode } from '@js/api/loans/find-by-barcode';
+
 /**
  * Initializes a global barcode scanner listener for student loans.
  *

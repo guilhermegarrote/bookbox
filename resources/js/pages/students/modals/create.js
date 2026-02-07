@@ -1,3 +1,9 @@
+import { route } from 'ziggy-js';
+import { applyInputMasks } from '@js/components/ui/input-mask';
+import { showErrors, notifySuccess, notifyError } from '@js/utils/formErrors';
+import { createStudent } from '@js/api/students/create';
+import { initStudentsSelects } from './selects';
+
 /**
  * Opens the "Create Student" modal and handles its behavior.
  *
