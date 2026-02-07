@@ -302,7 +302,7 @@ class LoanController extends Controller
      */
     private function applyFilters(Builder $query, Request $request): Builder
     {
-        return $query->when($request->filled('genre_name'), fn ($q) => $q->where('genre_name', $request->genre))
+        return $query->when($request->filled('genre_name'), fn ($q) => $q->where('genre_name', $request->genre_name))
             ->when($request->filled('publisher'), fn ($q) => $q->where('publisher', $request->publisher))
             ->when($request->filled('course'), fn ($q) => $q->where('course', $request->course))
             ->when($request->filled('period'), fn ($q) => $q->where('period', $request->period))
