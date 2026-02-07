@@ -1,5 +1,5 @@
 import '@css/pages/auth.css';
-import { register } from '@js/api/auth/register.js';
+import { register } from '@js/api/auth/register';
 import { showErrors, clearErrors, notifyError } from '@js/utils/formErrors';
 import {
     validateNameField,
@@ -7,7 +7,7 @@ import {
     validatePasswordField,
     validatePasswordConfirmation,
     combineValidations
-} from '@/utils/validation/auth-validation.js';
+} from '@/utils/validation/auth-validation';
 
 /**
  * Handles user registration form validation and submission.

@@ -1,7 +1,7 @@
-import { validateCode } from '@js/api/auth/recovery-code-validation.js';
-import { resendCode } from '@js/api/auth/resend-recovery-code.js';
+import { validateCode } from '@js/api/auth/recovery-code-validation';
+import { resendCode } from '@js/api/auth/resend-recovery-code';
 import { showErrors, clearErrors, notifyError, notifySuccess } from '@js/utils/formErrors';
-import { validateRecoveryCode } from '@/utils/validation/auth-validation.js';
+import { validateRecoveryCode } from '@/utils/validation/auth-validation';
 import '@css/pages/recovery-code-validation.css';
 
 /**

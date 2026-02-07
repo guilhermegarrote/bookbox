@@ -1,10 +1,10 @@
 import { sendRequest } from '@js/api/loans/fetch-list';
 import TableManager from '@js/components/managers/table/table-manager';
 
-import definition from '../definition/loans.js';
+import definition from '../definition/loans';
 
-import { renderTableHead } from '../render/head.js';
-import { renderTableRows } from '@js/pages/loans/render/rows.js';
+import { renderTableHead } from '../render/head';
+import { renderTableRows } from '@js/pages/loans/render/rows';
 
 document.addEventListener("DOMContentLoaded", () => {
     const head = document.querySelector("#data-table-head");

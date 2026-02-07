@@ -1,5 +1,5 @@
 import { route } from 'ziggy-js';
-import { api } from '../http-client.js';
+import { api } from '../http-client';
 
 /**
  * Resets a user's password via the API.

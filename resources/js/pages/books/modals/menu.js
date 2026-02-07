@@ -1,9 +1,9 @@
 import { route } from 'ziggy-js';
-import { deleteBook } from '@js/api/books/delete.js';
+import { deleteBook } from '@js/api/books/delete';
 import { notifySuccess, notifyError } from '@js/utils/formErrors';
 import { openUpdateModal } from './update';
-import { openGenerateLabelModal } from '../../labels/labels-modals.js';
-import { openManagerCopiesModal } from '../../copies/modals/manager.js';
+import { openGenerateLabelModal } from '../../labels/labels-modals';
+import { openManagerCopiesModal } from '../../copies/modals/manager';
 
 /**
  * Opens the book menu modal and binds its action buttons (edit, manage copies,

@@ -1,7 +1,7 @@
-import { login } from '@js/api/auth/login.js';
+import { login } from '@js/api/auth/login';
 import { setAccessToken } from '@js/api/http-client';
 import { showErrors, clearErrors, notifyError } from '@js/utils/formErrors';
-import { validateEmailField, combineValidations } from '@js/utils/validation/auth-validation.js';
+import { validateEmailField, combineValidations } from '@js/utils/validation/auth-validation';
 import '@css/pages/login.css';
 
 /**

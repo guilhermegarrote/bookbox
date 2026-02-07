@@ -4,13 +4,13 @@
  * Manages filter fields and dataset filtering.
  */
 
-import { saveFilters, loadSavedFilters } from './filter-ui-storage.js';
-import { getCurrentParamsFromFields } from './filter-ui-params.js';
-import { applyFilterInternal } from './filter-ui-apply.js';
-import { initFilterUIInternal } from './filter-ui-init.js';
-import { clearAllFiltersInternal } from './filter-ui-clear.js';
-import { uniqueBy } from './filter-ui-utils.js';
-import { populateSelect } from './filter-ui-select.js';
+import { saveFilters, loadSavedFilters } from './filter-ui-storage';
+import { getCurrentParamsFromFields } from './filter-ui-params';
+import { applyFilterInternal } from './filter-ui-apply';
+import { initFilterUIInternal } from './filter-ui-init';
+import { clearAllFiltersInternal } from './filter-ui-clear';
+import { uniqueBy } from './filter-ui-utils';
+import { populateSelect } from './filter-ui-select';
 
 export class FilterUI {
     constructor({ filterData = [], fields = [], onParamsChange = () => {} }) {

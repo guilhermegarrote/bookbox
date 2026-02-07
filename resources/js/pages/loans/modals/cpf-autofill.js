@@ -1,4 +1,4 @@
-import { findStudentByCpf } from '@js/api/students/find-by-cpf.js';
+import { findStudentByCpf } from '@js/api/students/find-by-cpf';
 import { notifyError } from '@/utils/formErrors';
 
 /**

@@ -1,4 +1,4 @@
-import modalManager from '@js/components/ui/modal-manager';
+import modalManager from '@js/components/ui/modal-manager/modal-manager';
 
 document.addEventListener('DOMContentLoaded', () => {
     initSettingsNavigation();

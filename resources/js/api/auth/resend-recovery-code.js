@@ -1,5 +1,5 @@
 import { route } from 'ziggy-js';
-import { api } from '../http-client.js';
+import { api } from '../http-client';
 
 /**
  * Resends a recovery code via the API.

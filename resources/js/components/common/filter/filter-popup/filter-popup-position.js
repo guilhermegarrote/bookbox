@@ -4,7 +4,7 @@
  * Positions popup relative to filter button.
  */
 
-import { btnFilter, popupFilter } from './filter-popup-dom.js';
+import { btnFilter, popupFilter } from './filter-popup-dom';
 
 /**
  * Positions the popup element below the filter button.

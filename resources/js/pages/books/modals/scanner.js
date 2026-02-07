@@ -1,7 +1,7 @@
 import { notifyError } from '@/utils/formErrors';
-import { findBookByIsbn } from '@js/api/books/find-by-isbn.js';
-import { findLoanByBarcode } from '@js/api/loans/find-by-barcode.js';
-import { isValidISBN } from '@js/utils/validation/app-validation.js';
+import { findBookByIsbn } from '@js/api/books/find-by-isbn';
+import { findLoanByBarcode } from '@js/api/loans/find-by-barcode';
+import { isValidISBN } from '@js/utils/validation/app-validation';
 
 /**
  * Initializes a keyboard-based scanner listener.

@@ -1,5 +1,5 @@
 import { route } from 'ziggy-js';
-import { api } from '../http-client.js';
+import { api } from '../http-client';
 
 /**
  * Creates a new student via the API.

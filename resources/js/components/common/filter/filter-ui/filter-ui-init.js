@@ -4,11 +4,11 @@
  * Initializes fields, restores saved values and binds listeners.
  */
 
-import { loadSavedFilters, saveFilters } from './filter-ui-storage.js';
-import { uniqueBy } from './filter-ui-utils.js';
-import { populateSelect } from './filter-ui-select.js';
-import { getCurrentParamsFromFields } from './filter-ui-params.js';
-import { applyFilterInternal } from './filter-ui-apply.js';
+import { loadSavedFilters, saveFilters } from './filter-ui-storage';
+import { uniqueBy } from './filter-ui-utils';
+import { populateSelect } from './filter-ui-select';
+import { getCurrentParamsFromFields } from './filter-ui-params';
+import { applyFilterInternal } from './filter-ui-apply';
 
 /**
  * Initializes FilterUI instance.

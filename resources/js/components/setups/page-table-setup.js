@@ -1,4 +1,4 @@
-import ModalManager from '@js/components/ui/modal-manager.js';
+import ModalManager from '@js/components/ui/modal-manager/modal-manager';
 
 /**
  * Initializes the table page layout and global App config.

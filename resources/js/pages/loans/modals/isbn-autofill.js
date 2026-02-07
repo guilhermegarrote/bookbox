@@ -1,5 +1,5 @@
 import { findBookByIsbn } from '@js/api/books/find-by-isbn';
-import { isValidISBN } from '@js/utils/validation/app-validation.js';
+import { isValidISBN } from '@js/utils/validation/app-validation';
 import { notifyError } from '@/utils/formErrors';
 
 /**

@@ -1,7 +1,7 @@
 import { route } from 'ziggy-js';
-import { applyInputMasks } from '@js/components/ui/input-mask.js';
+import { applyInputMasks } from '@js/components/ui/input-mask';
 import { showErrors, notifySuccess, notifyError } from '@js/utils/formErrors';
-import { updateBook } from '@js/api/books/update.js';
+import { updateBook } from '@js/api/books/update';
 import { initBooksSelects } from './selects';
 import { openMenuModal } from './menu';
 

@@ -1,8 +1,8 @@
-import { sendCode } from '@js/api/auth/send-recovery-code.js';
+import { sendCode } from '@js/api/auth/send-recovery-code';
 import { showErrors, clearErrors, notifyError } from '@js/utils/formErrors';
 import '@css/pages/auth.css';
 
-import { validateEmailField } from '@/utils/validation/auth-validation.js';
+import { validateEmailField } from '@/utils/validation/auth-validation';
 
 /**
  * Handles sending recovery code form validation and submission.

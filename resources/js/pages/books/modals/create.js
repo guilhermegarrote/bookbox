@@ -1,9 +1,9 @@
 import { route } from 'ziggy-js';
-import { applyInputMasks } from '@js/components/ui/input-mask.js';
+import { applyInputMasks } from '@js/components/ui/input-mask';
 import { showErrors, notifySuccess, notifyError } from '@js/utils/formErrors';
-import { createBook } from '@js/api/books/create.js';
+import { createBook } from '@js/api/books/create';
 import { initBooksSelects } from './selects';
-import { initIsbnAutoFill } from './isbn-autofill.js';
+import { initIsbnAutoFill } from './isbn-autofill';
 
 /**
  * Opens the book creation modal.

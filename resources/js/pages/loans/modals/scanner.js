@@ -1,7 +1,7 @@
 import { notifyError } from '@/utils/formErrors';
-import { findLoanByBarcode } from '@js/api/loans/find-by-barcode.js';
-import { findBookByIsbn } from '@js/api/books/find-by-isbn.js';
-import { isValidISBN } from '@js/utils/validation/app-validation.js';
+import { findLoanByBarcode } from '@js/api/loans/find-by-barcode';
+import { findBookByIsbn } from '@js/api/books/find-by-isbn';
+import { isValidISBN } from '@js/utils/validation/app-validation';
 
 /**
  * Initializes the global barcode scanner listener.

@@ -1,9 +1,9 @@
 import '@css/components/table.css';
-import TableLayout from './table-layout.js';
-import TableData from './table-data.js';
-import InfiniteScroll from './infinite-scroll.js';
-import Sorting from './sorting.js';
-import Events from './events.js';
+import TableLayout from './table-layout';
+import TableData from './table-data';
+import InfiniteScroll from './infinite-scroll';
+import Sorting from './sorting';
+import Events from './events';
 
 /**
  * Table manager controller.

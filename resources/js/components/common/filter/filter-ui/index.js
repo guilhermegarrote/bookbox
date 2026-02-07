@@ -1,1 +1,1 @@
-export { FilterUI } from './filter-ui.js';
+export { FilterUI } from './filter-ui';

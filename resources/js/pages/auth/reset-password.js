@@ -1,4 +1,4 @@
-import { resetPassword } from '@js/api/auth/reset-password.js';
+import { resetPassword } from '@js/api/auth/reset-password';
 import { showErrors, clearErrors, notifyError } from '@js/utils/formErrors';
 import '@css/pages/auth.css';
 
@@ -6,7 +6,7 @@ import {
     validatePasswordField,
     validatePasswordConfirmation,
     combineValidations
-} from '@/utils/validation/auth-validation.js';
+} from '@/utils/validation/auth-validation';
 
 /**
  * Handles password reset form validation and submission.

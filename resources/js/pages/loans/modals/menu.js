@@ -1,6 +1,6 @@
 import { route } from 'ziggy-js';
-import { finalizeLoan } from '@js/api/loans/finalize.js';
-import { extendLoan } from '@js/api/loans/extend.js';
+import { finalizeLoan } from '@js/api/loans/finalize';
+import { extendLoan } from '@js/api/loans/extend';
 import { notifySuccess, notifyError } from '@js/utils/formErrors';
 
 /**

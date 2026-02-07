@@ -5,10 +5,10 @@
  * bind events, and apply filters.
  */
 
-import { btnFilter, popupFilter, showPopup } from './filter-popup-dom.js';
-import { fetchFilterHTML } from './filter-popup-fetch.js';
-import { sanitizeHTML } from './filter-popup-sanitize.js';
-import { positionPopup } from './filter-popup-position.js';
+import { btnFilter, popupFilter, showPopup } from './filter-popup-dom';
+import { fetchFilterHTML } from './filter-popup-fetch';
+import { sanitizeHTML } from './filter-popup-sanitize';
+import { positionPopup } from './filter-popup-position';
 
 /**
  * Opens the filter popup and initializes its UI.

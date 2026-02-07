@@ -1,5 +1,5 @@
 import { route } from 'ziggy-js';
-import { api, clearAccessToken } from '../http-client.js';
+import { api, clearAccessToken } from '../http-client';
 
 /**
  * Logs out the current user.

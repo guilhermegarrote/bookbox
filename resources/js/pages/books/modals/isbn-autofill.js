@@ -1,5 +1,5 @@
-import { fetchMetadata } from '@js/api/books/fetch-metadata.js';
-import { isValidISBN } from '@js/utils/validation/app-validation.js';
+import { fetchMetadata } from '@js/api/books/fetch-metadata';
+import { isValidISBN } from '@js/utils/validation/app-validation';
 import { notifyError } from '@js/utils/formErrors';
 
 let lastIsbn = null;

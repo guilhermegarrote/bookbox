@@ -4,7 +4,7 @@ import { openMenuModal } from './modals/menu';
 import { initBooksSelects } from './modals/selects';
 import { initScannerListener } from './modals/scanner';
 import { bindOpenButtons } from '@js/components/books/handlers/bind-buttons';
-import { openGenerateLabelModal } from '@js/pages/labels/labels-modals.js';
+import { openGenerateLabelModal } from '@js/pages/labels/labels-modals';
 
 /**
  * Initializes all book-related modals and event bindings.

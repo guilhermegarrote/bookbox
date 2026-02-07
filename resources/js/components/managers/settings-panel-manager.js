@@ -1,7 +1,7 @@
 import '@css/pages/settings.css';
-import { logout } from '@js/api/auth/logout.js';
-import ModalManager from '@js/components/ui/modal-manager.js';
-import { initSettingsNavigation } from "@js/pages/settings/index.js";
+import { logout } from '@js/api/auth/logout';
+import ModalManager from '@js/components/ui/modal-manager/modal-manager';
+import { initSettingsNavigation } from "@js/pages/settings/index";
 import { route } from 'ziggy-js';
 
 /**

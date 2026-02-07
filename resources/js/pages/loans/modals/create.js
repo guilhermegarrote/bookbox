@@ -1,12 +1,12 @@
 import { route } from 'ziggy-js';
 import { notifySuccess, notifyError } from '@js/utils/formErrors';
-import { applyInputMasks } from '@js/components/ui/input-mask.js';
-import { createLoan } from '@js/api/loans/create.js';
+import { applyInputMasks } from '@js/components/ui/input-mask';
+import { createLoan } from '@js/api/loans/create';
 import { initCpfAutoFill } from './cpf-autofill';
 import { initIsbnAutoFill } from './isbn-autofill';
-import { isValidISBN } from '@js/utils/validation/app-validation.js';
-import { openCreateModal as openBooksCreateModal, openCreateModalWithIsbn as openBooksCreateModalWithIsbn } from '@js/pages/books/modals/create.js';
-import { openCreateModal as openStudentsCreateModal } from '@js/pages/students/modals/create.js';
+import { isValidISBN } from '@js/utils/validation/app-validation';
+import { openCreateModal as openBooksCreateModal, openCreateModalWithIsbn as openBooksCreateModalWithIsbn } from '@js/pages/books/modals/create';
+import { openCreateModal as openStudentsCreateModal } from '@js/pages/students/modals/create';
 
 let _modalManagerRef = null;
 let _loansTableRef = null;

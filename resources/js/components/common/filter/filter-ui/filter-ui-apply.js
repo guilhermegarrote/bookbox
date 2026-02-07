@@ -4,9 +4,9 @@
  * Applies filtering and updates select options dynamically.
  */
 
-import { uniqueBy } from './filter-ui-utils.js';
-import { populateSelect } from './filter-ui-select.js';
-import { getCurrentParamsFromFields } from './filter-ui-params.js';
+import { uniqueBy } from './filter-ui-utils';
+import { populateSelect } from './filter-ui-select';
+import { getCurrentParamsFromFields } from './filter-ui-params';
 
 /**
  * Applies filtering to dataset and updates selects.

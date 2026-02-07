@@ -4,9 +4,9 @@
  * Clears all filters and resets selects.
  */
 
-import { uniqueBy } from './filter-ui-utils.js';
-import { populateSelect } from './filter-ui-select.js';
-import { clearSavedFilters } from './filter-ui-storage.js';
+import { uniqueBy } from './filter-ui-utils';
+import { populateSelect } from './filter-ui-select';
+import { clearSavedFilters } from './filter-ui-storage';
 
 /**
  * Clears all filter values.

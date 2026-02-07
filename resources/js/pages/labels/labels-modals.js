@@ -1,5 +1,5 @@
 import { generateLabels } from "@js/api/labels/generate";
-import { applyInputMasks } from '@js/components/ui/input-mask.js';
+import { applyInputMasks } from '@js/components/ui/input-mask';
 import { notifySuccess, notifyError } from '@js/utils/formErrors';
 
 let selectedBooks = {};

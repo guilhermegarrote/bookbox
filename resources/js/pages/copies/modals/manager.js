@@ -1,7 +1,7 @@
 import { notifySuccess, notifyError } from '@js/utils/formErrors';
-import { addCopies } from '@js/api/copies/add.js';
-import { deleteCopy } from '@js/api/copies/delete.js';
-import { openMenuModal } from '@js/pages/books/modals/menu.js';
+import { addCopies } from '@js/api/copies/add';
+import { deleteCopy } from '@js/api/copies/delete';
+import { openMenuModal } from '@js/pages/books/modals/menu';
 
 /**
  * Opens the modal for managing book copies.
