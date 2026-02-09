@@ -294,6 +294,7 @@
     border-radius: 6px;
     border: 1px solid var(--color-base-gray-medium);
     padding: 4px;
+    cursor: pointer;
 }
 
 .btn-list-config svg {
