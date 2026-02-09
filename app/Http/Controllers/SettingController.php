@@ -8,8 +8,10 @@ use App\Models\Genre;
 use App\Models\Setting;
 use App\Models\View\SchoolClass;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 /**
  * Controller responsible for rendering settings pages and their sections.
@@ -57,6 +59,10 @@ class SettingController extends Controller
                     ->orWhere('color_hex', 'like', "%{$request->search}%");
             })
             ->orderBy('name')
+            ->withCount([
+                'books',
+                'copies',
+            ])
             ->get();
 
         if ($request->ajax()) {
@@ -80,11 +86,16 @@ class SettingController extends Controller
      */
     public function classes(Request $request): View
     {
+        $today = Carbon::today();
+
         $classes = SchoolClass::query()
             ->when($request->filled('search'), function ($query) use ($request) {
                 $query->where('course', 'like', "%{$request->search}%");
             })
+            ->withCount('students')
+            ->orderByRaw('end_date < ? DESC', [$today])
             ->orderBy('course')
+            ->orderBy('start_date')
             ->get();
 
         if ($request->ajax()) {

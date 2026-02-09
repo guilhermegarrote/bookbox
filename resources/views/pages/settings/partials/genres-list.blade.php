@@ -6,7 +6,7 @@
         $copiesLabel = $genre->copies_count === 1 ? 'exemplar' : 'exemplares';
     @endphp
 
-    <div class="settings-card" style="padding: 0;">
+    <div class="settings-card" style="padding: 0;" data-id="{{ $genre->id }}">
         <div style="display: flex; align-items: center; gap: 16px; height: 100%;">
             <span
                 style="
@@ -34,12 +34,12 @@
         </div>
 
         <div class="settings-actions" style="margin: 1rem">
-            <button data-icon="pencil" class="btn-list-config" title="Editar gênero">
+            <button data-action="edit" class="btn-list-config" title="Editar gênero">
                 <x-icons.icon name="pencil" />
             </button>
 
             @if ($hasNoBooksOrCopies)
-                <button data-icon="trash" class="btn-list-config" title="Excluir gênero">
+                <button data-action="delete" class="btn-list-config" title="Excluir gênero">
                     <x-icons.icon name="trash" />
                 </button>
             @endif
