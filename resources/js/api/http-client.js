@@ -54,7 +54,7 @@ export async function apiFetch(url, options = {}) {
     try {
         let response = await fetch(url, config);
 
-        if (response.status === 401 && !url.includes('/auth/refresh')) {
+        if (response.status === 401 && (!url.includes('/auth/refresh') && !url.includes('/auth/login'))) {
             console.warn('[Auth] Access token expirado. Tentando refresh...');
 
             const refreshed = await handleRefresh();
