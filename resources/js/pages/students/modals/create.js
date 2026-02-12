@@ -33,7 +33,7 @@ export async function openCreateModal(modalManager, studentsTable) {
                 notifySuccess('Aluno cadastrado com sucesso!');
             },
             onError: (err) => {
-                err.errors ? showErrors(err.errors) : notifyError(err.message || 'Erro ao cadastrar aluno');
+                err.errors ? showErrors(err.errors) : notifyError(err || 'Erro ao cadastrar aluno');
             }
         });
     } catch (err) {

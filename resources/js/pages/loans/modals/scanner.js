@@ -31,7 +31,7 @@ export function initBarcodeScannerListener(openMenuModal, openCreateModalWithIsb
                 await processBarcode(openMenuModal, openCreateModalWithIsbn, code);
             } catch (err) {
                 console.error(err);
-                notifyError(err.message || 'Erro ao processar o código.');
+                notifyError(err || 'Erro ao processar o código.');
             }
 
             return;

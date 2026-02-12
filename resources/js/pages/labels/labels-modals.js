@@ -77,7 +77,7 @@ export async function openGenerateLabelModal(modalManager) {
 
                 err.errors
                     ? showErrors(err.errors)
-                    : notifyError(err.message || 'Erro ao gerar etiquetas');
+                    : notifyError(err || 'Erro ao gerar etiquetas');
             },
         });
 

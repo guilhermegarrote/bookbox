@@ -37,7 +37,7 @@ export async function openUpdateModal(modalManager, studentId, studentsTable) {
                 notifySuccess('Aluno atualizado com sucesso!');
             },
             onError: (err) => {
-                err.errors ? showErrors(err.errors) : notifyError(err.message || 'Erro ao atualizar aluno');
+                err.errors ? showErrors(err.errors) : notifyError(err || 'Erro ao atualizar aluno');
             }
         });
     } catch (err) {

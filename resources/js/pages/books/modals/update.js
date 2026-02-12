@@ -39,7 +39,7 @@ export async function openUpdateModal(modalManager, bookId, booksTable) {
                 notifySuccess('Livro atualizado com sucesso!');
             },
             onError: (err) => {
-                err.errors ? showErrors(err.errors) : notifyError(err.message || 'Erro ao atualizar o livro');
+                err.errors ? showErrors(err.errors) : notifyError(err || 'Erro ao atualizar o livro');
             }
         });
 

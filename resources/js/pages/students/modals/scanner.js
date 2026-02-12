@@ -31,7 +31,7 @@ export function initBarcodeScannerListener(openMenuModal) {
                 }
             } catch (err) {
                 console.error(err);
-                notifyError(err.message || 'Erro ao processar o código.');
+                notifyError(err || 'Erro ao processar o código.');
             }
         } else if (e.key.length === 1) {
             barcodeBuffer += e.key;

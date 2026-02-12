@@ -74,7 +74,7 @@ async function loadBookModal(url, modalManager, booksTable, isbn = null) {
                 if (err.errors) {
                     showErrors(err.errors);
                 } else {
-                    notifyError(err.message || 'Erro ao cadastrar livro');
+                    notifyError(err || 'Erro ao cadastrar livro');
                 }
             }
         });

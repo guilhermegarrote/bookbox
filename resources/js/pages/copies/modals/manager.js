@@ -44,7 +44,7 @@ export async function openManagerCopiesModal(modalManager, bookId, booksTable) {
                     openManagerCopiesModal(bookId, modalManager);
                     notifySuccess('Exemplar excluído com sucesso!');
                 } catch (err) {
-                    notifyError(err.message || 'Erro ao excluir o exemplar');
+                    notifyError(err || 'Erro ao excluir o exemplar');
                 }
             });
         });

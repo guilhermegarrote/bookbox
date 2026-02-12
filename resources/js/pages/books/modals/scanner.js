@@ -28,7 +28,7 @@ export function initScannerListener(openMenuModal, openCreateModalWithIsbn) {
                 await handleScannedCode(code, { openMenuModal, openCreateModalWithIsbn });
             } catch (err) {
                 console.error(err);
-                notifyError(err.message || 'Erro ao processar o código.');
+                notifyError(err || 'Erro ao processar o código.');
             }
 
             return;
