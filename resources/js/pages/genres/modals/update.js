@@ -1,5 +1,4 @@
 import { route } from 'ziggy-js';
-import { applyInputMasks } from '@js/components/ui/input-mask';
 import { showErrors, notifySuccess, notifyError } from '@js/utils/formErrors';
 import { updateGenre } from '@js/api/genres/update';
 import { initColorPicker } from './color-picker';
@@ -19,7 +18,6 @@ export async function openUpdateModal(genreId, modalManager, refreshGenresList) 
     try {
         await modalManager.loadModalContent(url, 'genreUpdateModal', {
             onInit: () => {
-                applyInputMasks();
                 initColorPicker();
             }
         });
@@ -34,7 +32,7 @@ export async function openUpdateModal(genreId, modalManager, refreshGenresList) 
                 notifySuccess('Gênero atualizado com sucesso!');
             },
             onError: (err) => {
-                err.errors ? showErrors(err.errors) : notifyError(err.message || 'Erro ao atualizar o gênero');
+                err.errors ? showErrors(err.errors) : notifyError(err || 'Erro ao atualizar o gênero');
             }
         });
 

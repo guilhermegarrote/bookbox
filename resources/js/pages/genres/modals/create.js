@@ -1,5 +1,4 @@
 import { route } from 'ziggy-js';
-import { applyInputMasks } from '@js/components/ui/input-mask';
 import { showErrors, notifySuccess, notifyError } from '@js/utils/formErrors';
 import { createGenre } from '@js/api/genres/create';
 import { initColorPicker } from './color-picker';
@@ -16,7 +15,6 @@ export async function openCreateModal(modalManager, refreshGenresList = '') {
     try {
         await modalManager.loadModalContent(url, 'genreCreateModal', {
             onInit: () => {
-                applyInputMasks();
                 initColorPicker();
             }
         });
@@ -31,7 +29,7 @@ export async function openCreateModal(modalManager, refreshGenresList = '') {
                 notifySuccess('Gênero cadastrado com sucesso!');
             },
             onError: (err) => {
-                err.errors ? showErrors(err.errors) : notifyError(err.message || 'Erro ao cadastrar gênero');
+                err.errors ? showErrors(err.errors) : notifyError(err || 'Erro ao cadastrar gênero');
             }
         });
     } catch (err) {

@@ -32,7 +32,7 @@ export async function openUpdateModal(schoolClassId, modalManager, refreshSchool
                 notifySuccess('Turma atualizada com sucesso!');
             },
             onError: (err) => {
-                err.errors ? showErrors(err.errors) : notifyError(err.message || 'Erro ao atualizar a turma');
+                err.errors ? showErrors(err.errors) : notifyError(err || 'Erro ao atualizar a turma');
             }
         });
 

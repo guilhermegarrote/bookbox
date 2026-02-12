@@ -30,7 +30,7 @@ export async function openCreateModal(modalManager, refreshSchoolClassesList = '
                 notifySuccess('Turma cadastrada com sucesso!');
             },
             onError: (err) => {
-                err.errors ? showErrors(err.errors) : notifyError(err.message || 'Erro ao cadastrar turma');
+                err.errors ? showErrors(err.errors) : notifyError(err || 'Erro ao cadastrar turma');
             }
         });
     } catch (err) {
