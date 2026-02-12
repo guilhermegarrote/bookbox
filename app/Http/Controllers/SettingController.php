@@ -81,14 +81,14 @@ class SettingController extends Controller
      * @param  Request  $request  HTTP request containing optional search parameters.
      * @return View
      *
-     * @see resources/views/pages/settings/partials/classes.blade.php
-     * @see resources/views/pages/settings/partials/classes-list.blade.php
+     * @see resources/views/pages/settings/partials/school-classes.blade.php
+     * @see resources/views/pages/settings/partials/school-classes-list.blade.php
      */
-    public function classes(Request $request): View
+    public function schoolClasses(Request $request): View
     {
         $today = Carbon::today();
 
-        $classes = SchoolClass::query()
+        $schoolClasses = SchoolClass::query()
             ->when($request->filled('search'), function ($query) use ($request) {
                 $query->where('course', 'like', "%{$request->search}%");
             })
@@ -99,10 +99,10 @@ class SettingController extends Controller
             ->get();
 
         if ($request->ajax()) {
-            return view('pages.settings.partials.classes-list', compact('classes'));
+            return view('pages.settings.partials.school-classes-list', compact('schoolClasses'));
         }
 
-        return view('pages.settings.partials.classes', compact('classes'));
+        return view('pages.settings.partials.school-classes', compact('schoolClasses'));
     }
 
     /**

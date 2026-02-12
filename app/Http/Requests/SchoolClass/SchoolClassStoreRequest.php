@@ -7,6 +7,7 @@ namespace App\Http\Requests\SchoolClass;
 use App\Helpers\Validators;
 use App\Models\SchoolClass;
 use App\Rules\ValidTermInterval;
+use Carbon\Carbon;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -107,15 +108,21 @@ class SchoolClassStoreRequest extends FormRequest
     /**
      * Prepare input data before validation.
      *
-     * Trims whitespace from all input fields.
+     * Trims whitespace from all input fields and formats date fields.
      */
     protected function prepareForValidation(): void
     {
         $this->merge([
             'course' => trim($this->input('course', '')),
             'term' => trim($this->input('term', '')),
-            'start_date' => trim($this->input('start_date', '')),
-            'end_date' => trim($this->input('end_date', '')),
+
+            'start_date' => $this->input('start_date')
+                ? Carbon::createFromFormat('d/m/Y', $this->input('start_date'))->format('Y-m-d')
+                : null,
+
+            'end_date' => $this->input('end_date')
+                ? Carbon::createFromFormat('d/m/Y', $this->input('end_date'))->format('Y-m-d')
+                : null,
         ]);
     }
 }

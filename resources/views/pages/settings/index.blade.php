@@ -7,7 +7,7 @@
             <button class="settings-nav-btn" data-page="genres">
                 <x-icons.icon name="genre" /> Gerenciar Gêneros
             </button>
-            <button class="settings-nav-btn" data-page="classes">
+            <button class="settings-nav-btn" data-page="school-classes">
                 <x-icons.icon name="chalkboard-teacher" /> Gerenciar Turmas
             </button>
             <button class="settings-nav-btn" data-page="users">
@@ -28,7 +28,7 @@
     <main class="settings-content">
         <section id="config" class="settings-page active"></section>
         <section id="genres" class="settings-page"></section>
-        <section id="classes" class="settings-page"></section>
+        <section id="school-classes" class="settings-page"></section>
         <section id="users" class="settings-page"></section>
     </main>
 </div>

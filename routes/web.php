@@ -46,7 +46,7 @@ Route::middleware('auth.jwt.cookie')->group(function () {
 
     Route::prefix('school-classes')->name('school-classes.')->group(function () {
         Route::get('/create-modal', [SchoolClassController::class, 'createModal'])->name('create-modal');
-        Route::get('/{school_class}/update-modal', [SchoolClassController::class, 'updateModal'])->name('update-modal');
+        Route::get('/{schoolClass}/update-modal', [SchoolClassController::class, 'updateModal'])->name('update-modal');
     });
 
     Route::prefix('genres')->name('genres.')->group(function () {
@@ -87,7 +87,7 @@ Route::middleware('auth.jwt.cookie')->group(function () {
     Route::prefix('settings')->name('settings.')->group(function () {
         Route::get('/', [SettingController::class, 'index'])->name('view');
         Route::get('/genres', [SettingController::class, 'genres'])->name('genres');
-        Route::get('/classes', [SettingController::class, 'classes'])->name('classes');
+        Route::get('/school-classes', [SettingController::class, 'schoolClasses'])->name('school-classes');
         Route::get('/users', [SettingController::class, 'users'])->name('users');
         Route::get('/config', [SettingController::class, 'config'])->name('config');
     });

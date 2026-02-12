@@ -40,4 +40,32 @@ export function applyInputMasks() {
             lazy: false,
         });
     });
+
+    const dateInputs = document.querySelectorAll('input[id$="date"]');
+
+    dateInputs.forEach(input => {
+        const currentYear = new Date().getFullYear();
+
+        IMask(input, {
+            mask: Date,
+            pattern: 'd/`m/`Y',
+            lazy: false,
+            autofix: true,
+            blocks: {
+                d: { mask: IMask.MaskedRange, from: 1, to: 31 },
+                m: { mask: IMask.MaskedRange, from: 1, to: 12 },
+                Y: { mask: IMask.MaskedRange, from: currentYear - 10, to: currentYear + 10 }
+            },
+            format: function (date) {
+                const day = date.getDate().toString().padStart(2, '0');
+                const month = (date.getMonth() + 1).toString().padStart(2, '0');
+                const year = date.getFullYear();
+                return `${day}/${month}/${year}`;
+            },
+            parse: function (str) {
+                const parts = str.split('/');
+                return new Date(parts[2], parts[1] - 1, parts[0]);
+            }
+        });
+    });
 }
