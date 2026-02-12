@@ -57,6 +57,7 @@ Route::middleware('auth.jwt.cookie')->group(function () {
     Route::prefix('users')->name('users.')->group(function () {
         Route::get('/create-modal', [UserController::class, 'createModal'])->name('create-modal');
         Route::get('/{user}/update-modal', [UserController::class, 'updateModal'])->name('update-modal');
+        Route::get('/delete-modal', [UserController::class, 'deleteModal'])->name('delete-modal');
     });
 
     Route::prefix('copies')->name('copies.')->group(function () {

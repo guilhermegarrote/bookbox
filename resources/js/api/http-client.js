@@ -248,5 +248,5 @@ export const api = {
      * @param {Object} [options={}] - Additional options for the request.
      * @returns {Promise<Object>} - The API response.
      */
-    delete: (url, options = {}) => apiFetch(url, { method: 'DELETE', ...options }),
+    delete: (url, data = null, options = {}) => apiFetch(url, { method: 'DELETE', body: data ? JSON.stringify(data) : undefined, ...options }),
 };

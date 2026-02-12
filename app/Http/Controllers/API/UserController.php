@@ -6,11 +6,13 @@ namespace App\Http\Controllers\API;
 
 use App\Helpers\Utils;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\User\UserDestroyRequest;
 use App\Http\Requests\User\UserStoreRequest;
 use App\Http\Requests\User\UserUpdateRequest;
 use App\Models\User;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Hash;
 
 /**
  * Controller responsible for managing users (CRUD operations).
@@ -52,7 +54,7 @@ class UserController extends Controller
         try {
             $userData = array_filter(
                 array_intersect_key($data, array_flip(['name', 'email', 'password'])),
-                fn (mixed $v): bool => $v !== null && $v !== '',
+                fn(mixed $v): bool => $v !== null && $v !== '',
             );
 
             User::create($userData);
@@ -104,9 +106,13 @@ class UserController extends Controller
             $binaryId = Utils::convertUuidToBinary($id);
             $user = User::findOrFail($binaryId);
 
+            if (auth()->user()->email !== $user->email) {
+                return $this->forbiddenResponse('Você não tem permissão para atualizar este usuário.');
+            }
+
             $userData = array_filter(
                 array_intersect_key($data, array_flip(['name', 'email', 'password'])),
-                fn (mixed $v): bool => $v !== null && $v !== '',
+                fn(mixed $v): bool => $v !== null && $v !== '',
             );
 
             $user->update($userData);
@@ -127,15 +133,22 @@ class UserController extends Controller
     /**
      * Delete a user by ID.
      *
+     * @param UserDestroyRequest $request the validated request containing user data
      * @param string $id the UUID (string) of the user to delete
      *
      * @return JsonResponse JSON response with no content upon successful deletion
      */
-    public function destroy(string $id): JsonResponse
+    public function destroy(UserDestroyRequest $request, string $id): JsonResponse
     {
+        $request->validated();
+
         try {
             $binaryId = Utils::convertUuidToBinary($id);
             $user = User::findOrFail($binaryId);
+
+            if (auth()->user()->email !== $user->email) {
+                return $this->forbiddenResponse('Você não tem permissão para excluir este usuário.');
+            }
 
             $user->delete();
 

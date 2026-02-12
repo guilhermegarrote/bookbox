@@ -1,9 +1,12 @@
 import ModalManager from '@js/components/ui/modal-manager/modal-manager';
-import { handleDeleteGenre } from '../genres/delete';
-import { openUpdateModal as openUpdateGenreModal } from '../genres/update';
-import { openCreateModal as openCreateGenreModal } from '../genres/create';
-import { openUpdateModal as openUpdateSchoolClassModal } from '../school-classes/update';
-import { openCreateModal as openCreateSchoolClassModal } from '../school-classes/create';
+import { handleDeleteGenre } from '../genres/modals/delete';
+import { openUpdateModal as openUpdateGenreModal } from '../genres/modals/update';
+import { openCreateModal as openCreateGenreModal } from '../genres/modals/create';
+import { openUpdateModal as openUpdateSchoolClassModal } from '../school-classes/modals/update';
+import { openCreateModal as openCreateSchoolClassModal } from '../school-classes/modals/create';
+import { openUpdateModal as openUpdateUserModal } from '../users/modals/update';
+import { openCreateModal as openCreateUserModal } from '../users/modals/create';
+import { openDeleteModal as openDeleteUserModal} from '../users/modals/delete';
 
 const modalManager = new ModalManager();
 let globalActionsAttached = false;
@@ -132,6 +135,16 @@ function attachGlobalActions() {
                     openUpdateSchoolClassModal(id, modalManager, () => loadSettingsPage('school-classes'));
                 }
             }
+
+            if (btn.closest('#users')) {
+                if (action === 'edit') {
+                    openUpdateUserModal(id, modalManager, () => loadSettingsPage('users'));
+                }
+
+                if (action === 'delete') {
+                    openDeleteUserModal(id, modalManager, () => loadSettingsPage('users'));
+                }
+            }
         }
 
         const createBtn = e.target.closest('#open-create-modal');
@@ -146,6 +159,12 @@ function attachGlobalActions() {
                 openCreateSchoolClassModal(
                     modalManager,
                     () => loadSettingsPage('school-classes')
+                );
+            }
+            if (createBtn.closest('#users')) {
+                openCreateUserModal(
+                    modalManager,
+                    () => loadSettingsPage('users')
                 );
             }
         }

@@ -2,7 +2,7 @@
 
 <div class="search-add">
     <input type="search" id="item-search" data-entity="users" placeholder="Busque pelo nome ou email" />
-    <button type="button">Adicionar</button>
+    <button type="button" id="open-create-modal">Adicionar</button>
 </div>
 
 <div class="settings-card-list">
