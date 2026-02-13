@@ -28,7 +28,7 @@
                 title="Selecione o período do curso" />
             <x-modals.input-field id="phone" label="Telefone" width="140px" required
                 title="Informe o telefone de contato do aluno" />
-            <x-modals.input-field id="email" label="Email" width="460px" required
+            <x-modals.input-field type="email" id="email" label="Email" width="460px" required
                 title="Informe o email do aluno" />
         </div>
     </x-slot name="content">

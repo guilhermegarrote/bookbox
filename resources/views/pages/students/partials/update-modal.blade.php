@@ -30,13 +30,13 @@
                 :value="$student->term" title="Regime do curso" />
             <x-modals.input-field id="phone" label="Telefone" width="140px" :value="$student->phone"
                 title="Telefone do aluno" />
-            <x-modals.input-field id="email" label="Email" width="460px" :value="$student->email"
+            <x-modals.input-field type="email" id="email" label="Email" width="460px" :value="$student->email"
                 title="Email do aluno" />
         </div>
     </x-slot name="content">
 
     <x-slot name="footer">
-        <button type="button" class="modal-button" id="btn-cancel-update" title="Cancelar atualização"
+        <button type="button" class="modal-button" id="btn-close" title="Cancelar atualização"
             aria-label="Cancelar atualização">Cancelar</button>
         <button type="button" class="modal-button" id="submit-update" title="Salvar alterações do aluno"
             aria-label="Salvar alterações do aluno">Salvar</button>
