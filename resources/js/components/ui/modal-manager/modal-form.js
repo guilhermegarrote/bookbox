@@ -44,6 +44,15 @@ export function getModalData(modal) {
             value = el.value?.trim() || '';
         }
 
+        if (
+            value === '' ||
+            value === null ||
+            value === undefined ||
+            (Array.isArray(value) && value.length === 0)
+        ) {
+            return;
+        }
+
         data[el.id] = value;
     });
 
@@ -78,7 +87,7 @@ export function restoreFormData(modal, data = {}) {
     const dispatch = (el, type) => {
         try {
             el.dispatchEvent(new Event(type, { bubbles: true }));
-        } catch (e) {}
+        } catch (e) { }
     };
 
     for (const [key, rawValue] of Object.entries(data)) {
