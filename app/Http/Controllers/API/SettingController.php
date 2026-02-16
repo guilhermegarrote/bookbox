@@ -10,6 +10,7 @@ use App\Models\Setting;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 /**
  * Controller responsible for managing application settings (CRUD operations).
@@ -71,87 +72,99 @@ class SettingController extends Controller
     }
 
     /**
-     * Update the value of a specific setting, validating it based on predefined rules.
+     * Bulk update multiple settings at once.
      *
      * The validation rules are dynamically loaded from `config/settings.php` and may include
-     * constraints such as minimum, maximum, or type (string/integer). The new value must comply
-     * with these validation rules before being persisted.
+     * constraints such as minimum, maximum, or type (string/integer). Each key/value pair in
+     * the request must comply with these rules before being persisted.
      *
-     * @param Request $request the incoming request containing the new value
-     * @param string $id the UUID of the setting
+     * The operation is atomic: either all settings are updated, or none are.
      *
-     * @return JsonResponse JSON response indicating success (204 No Content),
-     *                      validation error (400 Bad Request),
-     *                      not found (404 Not Found),
-     *                      or internal error (500 Internal Server Error)
+     * @param Request $request The incoming request containing an associative array of settings.
+     *                        Example:
+     *                        [
+     *                          "default_due_days" => 10,
+     *                          "extension_days" => 5,
+     *                          "max_book_loans" => 3
+     *                        ]
+     *
+     * @return JsonResponse JSON response indicating:
+     *                      - 204 No Content on success
+     *                      - 400 Bad Request if validation fails
+     *                      - 404 Not Found if any key does not exist
+     *                      - 500 Internal Server Error on unexpected errors
      *
      * @see config/settings.php Contains validation rules for all configurable keys.
      */
-    public function update(Request $request, string $id): JsonResponse
+    public function bulkUpdate(Request $request): JsonResponse
     {
-        $data = $request->all();
+        $data = $request->input('settings', []);
+        $rules = config('settings');
+
+        if (empty($data)) {
+            return $this->badRequestResponse(['settings' => 'Nenhuma configuração enviada.']);
+        }
+
+        DB::beginTransaction();
 
         try {
-            $binaryId = Utils::convertUuidToBinary($id);
-            $setting = Setting::findOrFail($binaryId);
+            foreach ($data as $key => $value) {
+                if (!isset($rules[$key])) {
+                    return $this->badRequestResponse([$key => 'Configuração inválida.']);
+                }
 
-            $rules = config('settings');
-            $key = $setting->key;
+                $rule = $rules[$key];
 
-            if (!isset($rules[$key])) {
-                return response()->json(['error' => 'Configuração inválida para validação.'], 400);
+                switch ($rule['type']) {
+                    case 'integer':
+                        if (!ctype_digit((string) $value)) {
+                            return $this->badRequestResponse([$key => "O valor para {$key} deve ser um número inteiro."]);
+                        }
+
+                        $intValue = (int) $value;
+
+                        if (isset($rule['min']) && $intValue < $rule['min']) {
+                            return $this->badRequestResponse([$key => "O valor mínimo para {$key} é {$rule['min']}."]);
+                        }
+
+                        if (isset($rule['max']) && $intValue > $rule['max']) {
+                            return $this->badRequestResponse([$key => "O valor máximo para {$key} é {$rule['max']}."]);
+                        }
+
+                        $value = $intValue;
+                        break;
+
+                    case 'string':
+                        if (!is_string($value)) {
+                            return $this->badRequestResponse([$key => "O valor para {$key} deve ser uma string."]);
+                        }
+
+                        if (isset($rule['max']) && mb_strlen($value) > $rule['max']) {
+                            return $this->badRequestResponse([$key => "O valor máximo para {$key} é {$rule['max']} caracteres."]);
+                        }
+                        break;
+
+                    default:
+                        return $this->badRequestResponse([$key => "Tipo inválido para {$key}."]);
+                }
+
+                $setting = Setting::where('key', $key)->first();
+
+                if (!$setting) {
+                    return $this->notFoundResponse("Configuração não encontrada: {$key}");
+                }
+
+                $setting->update(['value' => $value]);
             }
 
-            $rule = $rules[$key];
-            $value = $data['value'] ?? null;
-
-            if ($value === null) {
-                return response()->json(['error' => 'O valor da configuração é obrigatório.'], 400);
-            }
-
-            switch ($rule['type']) {
-                case 'integer':
-                    if (!ctype_digit((string) $value)) {
-                        return response()->json(['error' => "O valor para {$key} deve ser um número inteiro."], 400);
-                    }
-
-                    $intValue = (int) $value;
-
-                    if (isset($rule['min']) && $intValue < $rule['min']) {
-                        return response()->json(['error' => "O valor mínimo para {$key} é {$rule['min']}."], 400);
-                    }
-
-                    if (isset($rule['max']) && $intValue > $rule['max']) {
-                        return response()->json(['error' => "O valor máximo para {$key} é {$rule['max']}."], 400);
-                    }
-
-                    $value = $intValue;
-                    break;
-                case 'string':
-                    if (!\is_string($value)) {
-                        return response()->json(['error' => "O valor para {$key} deve ser uma string."], 400);
-                    }
-
-                    if (isset($rule['max']) && mb_strlen($value) > $rule['max']) {
-                        return response()->json(['error' => "O valor máximo para {$key} é {$rule['max']} caracteres."], 400);
-                    }
-                    break;
-                default:
-                    return response()->json(['error' => 'Tipo de configuração inválido.'], 400);
-            }
-
-            $setting->update(['value' => $value]);
-
+            DB::commit();
             return $this->noContentResponse();
-        } catch (ModelNotFoundException) {
-            return $this->notFoundResponse('Configuração não encontrada.');
         } catch (\Throwable $e) {
-            $this->logError('Erro ao atualizar configuração.', $e, [
-                'setting_id' => $id,
-                'data' => $data,
-            ]);
+            DB::rollBack();
 
-            return $this->internalErrorResponse($e, 'Erro interno ao atualizar configuração.');
+            $this->logError('Erro ao atualizar configurações.', $e, ['data' => $data]);
+
+            return response()->json(['error' => 'Erro interno ao atualizar configurações.'], 500);
         }
     }
 }

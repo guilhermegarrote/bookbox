@@ -36,5 +36,9 @@
             value="{{ $config['max_book_loans'] ?? config('settings.max_book_loans.default') }}"
             min="{{ config('settings.max_book_loans.min') }}" max="{{ config('settings.max_book_loans.max') }}">
     </div>
+</div>
 
+<div class="config-actions hidden" id="config-actions">
+    <button type="button" class="btn-secondary" id="cancel-config">Cancelar</button>
+    <button type="button" class="btn-primary" id="save-config">Salvar Configurações</button>
 </div>

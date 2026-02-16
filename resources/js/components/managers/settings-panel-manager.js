@@ -25,8 +25,6 @@ export default class SettingsPanelManager {
             onInit: (modal) => {
                 const overlay = modal.closest('.modal-overlay');
                 if (overlay) overlay.classList.add('settings-overlay');
-
-                this._bindSettingsEvents(modal);
             }
         });
 
@@ -35,20 +33,5 @@ export default class SettingsPanelManager {
         });
 
         initSettingsNavigation();
-    }
-
-    /**
-     * Binds settings modal internal events.
-     *
-     * @param {HTMLElement} modal
-     */
-    _bindSettingsEvents(modal) {
-        const finalizeBtn = modal.querySelector(".settings-btn-finalize");
-
-        if (finalizeBtn) {
-            finalizeBtn.addEventListener("click", () => {
-                this.modalManager.removeModal(modal.id);
-            });
-        }
     }
 }

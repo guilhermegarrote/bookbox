@@ -160,8 +160,7 @@
     margin-bottom: 1.5rem;
 }
 
-.settings-btn-add,
-.settings-btn-finalize {
+.settings-btn-add {
     border: none;
     padding: 0.6rem 1.2rem;
     border-radius: 0.5rem;
@@ -177,17 +176,6 @@
 
 .settings-btn-add:hover {
     background-color: var(--color-base-gray-535);
-    transform: translateY(-1px);
-}
-
-.settings-btn-finalize {
-    background: var(--color-base-white);
-    color: var(--color-base-gray-dark);
-    border: 1px solid var(--color-base-gray-light);
-}
-
-.settings-btn-finalize:hover {
-    background-color: var(--color-base-gray);
     transform: translateY(-1px);
 }
 
@@ -320,12 +308,12 @@
     padding: 1rem 1.25rem;
     border-radius: 0.75rem;
     border: 1px solid #e5e7eb;
-    background: #fff;
+    background-color: #fff;
     transition: 0.2s ease;
 }
 
 .configs-card {
-    background: #ffffff;
+    background-color: #ffffff;
     border-radius: 12px;
     padding: 0rem 1.25rem;
     max-width: 100%;
@@ -361,7 +349,7 @@
 .config-item input[type="number"] {
     width: 80px;
     padding: 0.35rem 0.5rem;
-    background: #f9fafb;
+    background-color: #f9fafb;
     border: 1px solid #d1d5db;
     border-radius: 6px;
     color: #111827;
@@ -384,7 +372,7 @@
     font-family: var(--font-primary);
     flex: 1;
     padding: 0.45rem 0.6rem;
-    background: #f9fafb;
+    background-color: #f9fafb;
     border: 1px solid #d1d5db;
     border-radius: 6px;
     color: var(--color-base-gray-dark);
@@ -399,7 +387,7 @@
 .search-add button {
     font-family: var(--font-primary);
     padding: 0.45rem 0.75rem;
-    background: var(--color-base-gray-dark);
+    background-color: var(--color-base-gray-dark);
     border: none;
     border-radius: 6px;
     color: #ffffff;
@@ -409,5 +397,45 @@
 }
 
 .search-add button:hover {
-    background: var(--color-base-gray-535);
+    background-color: var(--color-base-gray-535);
+}
+
+.btn-primary,
+.btn-secondary {
+    font-family: var(--font-primary);
+    padding: 0.45rem 0.75rem;
+    border: none;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    border: 1px solid var(--color-base-gray-535);
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.btn-primary,
+.btn-secondary:hover {
+    background-color: var(--color-base-gray-535);
+    color: #ffffff;
+}
+
+.btn-primary:hover,
+.btn-secondary {
+    background-color: #ffffff;
+    color: var(--color-base-gray-535);
+}
+
+.config-actions {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    display: flex;
+    gap: 0.75rem;
+    justify-content: flex-end;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.config-actions.hidden {
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(-5px);
 }

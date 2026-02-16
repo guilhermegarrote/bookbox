@@ -56,8 +56,9 @@ Route::middleware(['auth.jwt.cookie'])->group(function () {
     Route::post('/labels/generate-pdf', [LabelController::class, 'generateLabel'])->name('labels.generate');
 
     Route::apiResource('settings', SettingController::class)
-        ->except(['store', 'destroy'])
-    ;
+        ->except(['store', 'destroy', 'update']);
+
+    Route::put('settings', [SettingController::class, 'bulkUpdate'])->name('settings.update');
 
     Route::apiResource('loans', LoanController::class)
         ->except(['update'])
