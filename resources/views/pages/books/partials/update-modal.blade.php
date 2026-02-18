@@ -20,7 +20,7 @@
                     <span>Gênero do livro</span>
                 </label>
                 <div class="btn-input-side-wrapper">
-                    <button id="open-create-genres-modal" class="btn-dark btn-input-side" style="border-radius: 0;"
+                    <button id="open-create-genre-modal" class="btn-dark btn-input-side" style="border-radius: 0;"
                         title="Clique para adicionar gênero" aria-label="Adicionar gênero">
                         <x-icons.icon name="plus" class="" />
                     </button>
