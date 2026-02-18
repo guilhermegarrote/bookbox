@@ -37,9 +37,7 @@ export const populateSelect = (
                 label: item[textKey] ?? item[valueKey]
             };
         })
-        .sort((a, b) =>
-            String(a.label).localeCompare('pt-BR', { numeric: true })
-        );
+        .sort((a, b) => String(a.label).localeCompare(String(b.label), 'pt-BR', { numeric: true }));
 
     uniqueItems.forEach(item => {
         const option = new Option(item.label, item.value);
