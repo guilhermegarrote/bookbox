@@ -32,7 +32,7 @@ export async function openUpdateModal(modalManager, studentId, studentsTable, in
                 const data = saved?.data ?? null;
 
                 if (_modalManagerRef && _studentsTableRef) {
-                    loanStudentModal(_modalManagerRef, _studentsTableRef, data);
+                    openUpdateModal(_modalManagerRef, studentId, _studentsTableRef, data);
                 }
             });
 
@@ -61,6 +61,7 @@ export async function openUpdateModal(modalManager, studentId, studentsTable, in
 
         document.getElementById('btn-close')?.addEventListener('click', () => {
             openMenuModal(modalManager, studentId, studentsTable);
+            modalManager.removeModal(modalId);
         });
 
         modalManager.bindFormSubmit({

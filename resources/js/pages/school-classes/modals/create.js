@@ -3,6 +3,8 @@ import { showErrors, notifySuccess, notifyError } from '@js/utils/formErrors';
 import { createSchoolClass } from '@js/api/school-classes/create';
 import { applyInputMasks } from '@js/components/ui/input-mask';
 
+const modalId = 'schoolClassCreateModal';
+
 /**
  * Opens the "Create School Class" modal and handles its behavior.
  *
@@ -13,19 +15,28 @@ export async function openCreateModal(modalManager, refreshSchoolClassesList = '
     const url = route('school-classes.create-modal');
 
     try {
-        await modalManager.loadModalContent(url, 'schoolClassCreateModal', {
+        await modalManager.loadModalContent(url, modalId, {
             onInit: () => {
                 setDefaultDates();
                 applyInputMasks();
             }
         });
 
+        document.getElementById('btn-close')?.addEventListener('click', () => {
+            modalManager.dispatchSavedModalEvent('student:create:pending', 'reopenStudentModal');
+            modalManager.dispatchSavedModalEvent('student:update:pending', 'reopenStudentModal');
+            modalManager.removeModal(modalId);
+        });
+
         modalManager.bindFormSubmit({
-            modalId: 'schoolClassCreateModal',
+            modalId,
             buttonId: 'submit-create',
             onSubmit: createSchoolClass,
             onSuccess: () => {
-                modalManager.removeModal('schoolClassCreateModal');
+                modalManager.dispatchSavedModalEvent('student:create:pending', 'reopenStudentModal');
+                modalManager.dispatchSavedModalEvent('student:update:pending', 'reopenStudentModal');
+
+                modalManager.removeModal(modalId);
                 if (refreshSchoolClassesList) refreshSchoolClassesList();
                 notifySuccess('Turma cadastrada com sucesso!');
             },

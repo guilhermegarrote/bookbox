@@ -4,6 +4,11 @@ import { showErrors, notifySuccess, notifyError } from '@js/utils/formErrors';
 import { updateBook } from '@js/api/books/update';
 import { initBooksSelects } from './selects';
 import { openMenuModal } from './menu';
+import { openCreateModal as openGenreCreateModal } from '@js/pages/genres/modals/create';
+
+let _modalManagerRef = null;
+let _booksTableRef = null;
+let _reopenListenerAttached = false;
 
 const modalId = 'bookUpdateModal';
 
@@ -16,10 +21,26 @@ const modalId = 'bookUpdateModal';
  * @param {Object} booksTable Table instance used to refresh the list after update.
  * @returns {Promise<void>}
  */
-export async function openUpdateModal(modalManager, bookId, booksTable) {
+export async function openUpdateModal(modalManager, bookId, booksTable, initialData = null) {
     const url = route('books.update-modal', { book: bookId });
 
     try {
+        _modalManagerRef = modalManager;
+        _booksTableRef = booksTable;
+
+        if (!_reopenListenerAttached) {
+            window.addEventListener('reopenBookModal', (e) => {
+                const saved = e.detail;
+                const data = saved?.data ?? null;
+
+                if (_modalManagerRef && _booksTableRef) {
+                    openUpdateModal(_modalManagerRef, bookId, _booksTableRef, data);
+                }
+            });
+
+            _reopenListenerAttached = true;
+        }
+
         await modalManager.loadModalContent(url, modalId, {
             onInit: () => {
                 applyInputMasks();
@@ -31,11 +52,18 @@ export async function openUpdateModal(modalManager, bookId, booksTable) {
 
                     initBooksSelects(selectData);
                 }
-            }
+            },
+            initialData
         });
 
-        document.getElementById('btn-cancel-update')?.addEventListener('click', () => {
+        document.getElementById('open-create-genre-modal')?.addEventListener('click', async () => {
+            modalManager.saveModalState('book:update:pending', modalId);
+            openGenreCreateModal(modalManager);
+        });
+
+        document.getElementById('btn-close')?.addEventListener('click', () => {
             openMenuModal(modalManager, bookId, booksTable);
+            modalManager.removeModal(modalId);
         });
 
         modalManager.bindFormSubmit({

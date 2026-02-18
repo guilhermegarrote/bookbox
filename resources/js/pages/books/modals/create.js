@@ -4,6 +4,11 @@ import { showErrors, notifySuccess, notifyError } from '@js/utils/formErrors';
 import { createBook } from '@js/api/books/create';
 import { initBooksSelects } from './selects';
 import { initIsbnAutoFill } from './isbn-autofill';
+import { openCreateModal as openGenreCreateModal } from '@js/pages/genres/modals/create';
+
+let _modalManagerRef = null;
+let _booksTableRef = null;
+let _reopenListenerAttached = false;
 
 const modalId = 'bookCreateModal';
 
@@ -36,10 +41,26 @@ export async function openCreateModalWithIsbn(modalManager, booksTable, isbn) {
  * @param {Object} booksTable
  * @param {string|null} isbn
  */
-async function loadBookModal(modalManager, booksTable, isbn = null) {
+async function loadBookModal(modalManager, booksTable, isbn = null, initialData = null) {
     const url = route('books.create-modal');
 
     try {
+        _modalManagerRef = modalManager;
+        _booksTableRef = booksTable;
+
+        if (!_reopenListenerAttached) {
+            window.addEventListener('reopenBookModal', (e) => {
+                const saved = e.detail;
+                const data = saved?.data ?? null;
+
+                if (_modalManagerRef && _booksTableRef) {
+                    loadBookModal(_modalManagerRef, _booksTableRef, null, data);
+                }
+            });
+
+            _reopenListenerAttached = true;
+        }
+
         await modalManager.loadModalContent(url, modalId, {
             onInit: () => {
                 applyInputMasks();
@@ -62,7 +83,18 @@ async function loadBookModal(modalManager, booksTable, isbn = null) {
                         field.dispatchEvent(new Event('keyup'));
                     }
                 }
-            }
+            },
+            initialData
+        });
+
+        document.getElementById('open-create-genre-modal')?.addEventListener('click', async () => {
+            modalManager.saveModalState('book:create:pending', modalId);
+            openGenreCreateModal(modalManager);
+        });
+
+        document.getElementById('btn-close')?.addEventListener('click', () => {
+            modalManager.dispatchSavedModalEvent('loan:create:pending', 'reopenLoanModal');
+            modalManager.removeModal(modalId);
         });
 
         modalManager.bindFormSubmit({

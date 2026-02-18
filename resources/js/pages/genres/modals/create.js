@@ -21,11 +21,20 @@ export async function openCreateModal(modalManager, refreshGenresList = '') {
             }
         });
 
+        document.getElementById('btn-close')?.addEventListener('click', () => {
+            modalManager.dispatchSavedModalEvent('book:create:pending', 'reopenBookModal');
+            modalManager.dispatchSavedModalEvent('book:update:pending', 'reopenBookModal');
+            modalManager.removeModal(modalId);
+        });
+
         modalManager.bindFormSubmit({
             modalId,
             buttonId: 'submit-create',
             onSubmit: createGenre,
             onSuccess: () => {
+                modalManager.dispatchSavedModalEvent('book:create:pending', 'reopenBookModal');
+                modalManager.dispatchSavedModalEvent('book:update:pending', 'reopenBookModal');
+
                 modalManager.removeModal(modalId);
                 if (refreshGenresList) refreshGenresList();
                 notifySuccess('Gênero cadastrado com sucesso!');

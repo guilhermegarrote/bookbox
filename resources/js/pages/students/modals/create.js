@@ -57,6 +57,11 @@ export async function openCreateModal(modalManager, studentsTable, initialData =
             openSchoolClassCreateModal(modalManager);
         });
 
+        document.getElementById('btn-close')?.addEventListener('click', () => {
+            modalManager.dispatchSavedModalEvent('loan:create:pending', 'reopenLoanModal');
+            modalManager.removeModal(modalId);
+        });
+
         modalManager.bindFormSubmit({
             modalId,
             buttonId: 'submit-create',
