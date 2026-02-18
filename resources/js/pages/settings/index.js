@@ -2,6 +2,7 @@ import ModalManager from '@js/components/ui/modal-manager/modal-manager';
 import { handleDeleteGenre } from '../genres/modals/delete';
 import { openUpdateModal as openUpdateGenreModal } from '../genres/modals/update';
 import { openCreateModal as openCreateGenreModal } from '../genres/modals/create';
+import { handleDeleteSchoolClass } from '../school-classes/modals/delete';
 import { openUpdateModal as openUpdateSchoolClassModal } from '../school-classes/modals/update';
 import { openCreateModal as openCreateSchoolClassModal } from '../school-classes/modals/create';
 import { openUpdateModal as openUpdateUserModal } from '../users/modals/update';
@@ -132,6 +133,7 @@ function handleCardAction(btn) {
 
     if (btn.closest('#school-classes')) {
         if (action === 'edit') openUpdateSchoolClassModal(id, modalManager, () => loadSettingsPage('school-classes'));
+        if (action === 'delete') handleDeleteSchoolClass(id, modalManager, () => loadSettingsPage('school-classes'));
     }
 
     if (btn.closest('#users')) {
