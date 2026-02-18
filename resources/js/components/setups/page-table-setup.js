@@ -8,16 +8,14 @@ import ModalManager from '@js/components/ui/modal-manager/modal-manager';
  * @param {Function} params.updateTable Updates table data.
  * @param {string} params.filterStateKey Key used to store filter state.
  * @param {Object} [params.filterData] Initial filter data.
- * @param {Object} [params.selectData] Initial select data.
  * @param {Function} [params.initModals] Initializes modals using ModalManager.
  */
-export function setupTablePage({ initFilterUI, updateTable, filterStateKey, filterData, selectData, initModals }) {
+export function setupTablePage({ initFilterUI, updateTable, filterStateKey, filterData, initModals }) {
     window.App = {
         initFilterUI,
         updateTable,
         filterStateKey,
-        filterData: filterData || {},
-        selectData: selectData || {}
+        filterData: filterData || {}
     };
 
     document.addEventListener('DOMContentLoaded', () => {
