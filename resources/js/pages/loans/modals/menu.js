@@ -3,6 +3,8 @@ import { finalizeLoan } from '@js/api/loans/finalize';
 import { extendLoan } from '@js/api/loans/extend';
 import { notifySuccess, notifyError } from '@js/utils/formErrors';
 
+const modalId = 'loanMenuModal';
+
 /**
  * Opens the loan menu modal and binds action handlers.
  *
@@ -16,7 +18,7 @@ export async function openMenuModal(modalManager, loanId, loansTable) {
     const url = route('loans.menu-modal', { loan: loanId });
 
     try {
-        await modalManager.loadModalContent(url, 'loanMenuModal');
+        await modalManager.loadModalContent(url, modalId);
 
         document.getElementById('open-extend-modal')?.addEventListener('click', async () => {
             const confirmed = await new Promise(async (resolve) => {
@@ -36,9 +38,9 @@ export async function openMenuModal(modalManager, loanId, loansTable) {
                 const { ok, data: responseData } = await extendLoan(loanId);
 
                 if (!ok) {
-                    notifyError(responseData?.error || 'Erro ao prolongar o empréstimo');
+                    notifyError(responseData || 'Erro ao prolongar o empréstimo');
                 } else {
-                    modalManager.removeModal('loanMenuModal');
+                    modalManager.removeModal(modalId);
                     loansTable.updateTable();
                     notifySuccess('Empréstimo prolongado com sucesso!');
                 }
@@ -61,9 +63,9 @@ export async function openMenuModal(modalManager, loanId, loansTable) {
                 const { ok, data: responseData } = await finalizeLoan(loanId);
 
                 if (!ok) {
-                    notifyError(responseData?.error || 'Erro ao finalizar o empréstimo');
+                    notifyError(responseData || 'Erro ao finalizar o empréstimo');
                 } else {
-                    modalManager.removeModal('loanMenuModal');
+                    modalManager.removeModal(modalId);
                     loansTable.updateTable();
                     notifySuccess('Empréstimo finalizado com sucesso!');
                 }

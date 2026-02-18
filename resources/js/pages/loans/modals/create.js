@@ -1,5 +1,5 @@
 import { route } from 'ziggy-js';
-import { notifySuccess, notifyError } from '@js/utils/formErrors';
+import { showErrors, notifySuccess, notifyError } from '@js/utils/formErrors';
 import { applyInputMasks } from '@js/components/ui/input-mask';
 import { createLoan } from '@js/api/loans/create';
 import { initCpfAutoFill } from './cpf-autofill';
@@ -12,6 +12,8 @@ let _modalManagerRef = null;
 let _loansTableRef = null;
 let _reopenListenerAttached = false;
 
+const modalId = 'loanCreateModal';
+
 /**
  * Opens the loan creation modal.
  *
@@ -21,7 +23,7 @@ let _reopenListenerAttached = false;
  * @returns {Promise<void>}
  */
 export function openCreateModal(modalManager, loansTable, initialData = null) {
-    return loadLoanModal(route('loans.create-modal'), modalManager, loansTable, null, initialData);
+    return loadLoanModal(modalManager, loansTable, null, initialData);
 }
 
 /**
@@ -34,7 +36,7 @@ export function openCreateModal(modalManager, loansTable, initialData = null) {
  * @returns {Promise<void>}
  */
 export function openCreateModalWithIsbn(modalManager, loansTable, isbn, initialData = null) {
-    return loadLoanModal(route('loans.create-modal'), modalManager, loansTable, isbn, initialData);
+    return loadLoanModal(modalManager, loansTable, isbn, initialData);
 }
 
 /**
@@ -49,7 +51,8 @@ export function openCreateModalWithIsbn(modalManager, loansTable, isbn, initialD
  * @param {Object|null} initialData - Saved form state to restore.
  * @returns {Promise<void>}
  */
-export async function loadLoanModal(url, modalManager, loansTable, isbn = null, initialData = null) {
+export async function loadLoanModal(modalManager, loansTable, isbn = null, initialData = null) {
+    const url = route('loans.create-modal');
     try {
         _modalManagerRef = modalManager;
         _loansTableRef = loansTable;
@@ -60,14 +63,14 @@ export async function loadLoanModal(url, modalManager, loansTable, isbn = null, 
                 const data = saved?.data ?? null;
 
                 if (_modalManagerRef && _loansTableRef) {
-                    loadLoanModal(route('loans.create-modal'), _modalManagerRef, _loansTableRef, null, data);
+                    loadLoanModal(_modalManagerRef, _loansTableRef, null, data);
                 }
             });
 
             _reopenListenerAttached = true;
         }
 
-        await modalManager.loadModalContent(url, 'loanCreateModal', {
+        await modalManager.loadModalContent(url, modalId, {
             onInit: () => {
                 setDefaultDueDate();
 
@@ -88,37 +91,33 @@ export async function loadLoanModal(url, modalManager, loansTable, isbn = null, 
         });
 
         document.getElementById('open-create-student-modal')?.addEventListener('click', () => {
-            modalManager.saveModalState('loan:create:pending', 'loanCreateModal');
-            openStudentsCreateModal(modalManager, loansTable);
+            modalManager.saveModalState('loan:create:pending', modalId);
+            openStudentsCreateModal(modalManager);
         });
 
         document.getElementById('open-create-book-modal')?.addEventListener('click', () => {
-            modalManager.saveModalState('loan:create:pending', 'loanCreateModal');
+            modalManager.saveModalState('loan:create:pending', modalId);
 
             const isbn = document.getElementById('isbn').value.replace(/\D/g, '');
 
             if (isValidISBN(isbn)) {
-                openBooksCreateModalWithIsbn(modalManager, loansTable, isbn);
+                openBooksCreateModalWithIsbn(modalManager, '', isbn);
             } else {
-                openBooksCreateModal(modalManager, loansTable);
+                openBooksCreateModal(modalManager);
             }
         });
 
         modalManager.bindFormSubmit({
-            modalId: 'loanCreateModal',
+            modalId,
             buttonId: 'submit-create',
             onSubmit: createLoan,
             onSuccess: () => {
-                modalManager.removeModal('loanCreateModal');
+                modalManager.removeModal(modalId);
                 loansTable.updateTable();
                 notifySuccess('Empréstimo cadastrado com sucesso!');
             },
-            onError: err => {
-                if (err?.message) {
-                    notifyError(err.message);
-                } else {
-                    notifyError('Erro ao cadastrar o empréstimo');
-                }
+            onError: (err) => {
+                err.errors ? showErrors(err.errors) : notifyError(err || 'Erro ao cadastrar o empréstimo');
             }
         });
     } catch (err) {

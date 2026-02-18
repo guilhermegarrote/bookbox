@@ -5,6 +5,8 @@ import { openUpdateModal } from './update';
 import { openGenerateLabelModal } from '../../labels/labels-modals';
 import { openManagerCopiesModal } from '../../copies/modals/manager';
 
+const modalId = 'bookMenuModal';
+
 /**
  * Opens the book menu modal and binds its action buttons (edit, manage copies,
  * generate labels, and delete).
@@ -17,7 +19,7 @@ export async function openMenuModal(modalManager, bookId, booksTable) {
     const url = route('books.menu-modal', { book: bookId });
 
     try {
-        await modalManager.loadModalContent(url, 'bookMenuModal');
+        await modalManager.loadModalContent(url, modalId);
 
         document.getElementById('open-edit-modal')?.addEventListener('click', () => {
             openUpdateModal(modalManager, bookId, booksTable);
@@ -44,9 +46,9 @@ export async function openMenuModal(modalManager, bookId, booksTable) {
                 const { ok, data: responseData } = await deleteBook(bookId);
 
                 if (!ok) {
-                    notifyError(responseData?.error || 'Erro desconhecido.');
+                    notifyError(responseData || 'Erro desconhecido.');
                 } else {
-                    modalManager.removeModal('bookMenuModal');
+                    modalManager.removeModal(modalId);
                     booksTable.updateTable();
                     notifySuccess('Livro excluído com sucesso!');
                 }

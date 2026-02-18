@@ -3,6 +3,8 @@ import { deleteStudent } from '@js/api/students/delete';
 import { notifySuccess, notifyError } from '@js/utils/formErrors';
 import { openUpdateModal } from './update';
 
+const modalId = 'studentMenuModal';
+
 /**
  * Opens the "Student Menu" modal, providing actions for the selected student.
  *
@@ -14,7 +16,7 @@ export async function openMenuModal(modalManager, studentId, studentsTable) {
     const url = route('students.menu-modal', { student: studentId });
 
     try {
-        await modalManager.loadModalContent(url, 'studentMenuModal');
+        await modalManager.loadModalContent(url, modalId);
 
         document.getElementById('open-edit-modal')?.addEventListener('click', () => {
             openUpdateModal(modalManager, studentId, studentsTable);
@@ -33,9 +35,9 @@ export async function openMenuModal(modalManager, studentId, studentsTable) {
                 const { ok, data: responseData } = await deleteStudent(studentId);
 
                 if (!ok) {
-                    notifyError(responseData?.error || 'Erro ao excluir aluno');
+                    notifyError(responseData || 'Erro ao excluir aluno');
                 } else {
-                    modalManager.removeModal('studentMenuModal');
+                    modalManager.removeModal(modalId);
                     studentsTable.updateTable();
                     notifySuccess('Aluno excluído com sucesso!');
                 }

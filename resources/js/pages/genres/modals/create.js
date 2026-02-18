@@ -3,6 +3,8 @@ import { showErrors, notifySuccess, notifyError } from '@js/utils/formErrors';
 import { createGenre } from '@js/api/genres/create';
 import { initColorPicker } from './color-picker';
 
+const modalId = 'genreCreateModal';
+
 /**
  * Opens the "Create Genre" modal and handles its behavior.
  *
@@ -13,18 +15,18 @@ export async function openCreateModal(modalManager, refreshGenresList = '') {
     const url = route('genres.create-modal');
 
     try {
-        await modalManager.loadModalContent(url, 'genreCreateModal', {
+        await modalManager.loadModalContent(url, modalId, {
             onInit: () => {
                 initColorPicker();
             }
         });
 
         modalManager.bindFormSubmit({
-            modalId: 'genreCreateModal',
+            modalId,
             buttonId: 'submit-create',
             onSubmit: createGenre,
             onSuccess: () => {
-                modalManager.removeModal('genreCreateModal');
+                modalManager.removeModal(modalId);
                 if (refreshGenresList) refreshGenresList();
                 notifySuccess('Gênero cadastrado com sucesso!');
             },

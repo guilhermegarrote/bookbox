@@ -37,7 +37,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (responseData.errors) {
                     showErrors(responseData.errors);
                 } else if (status === 401 || status === 429) {
-                    notifyError(responseData.error || responseData.message || 'Erro desconhecido.');
+                    notifyError(responseData || 'Erro desconhecido.');
                 } else {
                     notifyError('Erro inesperado no login.');
                 }

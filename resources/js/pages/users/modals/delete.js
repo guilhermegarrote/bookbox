@@ -2,6 +2,8 @@ import { route } from 'ziggy-js';
 import { notifySuccess, notifyError } from '@js/utils/formErrors';
 import { deleteUser } from '@js/api/users/delete';
 
+const modalId = 'userDeleteModal';
+
 /**
  * Opens the "Delete User" modal and handles form submission.
  *
@@ -14,14 +16,10 @@ export async function openDeleteModal(userId, modalManager, refreshUsersList) {
     const url = route('users.delete-modal');
 
     try {
-        await modalManager.loadModalContent(url, 'userDeleteModal');
+        await modalManager.loadModalContent(url, modalId);
 
-        const submitBtn = document.getElementById('submit-delete');
-
-        if (!submitBtn) return;
-
-        submitBtn.onclick = async () => {
-            const data = modalManager.getModalData('userDeleteModal');
+        document.getElementById('submit-delete')?.addEventListener('click', async () => {
+            const data = modalManager.getModalData(modalId);
 
             const confirmed = await modalManager.showModalMessage({
                 message: 'Deseja realmente excluir este usuário?',
@@ -35,9 +33,9 @@ export async function openDeleteModal(userId, modalManager, refreshUsersList) {
                 const { ok, data: responseData } = await deleteUser(userId, data);
 
                 if (!ok) {
-                    notifyError(responseData || 'Erro desconhecido.');
+                    responseData.errors ? showErrors(responseData.errors) : notifyError(responseData || 'Erro ao excluir usuário');
                 } else {
-                    modalManager.removeModal('userDeleteModal');
+                    modalManager.removeModal(modalId);
                     refreshUsersList();
                     notifySuccess('Usuário excluído com sucesso!');
                 }
@@ -45,7 +43,7 @@ export async function openDeleteModal(userId, modalManager, refreshUsersList) {
                 console.error(error);
                 notifyError('Erro técnico ao tentar excluir o usuário. Tente novamente.');
             }
-        };
+        });
     } catch (err) {
         console.error(err);
     }

@@ -6,6 +6,8 @@ let selectedBooks = {};
 let remainingLabels = null;
 const labelsPerSheet = 16;
 
+const modalId = 'labelGenerateModal';
+
 /**
  * Opens and initializes the label generation modal.
  *
@@ -16,9 +18,9 @@ export async function openGenerateLabelModal(modalManager) {
     const url = route('labels.generate-modal');
 
     try {
-        await modalManager.loadModalContent(url, 'labelGenerateModal', {
+        await modalManager.loadModalContent(url, modalId, {
             onInit: () => {
-                const modal = document.getElementById('labelGenerateModal');
+                const modal = document.getElementById(modalId);
                 if (!modal) return;
 
                 applyInputMasks();
@@ -34,7 +36,7 @@ export async function openGenerateLabelModal(modalManager) {
         });
 
         modalManager.bindFormSubmit({
-            modalId: 'labelGenerateModal',
+            modalId,
             buttonId: 'submit-generate-label',
 
             onSubmit: async () => {
@@ -68,7 +70,7 @@ export async function openGenerateLabelModal(modalManager) {
             },
 
             onSuccess: () => {
-                modalManager.removeModal('labelGenerateModal');
+                modalManager.removeModal(modalId);
                 notifySuccess('Etiquetas geradas com sucesso!');
             },
 
@@ -91,7 +93,7 @@ export async function openGenerateLabelModal(modalManager) {
  * Restores selected books after reloading results.
  */
 function initSearch() {
-    const modal = document.getElementById('labelGenerateModal');
+    const modal = document.getElementById(modalId);
     if (!modal) throw new Error('Modal não encontrado');
 
     const input = modal.querySelector('#item-search');
@@ -131,7 +133,7 @@ function initSearch() {
  * Saves selected books (isbn + copies) from the current table into memory.
  */
 function collectBooksForGenerateLabel() {
-    const rows = document.querySelectorAll('#labelGenerateModal tbody tr');
+    const rows = document.querySelectorAll(`#${modalId} tbody tr`);
 
     rows.forEach(row => {
         const checkbox = row.querySelector('input[type="checkbox"]');
@@ -190,7 +192,7 @@ function restoreSelectedBooks(list) {
  * Keeps selectedBooks updated and refreshes the label counter.
  */
 function bindCheckboxAndCopiesEvents() {
-    const rows = document.querySelectorAll('#labelGenerateModal tbody tr');
+    const rows = document.querySelectorAll(`#${modalId} tbody tr`);
 
     rows.forEach(row => {
         const checkbox = row.querySelector('input[type="checkbox"]');

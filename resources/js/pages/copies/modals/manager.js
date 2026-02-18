@@ -14,11 +14,12 @@ import { openMenuModal } from '@js/pages/books/modals/menu';
  */
 export async function openManagerCopiesModal(modalManager, bookId, booksTable) {
     const url = route('copies.manager-modal', { book: bookId });
+    const modalId = 'copyManagerModal';
 
     try {
-        await modalManager.loadModalContent(url, 'copyManagerModal');
+        await modalManager.loadModalContent(url, modalId);
 
-        const modal = document.querySelector('#copyManagerModal');
+        const modal = document.querySelector(`#${modalId}`);
         const closeButton = clearCloseButtonListener(modal);
 
         closeButton.addEventListener('click', () => openMenuModal(modalManager, bookId, booksTable));
@@ -65,11 +66,12 @@ export async function openManagerCopiesModal(modalManager, bookId, booksTable) {
  */
 async function openAddModal(modalManager, bookId, booksTable) {
     const url = route('copies.add-modal');
+    const modalId = 'copyAddModal';
 
     try {
-        await modalManager.loadModalContent(url, 'copyAddModal');
+        await modalManager.loadModalContent(url, modalId);
 
-        const modal = document.querySelector('#copyAddModal');
+        const modal = document.querySelector(`#${modalId}`  );
         const closeButton = clearCloseButtonListener(modal);
 
         closeButton.addEventListener('click', () => openManagerCopiesModal(modalManager, bookId, booksTable));
@@ -99,17 +101,17 @@ async function openAddModal(modalManager, bookId, booksTable) {
         });
 
         modalManager.bindFormSubmit({
-            modalId: 'copyAddModal',
+            modalId,
             buttonId: 'submit-create',
             onSubmit: data => addCopies(bookId, data),
             onSuccess: () => {
-                modalManager.removeModal('copyAddModal');
+                modalManager.removeModal(modalId);
                 booksTable.updateTable();
                 notifySuccess('Exemplares cadastrados com sucesso!');
                 openManagerCopiesModal(modalManager, bookId, booksTable);
             },
             onError: error => {
-                error.errors ? showErrors(error.errors) : notifyError(error.message || 'Error registering copies');
+                error.errors ? showErrors(error.errors) : notifyError(error.message || 'Erro ao cadastrar os exemplares');
             }
         });
     } catch (error) {

@@ -2,6 +2,8 @@ import { route } from 'ziggy-js';
 import { showErrors, notifySuccess, notifyError } from '@js/utils/formErrors';
 import { updateUser } from '@js/api/users/update';
 
+const modalId = 'userUpdateModal';
+
 /**
  * Opens the "Update User" modal and handles form submission.
  *
@@ -14,14 +16,14 @@ export async function openUpdateModal(userId, modalManager, refreshUsersList) {
     const url = route('users.update-modal', { user: userId });
 
     try {
-        await modalManager.loadModalContent(url, 'userUpdateModal');
+        await modalManager.loadModalContent(url, modalId);
 
         modalManager.bindFormSubmit({
-            modalId: 'userUpdateModal',
+            modalId,
             buttonId: 'submit-update',
             onSubmit: (data) => updateUser(userId, data),
             onSuccess: () => {
-                modalManager.removeModal('userUpdateModal');
+                modalManager.removeModal(modalId);
                 refreshUsersList();
                 notifySuccess('Usuário atualizado com sucesso!');
             },

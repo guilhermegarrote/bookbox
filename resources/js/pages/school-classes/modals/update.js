@@ -3,6 +3,8 @@ import { showErrors, notifySuccess, notifyError } from '@js/utils/formErrors';
 import { updateSchoolClass } from '@js/api/school-classes/update';
 import { applyInputMasks } from '@js/components/ui/input-mask';
 
+const modalId = 'schoolClassUpdateModal';
+
 /**
  * Opens the update school class modal and binds form submission logic.
  * On success, it reopens the school class menu modal and refreshes the table.
@@ -16,18 +18,18 @@ export async function openUpdateModal(schoolClassId, modalManager, refreshSchool
     const url = route('school-classes.update-modal', { schoolClass: schoolClassId });
 
     try {
-        await modalManager.loadModalContent(url, 'schoolClassUpdateModal', {
+        await modalManager.loadModalContent(url, modalId, {
             onInit: () => {
                 applyInputMasks();
             }
         });
 
         modalManager.bindFormSubmit({
-            modalId: 'schoolClassUpdateModal',
+            modalId,
             buttonId: 'submit-update',
             onSubmit: (data) => updateSchoolClass(schoolClassId, data),
             onSuccess: () => {
-                modalManager.removeModal('schoolClassUpdateModal');
+                modalManager.removeModal(modalId);
                 refreshSchoolClassesList();
                 notifySuccess('Turma atualizada com sucesso!');
             },

@@ -22,7 +22,7 @@ export async function handleDeleteGenre(genreId, modalManager, refreshGenresList
         const { ok, data: responseData } = await deleteGenreRequest(genreId);
 
         if (!ok) {
-            notifyError(responseData?.error || 'Erro desconhecido.');
+            notifyError(responseData || 'Erro desconhecido.');
             return;
         }
 
