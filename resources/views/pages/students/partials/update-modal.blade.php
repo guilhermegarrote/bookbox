@@ -1,4 +1,4 @@
-<x-modals.modal id="studentUpdateModal" title="Atualizar Aluno">
+<x-modals.modal id="studentUpdateModal" title="Atualizar Aluno" :data-select="json_encode($selectData)">
     <x-slot name="content">
         <div class="form-row">
             <x-modals.input-field id="name" label="Nome do aluno" width="440px" :value="$student->name"
@@ -17,7 +17,7 @@
                     <span>Curso</span>
                 </label>
                 <div class="btn-input-side-wrapper">
-                    <button id="open-create-school-classes-modal" class="btn-dark btn-input-side"
+                    <button id="open-create-school-class-modal" class="btn-dark btn-input-side"
                         style="border-radius: 0;" title="Clique para adicionar turma" aria-label="Adicionar turma">
                         <x-icons.icon name="plus" class="" />
                     </button>

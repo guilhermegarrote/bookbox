@@ -42,9 +42,7 @@ class BookController extends Controller
 
         $filterUrl = route('books.filter');
 
-        $selectData = Genre::orderBy('name')->get('name as genre_name');
-
-        return view('pages.books.index', compact('filterData', 'filterUrl', 'selectData'));
+        return view('pages.books.index', compact('filterData', 'filterUrl'));
     }
 
     /**
@@ -56,7 +54,9 @@ class BookController extends Controller
      */
     public function createModal(): string
     {
-        return view('pages.books.partials.create-modal')->render();
+        $selectData = Genre::orderBy('name')->get('name as genre_name');
+
+        return view('pages.books.partials.create-modal', compact('selectData'))->render();
     }
 
     /**
@@ -87,7 +87,8 @@ class BookController extends Controller
     public function updateModal(string $id): string
     {
         $book = Book::where('id', Utils::convertUuidToBinary($id))->firstOrFail();
+        $selectData = Genre::orderBy('name')->get('name as genre_name');
 
-        return view('pages.books.partials.update-modal', compact('book'))->render();
+        return view('pages.books.partials.update-modal', compact('book', 'selectData'))->render();
     }
 }

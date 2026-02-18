@@ -4,6 +4,13 @@ import { showErrors, notifySuccess, notifyError } from '@js/utils/formErrors';
 import { updateStudent } from '@js/api/students/update.js';
 import { initStudentsSelects } from './selects';
 import { openMenuModal } from './menu';
+import { openCreateModal as openSchoolClassCreateModal } from '@js/pages/school-classes/modals/create';
+
+let _modalManagerRef = null;
+let _studentsTableRef = null;
+let _reopenListenerAttached = false;
+
+const modalId = 'studentUpdateModal';
 
 /**
  * Opens the "Update Student" modal and handles its behavior.
@@ -12,23 +19,52 @@ import { openMenuModal } from './menu';
  * @param {number|string} studentId - ID of the student to update
  * @param {Object} studentsTable - Table instance for updating after changes
  */
-export async function openUpdateModal(modalManager, studentId, studentsTable) {
+export async function openUpdateModal(modalManager, studentId, studentsTable, initialData = null) {
     const url = route('students.update-modal', { student: studentId });
 
     try {
-        await modalManager.loadModalContent(url, 'studentUpdateModal', {
+        _modalManagerRef = modalManager;
+        _studentsTableRef = studentsTable;
+
+        if (!_reopenListenerAttached) {
+            window.addEventListener('reopenStudentModal', (e) => {
+                const saved = e.detail;
+                const data = saved?.data ?? null;
+
+                if (_modalManagerRef && _studentsTableRef) {
+                    loanStudentModal(_modalManagerRef, _studentsTableRef, data);
+                }
+            });
+
+            _reopenListenerAttached = true;
+        }
+
+        await modalManager.loadModalContent(url, modalId, {
             onInit: () => {
                 applyInputMasks();
-                if (window.App?.selectData) initStudentsSelects(window.App.selectData);
-            }
+
+                const studentModal = document.getElementById(modalId);
+
+                if (studentModal) {
+                    const selectData = JSON.parse(studentModal.dataset.select || '[]');
+
+                    initStudentsSelects(selectData);
+                }
+            },
+            initialData
         });
 
-        document.getElementById('btn-cancel-update')?.addEventListener('click', () => {
+        document.getElementById('open-create-school-class-modal')?.addEventListener('click', () => {
+            modalManager.saveModalState('student:update:pending', modalId);
+            openSchoolClassCreateModal(modalManager);
+        });
+
+        document.getElementById('btn-close')?.addEventListener('click', () => {
             openMenuModal(modalManager, studentId, studentsTable);
         });
 
         modalManager.bindFormSubmit({
-            modalId: 'studentUpdateModal',
+            modalId,
             buttonId: 'submit-update',
             onSubmit: (data) => updateStudent(studentId, data),
             onSuccess: () => {

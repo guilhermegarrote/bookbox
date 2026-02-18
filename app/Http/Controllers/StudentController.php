@@ -43,12 +43,7 @@ class StudentController extends Controller
 
         $filterUrl = route('students.filter');
 
-        $selectData = SchoolClass::whereDate('end_date', '>', now())
-            ->orderBy('course')
-            ->orderBy('start_date')
-            ->get();
-
-        return view('pages.students.index', compact('filterData', 'filterUrl', 'selectData'));
+        return view('pages.students.index', compact('filterData', 'filterUrl'));
     }
 
     /**
@@ -60,7 +55,12 @@ class StudentController extends Controller
      */
     public function createModal(): string
     {
-        return view('pages.students.partials.create-modal')->render();
+        $selectData = SchoolClass::whereDate('end_date', '>', now())
+            ->orderBy('course')
+            ->orderBy('start_date')
+            ->get();
+
+        return view('pages.students.partials.create-modal', compact('selectData'))->render();
     }
 
     /**
@@ -92,6 +92,11 @@ class StudentController extends Controller
     {
         $student = StudentSchoolClass::where('student_id', Utils::convertUuidToBinary($id))->firstOrFail();
 
-        return view('pages.students.partials.update-modal', compact('student'))->render();
+        $selectData = SchoolClass::whereDate('end_date', '>', now())
+            ->orderBy('course')
+            ->orderBy('start_date')
+            ->get();
+
+        return view('pages.students.partials.update-modal', compact('student', 'selectData'))->render();
     }
 }

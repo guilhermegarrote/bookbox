@@ -27,6 +27,5 @@ setupTablePage({
     updateTable: (params) => studentsTable.updateTable(params),
     filterStateKey: 'studentsFilterState',
     filterData: window.App.filterData,
-    selectData: window.App.selectData,
     initModals: modalManager => initStudentsModals({ modalManager, table: studentsTable })
 });

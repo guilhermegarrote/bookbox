@@ -1,4 +1,4 @@
-<x-modals.modal id="bookCreateModal" title="Cadastrar Livro">
+<x-modals.modal id="bookCreateModal" title="Cadastrar Livro" :data-select="json_encode($selectData)">
     <x-slot name="content">
         <div class="form-row">
             <x-modals.input-field id="isbn" label="Código ISBN" width="160px" required

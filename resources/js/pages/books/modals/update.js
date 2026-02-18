@@ -5,6 +5,8 @@ import { updateBook } from '@js/api/books/update';
 import { initBooksSelects } from './selects';
 import { openMenuModal } from './menu';
 
+const modalId = 'bookUpdateModal';
+
 /**
  * Opens the update book modal and binds form submission logic.
  * On success, it reopens the book menu modal and refreshes the table.
@@ -18,10 +20,17 @@ export async function openUpdateModal(modalManager, bookId, booksTable) {
     const url = route('books.update-modal', { book: bookId });
 
     try {
-        await modalManager.loadModalContent(url, 'bookUpdateModal', {
+        await modalManager.loadModalContent(url, modalId, {
             onInit: () => {
                 applyInputMasks();
-                if (window.App?.selectData) initBooksSelects(window.App.selectData);
+
+                const bookModal = document.getElementById(modalId);
+
+                if (bookModal) {
+                    const selectData = JSON.parse(bookModal.dataset.select || '[]');
+
+                    initBooksSelects(selectData);
+                }
             }
         });
 
@@ -30,7 +39,7 @@ export async function openUpdateModal(modalManager, bookId, booksTable) {
         });
 
         modalManager.bindFormSubmit({
-            modalId: 'bookUpdateModal',
+            modalId,
             buttonId: 'submit-update',
             onSubmit: (data) => updateBook(bookId, data),
             onSuccess: () => {

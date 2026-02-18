@@ -1,6 +1,6 @@
 @props(['id', 'title'])
 
-<div id="{{ $id }}" class="modal-window" aria-hidden="true">
+<div id="{{ $id }}" class="modal-window" aria-hidden="true" data-select="{{ $dataSelect ?? ''}}">
     <div class="modal-header">
         <h2 class="modal-title">{{ $title }}</h2>
     </div>

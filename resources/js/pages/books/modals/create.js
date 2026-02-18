@@ -5,6 +5,8 @@ import { createBook } from '@js/api/books/create';
 import { initBooksSelects } from './selects';
 import { initIsbnAutoFill } from './isbn-autofill';
 
+const modalId = 'bookCreateModal';
+
 /**
  * Opens the book creation modal.
  *
@@ -12,8 +14,7 @@ import { initIsbnAutoFill } from './isbn-autofill';
  * @param {Object} booksTable
  */
 export async function openCreateModal(modalManager, booksTable) {
-    const url = route('books.create-modal');
-    await loadBookModal(url, modalManager, booksTable);
+    await loadBookModal(modalManager, booksTable);
 }
 
 /**
@@ -24,8 +25,7 @@ export async function openCreateModal(modalManager, booksTable) {
  * @param {string} isbn
  */
 export async function openCreateModalWithIsbn(modalManager, booksTable, isbn) {
-    const url = route('books.create-modal');
-    await loadBookModal(url, modalManager, booksTable, isbn);
+    await loadBookModal(modalManager, booksTable, isbn);
 }
 
 /**
@@ -36,14 +36,20 @@ export async function openCreateModalWithIsbn(modalManager, booksTable, isbn) {
  * @param {Object} booksTable
  * @param {string|null} isbn
  */
-async function loadBookModal(url, modalManager, booksTable, isbn = null) {
+async function loadBookModal(modalManager, booksTable, isbn = null) {
+    const url = route('books.create-modal');
+
     try {
-        await modalManager.loadModalContent(url, 'bookCreateModal', {
+        await modalManager.loadModalContent(url, modalId, {
             onInit: () => {
                 applyInputMasks();
 
-                if (window.App?.selectData) {
-                    initBooksSelects(window.App.selectData);
+                const bookModal = document.getElementById(modalId);
+
+                if (bookModal) {
+                    const selectData = JSON.parse(bookModal.dataset.select || '[]');
+
+                    initBooksSelects(selectData);
                 }
 
                 initIsbnAutoFill();
@@ -60,13 +66,13 @@ async function loadBookModal(url, modalManager, booksTable, isbn = null) {
         });
 
         modalManager.bindFormSubmit({
-            modalId: 'bookCreateModal',
+            modalId,
             buttonId: 'submit-create',
             onSubmit: createBook,
             onSuccess: () => {
                 modalManager.dispatchSavedModalEvent('loan:create:pending', 'reopenLoanModal');
 
-                modalManager.removeModal('bookCreateModal');
+                modalManager.removeModal(modalId);
                 booksTable.updateTable();
                 notifySuccess('Livro cadastrado com sucesso!');
             },

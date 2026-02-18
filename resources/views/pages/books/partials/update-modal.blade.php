@@ -1,4 +1,4 @@
-<x-modals.modal id="bookUpdateModal" title="Atualizar Livro">
+<x-modals.modal id="bookUpdateModal" title="Atualizar Livro" :data-select="json_encode($selectData)">
     <x-slot name="content">
         <div class="form-row">
             <x-modals.input-field id="isbn" label="Código ISBN" width="160px" :value="$book->isbn"

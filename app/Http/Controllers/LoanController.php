@@ -46,20 +46,7 @@ class LoanController extends Controller
 
         $filterUrl = route('loans.filter');
 
-        $selectData = Genre::orderBy('name')
-            ->get(['name as genre_name'])
-            ->toArray();
-
-        $selectData = array_merge(
-            $selectData,
-            SchoolClass::whereDate('end_date', '>', now())
-                ->orderBy('course')
-                ->orderBy('start_date')
-                ->get(['course', 'term', 'start_date', 'end_date', 'period'])
-                ->toArray()
-        );
-
-        return view('pages.loans.index', compact('filterData', 'filterUrl', 'selectData'));
+        return view('pages.loans.index', compact('filterData', 'filterUrl'));
     }
 
     /**

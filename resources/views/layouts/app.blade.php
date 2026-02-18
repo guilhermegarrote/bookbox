@@ -11,7 +11,6 @@
     <script>
         window.App = {
             filterData: @json($filterData ?? []),
-            selectData: @json($selectData ?? []),
             csrfToken: '{{ csrf_token() }}',
             filterUrl: @json($filterUrl ?? null)
         };

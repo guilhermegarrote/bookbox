@@ -1,4 +1,4 @@
-<x-modals.modal id="studentCreateModal" title="Cadastrar Aluno">
+<x-modals.modal id="studentCreateModal" title="Cadastrar Aluno" :data-select="json_encode($selectData)">
     <x-slot name="content">
         <div class="form-row">
             <x-modals.input-field id="name" label="Nome" width="440px" required
@@ -15,8 +15,8 @@
                     <span>Curso</span>
                 </label>
                 <div class="btn-input-side-wrapper">
-                    <button id="open-create-school-classes-modal" class="btn-dark btn-input-side" style="border-radius: 0;"
-                        title="Clique para adicionar turma" aria-label="Adicionar turma">
+                    <button id="open-create-school-class-modal" class="btn-dark btn-input-side"
+                        style="border-radius: 0;" title="Clique para adicionar turma" aria-label="Adicionar turma">
                         <x-icons.icon name="plus" class="" />
                     </button>
                 </div>
@@ -34,8 +34,9 @@
     </x-slot name="content">
 
     <x-slot name="footer">
-        <button type="button" class="modal-button" id="btn-close"
-            title="Cancelar o cadastro do aluno" aria-label="Cancelar cadastro do aluno">Cancelar</button>
-        <button type="button" class="modal-button" id="submit-create" title="Cadastrar novo aluno" aria-label="Cadastrar novo aluno">Cadastrar</button>
+        <button type="button" class="modal-button" id="btn-close" title="Cancelar o cadastro do aluno"
+            aria-label="Cancelar cadastro do aluno">Cancelar</button>
+        <button type="button" class="modal-button" id="submit-create" title="Cadastrar novo aluno"
+            aria-label="Cadastrar novo aluno">Cadastrar</button>
     </x-slot name="footer">
 </x-modals.modal>
