@@ -79,13 +79,10 @@ export default class TableData {
         const existingMessage = tableWrapper.querySelector('.data-empty');
         if (existingMessage) existingMessage.remove();
 
-        const sentinel = tableWrapper.querySelector('#infinite-scroll-sentinel');
-        if (sentinel) sentinel.remove();
-
         if (!rowsData.length) {
-            if (!append) {
-                tbody.innerHTML = '';
+            if (!append) tbody.innerHTML = '';
 
+            if (!append) {
                 const msgDiv = document.createElement('div');
                 msgDiv.className = 'data-empty';
                 msgDiv.innerHTML = `<h1>${m.notFoundMessage}</h1>`;
@@ -93,25 +90,15 @@ export default class TableData {
             }
 
             m.hasMore = false;
-            if (loader) loader.style.display = 'none';
             return;
         }
 
         const newRows = m.renderRows(rowsData);
-
         if (append) tbody.insertAdjacentHTML('beforeend', newRows);
         else tbody.innerHTML = newRows;
 
         m.nextCursor = data.data.pagination?.next_cursor || null;
         m.hasMore = data.data.pagination?.has_more ?? false;
-
-        if (m.hasMore) {
-            const newSentinel = document.createElement('div');
-            newSentinel.id = 'infinite-scroll-sentinel';
-            newSentinel.style.height = '30px';
-            newSentinel.style.width = '100%';
-            tableWrapper.appendChild(newSentinel);
-        }
 
         const filterData = data.data.filterData;
         if (filterData && window.filterUIInstance) {
@@ -137,12 +124,9 @@ export default class TableData {
         const existingMessage = tableWrapper.querySelector('.data-empty');
         if (existingMessage) existingMessage.remove();
 
-        const sentinel = tableWrapper.querySelector('#infinite-scroll-sentinel');
-        if (sentinel) sentinel.remove();
-
         const msgDiv = document.createElement('div');
         msgDiv.className = 'data-empty';
-        msgDiv.innerHTML = `<h1>${m.errorMessage}</h1>`;
+        msgDiv.innerHTML = `<h1>${m.errorMessage || 'Ocorreu um erro ao obter os dados. Tente novamente.'}</h1>`;
         tableWrapper.appendChild(msgDiv);
     }
 }

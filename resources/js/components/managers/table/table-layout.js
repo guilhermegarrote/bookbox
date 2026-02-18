@@ -69,7 +69,7 @@ export default class TableLayout {
         }
 
         const visibleRows = rowHeight > 0 ? Math.round(availableForRows / rowHeight) : 0;
-        return visibleRows >= 5 ? visibleRows * 2 : 15;
+        return visibleRows * 2;
     }
 
     /**
@@ -79,16 +79,59 @@ export default class TableLayout {
         const wrapper = document.querySelector('.table-wrapper');
         if (!wrapper) return;
 
-        this.resizeObserver = new ResizeObserver(() => {
+        const resizeHandler = () => {
+            this.updateWrapperHeight();
             const newPerPage = this.calculateVisibleRows();
 
             if (Math.abs(newPerPage - this.manager.perPage) >= 2) {
                 this.manager.perPage = newPerPage;
                 this.manager.resetPagination();
-                this.manager.dataModule.updateTable({}, false);
             }
-        });
+        };
 
+        this.resizeObserver = new ResizeObserver(resizeHandler);
         this.resizeObserver.observe(wrapper);
+
+        window.addEventListener('resize', resizeHandler);
+    }
+
+    /**
+     * Resizes the table wrapper height based on available screen space
+     * and updates visible rows count.
+     */
+    updateWrapperHeight() {
+        const wrapper = document.querySelector('.table-wrapper');
+        if (!wrapper) return;
+
+        const windowHeight = window.innerHeight;
+        const header = document.querySelector('header');
+        const title = document.querySelector('.page-title');
+        const panel = document.querySelector('.panel');
+
+        const headerSpace = this.constructor.getTotalVerticalSpace(header);
+        const titleSpace = this.constructor.getTotalVerticalSpace(title);
+        const extraSpacing = panel ? parseFloat(getComputedStyle(panel).marginRight) || 0 : 0;
+
+        const availableHeight = windowHeight - headerSpace - titleSpace - extraSpacing;
+        wrapper.style.height = `${availableHeight}px`;
+    }
+
+    /**
+     * Calculates total vertical space used by an element.
+     *
+     * @param {HTMLElement|null} element
+     * @returns {number}
+     */
+    static getTotalVerticalSpace(element) {
+        if (!element) return 0;
+        const style = getComputedStyle(element);
+
+        return (
+            element.offsetHeight +
+            (parseFloat(style.marginTop) || 0) +
+            (parseFloat(style.marginBottom) || 0) +
+            (parseFloat(style.paddingTop) || 0) +
+            (parseFloat(style.paddingBottom) || 0)
+        );
     }
 }

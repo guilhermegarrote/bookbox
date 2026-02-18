@@ -36,7 +36,7 @@ export default class TableManager {
         this.nextCursor = null;
         this.sortColumn = null;
         this.sortDirection = "asc";
-        this.perPage = 20;
+        this.perPage = 5;
         this.currentParams = {};
         this.lastResponse = null;
 
@@ -45,11 +45,6 @@ export default class TableManager {
         this.scrollModule = new InfiniteScroll(this);
         this.sortingModule = new Sorting(this);
         this.eventsModule = new Events(this);
-
-        requestAnimationFrame(() => {
-            this.perPage = this.layoutModule.calculateVisibleRows();
-            this.dataModule.loadInitialTable();
-        });
 
         document.dispatchEvent(new CustomEvent('tableManagerReady', {
             detail: { instance: this }
