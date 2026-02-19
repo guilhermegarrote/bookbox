@@ -327,8 +327,25 @@ export default class ModalManager {
             if (!modal) return resolve(false);
 
             configureModalMessage(modal, { message, acceptText, declineText });
-            bindModalMessageEvents(modal, (id) => this.removeModal(id), resolve);
+            this.bindModalMessageEvents(modalId, resolve);
         });
+    }
+
+    /**
+     * Binds message modal events.
+     *
+     * @param {string} modalId
+     * @param {(value: boolean) => void} resolve
+     */
+    bindModalMessageEvents(modalId, resolve) {
+        const modal = this.activeModals.get(modalId);
+        if (!modal) return;
+
+        bindModalMessageEvents(
+            modal,
+            (id) => this.removeModal(id),
+            resolve
+        );
     }
 
     /**

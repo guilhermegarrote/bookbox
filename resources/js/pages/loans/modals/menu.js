@@ -26,10 +26,8 @@ export async function openMenuModal(modalManager, loanId, loansTable) {
                 const url = route('loans.extend-modal', { loan: loanId });
 
                 await modalManager.loadModalContent(url, modalId);
-                const modal = modalManager.activeModals.get(modalId);
-                if (!modal) return resolve(false);
 
-                modalManager.bindModalMessageEvents(modal, resolve);
+                modalManager.bindModalMessageEvents(modalId, resolve);
             });
 
             if (!confirmed) return;
