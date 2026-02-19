@@ -201,7 +201,7 @@ class LoanController extends Controller
             }
 
             $extensionDays = Setting::where('key', 'extension_days')->value('value');
-            $loan->due_date = Carbon::parse($loan->due_date)->addDays($extensionDays);
+            $loan->due_date = Carbon::parse($loan->due_date)->addDays((int) $extensionDays);
             $loan->save();
 
             dispatch(new PrintLoanReceiptJob($loan->id, JWTAuth::user()->name ?? 'Desconhecido'));
