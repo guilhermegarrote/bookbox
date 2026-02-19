@@ -3,7 +3,7 @@
 @section('content')
     <p class="email-text">
         Olá <strong>{{ $student_name }}</strong>,<br />
-        Você está matriculado(a) na <strong>{{ $student_school_class }}</strong>.
+        Você está matriculado(a) no <strong>{{ $student_school_class }}</strong>.
     </p>
 
     <p class="email-text">
@@ -24,7 +24,7 @@
     </ul>
 
     <p class="highlight-due-date">
-        <strong>Nova data prevista para devolução:</strong> <span class="due-date">{{ $loan_new_due_date }}</span>
+        Nova data prevista para devolução: <strong><span class="due-date">{{ $loan_new_due_date }}</span></strong>
     </p>
 
     <div class="email-highlight">

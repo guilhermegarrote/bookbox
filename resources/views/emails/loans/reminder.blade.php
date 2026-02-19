@@ -3,7 +3,7 @@
 @section('content')
     <p class="email-text">
         Olá <strong>{{ $student_name }}</strong>,<br />
-        Você está matriculado(a) na <strong>{{ $student_school_class }}</strong>.
+        Você está matriculado(a) no <strong>{{ $student_school_class }}</strong>.
     </p>
 
     <p class="email-text">

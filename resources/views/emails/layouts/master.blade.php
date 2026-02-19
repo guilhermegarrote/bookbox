@@ -4,7 +4,9 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>{{ $email_title ?? 'Notificação | BookBox' }}</title>
+    <meta name="color-scheme" content="light dark">
+    <meta name="supported-color-schemes" content="light dark">
+    <title>{{ $email_title ?? 'Notificação | Bookbox' }}</title>
 
     <style>
         :root {
@@ -31,7 +33,7 @@
         ul {
             margin: 0;
             padding: 0;
-            font-family: 'Roboto', Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
         }
 
         body {
@@ -50,7 +52,7 @@
 
         .email-container {
             width: 100%;
-            max-width: 100%;
+            max-width: 600px;
             margin: 0 auto;
             background-color: var(--light-background, #1e1e1e);
             border-radius: 10px;
@@ -84,14 +86,13 @@
         }
 
         ul {
-            padding-left: 20px;
-            margin-left: 40px;
+            margin-left: 10px;
             margin-bottom: 20px;
         }
 
         ul li {
             font-size: 1rem;
-            margin-bottom: 12px;
+            margin-bottom: 4px;
             color: var(--light-text, #e1e1e1);
             list-style-position: inside;
         }
@@ -115,6 +116,7 @@
             border-radius: 8px;
             display: inline-block;
             text-align: center;
+            margin-bottom: 5%;
             margin-top: 5%;
             transition: background-color 0.3s ease, transform 0.2s ease;
         }
@@ -128,7 +130,7 @@
             font-size: 1rem;
             color: var(--footer-text, #888);
             text-align: center;
-            margin-top: 5%;
+            margin-top: 10%;
         }
 
         .footer-copy {
@@ -146,12 +148,11 @@
         .highlight-overdue {
             padding: 10px 15px;
             border-radius: 8px;
-            font-weight: bold;
             text-align: center;
             margin: 15px 0;
             display: inline-block;
             width: fit-content;
-            font-size: 1.125rem;
+            font-size: 1rem;
             background-color: #e74c3c;
             color: #fff;
         }
@@ -159,12 +160,11 @@
         .highlight-remaining {
             padding: 10px 15px;
             border-radius: 8px;
-            font-weight: bold;
             text-align: center;
             margin: 15px 0;
             display: inline-block;
             width: fit-content;
-            font-size: 1.125rem;
+            font-size: 1rem;
             background-color: #f1c40f;
             color: #fff;
             border: 2px solid #f39c12;
@@ -174,19 +174,17 @@
             background-color: var(--return-border, #3b8fbb);
             padding: 3% 6%;
             border-radius: 8px;
-            font-weight: bold;
             color: var(--footer-text-light, #fff);
             margin: 5% auto 10%;
             display: block;
             width: fit-content;
             border: 2px solid var(--dark-return-border, #2980b9);
-            font-size: 1.125rem;
+            font-size: 1rem;
         }
 
         .due-date {
-            font-size: 1.125rem;
+            font-size: 1rem;
             color: var(--footer-text-light, #fff);
-            font-weight: bold;
         }
 
         .highlight-recovery-code {
@@ -213,7 +211,7 @@
             }
 
             .email-logo {
-                width: 30vw;
+                width: 40vw;
             }
 
             .email-btn {
@@ -228,7 +226,7 @@
 
             .footer-text,
             .footer-copy {
-                font-size: 1rem;
+                font-size: 0.75rem;
             }
         }
 
@@ -242,7 +240,7 @@
             }
 
             .email-logo {
-                width: 35vw;
+                width: 40vw;
             }
 
             .email-btn {
@@ -262,7 +260,7 @@
 
             .footer-text,
             .footer-copy {
-                font-size: 1rem;
+                font-size: 0.75rem;
             }
         }
     </style>
@@ -271,16 +269,12 @@
 <body>
     <div class="email-wrapper">
         <div class="email-container">
-            <img src="cid:logo_cid" alt="BookBox Logo" class="email-logo">
+            <img src="cid:logo_cid" alt="Bookbox Logo" class="email-logo">
 
             @yield('content')
 
-            <div class="email-highlight">
-                <p><strong>Observação:</strong> Em caso de dúvidas, entre em contato com a biblioteca.</p>
-            </div>
-
-            <p class="footer-text">Atenciosamente, Equipe BookBox</p>
-            <p class="footer-copy">© 2025 BookBox. Todos os direitos reservados.</p>
+            <p class="footer-text">Atenciosamente, Equipe Bookbox</p>
+            <p class="footer-copy">© 2025 Bookbox. Todos os direitos reservados.</p>
         </div>
     </div>
 </body>
