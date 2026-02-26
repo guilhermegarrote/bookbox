@@ -5,48 +5,34 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\Models\View\Loan;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
-use Mike42\Escpos\CapabilityProfile;
-use Mike42\Escpos\EscposImage;
-use Mike42\Escpos\PrintConnectors\NetworkPrintConnector;
-use Mike42\Escpos\PrintConnectors\WindowsPrintConnector;
-use Mike42\Escpos\Printer;
 use Picqer\Barcode\BarcodeGeneratorPNG;
 
 /**
- * Class ThermalPrinterService.
+ * Class ThermalPrinterService
  *
- * Handles printing of loan receipts using thermal printers.
- * Supports both network and local printer connections, prints logos,
- * barcodes, and optionally a school copy with signature line.
+ * Responsible for building loan receipt payloads and sending them to a Node.js printing service.
+ * All visible text in the receipt is in Portuguese.
  */
 class ThermalPrinterService
 {
     /**
-     * @var Printer The active printer instance
+     * Default printer service host (e.g., local Node.js client service).
      */
-    protected Printer $printer;
+    private string $defaultClientHost;
 
-    /**
-     * ThermalPrinterService constructor.
-     *
-     * Initializes a printer connection using either network or local settings.
-     *
-     * @param null|string $connection Optional IP address or local printer name
-     * @param null|int $port Optional network port (default 9100)
-     */
-    public function __construct(?string $connection = null, ?int $port = null)
+    public function __construct()
     {
-        $this->printer = $this->createPrinter($connection, $port);
+        $this->defaultClientHost = config('services.client_printer.host', env('CLIENT_PRINTER_HOST', 'http://localhost:3000'));
     }
 
     /**
-     * Print a loan receipt.
+     * Main method to generate and send a loan receipt to the client printer.
      *
-     * Handles printing a copy for the borrower and an optional school copy.
-     *
-     * @param array|Loan $loan Loan model or array containing loan data
-     * @param string $employeeName Employee name handling the loan (default 'Desconhecido')
+     * @param array|Loan $loan Loan data array or Loan model instance
+     * @param string $employeeName Name of the employee processing the loan
      */
     public function printLoanReceipt(array|Loan $loan, string $employeeName = 'Desconhecido'): void
     {
@@ -56,197 +42,178 @@ class ThermalPrinterService
 
         $loan['employee_name'] = $employeeName;
 
-        $this->printSingleCopy($loan);
-
-        usleep(500000);
-
-        $printer = $this->createPrinter();
-
         try {
-            $this->printHeader($printer);
-            $this->printCopy($printer, $loan, true);
-            $printer->feed(2);
-            $printer->cut();
+            $payload = $this->buildPrintPayload($loan);
+            $this->sendToClientPrinter($payload, $loan['client_host'] ?? null);
+
+            Log::info('Loan receipt sent to the print service.', [
+                'aluno' => $loan['name'] ?? null,
+                'livro' => $loan['title'] ?? null,
+            ]);
         } catch (\Throwable $e) {
-            Log::error('Erro imprimindo cópia escolar: ' . $e->getMessage());
-        } finally {
-            $printer->close();
+            Log::error('Error preparing or sending loan receipt to print: ' . $e->getMessage(), [
+                'loan_id' => $loan['id'] ?? null,
+                'exception' => $e,
+            ]);
         }
     }
 
     /**
-     * Create a configured printer instance.
-     *
-     * @param null|string $connection IP address or printer name
-     * @param null|int $port Network port
-     * @param string $profileName Capability profile name (default 'default')
-     *
-     * @return Printer Configured printer object
-     */
-    private function createPrinter(?string $connection = null, ?int $port = null, string $profileName = 'default'): Printer
-    {
-        $connector = $this->createConnector($connection, $port);
-        $profile = CapabilityProfile::load($profileName);
-
-        return new Printer($connector, $profile);
-    }
-
-    /**
-     * Create printer connector.
-     *
-     * Uses network connector if IP provided; otherwise falls back to Windows connector.
-     *
-     * @param null|string $connection IP address or printer name
-     * @param null|int $port Network port
-     *
-     * @return NetworkPrintConnector|WindowsPrintConnector
-     */
-    private function createConnector(?string $connection, ?int $port = null)
-    {
-        if ($connection && filter_var($connection, FILTER_VALIDATE_IP)) {
-            return new NetworkPrintConnector($connection, $port ?? 9100);
-        }
-
-        return new WindowsPrintConnector($connection ?? 'ELGIN i8');
-    }
-
-    /**
-     * Print a single copy of the loan receipt.
+     * Build the text and image payload for the receipt.
      *
      * @param array $loan Loan data
+     * @return array Receipt payload including text lines, logo, barcode, and options
      */
-    private function printSingleCopy(array $loan): void
+    private function buildPrintPayload(array $loan): array
     {
-        try {
-            $this->printHeader($this->printer);
-            $this->printCopy($this->printer, $loan);
-            $this->printer->feed(2);
-            $this->printer->cut();
-        } catch (\Throwable $e) {
-            Log::error('Erro imprimindo primeira cópia: ' . $e->getMessage());
-        } finally {
-            $this->printer->close();
-        }
-    }
+        $lines = [];
 
-    /**
-     * Print printer header, including logo if exists.
-     *
-     * @param Printer $printer Printer instance
-     */
-    private function printHeader(Printer $printer): void
-    {
-        $logoPath = public_path('images/logo/logotype_print.png');
-
-        if (!file_exists($logoPath) || !is_readable($logoPath)) {
-            Log::warning("Logo não encontrada ou não legível: {$logoPath}");
-
-            return;
-        }
-
-        try {
-            $image = EscposImage::load($logoPath, false);
-            $printer->setJustification(Printer::JUSTIFY_CENTER);
-            $printer->bitImage($image);
-            $printer->feed(2);
-        } catch (\Throwable $e) {
-            Log::warning('Falha ao carregar logo: ' . $e->getMessage());
-        }
-    }
-
-    /**
-     * Print loan receipt content.
-     *
-     * @param Printer $printer Printer instance
-     * @param array $loan Loan data
-     * @param bool $isSchoolCopy Optional flag to include school copy signature line
-     */
-    private function printCopy(Printer $printer, array $loan, bool $isSchoolCopy = false): void
-    {
-        $printer->setJustification(Printer::JUSTIFY_CENTER);
-        $printer->setEmphasis(true);
-        $printer->text("LOAN RECEIPT\n");
-        $printer->setEmphasis(false);
-        $printer->feed(1);
-
-        $printer->setJustification(Printer::JUSTIFY_LEFT);
+        $lines[] = ['align' => 'center', 'emphasis' => true, 'text' => 'RECIBO DE EMPRÉSTIMO'];
+        $lines[] = ['align' => 'center', 'text' => ''];
 
         $fields = [
-            'Code' => $loan['barcode_code'] ?? '',
-            'Employee' => $loan['employee_name'] ?? '',
-            'Student' => $loan['name'] ?? '',
+            'Código' => $loan['barcode_code'] ?? '',
+            'Responsável' => $loan['employee_name'] ?? '',
+            'Aluno' => $loan['name'] ?? '',
             'CPF' => $loan['cpf'] ?? '',
-            'Class' => $loan['formatted_class'] ?? '',
+            'Turma' => $loan['formatted_class'] ?? '',
             'ISBN' => $loan['isbn'] ?? '',
-            'Book title' => $loan['title'] ?? '',
-            'Copy number' => $loan['number'] ?? '',
-            'Author' => $loan['author'] ?? '',
-            'Loan date' => $loan['loan_start_date'] ?? '',
+            'Título do livro' => $loan['title'] ?? '',
+            'Exemplar' => $loan['number'] ?? '',
+            'Autor' => $loan['author'] ?? '',
+            'Data do empréstimo' => Carbon::parse($loan['loan_start_date'])->format('d/m/Y')
+                ?? '',
         ];
 
         foreach ($fields as $label => $value) {
-            $printer->text("{$label}: {$value}\n");
+            $lines[] = ['align' => 'left', 'text' => "{$label}: {$value}"];
         }
 
-        $printer->feed(1);
+        $lines[] = ['text' => ''];
 
-        $this->printDueDateBox($printer, $loan['loan_due_date'] ?? '');
+        $dueDate = Carbon::parse($loan['loan_due_date'])->format('d/m/Y') ?? '';
+        $box = $this->buildDueDateBoxText($dueDate, 48);
 
-        $this->printBarcode($printer, $loan['barcode_code'] ?? '');
-
-        if ($isSchoolCopy) {
-            $printer->feed(1);
-            $printer->text("Student signature:\n\n");
-            $printer->text(str_repeat('_', 38) . "\n");
+        foreach ($box as $line) {
+            $lines[] = ['align' => 'center', 'emphasis' => true, 'text' => $line];
         }
+
+        $lines[] = ['text' => ''];
+
+        $options = [
+            'school_copy' => true,
+            'school_copy_after_ms' => 500,
+        ];
+
+        return [
+            'text_lines' => $lines,
+            'logo_base64' => $this->loadLogoBase64(),
+            'barcode_base64' => $this->buildBarcodeBase64($loan['barcode_code'] ?? ''),
+            'copies' => 1,
+            'options' => $options,
+            'summary' => [
+                'aluno' => $loan['name'] ?? null,
+                'livro' => $loan['title'] ?? null,
+                'codigo' => $loan['barcode_code'] ?? null,
+            ],
+        ];
     }
 
     /**
-     * Print due date inside a box.
+     * Build a visual box around the due date using box-drawing characters.
+     *
+     * @param string $dueDate The loan due date
+     * @param int $lineWidth Width of the box in characters
+     * @return array Lines representing the box with centered text
      */
-    private function printDueDateBox(Printer $printer, string $dueDate): void
+    private function buildDueDateBoxText(string $dueDate, int $lineWidth = 48): array
     {
-        $lineWidth = 48;
-        $title = 'Due Date';
+        $title = 'Data de devolução';
 
         $centerText = function (string $text, int $width): string {
-            $padding = max(0, \intval(($width - mb_strlen($text)) / 2));
+            $len = mb_strlen($text);
+            $pad = (int) floor(max(0, ($width - $len) / 2));
 
-            return str_repeat(' ', $padding) . $text . str_repeat(' ', $width - mb_strlen($text) - $padding);
+            return str_repeat(' ', $pad) . $text . str_repeat(' ', max(0, $width - $len - $pad));
         };
 
-        $top = '╔' . str_repeat('═', $lineWidth - 2) . "╗\n";
-        $middle1 = '║' . $centerText($title, $lineWidth - 2) . "║\n";
-        $middle2 = '║' . $centerText($dueDate, $lineWidth - 2) . "║\n";
-        $bottom = '╚' . str_repeat('═', $lineWidth - 2) . "╝\n";
-
-        $printer->setJustification(Printer::JUSTIFY_CENTER);
-        $printer->setEmphasis(true);
-        $printer->text($top . $middle1 . $middle2 . $bottom);
-        $printer->setEmphasis(false);
-        $printer->feed(1);
+        return [
+            '╔' . str_repeat('═', $lineWidth - 2) . '╗',
+            '║' . $centerText($title, $lineWidth - 2) . '║',
+            '║' . $centerText($dueDate, $lineWidth - 2) . '║',
+            '╚' . str_repeat('═', $lineWidth - 2) . '╝',
+        ];
     }
 
     /**
-     * Print a barcode for the loan.
+     * Load the school's logo as a Base64-encoded PNG image.
+     *
+     * @return string|null Base64 string or null if logo not found
      */
-    private function printBarcode(Printer $printer, string $barcode): void
+    private function loadLogoBase64(): ?string
     {
-        try {
-            $generator = new BarcodeGeneratorPNG();
-            $barcodeData = $generator->getBarcode($barcode, $generator::TYPE_CODE_128, 2, 80);
+        $logoPath = public_path('images/logo/logotype_print.png');
 
-            $tmpFile = tempnam(sys_get_temp_dir(), 'barcode') . '.png';
-            file_put_contents($tmpFile, $barcodeData);
+        if (!file_exists($logoPath)) {
+            Log::warning("Logo not found at {$logoPath}");
 
-            $image = EscposImage::load($tmpFile);
-            $printer->bitImage($image);
-
-            unlink($tmpFile);
-        } catch (\Throwable $e) {
-            Log::warning('Erro ao imprimir código de barra: ' . $e->getMessage());
+            return null;
         }
 
-        $printer->feed(1);
+        try {
+            return base64_encode(file_get_contents($logoPath));
+        } catch (\Throwable $e) {
+            Log::warning('Failed to load logo: ' . $e->getMessage());
+
+            return null;
+        }
+    }
+
+    /**
+     * Generate a Base64-encoded barcode image for the given code.
+     *
+     * @param string $code Code to encode as barcode
+     * @return string|null Base64 barcode image or null if empty or failed
+     */
+    private function buildBarcodeBase64(string $code): ?string
+    {
+        if (trim($code) === '') {
+            return null;
+        }
+
+        try {
+            $generator = new BarcodeGeneratorPNG();
+            $barcode = $generator->getBarcode($code, $generator::TYPE_CODE_128, 2, 80);
+
+            return base64_encode($barcode);
+        } catch (\Throwable $e) {
+            Log::warning('Failed to generate barcode: ' . $e->getMessage());
+
+            return null;
+        }
+    }
+
+    /**
+     * Sends the receipt payload to the Node.js client printing service.
+     *
+     * @param array $payload The prepared receipt payload
+     * @param string|null $clientHost Optional override for the client printer host
+     */
+    private function sendToClientPrinter(array $payload, ?string $clientHost = null): void
+    {
+        $host = $clientHost ? rtrim($clientHost, '/') : $this->defaultClientHost;
+        $url = "{$host}/print";
+
+        try {
+            $response = Http::timeout(10)->post($url, $payload);
+
+            if (!$response->successful()) {
+                Log::error("Failed to send payload to print service ({$response->status()}): " . $response->body());
+            }
+        } catch (\Throwable $e) {
+            Log::error('Error communicating with the print service: ' . $e->getMessage(), [
+                'url' => $url,
+            ]);
+        }
     }
 }
