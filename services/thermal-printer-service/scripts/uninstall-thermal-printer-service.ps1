@@ -1,12 +1,12 @@
 # ==========================================
-# Printer Service Uninstallation Script
+# The Thermal Printer Service Uninstallation Script
 # ==========================================
 # This script must be executed as Administrator.
 
 # ==============================
 # Configuration
 # ==============================
-$ServiceName = "PrinterService"
+$ServiceName = "ThermalPrinterService"
 $NSSMPath = "C:\nssm\nssm.exe"
 
 Write-Host "Checking service status..."

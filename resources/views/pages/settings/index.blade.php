@@ -13,6 +13,9 @@
             <button class="settings-nav-btn" data-page="users">
                 <x-icons.icon name="users" /> Gerenciar Usuários
             </button>
+            <button class="settings-nav-btn" data-page="services">
+                <x-icons.icon name="services" /> Serviços
+            </button>
         </nav>
 
         <div class="settings-logout">
@@ -30,5 +33,6 @@
         <section id="genres" class="settings-page"></section>
         <section id="school-classes" class="settings-page"></section>
         <section id="users" class="settings-page"></section>
+        <section id="services" class="settings-page"></section>
     </main>
 </div>

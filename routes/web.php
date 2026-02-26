@@ -91,6 +91,7 @@ Route::middleware('auth.jwt.cookie')->group(function () {
         Route::get('/school-classes', [SettingController::class, 'schoolClasses'])->name('school-classes');
         Route::get('/users', [SettingController::class, 'users'])->name('users');
         Route::get('/config', [SettingController::class, 'config'])->name('config');
+        Route::get('/services', [SettingController::class, 'services'])->name('services');
     });
 
     Route::get(

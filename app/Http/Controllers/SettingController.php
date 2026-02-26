@@ -155,4 +155,18 @@ class SettingController extends Controller
 
         return view('pages.settings.partials.configs', compact('config'));
     }
+
+    /**
+     * Render the services settings section.
+     *
+     * Loads application services for download.
+     *
+     * @return View
+     *
+     * @see resources/views/pages/settings/partials/services.blade.php
+     */
+    public function services(): View
+    {
+        return view('pages.settings.partials.services');
+    }
 }

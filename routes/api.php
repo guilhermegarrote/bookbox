@@ -72,6 +72,10 @@ Route::middleware(['auth.jwt.cookie'])->group(function () {
     Route::get('/loans/find-by-barcode/{barcode}', [LoanController::class, 'findByBarcode'])
         ->name('loans.findByBarcode')
     ;
+
+    Route::get('download/thermal-printer-service', function() {
+        return response()->download(storage_path('app/installer/thermal-printer-service.zip'));
+    })->name('download.thermal-printer-service');
 });
 
 Route::prefix('recover')->middleware(['users.exist', 'guest:api'])->group(function () {

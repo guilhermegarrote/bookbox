@@ -1,4 +1,4 @@
-# Printer Service (Windows)
+# Thermal Printer Service (Windows)
 
 ## System Requirements
 
@@ -34,7 +34,7 @@ v20.x.x
 
 ## 2️⃣ Install Dependencies
 
-Inside the `printer-service` folder, run:
+Inside the `thermal-printer-service` folder, run:
 
 ```bash
 npm install
@@ -83,7 +83,7 @@ Set-ExecutionPolicy RemoteSigned -Scope Process
 Run:
 
 ```powershell
-.\install-printer-service.ps1
+.\install-thermal-printer-service.ps1
 ```
 
 This will:
@@ -91,7 +91,7 @@ This will:
 * Create the Windows service
 * Configure it to start automatically
 * Start the service
-* Create and manage `printer-service.log`
+* Create and manage `thermal-printer-service.log`
 
 ---
 
@@ -100,7 +100,7 @@ This will:
 To remove the service:
 
 ```powershell
-.\uninstall-printer-service.ps1
+.\uninstall-thermal-printer-service.ps1
 ```
 
 This will:

@@ -18,7 +18,7 @@ escpos.USB = require("escpos-usb");
 const VENDOR_ID = 8137;
 const PRODUCT_ID = 8214;
 const PORT = 3000;
-const LOG_FILE = path.join(__dirname, "printer-service.log");
+const LOG_FILE = path.join(__dirname, "thermal-printer-service.log");
 const MAX_LOG_SIZE = 5 * 1024 * 1024; // 5 MB
 
 /**
@@ -30,7 +30,7 @@ function rotateLogIfNeeded() {
         if (fs.existsSync(LOG_FILE)) {
             const stats = fs.statSync(LOG_FILE);
             if (stats.size >= MAX_LOG_SIZE) {
-                const oldLog = path.join(__dirname, "printer-service.old.log");
+                const oldLog = path.join(__dirname, "thermal-printer-service.old.log");
                 if (fs.existsSync(oldLog)) fs.unlinkSync(oldLog);
                 fs.renameSync(LOG_FILE, oldLog);
             }
@@ -85,7 +85,7 @@ async function loadImageForPrinter(base64) {
 }
 
 /**
- * Sends formatted receipt data to the USB printer.
+ * Sends formatted receipt data to the USB thermal printer.
  * @param {object} payload
  * @returns {Promise<void>}
  */
@@ -187,7 +187,7 @@ app.post("/print", async (req, res) => {
  * Starts the background HTTP service.
  */
 app.listen(PORT, () => {
-    log(`Printer service running on port ${PORT}`);
+    log(`Thermal Printer service running on port ${PORT}`);
 });
 
 

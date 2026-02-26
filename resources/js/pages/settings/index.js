@@ -9,6 +9,7 @@ import { openUpdateModal as openUpdateUserModal } from '../users/modals/update';
 import { openCreateModal as openCreateUserModal } from '../users/modals/create';
 import { openDeleteModal as openDeleteUserModal } from '../users/modals/delete';
 import { updateSettings } from '@js/api/settings/update';
+import { downloadThermalPrinterService } from '@js/api/thermal-printer-service/download';
 import { showErrors, notifySuccess, notifyError } from '@js/utils/formErrors';
 
 const modalManager = new ModalManager();
@@ -70,6 +71,8 @@ async function loadSettingsPage(page) {
 
         if (page === 'config') {
             initConfigSection();
+        } else if (page === 'services') {
+            initServicesSection();
         }
 
         const input = section.querySelector('#item-search');
@@ -205,6 +208,31 @@ function initConfigSection() {
             notifyError('Erro técnico ao tentar atualizar configurações. Tente novamente.');
         } finally {
             saveBtn.disabled = false;
+        }
+    });
+}
+
+/**
+ * Initializes the services section
+ */
+function initServicesSection() {
+    const section = document.getElementById('services');
+    if (!section) return;
+
+    const btnThermalPrinterServiceDownload = document.getElementById('btn-download-thermal-printer-service');
+
+    btnThermalPrinterServiceDownload.addEventListener('click', async () => {
+        try {
+            const { ok, data: responseData } = await downloadThermalPrinterService();
+
+            if (ok) {
+                notifySuccess('Serviço da impressora térmica baixado com sucesso!');
+            } else {
+                notifyError(responseData || 'Erro ao baixar serviço da impressora térmica');
+            }
+        } catch (err) {
+            console.error(err);
+            notifyError('Erro técnico ao tentar baixar serviço da impressora térmica. Tente novamente.');
         }
     });
 }

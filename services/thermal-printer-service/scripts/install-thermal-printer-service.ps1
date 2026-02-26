@@ -1,11 +1,11 @@
 # ==============================
 # Configuration
 # ==============================
-$ServiceName = "PrinterService"
-$DisplayName = "Printer Service"
-$Description = "Background printing service for the BookBox system"
+$ServiceName = "ThermalPrinterService"
+$DisplayName = "Thermal Printer Service"
+$Description = "Background thermal printing service for the BookBox system"
 $NodePath = "C:\nvm4w\nodejs\node.exe"
-$ScriptPath = "C:\xampp\htdocs\bookbox\services\printer-service\src\index.js"
+$ScriptPath = "C:\xampp\htdocs\bookbox\services\thermal-printer-service\src\index.js"
 $NSSMPath = "C:\nssm\nssm.exe"
 
 # ==============================
@@ -28,7 +28,7 @@ if ($svc) {
 & $NSSMPath set $ServiceName Start SERVICE_AUTO_START
 
 # IMPORTANT: Set working directory
-$AppDirectory = "C:\xampp\htdocs\bookbox\services\printer-service"
+$AppDirectory = "C:\xampp\htdocs\bookbox\services\thermal-printer-service"
 & $NSSMPath set $ServiceName AppDirectory $AppDirectory
 
 # ==============================
