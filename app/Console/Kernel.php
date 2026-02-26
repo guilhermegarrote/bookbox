@@ -72,7 +72,8 @@ class Kernel extends ConsoleKernel
             }
         })->dailyAt('03:15');
 
-        $schedule->command('labels:cleanup')->dailyAt('02:00');
+        $schedule->command('labels:cleanup')->daily();
+        $schedule->command('optimize:clear')->daily();
     }
 
     /**
