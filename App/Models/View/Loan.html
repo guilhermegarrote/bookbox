@@ -1,0 +1,930 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="robots" content="index, follow, all" />
+    <title>App\Models\View\Loan | Bookbox Project Documentation</title>
+
+            <link rel="stylesheet" type="text/css" href="../../../css/bootstrap.min.css">
+        <link rel="stylesheet" type="text/css" href="../../../css/bootstrap-theme.min.css">
+        <link rel="stylesheet" type="text/css" href="../../../css/doctum.css">
+        <link rel="stylesheet" type="text/css" href="../../../fonts/doctum-font.css">
+        <script src="../../../js/jquery-3.5.1.slim.min.js"></script>
+        <script async defer src="../../../doctum.js"></script>
+        <script async defer src="../../../js/bootstrap.min.js"></script>
+        <script async defer src="../../../js/autocomplete.min.js"></script>
+        <meta name="MobileOptimized" content="width">
+        <meta name="HandheldFriendly" content="true">
+        <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+
+    </head>
+
+    <body id="class" data-name="class:App_Models_View_Loan" data-root-path="../../../" data-search-index-url="../../../doctum-search.json">
+            <div id="content">
+        <div id="left-column">
+                <div id="control-panel">
+                <div class="search-bar hidden" id="search-progress-bar-container">
+            <div class="progress">
+                <div class="progress-bar" role="progressbar" id="search-progress-bar"
+                    aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%"></div>
+            </div>
+        </div>
+        <form id="search-form" action="../../../search.html">
+            <span class="icon icon-search"></span>
+            <input name="search"
+                   id="doctum-search-auto-complete"
+                   class="typeahead form-control"
+                   type="search"
+                   placeholder="Search"
+                   spellcheck="false"
+                   autocorrect="off"
+                   autocomplete="off"
+                   autocapitalize="off">
+            <div class="auto-complete-results" id="auto-complete-results"></div>
+        </form>
+    </div>
+
+                <div id="api-tree"></div>
+
+        </div>
+        <div id="right-column">
+                <nav id="site-nav" class="navbar navbar-default" role="navigation">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-elements">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="../../../index.html">Bookbox Project Documentation</a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar-elements">
+                <ul class="nav navbar-nav">
+                    <li><a href="../../../classes.html">Classes</a></li>
+                    <li><a href="../../../namespaces.html">Namespaces</a></li>
+                    <li><a href="../../../interfaces.html">Interfaces</a></li>
+                    <li><a href="../../../traits.html">Traits</a></li>
+                    <li><a href="../../../doc-index.html">Index</a></li>
+                    <li><a href="../../../search.html">Search</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+                        <div class="namespace-breadcrumbs">
+            <ol class="breadcrumb">
+                <li><span class="label label-default">class</span></li>
+                        <li><a href="../../../App.html">App</a></li><li class="backslash">\</li><li><a href="../../../App/Models.html">Models</a></li><li class="backslash">\</li><li><a href="../../../App/Models/View.html">View</a></li><li class="backslash">\</li><li>Loan</li>
+            </ol>
+        </div>
+                <div id="page-content">
+    <div class="page-header">
+        <h1>Loan    
+            </h1>
+    </div>
+
+    
+    <p>        class
+    <strong>Loan</strong>        extends <a href="../../../App/Models/View/BaseModel.html"><abbr title="App\Models\View\BaseModel">BaseModel</abbr></a>        (<a href="https://github.com/guilherme_garrote/bookbox/blob/main//bookbox/app/Models/View/Loan.php">View source</a>)
+</p>
+
+        
+    
+        
+
+            <div class="description">
+            <p><p>Class Loan.</p></p>            <p><p>Represents a view model for book loans with decrypted and formatted attributes.
+This model maps to the database view <code>vw_loans</code> and includes joined/derived data
+from students, copies, books, genres, and related entities.</p></p>        </div>
+            
+        
+    
+            <h2>Properties</h2>
+
+            <table class="table table-condensed">
+                    <tr>
+                <td class="type" id="property_timestamps">
+                                                                                bool
+                                                                                
+                                    </td>
+                <td>$timestamps</td>
+                <td class="last"></td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type" id="property_table">
+                                        protected                                        string
+                                                                                
+                                    </td>
+                <td>$table</td>
+                <td class="last"></td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type" id="property_guarded">
+                                        protected                                        <abbr title="App\Models\View\array&lt;int,string&gt;">array&lt;int,string&gt;</abbr>
+                                                                                
+                                    </td>
+                <td>$guarded</td>
+                <td class="last"></td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type" id="property_hidden">
+                                        protected                                        <abbr title="App\Models\View\array&lt;int,string&gt;">array&lt;int,string&gt;</abbr>
+                                                                                
+                                    </td>
+                <td>$hidden</td>
+                <td class="last"></td>
+                <td></td>
+            </tr>
+            </table>
+
+    
+            <h2>Methods</h2>
+
+            <div class="container-fluid underlined">
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_save">save</a>(array $options = [])
+        
+                                            <p><p>Prevents saving, enforcing read-only behavior for view models.</p></p>                </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../../App/Models/View/BaseModel.html#method_save">
+<abbr title="App\Models\View\BaseModel">BaseModel</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    string|null
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_getIdAttribute">getIdAttribute</a>(null|string $value)
+        
+                                            <p><p>Converts binary UUID (BLOB) to string representation.</p></p>                </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../../App/Models/View/BaseModel.html#method_getIdAttribute">
+<abbr title="App\Models\View\BaseModel">BaseModel</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    string|null
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_getStudentIdAttribute">getStudentIdAttribute</a>(string|null $value)
+        
+                                            <p><p>Get student UUID as string from binary.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    string|null
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_getBookIdAttribute">getBookIdAttribute</a>(string|null $value)
+        
+                                            <p><p>Get book UUID as string from binary.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    string|null
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_getCopyIdAttribute">getCopyIdAttribute</a>(string|null $value)
+        
+                                            <p><p>Get copy UUID as string from binary.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    string|null
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_getGenreIdAttribute">getGenreIdAttribute</a>(string|null $value)
+        
+                                            <p><p>Get genre UUID as string from binary.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    string|null
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_getSchoolClassIdAttribute">getSchoolClassIdAttribute</a>(string|null $value)
+        
+                                            <p><p>Get school class UUID as string from binary.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    string|null
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_getCpfAttribute">getCpfAttribute</a>(string|null $value)
+        
+                                            <p><p>Decrypts and formats CPF number as XXX.XXX.XXX-XX.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    string|null
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_getEmailAttribute">getEmailAttribute</a>(string|null $value)
+        
+                                            <p><p>Decrypts email address.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    string|null
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_getPhoneAttribute">getPhoneAttribute</a>(string|null $value)
+        
+                                            <p><p>Decrypts and formats phone number as (XX) XXXXX-XXXX.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    string|null
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_getIsbnAttribute">getIsbnAttribute</a>(string|null $value)
+        
+                                            <p><p>Formats ISBN-13 number as XXX-X-XXXX-XXXX-X.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    <abbr title="Illuminate\Database\Eloquent\Relations\BelongsTo">BelongsTo</abbr>
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_student">student</a>()
+        
+                                            <p><p>Defines the relationship between a loan and its student.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    <abbr title="Illuminate\Database\Eloquent\Relations\BelongsTo">BelongsTo</abbr>
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_copy">copy</a>()
+        
+                                            <p><p>Defines the relationship between a loan and a copy.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    static&nbsp;<abbr title="Illuminate\Support\Collection">Collection</abbr>
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_getFilterData">getFilterData</a>(null|<abbr title="Illuminate\Database\Eloquent\Builder">Builder</abbr> $query = null)
+        
+                                            <p><p>Retrieves distinct values for filtering loan data.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    static&nbsp;<abbr title="Illuminate\Support\Collection">Collection</abbr>
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_getSidebarData">getSidebarData</a>(null|<abbr title="Illuminate\Database\Eloquent\Builder">Builder</abbr> $query = null)
+        
+                                            <p><p>Retrieves lightweight loan info for sidebar rendering.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+            </div>
+
+
+        <h2>Details</h2>
+
+            <div id="method-details">
+                    <div class="method-item">
+                    <h3 id="method_save">
+        <div class="location">in <a href="../../../App/Models/View/BaseModel.html#method_save">
+<abbr title="App\Models\View\BaseModel">BaseModel</abbr></a> <a href="https://github.com/guilherme_garrote/bookbox/blob/main//bookbox/app/Models/View/BaseModel.php#L20">at line 20</a></div>
+        <code>                    
+    <strong>save</strong>(array $options = [])
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Prevents saving, enforcing read-only behavior for view models.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>array</td>
+                <td>$options</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+                            <h4>Exceptions</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><a target="_blank" rel="noopener" href="https://www.php.net/Exception">Exception</a></td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_getIdAttribute">
+        <div class="location">in <a href="../../../App/Models/View/BaseModel.html#method_getIdAttribute">
+<abbr title="App\Models\View\BaseModel">BaseModel</abbr></a> <a href="https://github.com/guilherme_garrote/bookbox/blob/main//bookbox/app/Models/View/BaseModel.php#L30">at line 30</a></div>
+        <code>                    string|null
+    <strong>getIdAttribute</strong>(null|string $value)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Converts binary UUID (BLOB) to string representation.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>null|string</td>
+                <td>$value</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>string|null</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_getStudentIdAttribute">
+        <div class="location"><a href="https://github.com/guilherme_garrote/bookbox/blob/main//bookbox/app/Models/View/Loan.php#L45">at line 45</a></div>
+        <code>                    string|null
+    <strong>getStudentIdAttribute</strong>(string|null $value)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Get student UUID as string from binary.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string|null</td>
+                <td>$value</td>
+                <td><p>binary UUID from the database</p></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>string|null</td>
+            <td><p>UUID as string or null if value is null</p></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_getBookIdAttribute">
+        <div class="location"><a href="https://github.com/guilherme_garrote/bookbox/blob/main//bookbox/app/Models/View/Loan.php#L57">at line 57</a></div>
+        <code>                    string|null
+    <strong>getBookIdAttribute</strong>(string|null $value)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Get book UUID as string from binary.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string|null</td>
+                <td>$value</td>
+                <td><p>binary UUID from the database</p></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>string|null</td>
+            <td><p>UUID as string or null if value is null</p></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_getCopyIdAttribute">
+        <div class="location"><a href="https://github.com/guilherme_garrote/bookbox/blob/main//bookbox/app/Models/View/Loan.php#L69">at line 69</a></div>
+        <code>                    string|null
+    <strong>getCopyIdAttribute</strong>(string|null $value)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Get copy UUID as string from binary.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string|null</td>
+                <td>$value</td>
+                <td><p>binary UUID from the database</p></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>string|null</td>
+            <td><p>UUID as string or null if value is null</p></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_getGenreIdAttribute">
+        <div class="location"><a href="https://github.com/guilherme_garrote/bookbox/blob/main//bookbox/app/Models/View/Loan.php#L81">at line 81</a></div>
+        <code>                    string|null
+    <strong>getGenreIdAttribute</strong>(string|null $value)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Get genre UUID as string from binary.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string|null</td>
+                <td>$value</td>
+                <td><p>binary UUID from the database</p></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>string|null</td>
+            <td><p>UUID as string or null if value is null</p></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_getSchoolClassIdAttribute">
+        <div class="location"><a href="https://github.com/guilherme_garrote/bookbox/blob/main//bookbox/app/Models/View/Loan.php#L93">at line 93</a></div>
+        <code>                    string|null
+    <strong>getSchoolClassIdAttribute</strong>(string|null $value)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Get school class UUID as string from binary.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string|null</td>
+                <td>$value</td>
+                <td><p>binary UUID from the database</p></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>string|null</td>
+            <td><p>UUID as string or null if value is null</p></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_getCpfAttribute">
+        <div class="location"><a href="https://github.com/guilherme_garrote/bookbox/blob/main//bookbox/app/Models/View/Loan.php#L105">at line 105</a></div>
+        <code>                    string|null
+    <strong>getCpfAttribute</strong>(string|null $value)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Decrypts and formats CPF number as XXX.XXX.XXX-XX.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string|null</td>
+                <td>$value</td>
+                <td><p>encrypted CPF from the database</p></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>string|null</td>
+            <td><p>formatted CPF or null if value is null</p></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_getEmailAttribute">
+        <div class="location"><a href="https://github.com/guilherme_garrote/bookbox/blob/main//bookbox/app/Models/View/Loan.php#L128">at line 128</a></div>
+        <code>                    string|null
+    <strong>getEmailAttribute</strong>(string|null $value)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Decrypts email address.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string|null</td>
+                <td>$value</td>
+                <td><p>encrypted email from the database</p></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>string|null</td>
+            <td><p>decrypted email or null if value is null</p></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_getPhoneAttribute">
+        <div class="location"><a href="https://github.com/guilherme_garrote/bookbox/blob/main//bookbox/app/Models/View/Loan.php#L140">at line 140</a></div>
+        <code>                    string|null
+    <strong>getPhoneAttribute</strong>(string|null $value)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Decrypts and formats phone number as (XX) XXXXX-XXXX.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string|null</td>
+                <td>$value</td>
+                <td><p>encrypted phone from the database</p></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>string|null</td>
+            <td><p>formatted phone or decrypted raw value if pattern doesn't match</p></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_getIsbnAttribute">
+        <div class="location"><a href="https://github.com/guilherme_garrote/bookbox/blob/main//bookbox/app/Models/View/Loan.php#L163">at line 163</a></div>
+        <code>                    string|null
+    <strong>getIsbnAttribute</strong>(string|null $value)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Formats ISBN-13 number as XXX-X-XXXX-XXXX-X.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string|null</td>
+                <td>$value</td>
+                <td><p>raw ISBN value</p></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>string|null</td>
+            <td><p>formatted ISBN or numbers-only string if not 13 digits</p></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_student">
+        <div class="location"><a href="https://github.com/guilherme_garrote/bookbox/blob/main//bookbox/app/Models/View/Loan.php#L188">at line 188</a></div>
+        <code>                    <abbr title="Illuminate\Database\Eloquent\Relations\BelongsTo">BelongsTo</abbr>
+    <strong>student</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Defines the relationship between a loan and its student.</p></p>                        
+        </div>
+        <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><abbr title="Illuminate\Database\Eloquent\Relations\BelongsTo">BelongsTo</abbr></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_copy">
+        <div class="location"><a href="https://github.com/guilherme_garrote/bookbox/blob/main//bookbox/app/Models/View/Loan.php#L196">at line 196</a></div>
+        <code>                    <abbr title="Illuminate\Database\Eloquent\Relations\BelongsTo">BelongsTo</abbr>
+    <strong>copy</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Defines the relationship between a loan and a copy.</p></p>                        
+        </div>
+        <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><abbr title="Illuminate\Database\Eloquent\Relations\BelongsTo">BelongsTo</abbr></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_getFilterData">
+        <div class="location"><a href="https://github.com/guilherme_garrote/bookbox/blob/main//bookbox/app/Models/View/Loan.php#L208">at line 208</a></div>
+        <code>        static            <abbr title="Illuminate\Support\Collection">Collection</abbr>
+    <strong>getFilterData</strong>(null|<abbr title="Illuminate\Database\Eloquent\Builder">Builder</abbr> $query = null)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Retrieves distinct values for filtering loan data.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>null|<abbr title="Illuminate\Database\Eloquent\Builder">Builder</abbr></td>
+                <td>$query</td>
+                <td><p>optional query builder instance</p></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><abbr title="Illuminate\Support\Collection">Collection</abbr></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_getSidebarData">
+        <div class="location"><a href="https://github.com/guilherme_garrote/bookbox/blob/main//bookbox/app/Models/View/Loan.php#L245">at line 245</a></div>
+        <code>        static            <abbr title="Illuminate\Support\Collection">Collection</abbr>
+    <strong>getSidebarData</strong>(null|<abbr title="Illuminate\Database\Eloquent\Builder">Builder</abbr> $query = null)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Retrieves lightweight loan info for sidebar rendering.</p></p>                <p><p>If a custom query is provided:</p>
+<ul>
+<li>If it returns results, use them.</li>
+<li>If it returns no results, fallback to the default dataset.</li>
+</ul></p>        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>null|<abbr title="Illuminate\Database\Eloquent\Builder">Builder</abbr></td>
+                <td>$query</td>
+                <td><p>optional query builder instance</p></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><abbr title="Illuminate\Support\Collection">Collection</abbr></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+            </div>
+
+    
+</div><div id="footer">
+        Generated by <a href="https://github.com/code-lts/doctum">Doctum, a API Documentation generator and fork of Sami</a>.</div></div>
+    </div>
+    </body>
+
+</html>
