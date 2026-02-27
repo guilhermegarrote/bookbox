@@ -17,8 +17,7 @@
 /public/build
 /public/hot
 /public/storage
-/storage/*.key
-/storage/pail
+/storage/*
 /vendor
 Homestead.json
 Homestead.yaml
@@ -31,3 +30,7 @@ yarn-error.log
 /tests/bruno-api/*
 !/tests/bruno-api/requests.json
 /requests
+
+!/storage/.gitignore
+/docs/doctum/doctum-cache/
+/deployment/doctum/vendor/

@@ -14,33 +14,47 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      # 2️⃣ Configure Git
-      - name: Configure Git
-        run: |
-          git config --global user.name "GitHub Actions"
-          git config --global user.email "actions@github.com"
+      # 2️⃣ Set up PHP
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.2
+          extensions: mbstring, xml, curl, json
 
-      # 3️⃣ Create gh-pages branch and clean old content
+      # 3️⃣ Install project dependencies (Laravel)
+      - name: Install PHP dependencies
+        run: composer install --no-interaction --no-progress --prefer-dist
+
+      # 4️⃣ Download Doctum PHAR
+      - name: Download Doctum PHAR
+        run: |
+          mkdir -p deployment/doctum-temp
+          curl -L https://github.com/code-lts/doctum/releases/download/5.6.0/doctum.phar -o deployment/doctum-temp/doctum.phar
+          chmod +x deployment/doctum-temp/doctum.phar
+
+      # 5️⃣ Generate Doctum documentation
+      - name: Generate Doctum docs
+        run: |
+          php deployment/doctum-temp/doctum.phar update deployment/doctum/doctum.php
+
+      # 6️⃣ Prepare gh-pages branch in a separate worktree
       - name: Prepare gh-pages branch
         run: |
           git fetch origin gh-pages || true
-          git checkout --orphan gh-pages
-          git rm -rf .
+          git worktree add _gh-pages origin/gh-pages || git worktree add _gh-pages
 
-      # 4️⃣ Generate Doctum documentation
-      - name: Generate Doctum docs
+      # 7️⃣ Copy generated docs to gh-pages
+      - name: Copy docs to gh-pages
         run: |
-          composer install --no-dev
-          vendor/bin/doctum update deployment/scripts/doctum.php
+          rm -rf _gh-pages/*
+          cp -r docs/doctum/* _gh-pages/
 
-      # 5️⃣ Copy Doctum documentation to root
-      - name: Copy Doctum docs
-        run: |
-          cp -r docs/doctum/* .
-
-      # 6️⃣ Commit and push to gh-pages
+      # 8️⃣ Commit and push to gh-pages
       - name: Commit and push
         run: |
+          cd _gh-pages
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
           git add .
           git commit -m "Update Doctum documentation [skip ci]" || echo "No changes to commit"
-          git push -f origin gh-pages
+          git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} HEAD:gh-pages
