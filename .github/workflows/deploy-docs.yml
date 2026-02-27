@@ -1,0 +1,46 @@
+name: Deploy Doctum Docs
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy-docs:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1️⃣ Checkout the repository
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # 2️⃣ Configure Git
+      - name: Configure Git
+        run: |
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+
+      # 3️⃣ Create gh-pages branch and clean old content
+      - name: Prepare gh-pages branch
+        run: |
+          git fetch origin gh-pages || true
+          git checkout --orphan gh-pages
+          git rm -rf .
+
+      # 4️⃣ Generate Doctum documentation
+      - name: Generate Doctum docs
+        run: |
+          composer install --no-dev
+          vendor/bin/doctum update deployment/scripts/doctum.php
+
+      # 5️⃣ Copy Doctum documentation to root
+      - name: Copy Doctum docs
+        run: |
+          cp -r docs/doctum/* .
+
+      # 6️⃣ Commit and push to gh-pages
+      - name: Commit and push
+        run: |
+          git add .
+          git commit -m "Update Doctum documentation [skip ci]" || echo "No changes to commit"
+          git push -f origin gh-pages
