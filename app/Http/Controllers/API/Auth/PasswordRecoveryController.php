@@ -28,7 +28,7 @@ use Illuminate\Support\Facades\Log;
  * Implements rate limiting, expiration control, and session verification
  * to ensure safe password reset flows.
  *
- * @see \App\Services\EmailService::sendRecoveryCode()
+ * @see EmailService::sendRecoveryCode()
  * @see PasswordResetCode
  * @see RecoverySessionKeys
  */

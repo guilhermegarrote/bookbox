@@ -6,12 +6,11 @@ namespace App\Http\Controllers;
 
 use App\Models\Genre;
 use App\Models\Setting;
-use App\Models\View\SchoolClass;
 use App\Models\User;
+use App\Models\View\SchoolClass;
 use Carbon\Carbon;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
 /**
  * Controller responsible for rendering settings pages and their sections.
@@ -29,8 +28,6 @@ class SettingController extends Controller
      * This view acts as the shell for all dynamically loaded
      * settings sections (genres, classes, users, config).
      *
-     * @return View
-     *
      * @see resources/views/pages/settings/index.blade.php
      */
     public function index(): View
@@ -45,8 +42,7 @@ class SettingController extends Controller
      * When the request is made via AJAX, only the genres list partial is returned;
      * otherwise, the full section view is rendered.
      *
-     * @param  Request  $request  HTTP request containing optional search parameters.
-     * @return View
+     * @param Request $request HTTP request containing optional search parameters
      *
      * @see resources/views/pages/settings/partials/genres.blade.php
      * @see resources/views/pages/settings/partials/genres-list.blade.php
@@ -56,14 +52,16 @@ class SettingController extends Controller
         $genres = Genre::query()
             ->when($request->filled('search'), function ($query) use ($request) {
                 $query->where('name', 'like', "%{$request->search}%")
-                    ->orWhere('color_hex', 'like', "%{$request->search}%");
+                    ->orWhere('color_hex', 'like', "%{$request->search}%")
+                ;
             })
             ->orderBy('name')
             ->withCount([
                 'books',
                 'copies',
             ])
-            ->get();
+            ->get()
+        ;
 
         if ($request->ajax()) {
             return view('pages.settings.partials.genres-list', compact('genres'));
@@ -78,8 +76,7 @@ class SettingController extends Controller
      * Supports optional searching by course name. Returns either the
      * full section or a list-only partial when requested via AJAX.
      *
-     * @param  Request  $request  HTTP request containing optional search parameters.
-     * @return View
+     * @param Request $request HTTP request containing optional search parameters
      *
      * @see resources/views/pages/settings/partials/school-classes.blade.php
      * @see resources/views/pages/settings/partials/school-classes-list.blade.php
@@ -96,7 +93,8 @@ class SettingController extends Controller
             ->orderByRaw('end_date < ? DESC', [$today])
             ->orderBy('course')
             ->orderBy('start_date')
-            ->get();
+            ->get()
+        ;
 
         if ($request->ajax()) {
             return view('pages.settings.partials.school-classes-list', compact('schoolClasses'));
@@ -112,8 +110,7 @@ class SettingController extends Controller
      * For AJAX requests, only the users list partial is returned to allow
      * dynamic list updates without reloading the entire section.
      *
-     * @param  Request  $request  HTTP request containing optional search parameters.
-     * @return View
+     * @param Request $request HTTP request containing optional search parameters
      *
      * @see resources/views/pages/settings/partials/users.blade.php
      * @see resources/views/pages/settings/partials/users-list.blade.php
@@ -126,11 +123,13 @@ class SettingController extends Controller
                     ->orWhere(
                         'email_hash',
                         'like',
-                        '%' . hash('sha256', $request->search, true) . '%'
-                    );
+                        '%' . hash('sha256', $request->search, true) . '%',
+                    )
+                ;
             })
             ->orderBy('name')
-            ->get();
+            ->get()
+        ;
 
         if ($request->ajax()) {
             return view('pages.settings.partials.users-list', compact('users'));
@@ -145,8 +144,6 @@ class SettingController extends Controller
      * Loads application configuration values stored in the settings table.
      * This section does not support searching or AJAX list updates.
      *
-     * @return View
-     *
      * @see resources/views/pages/settings/partials/configs.blade.php
      */
     public function config(): View
@@ -160,8 +157,6 @@ class SettingController extends Controller
      * Render the services settings section.
      *
      * Loads application services for download.
-     *
-     * @return View
      *
      * @see resources/views/pages/settings/partials/services.blade.php
      */

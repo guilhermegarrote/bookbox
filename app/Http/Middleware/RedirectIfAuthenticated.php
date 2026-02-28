@@ -4,10 +4,9 @@ declare(strict_types=1);
 
 namespace App\Http\Middleware;
 
-use Closure;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Http\RedirectResponse;
 use PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -22,13 +21,13 @@ class RedirectIfAuthenticated
     /**
      * Handle an incoming request.
      *
-     * @param Request $request The current HTTP request.
-     * @param Closure $next The next middleware.
+     * @param Request $request the current HTTP request
+     * @param \Closure $next the next middleware
      * @param string[] ...$guards Optional authentication guards.
      *
      * @return RedirectResponse|Response
      */
-    public function handle(Request $request, Closure $next, string ...$guards)
+    public function handle(Request $request, \Closure $next, string ...$guards)
     {
         $guards = empty($guards) ? ['web'] : $guards;
 
@@ -44,7 +43,7 @@ class RedirectIfAuthenticated
             if ($user) {
                 if ($request->expectsJson()) {
                     return response()->json([
-                        'message' => 'Already authenticated.'
+                        'message' => 'Already authenticated.',
                     ], 403);
                 }
 
@@ -58,8 +57,7 @@ class RedirectIfAuthenticated
     /**
      * Attempt to get the API user from JWT in the request using JWTAuth.
      *
-     * @param Request $request
-     * @return \Illuminate\Contracts\Auth\Authenticatable|null
+     * @return null|\Illuminate\Contracts\Auth\Authenticatable
      */
     protected function getApiUserFromRequest(Request $request)
     {

@@ -16,7 +16,7 @@ class SchoolClassController extends Controller
     /**
      * Display the modal view for creating a new school class.
      *
-     * @return string The rendered HTML for the creation modal.
+     * @return string the rendered HTML for the creation modal
      *
      * @see resources/views/pages/school-classes/partials/create-modal.blade.php
      */
@@ -28,9 +28,9 @@ class SchoolClassController extends Controller
     /**
      * Display the modal view for updating a specific school class.
      *
-     * @param string $id The UUID of the school class.
+     * @param string $id the UUID of the school class
      *
-     * @return string The rendered HTML for the update modal.
+     * @return string the rendered HTML for the update modal
      *
      * @see resources/views/pages/school-classes/partials/update-modal.blade.php
      */

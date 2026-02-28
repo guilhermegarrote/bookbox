@@ -35,7 +35,8 @@ class LabelController extends Controller
 
         $copies = Copy::select('id', 'number', 'isbn', 'title', 'author', 'genre_name', 'genre_color_hex', 'publisher')
             ->whereIn('isbn', $isbns)
-            ->get();
+            ->get()
+        ;
 
         $labels = [];
 
@@ -44,9 +45,8 @@ class LabelController extends Controller
 
             foreach ($copyNumbers as $copyNumber) {
                 $label = $copies->firstWhere(
-                    fn($c) =>
-                    str_replace('-', '', $c->isbn) === $book['isbn']
-                        && (int) $c->number === (int) $copyNumber
+                    fn ($c) => str_replace('-', '', $c->isbn) === $book['isbn']
+                        && (int) $c->number === (int) $copyNumber,
                 );
 
                 if ($label) {
@@ -70,6 +70,7 @@ class LabelController extends Controller
 
         if (!$chromiumPath || !file_exists($chromiumPath)) {
             Log::error('Chromium não encontrado', ['path' => $chromiumPath]);
+
             return response()->json(['error' => 'Chromium não encontrado.'], 500);
         }
 
@@ -83,20 +84,22 @@ class LabelController extends Controller
                     'preferCSSPageSize' => true,
                     'scale' => 0.95,
                 ])
-                ->save($storagePath);
+                ->save($storagePath)
+            ;
         } catch (\Throwable $e) {
             Log::error('PDF generation failed.', ['exception' => $e]);
+
             return response()->json(['error' => 'Falha ao gerar PDF.'], 500);
         }
 
         $viewUrl = URL::temporarySignedRoute(
             'labels.view',
             now()->addMinutes(10),
-            ['file' => $pdfFilename]
+            ['file' => $pdfFilename],
         );
 
         return response()->json([
-            'url' => $viewUrl
+            'url' => $viewUrl,
         ]);
     }
 

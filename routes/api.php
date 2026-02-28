@@ -56,7 +56,8 @@ Route::middleware(['auth.jwt.cookie'])->group(function () {
     Route::post('/labels/generate-pdf', [LabelController::class, 'generateLabel'])->name('labels.generate');
 
     Route::apiResource('settings', SettingController::class)
-        ->except(['store', 'destroy', 'update']);
+        ->except(['store', 'destroy', 'update'])
+    ;
 
     Route::put('settings', [SettingController::class, 'bulkUpdate'])->name('settings.update');
 
@@ -73,7 +74,7 @@ Route::middleware(['auth.jwt.cookie'])->group(function () {
         ->name('loans.findByBarcode')
     ;
 
-    Route::get('download/thermal-printer-service', function() {
+    Route::get('download/thermal-printer-service', function () {
         return response()->download(storage_path('app/installer/thermal-printer-service.zip'));
     })->name('download.thermal-printer-service');
 });

@@ -5,15 +5,14 @@ declare(strict_types=1);
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Facades\DB;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
     public function up(): void
     {
         $this->down();
-        DB::unprepared("CREATE EVENT ev_delete_finished_school_classes
+        DB::unprepared('CREATE EVENT ev_delete_finished_school_classes
                 ON SCHEDULE EVERY 1 DAY
                 STARTS CURRENT_TIMESTAMP
             DO
@@ -38,7 +37,7 @@ return new class extends Migration
                       SELECT 1 FROM student_school_class ssc WHERE ssc.school_class_id = school_classes.id
                   );
             END;
-        ");
+        ');
     }
 
     /**
@@ -46,6 +45,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        DB::unprepared("DROP EVENT IF EXISTS ev_delete_finished_school_classes;");
+        DB::unprepared('DROP EVENT IF EXISTS ev_delete_finished_school_classes;');
     }
 };

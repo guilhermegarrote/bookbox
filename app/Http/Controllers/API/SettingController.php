@@ -81,12 +81,12 @@ class SettingController extends Controller
      * The operation is atomic: either all settings are updated, or none are.
      *
      * @param Request $request The incoming request containing an associative array of settings.
-     *                        Example:
-     *                        [
-     *                          "default_due_days" => 10,
-     *                          "extension_days" => 5,
-     *                          "max_book_loans" => 3
-     *                        ]
+     *                         Example:
+     *                         [
+     *                         "default_due_days" => 10,
+     *                         "extension_days" => 5,
+     *                         "max_book_loans" => 3
+     *                         ]
      *
      * @return JsonResponse JSON response indicating:
      *                      - 204 No Content on success
@@ -133,9 +133,8 @@ class SettingController extends Controller
 
                         $value = $intValue;
                         break;
-
                     case 'string':
-                        if (!is_string($value)) {
+                        if (!\is_string($value)) {
                             return $this->badRequestResponse([$key => "O valor para {$key} deve ser uma string."]);
                         }
 
@@ -143,7 +142,6 @@ class SettingController extends Controller
                             return $this->badRequestResponse([$key => "O valor máximo para {$key} é {$rule['max']} caracteres."]);
                         }
                         break;
-
                     default:
                         return $this->badRequestResponse([$key => "Tipo inválido para {$key}."]);
                 }
@@ -158,6 +156,7 @@ class SettingController extends Controller
             }
 
             DB::commit();
+
             return $this->noContentResponse();
         } catch (\Throwable $e) {
             DB::rollBack();

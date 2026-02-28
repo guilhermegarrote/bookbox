@@ -1,12 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Storage;
 
 /**
- * Class CleanupOldLabels
+ * Class CleanupOldLabels.
  *
  * Artisan command responsible for cleaning up old PDF label files
  * stored on the private "labels" filesystem disk.
@@ -18,8 +20,6 @@ use Illuminate\Support\Facades\Storage;
  * Default behavior:
  * - Scans all files in the "labels" disk
  * - Deletes files older than 30 minutes
- *
- * @package App\Console\Commands
  */
 class CleanupOldLabels extends Command
 {
@@ -50,7 +50,7 @@ class CleanupOldLabels extends Command
     {
         $disk = Storage::disk('labels');
 
-        if (! $disk->exists('/')) {
+        if (!$disk->exists('/')) {
             return Command::SUCCESS;
         }
 
@@ -62,7 +62,7 @@ class CleanupOldLabels extends Command
         foreach ($files as $file) {
             if ($disk->lastModified($file) < $deleteBefore) {
                 $disk->delete($file);
-                $deleted++;
+                ++$deleted;
             }
         }
 

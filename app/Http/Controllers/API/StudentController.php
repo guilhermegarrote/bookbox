@@ -67,7 +67,6 @@ class StudentController extends Controller
                 $request,
             );
 
-
             return response()->json([
                 'data' => $students->items(),
                 'pagination' => [

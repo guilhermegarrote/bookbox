@@ -9,7 +9,7 @@ return new class extends Migration {
     public function up(): void
     {
         $this->down();
-        DB::unprepared("CREATE VIEW vw_copies AS
+        DB::unprepared('CREATE VIEW vw_copies AS
             SELECT
                 c.id AS id,
                 b.id AS book_id,
@@ -33,7 +33,7 @@ return new class extends Migration {
             FROM copies c
             JOIN books b ON c.book_id = b.id
             LEFT JOIN genres g ON b.genre_id = g.id
-        ");
+        ');
     }
 
     public function down(): void

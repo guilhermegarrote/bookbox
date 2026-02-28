@@ -5,10 +5,8 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use App\Helpers\Utils;
-use App\Models\Genre;
 use App\Models\Setting;
 use App\Models\View\Loan;
-use App\Models\View\SchoolClass;
 use Carbon\Carbon;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
@@ -104,7 +102,8 @@ class LoanController extends Controller
 
         $extendedDate = Carbon::parse($loan->loan_due_date)
             ->addDays((int) $extensionDays)
-            ->format('d/m/Y');
+            ->format('d/m/Y')
+        ;
 
         return view('pages.loans.partials.extend-modal', compact('currentDate', 'extendedDate'))->render();
     }

@@ -12,7 +12,6 @@ use App\Http\Requests\User\UserUpdateRequest;
 use App\Models\User;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Hash;
 
 /**
  * Controller responsible for managing users (CRUD operations).
@@ -54,7 +53,7 @@ class UserController extends Controller
         try {
             $userData = array_filter(
                 array_intersect_key($data, array_flip(['name', 'email', 'password'])),
-                fn(mixed $v): bool => $v !== null && $v !== '',
+                fn (mixed $v): bool => $v !== null && $v !== '',
             );
 
             User::create($userData);
@@ -112,7 +111,7 @@ class UserController extends Controller
 
             $userData = array_filter(
                 array_intersect_key($data, array_flip(['name', 'email', 'password'])),
-                fn(mixed $v): bool => $v !== null && $v !== '',
+                fn (mixed $v): bool => $v !== null && $v !== '',
             );
 
             $user->update($userData);

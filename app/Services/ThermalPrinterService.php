@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Log;
 use Picqer\Barcode\BarcodeGeneratorPNG;
 
 /**
- * Class ThermalPrinterService
+ * Class ThermalPrinterService.
  *
  * Responsible for building loan receipt payloads and sending them to a Node.js printing service.
  * All visible text in the receipt is in Portuguese.
@@ -62,6 +62,7 @@ class ThermalPrinterService
      * Build the text and image payload for the receipt.
      *
      * @param array $loan Loan data
+     *
      * @return array Receipt payload including text lines, logo, barcode, and options
      */
     private function buildPrintPayload(array $loan): array
@@ -124,6 +125,7 @@ class ThermalPrinterService
      *
      * @param string $dueDate The loan due date
      * @param int $lineWidth Width of the box in characters
+     *
      * @return array Lines representing the box with centered text
      */
     private function buildDueDateBoxText(string $dueDate, int $lineWidth = 48): array
@@ -148,7 +150,7 @@ class ThermalPrinterService
     /**
      * Load the school's logo as a Base64-encoded PNG image.
      *
-     * @return string|null Base64 string or null if logo not found
+     * @return null|string Base64 string or null if logo not found
      */
     private function loadLogoBase64(): ?string
     {
@@ -173,7 +175,8 @@ class ThermalPrinterService
      * Generate a Base64-encoded barcode image for the given code.
      *
      * @param string $code Code to encode as barcode
-     * @return string|null Base64 barcode image or null if empty or failed
+     *
+     * @return null|string Base64 barcode image or null if empty or failed
      */
     private function buildBarcodeBase64(string $code): ?string
     {
@@ -197,7 +200,7 @@ class ThermalPrinterService
      * Sends the receipt payload to the Node.js client printing service.
      *
      * @param array $payload The prepared receipt payload
-     * @param string|null $clientHost Optional override for the client printer host
+     * @param null|string $clientHost Optional override for the client printer host
      */
     private function sendToClientPrinter(array $payload, ?string $clientHost = null): void
     {

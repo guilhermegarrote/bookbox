@@ -16,10 +16,11 @@ class LoansSeeder extends Seeder
     public function run(): void
     {
         $students = Student::all();
-        $copies   = Copy::all();
+        $copies = Copy::all();
 
         if ($students->isEmpty() || $copies->isEmpty()) {
             $this->command->warn('❌ Não há alunos ou cópias disponíveis.');
+
             return;
         }
 
@@ -27,16 +28,15 @@ class LoansSeeder extends Seeder
         $perGroup = (int) ($total / 4);
 
         $countFinished = $perGroup;
-        $count14to7    = $perGroup;
-        $count7to0     = $perGroup;
-        $countLate     = $perGroup;
+        $count14to7 = $perGroup;
+        $count7to0 = $perGroup;
+        $countLate = $perGroup;
 
         $created = 0;
 
         foreach (range(1, $total) as $i) {
-
             $student = $students->random();
-            $copy    = $copies->random();
+            $copy = $copies->random();
 
             $start = Carbon::now()->subDays(rand(10, 40));
             $returned = null;
@@ -45,33 +45,33 @@ class LoansSeeder extends Seeder
                 $due = (clone $start)->addDays(rand(7, 15));
                 $returned = (clone $due)->subDays(rand(0, 5));
 
-                $countFinished--;
+                --$countFinished;
             } elseif ($count14to7 > 0) {
                 $due = Carbon::now()->addDays(rand(7, 14));
                 $returned = null;
 
-                $count14to7--;
+                --$count14to7;
             } elseif ($count7to0 > 0) {
                 $due = Carbon::now()->addDays(rand(0, 7));
                 $returned = null;
 
-                $count7to0--;
+                --$count7to0;
             } else {
                 $due = Carbon::now()->subDays(rand(1, 15));
                 $returned = null;
 
-                $countLate--;
+                --$countLate;
             }
 
             Loan::create([
-                'student_id'    => Utils::convertUuidToBinary($student->id),
-                'copy_id'       => Utils::convertUuidToBinary($copy->id),
-                'start_date'    => $start,
-                'due_date'      => $due,
+                'student_id' => Utils::convertUuidToBinary($student->id),
+                'copy_id' => Utils::convertUuidToBinary($copy->id),
+                'start_date' => $start,
+                'due_date' => $due,
                 'returned_date' => $returned,
             ]);
 
-            $created++;
+            ++$created;
         }
 
         $this->command->info("✅ Seeder finalizado. {$created} empréstimos gerados (4 estados equilibrados).");

@@ -78,15 +78,17 @@ class CopyController extends Controller
     {
         $book = Book::select('id', 'isbn', 'title')
             ->where('id', Utils::convertUuidToBinary($id))
-            ->firstOrFail();
+            ->firstOrFail()
+        ;
 
         $copies = Copy::where('book_id', Utils::convertUuidToBinary($book->id))
             ->orderBy('number')
-            ->get(['id', 'number', 'available']);
+            ->get(['id', 'number', 'available'])
+        ;
 
         return view('pages.copies.partials.manager-modal', [
-            'book'   => $book,
-            'copies' => $copies
+            'book' => $book,
+            'copies' => $copies,
         ])->render();
     }
 

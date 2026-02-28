@@ -25,10 +25,9 @@ class SchoolClassesSeeder extends Seeder
         ];
 
         foreach ($courses as $course) {
-
             $startDate = Carbon::now()->subDays(rand(0, 120));
 
-            if (in_array($course, $annualCourses)) {
+            if (\in_array($course, $annualCourses, true)) {
                 $term = 'Annual';
                 $endDate = (clone $startDate)->addYear();
             } else {
@@ -44,6 +43,6 @@ class SchoolClassesSeeder extends Seeder
             ]);
         }
 
-        $this->command->info("✅ Classes cadastradas com sucesso!");
+        $this->command->info('✅ Classes cadastradas com sucesso!');
     }
 }

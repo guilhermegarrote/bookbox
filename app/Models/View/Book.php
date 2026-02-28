@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Models\View;
 
-use App\Models\View\Copy;
 use App\Models\Genre;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -89,7 +88,7 @@ class Book extends BaseModel
      * the returned string will be "Ex: 1-3, 5-6". If there are no copies, it returns
      * a placeholder indicating the absence of copies.
      *
-     * @return string A formatted string of copy numbers or a placeholder if none exist.
+     * @return string a formatted string of copy numbers or a placeholder if none exist
      */
     public function placeholderCopies(): string
     {
@@ -103,18 +102,17 @@ class Book extends BaseModel
         $start = $numbers[0];
         $prev = $numbers[0];
 
-        for ($i = 1; $i < count($numbers); $i++) {
-
-            if ($numbers[$i] == $prev + 1) {
+        for ($i = 1; $i < \count($numbers); ++$i) {
+            if ($numbers[$i] === $prev + 1) {
                 $prev = $numbers[$i];
                 continue;
             }
 
-            $ranges[] = ($start == $prev) ? $start : "$start-$prev";
+            $ranges[] = ($start === $prev) ? $start : "{$start}-{$prev}";
             $start = $prev = $numbers[$i];
         }
 
-        $ranges[] = ($start == $prev) ? $start : "$start-$prev";
+        $ranges[] = ($start === $prev) ? $start : "{$start}-{$prev}";
 
         return 'Ex: ' . implode(',', $ranges);
     }
@@ -136,6 +134,7 @@ class Book extends BaseModel
             ->select('genre_name', 'publisher')
             ->orderBy('genre_name')
             ->orderBy('publisher')
-            ->get();
+            ->get()
+        ;
     }
 }

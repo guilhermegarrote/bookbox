@@ -389,6 +389,7 @@ class BookController extends Controller
         $idDirection = $direction === 'desc' ? 'asc' : 'desc';
 
         return $query->orderBy($sort, $direction)
-            ->orderBy('id', $idDirection);
+            ->orderBy('id', $idDirection)
+        ;
     }
 }

@@ -9,7 +9,7 @@ return new class extends Migration {
     public function up(): void
     {
         $this->down();
-        DB::unprepared("CREATE VIEW vw_books AS
+        DB::unprepared('CREATE VIEW vw_books AS
             SELECT
                 b.id AS id,
                 b.isbn AS isbn,
@@ -33,7 +33,7 @@ return new class extends Migration {
                 g.name,
                 g.color_hex,
                 b.publisher
-        ");
+        ');
     }
 
     public function down(): void

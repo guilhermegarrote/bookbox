@@ -122,7 +122,8 @@ class LoanController extends Controller
             $copy = ViewCopy::where('book_id', Utils::convertUuidToBinary($book->id))
                 ->where('number', $data['copy_number'])
                 ->lockForUpdate()
-                ->first();
+                ->first()
+            ;
 
             if (!$copy) {
                 return $this->notFoundResponse('Exemplar não encontrado.');
@@ -196,7 +197,7 @@ class LoanController extends Controller
     {
         try {
             if (!Validators::validateLoanCode($barcode)) {
-                return $this->badRequestResponse(["barcode_code" => "Código de barras inválido."]);
+                return $this->badRequestResponse(['barcode_code' => 'Código de barras inválido.']);
             }
 
             $loan = ViewLoan::where('barcode_code', $barcode)->first();
@@ -212,6 +213,7 @@ class LoanController extends Controller
             ]);
         } catch (\Throwable $e) {
             $this->logError('Erro ao buscar empréstimo por código de barras.', $e, ['barcode' => $barcode]);
+
             return $this->internalErrorResponse($e, 'Erro interno ao consultar o empréstimo.');
         }
     }
@@ -324,7 +326,7 @@ class LoanController extends Controller
         } elseif (Validators::validateLoanCode($search)) {
             $query->where('barcode_code', $search);
         } else {
-            $query->where(fn($q) => $q->where('title', 'like', "%{$search}%")
+            $query->where(fn ($q) => $q->where('title', 'like', "%{$search}%")
                 ->orWhere('author', 'like', "%{$search}%")
                 ->orWhere('name', 'like', "%{$search}%"));
         }
@@ -342,11 +344,11 @@ class LoanController extends Controller
      */
     private function applyFilters(Builder $query, Request $request): Builder
     {
-        return $query->when($request->filled('genre_name'), fn($q) => $q->where('genre_name', $request->genre_name))
-            ->when($request->filled('publisher'), fn($q) => $q->where('publisher', $request->publisher))
-            ->when($request->filled('course'), fn($q) => $q->where('course', $request->course))
-            ->when($request->filled('period'), fn($q) => $q->where('period', $request->period))
-            ->when($request->filled('term'), fn($q) => $q->where('term', $request->term))
+        return $query->when($request->filled('genre_name'), fn ($q) => $q->where('genre_name', $request->genre_name))
+            ->when($request->filled('publisher'), fn ($q) => $q->where('publisher', $request->publisher))
+            ->when($request->filled('course'), fn ($q) => $q->where('course', $request->course))
+            ->when($request->filled('period'), fn ($q) => $q->where('period', $request->period))
+            ->when($request->filled('term'), fn ($q) => $q->where('term', $request->term))
             ->when($request->filled('active'), function ($q) use ($request) {
                 if ($request->active) {
                     $q->whereNull('loan_returned_date');

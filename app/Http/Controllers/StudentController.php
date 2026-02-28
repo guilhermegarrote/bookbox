@@ -9,7 +9,6 @@ use App\Models\View\SchoolClass;
 use App\Models\View\StudentSchoolClass;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 
 /**
  * Controller responsible for managing student-related pages and modals.
@@ -58,7 +57,8 @@ class StudentController extends Controller
         $selectData = SchoolClass::whereDate('end_date', '>', now())
             ->orderBy('course')
             ->orderBy('start_date')
-            ->get();
+            ->get()
+        ;
 
         return view('pages.students.partials.create-modal', compact('selectData'))->render();
     }
@@ -95,7 +95,8 @@ class StudentController extends Controller
         $selectData = SchoolClass::whereDate('end_date', '>', now())
             ->orderBy('course')
             ->orderBy('start_date')
-            ->get();
+            ->get()
+        ;
 
         return view('pages.students.partials.update-modal', compact('student', 'selectData'))->render();
     }

@@ -254,7 +254,8 @@ class Loan extends BaseModel
             $customResults = (clone $query)
                 ->select($selectColumns)
                 ->whereNull('loan_returned_date')
-                ->get();
+                ->get()
+            ;
 
             if ($customResults->isNotEmpty()) {
                 return $customResults;

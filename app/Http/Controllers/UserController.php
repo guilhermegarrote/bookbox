@@ -6,7 +6,6 @@ namespace App\Http\Controllers;
 
 use App\Helpers\Utils;
 use App\Models\User;
-use App\Models\View\SchoolClass;
 use Illuminate\Contracts\View\View;
 
 /**
@@ -17,7 +16,7 @@ class UserController extends Controller
     /**
      * Display the modal view for creating a new user.
      *
-     * @return string The rendered HTML for the creation modal.
+     * @return string the rendered HTML for the creation modal
      *
      * @see resources/views/pages/users/partials/create-modal.blade.php
      */
@@ -29,9 +28,9 @@ class UserController extends Controller
     /**
      * Display the modal view for updating a specific user.
      *
-     * @param string $id The UUID of the user.
+     * @param string $id the UUID of the user
      *
-     * @return string The rendered HTML for the update modal.
+     * @return string the rendered HTML for the update modal
      *
      * @see resources/views/pages/users/partials/update-modal.blade.php
      */
@@ -45,7 +44,7 @@ class UserController extends Controller
     /**
      * Display the modal view for deleting a specific user.
      *
-     * @return string The rendered HTML for the delete modal.
+     * @return string the rendered HTML for the delete modal
      *
      * @see resources/views/pages/users/partials/delete-modal.blade.php
      */

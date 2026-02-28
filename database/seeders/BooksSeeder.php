@@ -13,6 +13,8 @@ use Illuminate\Support\Collection;
 
 class BooksSeeder extends Seeder
 {
+    private array $generatedIsbns = [];
+
     public function run(): void
     {
         $titlePrefixes = [
@@ -49,13 +51,14 @@ class BooksSeeder extends Seeder
 
         if ($genres->isEmpty()) {
             $this->command->warn('❌ Nenhum gênero encontrado. Rode o GenresSeeder primeiro.');
+
             return;
         }
 
         $created = 0;
         $uniqueChecks = [];
 
-        for ($i = 1; $i <= 80; $i++) {
+        for ($i = 1; $i <= 80; ++$i) {
             try {
                 $title = Arr::random($titlePrefixes) . ' ' . Arr::random($titleObjects);
 
@@ -66,21 +69,20 @@ class BooksSeeder extends Seeder
                 $uniqueKey = $title . '|' . $author . '|' . $publisher;
 
                 if (isset($uniqueChecks[$uniqueKey])) {
-                    $i--;
+                    --$i;
                     continue;
                 }
                 $uniqueChecks[$uniqueKey] = true;
 
                 Book::create([
-                    'isbn'      => $this->generateUniqueIsbn(),
-                    'title'     => $title,
-                    'author'    => $author,
+                    'isbn' => $this->generateUniqueIsbn(),
+                    'title' => $title,
+                    'author' => $author,
                     'publisher' => $publisher,
-                    'genre_id'  => Utils::convertUuidToBinary($genre->id),
+                    'genre_id' => Utils::convertUuidToBinary($genre->id),
                 ]);
 
-                $created++;
-
+                ++$created;
             } catch (\Throwable $e) {
                 $this->command->error("❗ Erro ao cadastrar livro: {$e->getMessage()}");
             }
@@ -88,8 +90,6 @@ class BooksSeeder extends Seeder
 
         $this->command->info("📚 Seeder de livros finalizado. {$created} livros criados com sucesso!");
     }
-
-    private array $generatedIsbns = [];
 
     private function generateUniqueIsbn(): string
     {
@@ -107,6 +107,7 @@ class BooksSeeder extends Seeder
         $isbnBase = '978' . str_pad((string) mt_rand(0, 999999999), 9, '0', STR_PAD_LEFT);
 
         $sum = 0;
+
         foreach (str_split($isbnBase) as $i => $digit) {
             $sum += (int) $digit * ($i % 2 === 0 ? 1 : 3);
         }

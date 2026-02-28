@@ -52,7 +52,7 @@ class Genre extends BaseModel
     {
         return $this->hasManyThrough(
             Copy::class,
-            Book::class
+            Book::class,
         );
     }
 }

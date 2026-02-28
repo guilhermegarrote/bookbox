@@ -74,7 +74,7 @@ class AuthController extends Controller
         try {
             $userData = array_filter(
                 array_intersect_key($validatedData, array_flip(['name', 'email', 'password'])),
-                static fn($v) => $v !== null && $v !== '',
+                static fn ($v) => $v !== null && $v !== '',
             );
 
             User::create($userData);
@@ -104,7 +104,7 @@ class AuthController extends Controller
      *
      * @see self::tooManyAttempts()
      * @see self::validateCredentials()
-     * @see \PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth::fromUser()
+     * @see JWTAuth::fromUser()
      * @see self::makeAccessCookie()
      * @see self::makeRefreshCookie()
      */
@@ -129,7 +129,7 @@ class AuthController extends Controller
 
         $this->clearAttempts($key);
 
-        $accessToken  = JWTAuth::fromUser($user);
+        $accessToken = JWTAuth::fromUser($user);
         $refreshToken = JWTAuth::claims(['typ' => 'refresh'])->fromUser($user);
 
         $accessCookie = $this->makeAccessCookie($accessToken);
@@ -139,7 +139,8 @@ class AuthController extends Controller
             'token' => $accessToken,
             'redirect' => route('loans.view'),
         ])->cookie($accessCookie)
-            ->cookie($refreshCookie);
+            ->cookie($refreshCookie)
+        ;
     }
 
     /**
@@ -149,7 +150,7 @@ class AuthController extends Controller
      *
      * @return JsonResponse HTTP 200 with user data or 401 if authentication fails
      *
-     * @see \PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth::parseToken()
+     * @see JWTAuth::parseToken()
      */
     public function me(): JsonResponse
     {
@@ -177,7 +178,7 @@ class AuthController extends Controller
      *
      * @return JsonResponse HTTP 200 response with cleared cookies
      *
-     * @see \PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth::invalidate()
+     * @see JWTAuth::invalidate()
      * @see cookie()->forget()
      */
     public function logout(): JsonResponse
@@ -190,7 +191,8 @@ class AuthController extends Controller
 
         return $this->successResponse()
             ->cookie(cookie()->forget('access_token'))
-            ->cookie(cookie()->forget('refresh_token'));
+            ->cookie(cookie()->forget('refresh_token'))
+        ;
     }
 
     /**
@@ -198,7 +200,7 @@ class AuthController extends Controller
      *
      * @return JsonResponse HTTP 200 with new token cookie or 401 on failure
      *
-     * @see \PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth::refresh()
+     * @see JWTAuth::refresh()
      */
     public function refresh(): JsonResponse
     {
@@ -217,13 +219,13 @@ class AuthController extends Controller
 
             JWTAuth::setToken($oldRefreshToken)->invalidate();
 
-            $newAccessToken  = JWTAuth::fromUser($user);
+            $newAccessToken = JWTAuth::fromUser($user);
             $newRefreshToken = JWTAuth::claims(['typ' => 'refresh'])->fromUser($user);
 
             $cookie = $this->makeRefreshCookie($newRefreshToken);
 
             return $this->successResponse([
-                'token' => $newAccessToken
+                'token' => $newAccessToken,
             ])->cookie($cookie);
         } catch (\Throwable $e) {
             $this->logError('Erro ao rotacionar refresh token.', $e);

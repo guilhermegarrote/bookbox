@@ -48,7 +48,7 @@ class JwtCookieMiddleware
                     : redirect()->route('login');
             }
 
-            $request->setUserResolver(fn() => $user);
+            $request->setUserResolver(fn () => $user);
         } catch (TokenExpiredException $e) {
             Log::info('JWT token expired.');
 

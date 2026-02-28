@@ -22,12 +22,12 @@ class LabelController extends Controller
      *
      * @param Request $request The incoming HTTP request containing optional 'search'
      *
-     * @return View|string Rendered HTML of the label modal or the list partial if AJAX
+     * @return string|View Rendered HTML of the label modal or the list partial if AJAX
      *
      * @see resources/views/pages/labels/partials/generate-label-modal.blade.php
      * @see resources/views/pages/labels/partials/generate-label-modal-list.blade.php
      */
-    public function generateLabelModal(Request $request): View|string
+    public function generateLabelModal(Request $request): string|View
     {
         $booksQuery = Book::query();
 
@@ -41,7 +41,8 @@ class LabelController extends Controller
             } else {
                 $booksQuery->where(function ($q) use ($search) {
                     $q->where('title', 'like', "%{$search}%")
-                        ->orWhere('author', 'like', "%{$search}%");
+                        ->orWhere('author', 'like', "%{$search}%")
+                    ;
                 });
             }
         }
@@ -49,7 +50,8 @@ class LabelController extends Controller
         $books = $booksQuery->with(['copies:id,book_id,number'])
             ->select(['id', 'isbn', 'title', 'author'])
             ->orderBy('title')
-            ->get();
+            ->get()
+        ;
 
         if ($request->ajax()) {
             return view('pages.labels.partials.generate-label-modal-list', compact('books'));

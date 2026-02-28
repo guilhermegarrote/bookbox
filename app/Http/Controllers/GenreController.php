@@ -15,7 +15,7 @@ class GenreController extends Controller
     /**
      * Display the modal view for creating a new genre.
      *
-     * @return string The rendered HTML for the creation modal.
+     * @return string the rendered HTML for the creation modal
      *
      * @see resources/views/pages/genres/partials/create-modal.blade.php
      */
@@ -27,9 +27,9 @@ class GenreController extends Controller
     /**
      * Display the modal view for updating a specific genre.
      *
-     * @param string $id The UUID of the genre.
+     * @param string $id the UUID of the genre
      *
-     * @return string The rendered HTML for the update modal.
+     * @return string the rendered HTML for the update modal
      *
      * @see resources/views/pages/genres/partials/update-modal.blade.php
      */

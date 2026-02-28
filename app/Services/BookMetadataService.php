@@ -65,7 +65,7 @@ class BookMetadataService
 
             $response = Http::timeout(10)->get($url)->json();
 
-            if (!is_array($response)) {
+            if (!\is_array($response)) {
                 return null;
             }
 
@@ -82,6 +82,7 @@ class BookMetadataService
                 if (($identifier['type'] ?? null) === 'ISBN_10') {
                     $isbn10 = $identifier['identifier'] ?? null;
                 }
+
                 if (($identifier['type'] ?? null) === 'ISBN_13') {
                     $isbn13 = $identifier['identifier'] ?? null;
                 }
@@ -97,6 +98,7 @@ class BookMetadataService
             ];
         } catch (\Throwable $e) {
             Log::warning('Google Books API error', ['error' => $e->getMessage()]);
+
             return null;
         }
     }

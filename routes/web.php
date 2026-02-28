@@ -80,10 +80,11 @@ Route::middleware('auth.jwt.cookie')->group(function () {
             [
                 'Content-Type' => 'application/pdf',
                 'Content-Disposition' => 'inline; filename="' . $file . '"',
-            ]
+            ],
         );
     })->where('file', '.*')
-        ->name('labels.view');
+        ->name('labels.view')
+    ;
 
     Route::prefix('settings')->name('settings.')->group(function () {
         Route::get('/', [SettingController::class, 'index'])->name('view');
@@ -96,8 +97,7 @@ Route::middleware('auth.jwt.cookie')->group(function () {
 
     Route::get(
         '/modals/message',
-        fn() =>
-        view('components.modals.modal-message')
+        fn () => view('components.modals.modal-message'),
     )->name('modals.message');
 });
 
@@ -112,15 +112,18 @@ Route::middleware('guest:web,api')->group(function () {
         Route::prefix('recover')->name('recovery.')->group(function () {
             Route::get('/', [PasswordRecoveryController::class, 'showSendRecoveryCodeForm'])
                 ->middleware('code.not.sent')
-                ->name('email.form');
+                ->name('email.form')
+            ;
 
             Route::get('/code', [PasswordRecoveryController::class, 'showRecoveryCodeValidationForm'])
                 ->middleware('code.sent')
-                ->name('code.form');
+                ->name('code.form')
+            ;
 
             Route::get('/new-password', [PasswordRecoveryController::class, 'showResetPasswordForm'])
                 ->middleware('code.valid')
-                ->name('new-password.form');
+                ->name('new-password.form')
+            ;
         });
     });
 });
