@@ -37,7 +37,7 @@ export function bindCloseEvents(modal, onClose) {
  *
  * @param {Function} getLastModalId
  * @param {Function} onCloseModal
- * @returns {(e: KeyboardEvent) => void}
+ * @returns {function(KeyboardEvent): void}
  */
 export function createEscListener(getLastModalId, onCloseModal) {
     return (e) => {

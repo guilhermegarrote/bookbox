@@ -25,7 +25,7 @@ export function configureModalMessage(modal, { message, acceptText, declineText 
  *
  * @param {HTMLElement} modal
  * @param {Function} removeModal
- * @param {(value: boolean) => void} resolve
+ * @param {function(boolean): void} resolve
  */
 export function bindModalMessageEvents(modal, removeModal, resolve) {
     const acceptBtn = modal.querySelector('#modal-accept');

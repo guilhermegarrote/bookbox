@@ -41,7 +41,7 @@ export default class ModalManager {
         /**
          * ESC key listener reference.
          *
-         * @type {((e: KeyboardEvent) => void)|null}
+         * @type {?function(KeyboardEvent): void}
          */
         this._escListener = null;
     }
@@ -51,6 +51,7 @@ export default class ModalManager {
      *
      * @param {string} key
      * @param {string} modalId
+     * @returns {void}
      */
     saveModalState(key, modalId) {
         const modal = this.activeModals.get(modalId);
@@ -62,7 +63,7 @@ export default class ModalManager {
      * Gets saved modal state from sessionStorage.
      *
      * @param {string} key
-     * @returns {{modalId: string, data: object}|null}
+     * @returns {?{modalId: string, data: Object}}
      */
     getSavedModalState(key) {
         return getSavedModalState(key);
@@ -72,6 +73,7 @@ export default class ModalManager {
      * Clears saved modal state.
      *
      * @param {string} key
+     * @returns {void}
      */
     clearSavedModalState(key) {
         clearSavedModalState(key);
@@ -82,6 +84,7 @@ export default class ModalManager {
      *
      * @param {string} key
      * @param {string} [eventName='reopenModal']
+     * @returns {void}
      */
     dispatchSavedModalEvent(key, eventName = 'reopenModal') {
         dispatchSavedModalEvent(key, eventName);
@@ -92,10 +95,11 @@ export default class ModalManager {
      *
      * @param {string} url
      * @param {string} modalId
-     * @param {object} [options]
-     * @param {(modalEl: HTMLElement) => void} [options.onInit]
-     * @param {string|null} [options.restoreKey]
-     * @param {object|null} [options.initialData]
+     * @param {Object} [options]
+     * @param {function(HTMLElement): void} [options.onInit]
+     * @param {?string} [options.restoreKey]
+     * @param {?Object} [options.initialData]
+     * @returns {Promise<void>}
      */
     async loadModalContent(url, modalId, { onInit, restoreKey = null, initialData = null } = {}) {
         const response = await fetch(url);
@@ -136,6 +140,7 @@ export default class ModalManager {
      *
      * @param {string} html
      * @param {string} modalId
+     * @returns {Promise<void>}
      */
     async insertModalHtml(html, modalId) {
         await this.closeAll({ remove: true });
@@ -149,6 +154,7 @@ export default class ModalManager {
      * Shows a modal.
      *
      * @param {string} modalId
+     * @returns {void}
      */
     showModal(modalId) {
         const modal = this.activeModals.get(modalId);
@@ -161,6 +167,7 @@ export default class ModalManager {
      * Hides a modal.
      *
      * @param {string} modalId
+     * @returns {void}
      */
     hideModal(modalId) {
         const modal = this.activeModals.get(modalId);
@@ -173,9 +180,10 @@ export default class ModalManager {
      * Removes a modal (with animation).
      *
      * @param {string} modalId
-     * @param {object} [options]
+     * @param {Object} [options]
      * @param {string} [options.pendingKey]
      * @param {string} [options.eventName]
+     * @returns {Promise<void>}
      */
     async removeModal(modalId, { pendingKey, eventName } = {}) {
         const modal = this.activeModals.get(modalId);
@@ -196,8 +204,9 @@ export default class ModalManager {
     /**
      * Closes all active modals.
      *
-     * @param {object} [options]
+     * @param {Object} [options]
      * @param {boolean} [options.remove=true]
+     * @returns {Promise<void>}
      */
     async closeAll({ remove = true } = {}) {
         for (const modalId of [...this.activeModals.keys()]) {
@@ -210,7 +219,7 @@ export default class ModalManager {
      * Gets modal form data.
      *
      * @param {string} modalId
-     * @returns {object}
+     * @returns {Object}
      */
     getModalData(modalId) {
         const modal = this.activeModals.get(modalId);
@@ -221,7 +230,8 @@ export default class ModalManager {
      * Restores modal form data.
      *
      * @param {string} modalId
-     * @param {object} data
+     * @param {Object} data
+     * @returns {void}
      */
     restoreFormData(modalId, data = {}) {
         const modal = this.activeModals.get(modalId);
@@ -233,6 +243,7 @@ export default class ModalManager {
      *
      * @param {HTMLElement[]} fields
      * @param {boolean} enable
+     * @returns {void}
      */
     toggleFields(fields, enable) {
         toggleFields(fields, enable);
@@ -242,6 +253,7 @@ export default class ModalManager {
      * Binds close button and overlay click behavior.
      *
      * @param {string} modalId
+     * @returns {void}
      */
     bindCloseEvents(modalId) {
         const modal = this.activeModals.get(modalId);
@@ -263,6 +275,7 @@ export default class ModalManager {
      * Updates floating labels for modal fields.
      *
      * @param {string} modalId
+     * @returns {void}
      */
     updateFloatingLabels(modalId) {
         const modal = this.activeModals.get(modalId);
@@ -274,6 +287,7 @@ export default class ModalManager {
      *
      * @param {string} modalId
      * @param {string} restoreKey
+     * @returns {void}
      */
     bindAutoSave(modalId, restoreKey) {
         const modal = this.activeModals.get(modalId);
@@ -295,6 +309,7 @@ export default class ModalManager {
      * Removes autosave handler.
      *
      * @param {string} modalId
+     * @returns {void}
      */
     unbindAutoSave(modalId) {
         const modal = this.activeModals.get(modalId);
@@ -310,7 +325,7 @@ export default class ModalManager {
     /**
      * Displays a confirm modal message.
      *
-     * @param {object} options
+     * @param {Object} options
      * @param {string} options.message
      * @param {string} [options.acceptText="OK"]
      * @param {string} [options.declineText="Cancelar"]
@@ -335,7 +350,8 @@ export default class ModalManager {
      * Binds message modal events.
      *
      * @param {string} modalId
-     * @param {(value: boolean) => void} resolve
+     * @param {function(boolean): void} resolve
+     * @returns {void}
      */
     bindModalMessageEvents(modalId, resolve) {
         const modal = this.activeModals.get(modalId);
@@ -351,12 +367,13 @@ export default class ModalManager {
     /**
      * Binds a submit handler to a modal button.
      *
-     * @param {object} options
+     * @param {Object} options
      * @param {string} options.modalId
      * @param {string} options.buttonId
-     * @param {(data: object) => Promise<any>} options.onSubmit
-     * @param {(res: any) => void} [options.onSuccess]
-     * @param {(err: any) => void} [options.onError]
+     * @param {function(Object): Promise<*>} options.onSubmit
+     * @param {function(*): void} [options.onSuccess]
+     * @param {function(*): void} [options.onError]
+     * @returns {void}
      */
     bindFormSubmit({ modalId, buttonId, onSubmit, onSuccess, onError }) {
         const modal = this.activeModals.get(modalId);
