@@ -1,4 +1,4 @@
-name: Deploy Doctum Docs
+name: Deploy Documentation
 
 on:
   push:
@@ -7,24 +7,28 @@ on:
     paths:
       - "app/**"
       - "database/**"
+      - "resources/js/**"
 
 jobs:
-  deploy-docs:
+  deploy-doctum:
     runs-on: ubuntu-latest
-
+    # Run this job only if app/ or database/ were modified
+    if: |
+      contains(github.event.head_commit.modified, 'app/') ||
+      contains(github.event.head_commit.modified, 'database/')
     steps:
       # 1️⃣ Checkout the repository
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      # 2️⃣ Set up PHP
+      # 2️⃣ Set up PHP environment
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
           php-version: 8.2
           extensions: mbstring, xml, curl, json
 
-      # 3️⃣ Install project dependencies (Laravel)
+      # 3️⃣ Install PHP dependencies via Composer
       - name: Install PHP dependencies
         run: composer install --no-interaction --no-progress --prefer-dist
 
@@ -37,27 +41,61 @@ jobs:
 
       # 5️⃣ Generate Doctum documentation
       - name: Generate Doctum docs
-        run: |
-          php deployment/doctum-temp/doctum.phar update deployment/doctum/doctum.php
+        run: php deployment/doctum-temp/doctum.phar update deployment/doctum/doctum.php
 
-      # 6️⃣ Prepare gh-pages branch in a separate worktree
-      - name: Prepare gh-pages branch
+      # 6️⃣ Deploy Doctum to gh-pages in a subfolder
+      - name: Deploy Doctum to gh-pages
         run: |
           git fetch origin gh-pages || true
           git worktree add _gh-pages origin/gh-pages || git worktree add _gh-pages
-
-      # 7️⃣ Copy generated docs to gh-pages
-      - name: Copy docs to gh-pages
-        run: |
-          rm -rf _gh-pages/*
-          cp -r docs/doctum/* _gh-pages/
-
-      # 8️⃣ Commit and push to gh-pages
-      - name: Commit and push
-        run: |
+          rm -rf _gh-pages/doctum/*
+          mkdir -p _gh-pages/doctum
+          cp -r docs/doctum/* _gh-pages/doctum/
           cd _gh-pages
           git config user.name "GitHub Actions"
           git config user.email "actions@github.com"
           git add .
-          git commit -m "Update Doctum documentation [skip ci]" || echo "No changes to commit"
+          git commit -m "Update Doctum docs [skip ci]" || echo "No changes to commit"
+          git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} HEAD:gh-pages
+
+  deploy-jsdoc:
+    runs-on: ubuntu-latest
+    # Run this job only if resources/js/ was modified
+    if: |
+      contains(github.event.head_commit.modified, 'resources/js/')
+    steps:
+      # 1️⃣ Checkout the repository
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # 2️⃣ Set up Node.js environment
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+
+      # 3️⃣ Download jsDoc standalone in a temporary folder
+      - name: Download jsDoc CLI
+        run: |
+          mkdir -p deployment/jsdoc-temp
+          npm install jsdoc --prefix deployment/jsdoc-temp
+
+      # 4️⃣ Generate jsDoc documentation
+      - name: Generate jsDoc
+        run: |
+          npx --prefix deployment/jsdoc-temp/jsdoc jsdoc -c jsdoc.json -r resources/js -d docs/js
+
+      # 5️⃣ Deploy jsDoc to gh-pages in a subfolder
+      - name: Deploy jsDoc to gh-pages
+        run: |
+          git fetch origin gh-pages || true
+          git worktree add _gh-pages origin/gh-pages || git worktree add _gh-pages
+          rm -rf _gh-pages/js/*
+          mkdir -p _gh-pages/js
+          cp -r docs/js/* _gh-pages/js/
+          cd _gh-pages
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+          git add .
+          git commit -m "Update jsDoc [skip ci]" || echo "No changes to commit"
           git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} HEAD:gh-pages
