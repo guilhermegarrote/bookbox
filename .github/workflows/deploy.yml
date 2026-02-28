@@ -1,0 +1,124 @@
+name: Deploy to Production
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+
+    steps:
+      # 1️⃣ Set project path
+      - name: Set project path
+        shell: powershell
+        run: |
+          "PROJECT_PATH=$env:GITHUB_WORKSPACE" | Out-File -FilePath $env:GITHUB_ENV -Encoding ascii -Append
+
+      # 2️⃣ Enable maintenance mode
+      - name: Enable maintenance mode
+        run: php artisan down
+        working-directory: ${{ env.PROJECT_PATH }}
+
+      # 3️⃣ Backup MySQL Database dynamically from .env
+      - name: Backup MySQL Database
+        shell: powershell
+        run: |
+          $envFile = "${{ env.PROJECT_PATH }}\.env"
+          $dbLine = Get-Content $envFile | Select-String 'DB_DATABASE='
+          $DB = $dbLine.ToString().Split('=')[1]
+          $timestamp = Get-Date -Format "yyyyMMdd-HHmmss"
+          $backupDir = "${{ env.PROJECT_PATH }}\database\backups"
+
+          if (!(Test-Path $backupDir)) {
+              New-Item -ItemType Directory -Path $backupDir
+          }
+
+          Write-Host "Backing up database $DB..."
+          mysqldump -u root -p${{ secrets.DB_PASSWORD }} $DB > "$backupDir\backup-$timestamp.sql"
+          Write-Host "Backup completed: $backupDir\backup-$timestamp.sql"
+
+      # 4️⃣ Save current commit for rollback
+      - name: Save current commit
+        run: git rev-parse HEAD > previous_commit.txt
+        working-directory: ${{ env.PROJECT_PATH }}
+
+      # 5️⃣ Pull latest code
+      - name: Pull latest code
+        run: git pull origin main
+        working-directory: ${{ env.PROJECT_PATH }}
+
+      # 6️⃣ Install PHP dependencies
+      - name: Install PHP dependencies
+        run: composer install --no-dev --optimize-autoloader
+        working-directory: ${{ env.PROJECT_PATH }}
+
+      # 7️⃣ Install Node.js dependencies & build frontend
+      - name: Install Node.js dependencies and build frontend
+        shell: powershell
+        run: |
+          cd ${{ env.PROJECT_PATH }}
+          npm install
+          npm run build
+
+      # 8️⃣ Run migrations
+      - name: Run migrations
+        run: php artisan migrate --force
+        working-directory: ${{ env.PROJECT_PATH }}
+
+      # 9️⃣ Optimize Laravel
+      - name: Optimize Laravel
+        run: |
+          php artisan config:clear
+          php artisan config:cache
+          php artisan route:cache
+          php artisan view:cache
+        working-directory: ${{ env.PROJECT_PATH }}
+
+      # 🔟 Restart queue workers
+      - name: Restart Queue
+        run: php artisan queue:restart
+        working-directory: ${{ env.PROJECT_PATH }}
+
+      # 1️⃣1️⃣ Disable maintenance mode
+      - name: Disable maintenance mode
+        run: php artisan up
+        working-directory: ${{ env.PROJECT_PATH }}
+
+      # 1️⃣2️⃣ Rollback if deployment fails
+      - name: Rollback if deployment fails
+        if: failure()
+        shell: powershell
+        run: |
+          Write-Host "Deployment failed. Restoring previous state..."
+
+          # Restore previous commit
+          $previousCommit = Get-Content previous_commit.txt
+          git reset --hard $previousCommit
+
+          # Restore database from last backup
+          $backupDir = "${{ env.PROJECT_PATH }}\database\backups"
+          $latestBackup = Get-ChildItem -Path $backupDir -Filter "*.sql" | Sort-Object LastWriteTime -Descending | Select-Object -First 1
+          if ($latestBackup) {
+              Write-Host "Restoring database from $($latestBackup.FullName)..."
+              $envFile = "${{ env.PROJECT_PATH }}\.env"
+              $dbLine = Get-Content $envFile | Select-String 'DB_DATABASE='
+              $DB = $dbLine.ToString().Split('=')[1]
+              mysql -u root -p${{ secrets.DB_PASSWORD }} $DB < $latestBackup.FullName
+          } else {
+              Write-Host "No backup found. Manual restore required."
+          }
+
+          # Reinstall dependencies & optimize Laravel
+          composer install --no-dev --optimize-autoloader
+          npm install
+          npm run build
+          php artisan migrate:rollback --force
+          php artisan config:cache
+          php artisan route:cache
+          php artisan view:cache
+          php artisan queue:restart
+          php artisan up
+
+          Write-Host "Rollback completed."
