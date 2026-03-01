@@ -171,3 +171,6 @@ svc start
 
 Now your server is connected to GitHub and ready to run Actions pipelines.
 
+### 9️⃣ Backup
+
+To configure the backup service with Google Drive, please refer to the [Backup Guide](backup/README.md).
