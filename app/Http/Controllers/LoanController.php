@@ -58,7 +58,10 @@ class LoanController extends Controller
     {
         $filterData = Loan::getFilterData();
 
-        return view('pages.loans.partials.create-modal', compact('filterData'))->render();
+        $extensionDays = Setting::where('key', 'default_due_days')->value('value');
+        $loan_due_date = Carbon::parse(now())->addDays((int) $extensionDays)->format('d/m/Y');
+
+        return view('pages.loans.partials.create-modal', compact('filterData', 'loan_due_date'))->render();
     }
 
     /**

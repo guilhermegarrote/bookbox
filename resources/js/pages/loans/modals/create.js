@@ -72,8 +72,6 @@ export async function loadLoanModal(modalManager, loansTable, isbn = null, initi
 
         await modalManager.loadModalContent(url, modalId, {
             onInit: () => {
-                setDefaultDueDate();
-
                 initCpfAutoFill();
                 initIsbnAutoFill();
 
@@ -124,21 +122,4 @@ export async function loadLoanModal(modalManager, loansTable, isbn = null, initi
         console.error(err);
         notifyError('Erro ao carregar o modal de empréstimo.');
     }
-}
-
-/**
- * Sets the default due date to 14 days from today.
- * Updates the field #loan_due_date.
- *
- * @returns {void}
- */
-function setDefaultDueDate() {
-    const input = document.getElementById('loan_due_date');
-    if (!input) return;
-
-    const dueDate = new Date();
-    dueDate.setDate(dueDate.getDate() + 14);
-
-    input.value = dueDate.toLocaleDateString('pt-BR');
-    input.classList.add('has-value');
 }
