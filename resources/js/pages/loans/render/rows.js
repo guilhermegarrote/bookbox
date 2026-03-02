@@ -14,16 +14,17 @@ export function renderTableRows(definition, items) {
         return `
             <tr data-id="${item.id}" class="${rowClass}">
                 ${definition.columns.map(c => {
-                    let cellValue = item[c.key] ?? '';
+            let cellValue = item[c.key] ?? '';
 
-                    if (c.key === 'loan_due_date' && cellValue) {
-                        const date = new Date(cellValue);
-                        const formattedDate = new Intl.DateTimeFormat('pt-BR').format(date);
-                        cellValue = formattedDate;
-                    }
+            if (c.key === 'loan_due_date' && cellValue) {
+                const [year, month, day] = cellValue.split('-');
+                const date = new Date(year, month - 1, day);
+                const formattedDate = new Intl.DateTimeFormat('pt-BR').format(date);
+                cellValue = formattedDate;
+            }
 
-                    return `<td>${cellValue}</td>`;
-                }).join('')}
+            return `<td>${cellValue}</td>`;
+        }).join('')}
                 ${'<td class="button-col"></td>'.repeat(definition.actions.length)}
             </tr>
         `;
