@@ -33,7 +33,7 @@
     </x-slot name="content">
 
     <x-slot name="footer">
-        <button type="button" class="modal-button" id="btn-cancel-update"
+        <button type="button" class="modal-button" id="btn-close"
             title="Cancelar atualização" aria-label="Cancelar atualização">Cancelar</button>
         <button type="button" class="modal-button" id="submit-update"
             title="Salvar alterações do livro" aria-label="Salvar alterações do livro">Salvar</button>
