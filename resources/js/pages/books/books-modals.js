@@ -1,7 +1,5 @@
 import { openCreateModal, openCreateModalWithIsbn } from './modals/create';
-import { openUpdateModal } from './modals/update';
 import { openMenuModal } from './modals/menu';
-import { initBooksSelects } from './modals/selects';
 import { initScannerListener } from './modals/scanner';
 import { bindOpenButtons } from '@js/components/books/handlers/bind-buttons';
 import { openGenerateLabelModal } from '@js/pages/labels/labels-modals';
@@ -18,7 +16,7 @@ export function initBooksModals({ modalManager, table }) {
     const handlers = {
         openMenuModal: (id) => openMenuModal(modalManager, id, table),
         openCreateModal: () => openCreateModal(modalManager, table),
-        openGenerateLabelModal: (id) => openGenerateLabelModal(modalManager, id, table),
+        openGenerateLabelModal: () => openGenerateLabelModal(modalManager),
     };
 
     bindOpenButtons(handlers);
