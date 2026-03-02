@@ -82,12 +82,10 @@ export default class TableData {
         if (!rowsData.length) {
             if (!append) tbody.innerHTML = '';
 
-            if (!append) {
-                const msgDiv = document.createElement('div');
-                msgDiv.className = 'data-empty';
-                msgDiv.innerHTML = `<h1>${m.notFoundMessage}</h1>`;
-                tableWrapper.appendChild(msgDiv);
-            }
+            const msgDiv = document.createElement('div');
+            msgDiv.className = 'data-empty';
+            msgDiv.innerHTML = `<h1>${m.notFoundMessage}</h1>`;
+            tableWrapper.appendChild(msgDiv);
 
             m.hasMore = false;
             return;
