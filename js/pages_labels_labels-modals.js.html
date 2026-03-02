@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: pages/labels/labels-modals.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: pages/labels/labels-modals.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import { generateLabels } from "@js/api/labels/generate";
+import { applyInputMasks } from '@js/components/ui/input-mask';
+import { notifySuccess, notifyError } from '@js/utils/formErrors';
+
+let selectedBooks = {};
+let remainingLabels = null;
+const labelsPerSheet = 16;
+
+const modalId = 'labelGenerateModal';
+
+/**
+ * Opens and initializes the label generation modal.
+ *
+ * @param {Object} modalManager - Modal controller instance.
+ * @returns {Promise&lt;void>}
+ */
+export async function openGenerateLabelModal(modalManager) {
+    const url = route('labels.generate-modal');
+
+    try {
+        await modalManager.loadModalContent(url, modalId, {
+            onInit: () => {
+                const modal = document.getElementById(modalId);
+                if (!modal) return;
+
+                applyInputMasks();
+                initSearch();
+                bindCheckboxAndCopiesEvents();
+
+                const tbody = modal.querySelector('tbody');
+                if (tbody &amp;&amp; Object.keys(selectedBooks).length > 0) {
+                    restoreSelectedBooks(tbody);
+                    updateLabelCounter();
+                }
+            }
+        });
+
+        modalManager.bindFormSubmit({
+            modalId,
+            buttonId: 'submit-generate-label',
+
+            onSubmit: async () => {
+                collectBooksForGenerateLabel();
+
+                if (remainingLabels > 0) {
+                    const missingLabels = labelsPerSheet - remainingLabels;
+
+                    const message =
+                        `Faltam ${missingLabels} etiquetas para completar a última folha. Deseja prosseguir mesmo assim?`;
+
+                    const confirmed = await modalManager.showModalMessage({
+                        message,
+                        acceptText: 'Continuar',
+                        declineText: 'Cancelar'
+                    });
+
+                    if (!confirmed) {
+                        openGenerateLabelModal(modalManager);
+                        throw new Error('SUBMIT_CANCELLED');
+                    }
+                }
+
+                const booksArray = Object.entries(selectedBooks).map(
+                    ([isbn, bookData]) => ({ isbn, copies: bookData.value })
+                );
+
+                selectedBooks = {};
+
+                return generateLabels({ books: booksArray });
+            },
+
+            onSuccess: () => {
+                modalManager.removeModal(modalId);
+                notifySuccess('Etiquetas geradas com sucesso!');
+            },
+
+            onError: (err) => {
+                if (err.message === 'SUBMIT_CANCELLED') return;
+
+                err.errors
+                    ? showErrors(err.errors)
+                    : notifyError(err || 'Erro ao gerar etiquetas');
+            },
+        });
+
+    } catch (err) {
+        console.error(err);
+    }
+}
+
+/**
+ * Enables live search with debounce and reloads tbody content.
+ * Restores selected books after reloading results.
+ */
+function initSearch() {
+    const modal = document.getElementById(modalId);
+    if (!modal) throw new Error('Modal não encontrado');
+
+    const input = modal.querySelector('#item-search');
+    const list = modal.querySelector('tbody');
+    if (!input || !list) return;
+
+    let debounceTimer = null;
+
+    input.addEventListener('input', () => {
+        const value = input.value.trim();
+        clearTimeout(debounceTimer);
+
+        debounceTimer = setTimeout(async () => {
+            collectBooksForGenerateLabel();
+
+            const fetchUrl = value === ''
+                ? route('labels.generate-modal')
+                : `${route('labels.generate-modal')}?search=${encodeURIComponent(value)}`;
+
+            try {
+                const res = await fetch(fetchUrl, { headers: { 'X-Requested-With': 'XMLHttpRequest' } });
+                if (!res.ok) return;
+
+                list.innerHTML = await res.text();
+
+                restoreSelectedBooks(list);
+                applyInputMasks();
+                bindCheckboxAndCopiesEvents();
+            } catch (err) {
+                console.error('Erro ao buscar livros:', err);
+            }
+        }, 400);
+    });
+}
+
+/**
+ * Saves selected books (isbn + copies) from the current table into memory.
+ */
+function collectBooksForGenerateLabel() {
+    const rows = document.querySelectorAll(`#${modalId} tbody tr`);
+
+    rows.forEach(row => {
+        const checkbox = row.querySelector('input[type="checkbox"]');
+        const isbn = row.querySelector('td:nth-child(4)').textContent.trim().replace(/-/g, '');
+        const copiesInput = row.querySelector('[data-copies-input]');
+        const value = copiesInput?.value.trim() || copiesInput?.placeholder.replace(/^Ex:\s*/i, '');
+
+        if (checkbox?.checked) {
+            selectedBooks[isbn] = {
+                value,
+                placeholder: copiesInput?.placeholder || ''
+            };
+        } else {
+            delete selectedBooks[isbn];
+        }
+    });
+}
+
+/**
+ * Restores checkbox + copies input values based on selectedBooks memory.
+ * Selected rows are moved to the top.
+ *
+ * @param {HTMLElement} list - tbody element
+ */
+function restoreSelectedBooks(list) {
+    const rows = Array.from(list.querySelectorAll('tr'));
+    const selectedRows = [];
+    const unselectedRows = [];
+
+    rows.forEach(row => {
+        const checkbox = row.querySelector('input[type="checkbox"]');
+        const isbn = row.querySelector('td:nth-child(4)').textContent.trim().replace(/-/g, '');
+        const copiesInput = row.querySelector('[data-copies-input]');
+
+        if (isbn in selectedBooks) {
+            checkbox.checked = true;
+            const bookData = selectedBooks[isbn];
+
+            copiesInput.value = bookData.value || '';
+            copiesInput.placeholder = bookData.placeholder || copiesInput.placeholder;
+
+            selectedRows.push(row);
+        } else {
+            checkbox.checked = false;
+            copiesInput.value = '';
+            unselectedRows.push(row);
+        }
+    });
+
+    list.innerHTML = '';
+    selectedRows.concat(unselectedRows).forEach(row => list.appendChild(row));
+}
+
+/**
+ * Binds checkbox and copies input events.
+ * Keeps selectedBooks updated and refreshes the label counter.
+ */
+function bindCheckboxAndCopiesEvents() {
+    const rows = document.querySelectorAll(`#${modalId} tbody tr`);
+
+    rows.forEach(row => {
+        const checkbox = row.querySelector('input[type="checkbox"]');
+        const copiesInput = row.querySelector('[data-copies-input]');
+        const isbn = row.querySelector('td:nth-child(4)').textContent.trim().replace(/-/g, '');
+
+        if (!checkbox) return;
+
+        const updateSelectedBook = () => {
+            if (checkbox.checked) {
+                selectedBooks[isbn] = {
+                    value: copiesInput?.value.trim() || '',
+                    placeholder: copiesInput?.placeholder || ''
+                };
+            } else {
+                delete selectedBooks[isbn];
+            }
+
+            updateLabelCounter();
+        };
+
+        checkbox.addEventListener('change', updateSelectedBook);
+
+        if (copiesInput) {
+            copiesInput.addEventListener('input', () => {
+                checkbox.checked = copiesInput.value.trim() !== '';
+                updateSelectedBook();
+            });
+        }
+    });
+}
+
+/**
+ * Updates the label counter based on selectedBooks.
+ * Also calculates how many labels remain on the last sheet.
+ */
+function updateLabelCounter() {
+    let totalLabels = 0;
+
+    Object.values(selectedBooks).forEach(book => {
+        let copies = parseInt(book.value, 10);
+
+        if (isNaN(copies) || book.value.trim() === '') {
+            copies = countCopiesFromInput(book.placeholder);
+        } else {
+            copies = countCopiesFromInput(book.value.trim());
+        }
+
+        totalLabels += copies;
+    });
+
+    const fullSheets = Math.floor(totalLabels / labelsPerSheet);
+    remainingLabels = totalLabels % labelsPerSheet;
+
+    const counter = document.getElementById('label-counter');
+    if (!counter) return;
+
+    counter.textContent = totalLabels === 0
+        ? 'Nenhuma etiqueta selecionada'
+        : `Total: ${totalLabels} etiquetas | ${fullSheets} folha(s) completa(s) + ${remainingLabels} etiqueta(s) na folha seguinte`;
+}
+
+/**
+ * Converts copy inputs like "1-3,5,7-9" into a numeric count.
+ *
+ * @param {string} value
+ * @returns {number}
+ */
+function countCopiesFromInput(value) {
+    if (!value || value.toLowerCase().includes('sem')) return 0;
+
+    const clean = value.replace(/Ex:\s*/i, '');
+    const parts = clean.split(',');
+    let total = 0;
+
+    parts.forEach(part => {
+        if (part.includes('-')) {
+            const [start, end] = part.split('-').map(Number);
+            if (!isNaN(start) &amp;&amp; !isNaN(end)) {
+                total += end - start + 1;
+            }
+        } else {
+            const n = Number(part);
+            if (!isNaN(n)) total += 1;
+        }
+    });
+
+    return total;
+}
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="module.exports.html">exports</a></li></ul><h3>Global</h3><ul><li><a href="global.html#STORAGE_KEY">STORAGE_KEY</a></li><li><a href="global.html#addCopies">addCopies</a></li><li><a href="global.html#animateModalClose">animateModalClose</a></li><li><a href="global.html#api">api</a></li><li><a href="global.html#apiFetch">apiFetch</a></li><li><a href="global.html#applyBookData">applyBookData</a></li><li><a href="global.html#applyFilterInternal">applyFilterInternal</a></li><li><a href="global.html#applyInputMasks">applyInputMasks</a></li><li><a href="global.html#applyMetadata">applyMetadata</a></li><li><a href="global.html#applyStudentData">applyStudentData</a></li><li><a href="global.html#attachGlobalActions">attachGlobalActions</a></li><li><a href="global.html#autofill">autofill</a></li><li><a href="global.html#bindAutoSave">bindAutoSave</a></li><li><a href="global.html#bindCheckboxAndCopiesEvents">bindCheckboxAndCopiesEvents</a></li><li><a href="global.html#bindCloseEvents">bindCloseEvents</a></li><li><a href="global.html#bindFormSubmit">bindFormSubmit</a></li><li><a href="global.html#bindGlobalEvents">bindGlobalEvents</a></li><li><a href="global.html#bindModalMessageEvents">bindModalMessageEvents</a></li><li><a href="global.html#bindOpenButtons">bindOpenButtons</a></li><li><a href="global.html#btnFilter">btnFilter</a></li><li><a href="global.html#calculateLoanStatus">calculateLoanStatus</a></li><li><a href="global.html#calculateVisibleRows">calculateVisibleRows</a></li><li><a href="global.html#clearAccessToken">clearAccessToken</a></li><li><a href="global.html#clearAllFiltersInternal">clearAllFiltersInternal</a></li><li><a href="global.html#clearBookFields">clearBookFields</a></li><li><a href="global.html#clearErrors">clearErrors</a></li><li><a href="global.html#clearSavedFilters">clearSavedFilters</a></li><li><a href="global.html#clearSavedModalState">clearSavedModalState</a></li><li><a href="global.html#clearStudentFields">clearStudentFields</a></li><li><a href="global.html#closeAll">closeAll</a></li><li><a href="global.html#collectBooksForGenerateLabel">collectBooksForGenerateLabel</a></li><li><a href="global.html#combineValidations">combineValidations</a></li><li><a href="global.html#configureModalMessage">configureModalMessage</a></li><li><a href="global.html#countCopiesFromInput">countCopiesFromInput</a></li><li><a href="global.html#createBook">createBook</a></li><li><a href="global.html#createEscListener">createEscListener</a></li><li><a href="global.html#createGenre">createGenre</a></li><li><a href="global.html#createLoan">createLoan</a></li><li><a href="global.html#createModalOverlay">createModalOverlay</a></li><li><a href="global.html#createSchoolClass">createSchoolClass</a></li><li><a href="global.html#createStudent">createStudent</a></li><li><a href="global.html#createTooltip">createTooltip</a></li><li><a href="global.html#createUser">createUser</a></li><li><a href="global.html#deleteBook">deleteBook</a></li><li><a href="global.html#deleteCopy">deleteCopy</a></li><li><a href="global.html#deleteGenre">deleteGenre</a></li><li><a href="global.html#deleteSchoolClass">deleteSchoolClass</a></li><li><a href="global.html#deleteStudent">deleteStudent</a></li><li><a href="global.html#deleteUser">deleteUser</a></li><li><a href="global.html#destroy">destroy</a></li><li><a href="global.html#dispatchSavedModalEvent">dispatchSavedModalEvent</a></li><li><a href="global.html#downloadPrinterServiceInstaller">downloadPrinterServiceInstaller</a></li><li><a href="global.html#extendLoan">extendLoan</a></li><li><a href="global.html#fetchFilterHTML">fetchFilterHTML</a></li><li><a href="global.html#fetchMetadata">fetchMetadata</a></li><li><a href="global.html#finalizeLoan">finalizeLoan</a></li><li><a href="global.html#findBookByIsbn">findBookByIsbn</a></li><li><a href="global.html#findLoanByBarcode">findLoanByBarcode</a></li><li><a href="global.html#findStudentByCpf">findStudentByCpf</a></li><li><a href="global.html#formatMessage">formatMessage</a></li><li><a href="global.html#generateLabels">generateLabels</a></li><li><a href="global.html#getButtonHTML">getButtonHTML</a></li><li><a href="global.html#getCookie">getCookie</a></li><li><a href="global.html#getCurrentParamsFromFields">getCurrentParamsFromFields</a></li><li><a href="global.html#getModalData">getModalData</a></li><li><a href="global.html#getSavedModalState">getSavedModalState</a></li><li><a href="global.html#getTotalVerticalSpace">getTotalVerticalSpace</a></li><li><a href="global.html#handleCardAction">handleCardAction</a></li><li><a href="global.html#handleCreateAction">handleCreateAction</a></li><li><a href="global.html#handleDeleteGenre">handleDeleteGenre</a></li><li><a href="global.html#handleDeleteSchoolClass">handleDeleteSchoolClass</a></li><li><a href="global.html#handleError">handleError</a></li><li><a href="global.html#handleRefresh">handleRefresh</a></li><li><a href="global.html#handleResponse">handleResponse</a></li><li><a href="global.html#hideModal">hideModal</a></li><li><a href="global.html#hideModalDom">hideModalDom</a></li><li><a href="global.html#hidePopup">hidePopup</a></li><li><a href="global.html#initBarcodeScannerListener">initBarcodeScannerListener</a></li><li><a href="global.html#initBooksModals">initBooksModals</a></li><li><a href="global.html#initBooksSelects">initBooksSelects</a></li><li><a href="global.html#initConfigSection">initConfigSection</a></li><li><a href="global.html#initCpfAutoFill">initCpfAutoFill</a></li><li><a href="global.html#initFilterUIInternal">initFilterUIInternal</a></li><li><a href="global.html#initInfiniteScroll">initInfiniteScroll</a></li><li><a href="global.html#initIsbnAutoFill">initIsbnAutoFill</a></li><li><a href="global.html#initLoansModals">initLoansModals</a></li><li><a href="global.html#initResizeObserver">initResizeObserver</a></li><li><a href="global.html#initScannerListener">initScannerListener</a></li><li><a href="global.html#initSearch">initSearch</a></li><li><a href="global.html#initServicesSection">initServicesSection</a></li><li><a href="global.html#initSettingsNavigation">initSettingsNavigation</a></li><li><a href="global.html#initSorting">initSorting</a></li><li><a href="global.html#initStudentsModals">initStudentsModals</a></li><li><a href="global.html#initStudentsSelects">initStudentsSelects</a></li><li><a href="global.html#insertModalHtml">insertModalHtml</a></li><li><a href="global.html#isValidISBN">isValidISBN</a></li><li><a href="global.html#loadBookModal">loadBookModal</a></li><li><a href="global.html#loadInitialTable">loadInitialTable</a></li><li><a href="global.html#loadLoanModal">loadLoanModal</a></li><li><a href="global.html#loadModalContent">loadModalContent</a></li><li><a href="global.html#loadSavedFilters">loadSavedFilters</a></li><li><a href="global.html#loadSettingsPage">loadSettingsPage</a></li><li><a href="global.html#login">login</a></li><li><a href="global.html#logout">logout</a></li><li><a href="global.html#makeErrorResponse">makeErrorResponse</a></li><li><a href="global.html#normalizeIsbn">normalizeIsbn</a></li><li><a href="global.html#notifyError">notifyError</a></li><li><a href="global.html#notifySuccess">notifySuccess</a></li><li><a href="global.html#open">open</a></li><li><a href="global.html#openAddModal">openAddModal</a></li><li><a href="global.html#openCreateModal">openCreateModal</a></li><li><a href="global.html#openCreateModalWithIsbn">openCreateModalWithIsbn</a></li><li><a href="global.html#openDeleteModal">openDeleteModal</a></li><li><a href="global.html#openFilterPopup">openFilterPopup</a></li><li><a href="global.html#openGenerateLabelModal">openGenerateLabelModal</a></li><li><a href="global.html#openManagerCopiesModal">openManagerCopiesModal</a></li><li><a href="global.html#openMenuModal">openMenuModal</a></li><li><a href="global.html#openUpdateModal">openUpdateModal</a></li><li><a href="global.html#populateSelect">populateSelect</a></li><li><a href="global.html#popupFilter">popupFilter</a></li><li><a href="global.html#positionPopup">positionPopup</a></li><li><a href="global.html#processBarcode">processBarcode</a></li><li><a href="global.html#redirectToLogin">redirectToLogin</a></li><li><a href="global.html#register">register</a></li><li><a href="global.html#removeModal">removeModal</a></li><li><a href="global.html#removeModalOverlay">removeModalOverlay</a></li><li><a href="global.html#renderSidebar">renderSidebar</a></li><li><a href="global.html#renderStatusIcon">renderStatusIcon</a></li><li><a href="global.html#renderTableHead">renderTableHead</a></li><li><a href="global.html#renderTableRows">renderTableRows</a></li><li><a href="global.html#resendCode">resendCode</a></li><li><a href="global.html#resetPagination">resetPagination</a></li><li><a href="global.html#resetPassword">resetPassword</a></li><li><a href="global.html#resizeSidebarWrapper">resizeSidebarWrapper</a></li><li><a href="global.html#restoreFormData">restoreFormData</a></li><li><a href="global.html#restoreSelectedBooks">restoreSelectedBooks</a></li><li><a href="global.html#safeParseJson">safeParseJson</a></li><li><a href="global.html#sanitizeHTML">sanitizeHTML</a></li><li><a href="global.html#saveFilters">saveFilters</a></li><li><a href="global.html#saveModalState">saveModalState</a></li><li><a href="global.html#sendCode">sendCode</a></li><li><a href="global.html#sendRequest">sendRequest</a></li><li><a href="global.html#setAccessToken">setAccessToken</a></li><li><a href="global.html#setDefaultDates">setDefaultDates</a></li><li><a href="global.html#setupSidebarPage">setupSidebarPage</a></li><li><a href="global.html#setupTablePage">setupTablePage</a></li><li><a href="global.html#showErrors">showErrors</a></li><li><a href="global.html#showModal">showModal</a></li><li><a href="global.html#showModalDom">showModalDom</a></li><li><a href="global.html#showModalMessage">showModalMessage</a></li><li><a href="global.html#showPopup">showPopup</a></li><li><a href="global.html#toggleFields">toggleFields</a></li><li><a href="global.html#unbindAutoSave">unbindAutoSave</a></li><li><a href="global.html#uniqueBy">uniqueBy</a></li><li><a href="global.html#updateBook">updateBook</a></li><li><a href="global.html#updateFloatingLabels">updateFloatingLabels</a></li><li><a href="global.html#updateGenre">updateGenre</a></li><li><a href="global.html#updateLabelCounter">updateLabelCounter</a></li><li><a href="global.html#updateSchoolClass">updateSchoolClass</a></li><li><a href="global.html#updateSentinel">updateSentinel</a></li><li><a href="global.html#updateSettings">updateSettings</a></li><li><a href="global.html#updateSortIcons">updateSortIcons</a></li><li><a href="global.html#updateStudent">updateStudent</a></li><li><a href="global.html#updateTable">updateTable</a></li><li><a href="global.html#updateUser">updateUser</a></li><li><a href="global.html#updateWrapperHeight">updateWrapperHeight</a></li><li><a href="global.html#validateCode">validateCode</a></li><li><a href="global.html#validateEmailField">validateEmailField</a></li><li><a href="global.html#validateNameField">validateNameField</a></li><li><a href="global.html#validatePasswordConfirmation">validatePasswordConfirmation</a></li><li><a href="global.html#validatePasswordField">validatePasswordField</a></li><li><a href="global.html#validateRecoveryCode">validateRecoveryCode</a></li><li><a href="global.html#validateTermsField">validateTermsField</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.5</a> on Mon Mar 02 2026 19:02:58 GMT+0000 (Coordinated Universal Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

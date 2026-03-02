@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: pages/books/modals/menu.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: pages/books/modals/menu.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import { route } from 'ziggy-js';
+import { deleteBook } from '@js/api/books/delete';
+import { notifySuccess, notifyError } from '@js/utils/formErrors';
+import { openUpdateModal } from './update';
+import { openGenerateLabelModal } from '../../labels/labels-modals';
+import { openManagerCopiesModal } from '../../copies/modals/manager';
+
+const modalId = 'bookMenuModal';
+
+/**
+ * Opens the book menu modal and binds its action buttons (edit, manage copies,
+ * generate labels, and delete).
+ *
+ * @param {Object} modalManager
+ * @param {number|string} bookId
+ * @param {Object} booksTable
+ */
+export async function openMenuModal(modalManager, bookId, booksTable) {
+    const url = route('books.menu-modal', { book: bookId });
+
+    try {
+        await modalManager.loadModalContent(url, modalId);
+
+        document.getElementById('open-edit-modal')?.addEventListener('click', () => {
+            openUpdateModal(modalManager, bookId, booksTable);
+        });
+
+        document.getElementById('open-manager-copies-modal')?.addEventListener('click', () => {
+            openManagerCopiesModal(modalManager, bookId, booksTable);
+        });
+
+        document.getElementById('open-generate-label-modal')?.addEventListener('click', () => {
+            openGenerateLabelModal(modalManager);
+        });
+
+        document.getElementById('submit-delete')?.addEventListener('click', async () => {
+            const confirmed = await modalManager.showModalMessage({
+                message: 'Deseja realmente excluir este livro?',
+                acceptText: 'Sim',
+                declineText: 'Cancelar'
+            });
+
+            if (!confirmed) return;
+
+            try {
+                const { ok, data: responseData } = await deleteBook(bookId);
+
+                if (!ok) {
+                    notifyError(responseData || 'Erro desconhecido.');
+                } else {
+                    modalManager.removeModal(modalId);
+                    booksTable.updateTable();
+                    notifySuccess('Livro excluído com sucesso!');
+                }
+            } catch (error) {
+                console.error(error);
+                notifyError('Erro técnico ao tentar excluir o livro. Tente novamente.');
+            }
+        });
+    } catch (err) {
+        console.error(err);
+    }
+}
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="module.exports.html">exports</a></li></ul><h3>Global</h3><ul><li><a href="global.html#STORAGE_KEY">STORAGE_KEY</a></li><li><a href="global.html#addCopies">addCopies</a></li><li><a href="global.html#animateModalClose">animateModalClose</a></li><li><a href="global.html#api">api</a></li><li><a href="global.html#apiFetch">apiFetch</a></li><li><a href="global.html#applyBookData">applyBookData</a></li><li><a href="global.html#applyFilterInternal">applyFilterInternal</a></li><li><a href="global.html#applyInputMasks">applyInputMasks</a></li><li><a href="global.html#applyMetadata">applyMetadata</a></li><li><a href="global.html#applyStudentData">applyStudentData</a></li><li><a href="global.html#attachGlobalActions">attachGlobalActions</a></li><li><a href="global.html#autofill">autofill</a></li><li><a href="global.html#bindAutoSave">bindAutoSave</a></li><li><a href="global.html#bindCheckboxAndCopiesEvents">bindCheckboxAndCopiesEvents</a></li><li><a href="global.html#bindCloseEvents">bindCloseEvents</a></li><li><a href="global.html#bindFormSubmit">bindFormSubmit</a></li><li><a href="global.html#bindGlobalEvents">bindGlobalEvents</a></li><li><a href="global.html#bindModalMessageEvents">bindModalMessageEvents</a></li><li><a href="global.html#bindOpenButtons">bindOpenButtons</a></li><li><a href="global.html#btnFilter">btnFilter</a></li><li><a href="global.html#calculateLoanStatus">calculateLoanStatus</a></li><li><a href="global.html#calculateVisibleRows">calculateVisibleRows</a></li><li><a href="global.html#clearAccessToken">clearAccessToken</a></li><li><a href="global.html#clearAllFiltersInternal">clearAllFiltersInternal</a></li><li><a href="global.html#clearBookFields">clearBookFields</a></li><li><a href="global.html#clearErrors">clearErrors</a></li><li><a href="global.html#clearSavedFilters">clearSavedFilters</a></li><li><a href="global.html#clearSavedModalState">clearSavedModalState</a></li><li><a href="global.html#clearStudentFields">clearStudentFields</a></li><li><a href="global.html#closeAll">closeAll</a></li><li><a href="global.html#collectBooksForGenerateLabel">collectBooksForGenerateLabel</a></li><li><a href="global.html#combineValidations">combineValidations</a></li><li><a href="global.html#configureModalMessage">configureModalMessage</a></li><li><a href="global.html#countCopiesFromInput">countCopiesFromInput</a></li><li><a href="global.html#createBook">createBook</a></li><li><a href="global.html#createEscListener">createEscListener</a></li><li><a href="global.html#createGenre">createGenre</a></li><li><a href="global.html#createLoan">createLoan</a></li><li><a href="global.html#createModalOverlay">createModalOverlay</a></li><li><a href="global.html#createSchoolClass">createSchoolClass</a></li><li><a href="global.html#createStudent">createStudent</a></li><li><a href="global.html#createTooltip">createTooltip</a></li><li><a href="global.html#createUser">createUser</a></li><li><a href="global.html#deleteBook">deleteBook</a></li><li><a href="global.html#deleteCopy">deleteCopy</a></li><li><a href="global.html#deleteGenre">deleteGenre</a></li><li><a href="global.html#deleteSchoolClass">deleteSchoolClass</a></li><li><a href="global.html#deleteStudent">deleteStudent</a></li><li><a href="global.html#deleteUser">deleteUser</a></li><li><a href="global.html#destroy">destroy</a></li><li><a href="global.html#dispatchSavedModalEvent">dispatchSavedModalEvent</a></li><li><a href="global.html#downloadPrinterServiceInstaller">downloadPrinterServiceInstaller</a></li><li><a href="global.html#extendLoan">extendLoan</a></li><li><a href="global.html#fetchFilterHTML">fetchFilterHTML</a></li><li><a href="global.html#fetchMetadata">fetchMetadata</a></li><li><a href="global.html#finalizeLoan">finalizeLoan</a></li><li><a href="global.html#findBookByIsbn">findBookByIsbn</a></li><li><a href="global.html#findLoanByBarcode">findLoanByBarcode</a></li><li><a href="global.html#findStudentByCpf">findStudentByCpf</a></li><li><a href="global.html#formatMessage">formatMessage</a></li><li><a href="global.html#generateLabels">generateLabels</a></li><li><a href="global.html#getButtonHTML">getButtonHTML</a></li><li><a href="global.html#getCookie">getCookie</a></li><li><a href="global.html#getCurrentParamsFromFields">getCurrentParamsFromFields</a></li><li><a href="global.html#getModalData">getModalData</a></li><li><a href="global.html#getSavedModalState">getSavedModalState</a></li><li><a href="global.html#getTotalVerticalSpace">getTotalVerticalSpace</a></li><li><a href="global.html#handleCardAction">handleCardAction</a></li><li><a href="global.html#handleCreateAction">handleCreateAction</a></li><li><a href="global.html#handleDeleteGenre">handleDeleteGenre</a></li><li><a href="global.html#handleDeleteSchoolClass">handleDeleteSchoolClass</a></li><li><a href="global.html#handleError">handleError</a></li><li><a href="global.html#handleRefresh">handleRefresh</a></li><li><a href="global.html#handleResponse">handleResponse</a></li><li><a href="global.html#hideModal">hideModal</a></li><li><a href="global.html#hideModalDom">hideModalDom</a></li><li><a href="global.html#hidePopup">hidePopup</a></li><li><a href="global.html#initBarcodeScannerListener">initBarcodeScannerListener</a></li><li><a href="global.html#initBooksModals">initBooksModals</a></li><li><a href="global.html#initBooksSelects">initBooksSelects</a></li><li><a href="global.html#initConfigSection">initConfigSection</a></li><li><a href="global.html#initCpfAutoFill">initCpfAutoFill</a></li><li><a href="global.html#initFilterUIInternal">initFilterUIInternal</a></li><li><a href="global.html#initInfiniteScroll">initInfiniteScroll</a></li><li><a href="global.html#initIsbnAutoFill">initIsbnAutoFill</a></li><li><a href="global.html#initLoansModals">initLoansModals</a></li><li><a href="global.html#initResizeObserver">initResizeObserver</a></li><li><a href="global.html#initScannerListener">initScannerListener</a></li><li><a href="global.html#initSearch">initSearch</a></li><li><a href="global.html#initServicesSection">initServicesSection</a></li><li><a href="global.html#initSettingsNavigation">initSettingsNavigation</a></li><li><a href="global.html#initSorting">initSorting</a></li><li><a href="global.html#initStudentsModals">initStudentsModals</a></li><li><a href="global.html#initStudentsSelects">initStudentsSelects</a></li><li><a href="global.html#insertModalHtml">insertModalHtml</a></li><li><a href="global.html#isValidISBN">isValidISBN</a></li><li><a href="global.html#loadBookModal">loadBookModal</a></li><li><a href="global.html#loadInitialTable">loadInitialTable</a></li><li><a href="global.html#loadLoanModal">loadLoanModal</a></li><li><a href="global.html#loadModalContent">loadModalContent</a></li><li><a href="global.html#loadSavedFilters">loadSavedFilters</a></li><li><a href="global.html#loadSettingsPage">loadSettingsPage</a></li><li><a href="global.html#login">login</a></li><li><a href="global.html#logout">logout</a></li><li><a href="global.html#makeErrorResponse">makeErrorResponse</a></li><li><a href="global.html#normalizeIsbn">normalizeIsbn</a></li><li><a href="global.html#notifyError">notifyError</a></li><li><a href="global.html#notifySuccess">notifySuccess</a></li><li><a href="global.html#open">open</a></li><li><a href="global.html#openAddModal">openAddModal</a></li><li><a href="global.html#openCreateModal">openCreateModal</a></li><li><a href="global.html#openCreateModalWithIsbn">openCreateModalWithIsbn</a></li><li><a href="global.html#openDeleteModal">openDeleteModal</a></li><li><a href="global.html#openFilterPopup">openFilterPopup</a></li><li><a href="global.html#openGenerateLabelModal">openGenerateLabelModal</a></li><li><a href="global.html#openManagerCopiesModal">openManagerCopiesModal</a></li><li><a href="global.html#openMenuModal">openMenuModal</a></li><li><a href="global.html#openUpdateModal">openUpdateModal</a></li><li><a href="global.html#populateSelect">populateSelect</a></li><li><a href="global.html#popupFilter">popupFilter</a></li><li><a href="global.html#positionPopup">positionPopup</a></li><li><a href="global.html#processBarcode">processBarcode</a></li><li><a href="global.html#redirectToLogin">redirectToLogin</a></li><li><a href="global.html#register">register</a></li><li><a href="global.html#removeModal">removeModal</a></li><li><a href="global.html#removeModalOverlay">removeModalOverlay</a></li><li><a href="global.html#renderSidebar">renderSidebar</a></li><li><a href="global.html#renderStatusIcon">renderStatusIcon</a></li><li><a href="global.html#renderTableHead">renderTableHead</a></li><li><a href="global.html#renderTableRows">renderTableRows</a></li><li><a href="global.html#resendCode">resendCode</a></li><li><a href="global.html#resetPagination">resetPagination</a></li><li><a href="global.html#resetPassword">resetPassword</a></li><li><a href="global.html#resizeSidebarWrapper">resizeSidebarWrapper</a></li><li><a href="global.html#restoreFormData">restoreFormData</a></li><li><a href="global.html#restoreSelectedBooks">restoreSelectedBooks</a></li><li><a href="global.html#safeParseJson">safeParseJson</a></li><li><a href="global.html#sanitizeHTML">sanitizeHTML</a></li><li><a href="global.html#saveFilters">saveFilters</a></li><li><a href="global.html#saveModalState">saveModalState</a></li><li><a href="global.html#sendCode">sendCode</a></li><li><a href="global.html#sendRequest">sendRequest</a></li><li><a href="global.html#setAccessToken">setAccessToken</a></li><li><a href="global.html#setDefaultDates">setDefaultDates</a></li><li><a href="global.html#setupSidebarPage">setupSidebarPage</a></li><li><a href="global.html#setupTablePage">setupTablePage</a></li><li><a href="global.html#showErrors">showErrors</a></li><li><a href="global.html#showModal">showModal</a></li><li><a href="global.html#showModalDom">showModalDom</a></li><li><a href="global.html#showModalMessage">showModalMessage</a></li><li><a href="global.html#showPopup">showPopup</a></li><li><a href="global.html#toggleFields">toggleFields</a></li><li><a href="global.html#unbindAutoSave">unbindAutoSave</a></li><li><a href="global.html#uniqueBy">uniqueBy</a></li><li><a href="global.html#updateBook">updateBook</a></li><li><a href="global.html#updateFloatingLabels">updateFloatingLabels</a></li><li><a href="global.html#updateGenre">updateGenre</a></li><li><a href="global.html#updateLabelCounter">updateLabelCounter</a></li><li><a href="global.html#updateSchoolClass">updateSchoolClass</a></li><li><a href="global.html#updateSentinel">updateSentinel</a></li><li><a href="global.html#updateSettings">updateSettings</a></li><li><a href="global.html#updateSortIcons">updateSortIcons</a></li><li><a href="global.html#updateStudent">updateStudent</a></li><li><a href="global.html#updateTable">updateTable</a></li><li><a href="global.html#updateUser">updateUser</a></li><li><a href="global.html#updateWrapperHeight">updateWrapperHeight</a></li><li><a href="global.html#validateCode">validateCode</a></li><li><a href="global.html#validateEmailField">validateEmailField</a></li><li><a href="global.html#validateNameField">validateNameField</a></li><li><a href="global.html#validatePasswordConfirmation">validatePasswordConfirmation</a></li><li><a href="global.html#validatePasswordField">validatePasswordField</a></li><li><a href="global.html#validateRecoveryCode">validateRecoveryCode</a></li><li><a href="global.html#validateTermsField">validateTermsField</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.5</a> on Mon Mar 02 2026 19:02:58 GMT+0000 (Coordinated Universal Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
