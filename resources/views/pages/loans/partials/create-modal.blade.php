@@ -43,7 +43,7 @@
             <x-modals.select-field id="copy_number" label="Exemplar" width="150px" readonly
                 title="Informe o número do exemplar" aria-label="Número do exemplar" />
             <x-modals.input-field id="loan_due_date" label="Data de devolução" width="165px" readonly
-                title="Data de devolução do empréstimo" aria-label="Data de devolução" />
+                title="Data de devolução do empréstimo" aria-label="Data de devolução" value="{{ $loan_due_date }}"/>
         </div>
     </x-slot name="content">
 
