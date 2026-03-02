@@ -48,7 +48,10 @@ jobs:
 
       # 7️⃣ Generate Doctum documentation
       - name: Generate Doctum docs
-        run: php deployment/doctum-temp/doctum.phar update deployment/doctum/doctum.php
+        run: |
+          # Ensure the build folder exists
+          mkdir -p docs/doctum
+          php deployment/doctum-temp/doctum.phar update deployment/doctum/doctum.php
 
       # 8️⃣ Deploy Doctum to gh-pages in a subfolder
       - name: Deploy Doctum to gh-pages
@@ -57,7 +60,8 @@ jobs:
           git worktree add _gh-pages origin/gh-pages || git worktree add _gh-pages
           rm -rf _gh-pages/doctum/*
           mkdir -p _gh-pages/doctum
-          cp -r docs/doctum/* _gh-pages/doctum/
+          # Copy generated docs, do not fail if empty
+          cp -r docs/doctum/* _gh-pages/doctum/ || echo "No Doctum files to copy"
           cd _gh-pages
           git config user.name "GitHub Actions"
           git config user.email "actions@github.com"
