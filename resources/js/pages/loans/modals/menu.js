@@ -30,7 +30,10 @@ export async function openMenuModal(modalManager, loanId, loansTable) {
                 modalManager.bindModalMessageEvents(modalId, resolve);
             });
 
-            if (!confirmed) return;
+            if (!confirmed) {
+                openMenuModal(modalManager, loanId, loansTable);
+                return;
+            }
 
             try {
                 const { ok, data: responseData } = await extendLoan(loanId);
@@ -38,7 +41,7 @@ export async function openMenuModal(modalManager, loanId, loansTable) {
                 if (!ok) {
                     notifyError(responseData || 'Erro ao prolongar o empréstimo');
                 } else {
-                    modalManager.removeModal(modalId);
+                    openMenuModal(modalManager, loanId, loansTable);
                     loansTable.updateTable();
                     notifySuccess('Empréstimo prolongado com sucesso!');
                 }
