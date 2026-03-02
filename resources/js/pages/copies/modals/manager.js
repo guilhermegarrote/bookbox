@@ -19,10 +19,9 @@ export async function openManagerCopiesModal(modalManager, bookId, booksTable) {
     try {
         await modalManager.loadModalContent(url, modalId);
 
-        const modal = document.querySelector(`#${modalId}`);
-        const closeButton = clearCloseButtonListener(modal);
-
-        closeButton.addEventListener('click', () => openMenuModal(modalManager, bookId, booksTable));
+        document.getElementById('btn-close')?.addEventListener('click', () => {
+            openMenuModal(modalManager, bookId, booksTable);
+        });
 
         document.getElementById('open-add-modal')?.addEventListener('click', () => {
             openAddModal(modalManager, bookId, booksTable);
@@ -38,11 +37,15 @@ export async function openManagerCopiesModal(modalManager, bookId, booksTable) {
                     declineText: 'Cancelar'
                 });
 
-                if (!confirmed) return;
+                if (!confirmed) {
+                    openManagerCopiesModal(modalManager, bookId, booksTable);
+                    return;
+                }
 
                 try {
                     await deleteCopy(copyId);
-                    openManagerCopiesModal(bookId, modalManager);
+                    booksTable.updateTable();
+                    openManagerCopiesModal(modalManager, bookId, booksTable);
                     notifySuccess('Exemplar excluído com sucesso!');
                 } catch (err) {
                     notifyError(err || 'Erro ao excluir o exemplar');
@@ -71,10 +74,9 @@ async function openAddModal(modalManager, bookId, booksTable) {
     try {
         await modalManager.loadModalContent(url, modalId);
 
-        const modal = document.querySelector(`#${modalId}`  );
-        const closeButton = clearCloseButtonListener(modal);
-
-        closeButton.addEventListener('click', () => openManagerCopiesModal(modalManager, bookId, booksTable));
+        document.getElementById('btn-close')?.addEventListener('click', () => {
+            openManagerCopiesModal(modalManager, bookId, booksTable);
+        });
 
         const decrementButton = document.getElementById('decrement');
         const incrementButton = document.getElementById('increment');
@@ -105,10 +107,9 @@ async function openAddModal(modalManager, bookId, booksTable) {
             buttonId: 'submit-create',
             onSubmit: data => addCopies(bookId, data),
             onSuccess: () => {
-                modalManager.removeModal(modalId);
+                openManagerCopiesModal(modalManager, bookId, booksTable);
                 booksTable.updateTable();
                 notifySuccess('Exemplares cadastrados com sucesso!');
-                openManagerCopiesModal(modalManager, bookId, booksTable);
             },
             onError: error => {
                 error.errors ? showErrors(error.errors) : notifyError(error.message || 'Erro ao cadastrar os exemplares');
@@ -117,18 +118,4 @@ async function openAddModal(modalManager, bookId, booksTable) {
     } catch (error) {
         console.error(error);
     }
-}
-
-/**
- * Removes any previously attached event listeners from the modal close button
- * by cloning and replacing the element.
- *
- * @param {HTMLElement} modal Modal element containing the close button.
- * @returns {HTMLElement} The new close button element with no previous listeners.
- */
-function clearCloseButtonListener(modal) {
-    const closeButton = modal.querySelector('#btn-close');
-    const newCloseButton = closeButton.cloneNode(true);
-    closeButton.parentNode.replaceChild(newCloseButton, closeButton);
-    return newCloseButton;
 }
