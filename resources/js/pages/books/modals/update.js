@@ -63,7 +63,6 @@ export async function openUpdateModal(modalManager, bookId, booksTable, initialD
 
         document.getElementById('btn-close')?.addEventListener('click', () => {
             openMenuModal(modalManager, bookId, booksTable);
-            modalManager.removeModal(modalId);
         });
 
         modalManager.bindFormSubmit({
