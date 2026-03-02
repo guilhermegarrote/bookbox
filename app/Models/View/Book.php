@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models\View;
 
+use App\Helpers\Utils;
 use App\Models\Genre;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -92,7 +93,11 @@ class Book extends BaseModel
      */
     public function placeholderCopies(): string
     {
-        $numbers = $this->copies->pluck('number')->filter()->sort()->values();
+        $numbers = Copy::where('book_id', Utils::convertUuidToBinary($this->id))
+            ->pluck('number')
+            ->filter()
+            ->sort()
+            ->values();
 
         if ($numbers->isEmpty()) {
             return 'Sem exemplares';
