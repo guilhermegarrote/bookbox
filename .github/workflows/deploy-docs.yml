@@ -8,6 +8,7 @@ on:
       - "app/**"
       - "database/**"
       - "resources/js/**"
+      - "docs/page/**"
 
 jobs:
   deploy-doctum:
@@ -21,7 +22,8 @@ jobs:
       - name: Check for PHP changes
         id: php_changed
         run: |
-          echo "CHANGED=$(git diff --name-only origin/main HEAD | grep -E '^(app/|database/)')" >> $GITHUB_ENV
+          CHANGED=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep -E '^(app/|database/)')
+          echo "CHANGED=$CHANGED" >> $GITHUB_ENV
 
       # 3️⃣ Skip job if no PHP changes
       - name: Skip if no PHP changes
@@ -58,10 +60,20 @@ jobs:
         run: |
           git fetch origin gh-pages || true
           git worktree add _gh-pages origin/gh-pages || git worktree add _gh-pages
-          rm -rf _gh-pages/doctum/*
+
+          # Preserve other folders and clean only doctum
+          rm -rf _gh-pages/doctum
           mkdir -p _gh-pages/doctum
-          # Copy generated docs, do not fail if empty
+
+          # Copy generated docs
           cp -r docs/doctum/* _gh-pages/doctum/ || echo "No Doctum files to copy"
+
+          # Ensure main site page is preserved
+          if [ -d "docs/page" ]; then
+            mkdir -p _gh-pages/page
+            cp -r docs/page/* _gh-pages/page/
+          fi
+
           cd _gh-pages
           git config user.name "GitHub Actions"
           git config user.email "actions@github.com"
@@ -80,7 +92,8 @@ jobs:
       - name: Check for JS changes
         id: js_changed
         run: |
-          echo "CHANGED=$(git diff --name-only origin/main HEAD | grep -E '^resources/js/')" >> $GITHUB_ENV
+          CHANGED=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep -E '^resources/js/')
+          echo "CHANGED=$CHANGED" >> $GITHUB_ENV
 
       # 3️⃣ Skip job if no JS changes
       - name: Skip if no JS changes
@@ -102,16 +115,27 @@ jobs:
       # 6️⃣ Generate jsDoc documentation
       - name: Generate jsDoc
         run: |
-          npx --prefix deployment/jsdoc-temp/jsdoc jsdoc -c jsdoc.json -r resources/js -d docs/js
+          mkdir -p docs/jsdoc
+          npx --prefix deployment/jsdoc-temp jsdoc -c jsdoc.json -r resources/js -d docs/jsdoc
 
       # 7️⃣ Deploy jsDoc to gh-pages in a subfolder
       - name: Deploy jsDoc to gh-pages
         run: |
           git fetch origin gh-pages || true
           git worktree add _gh-pages origin/gh-pages || git worktree add _gh-pages
-          rm -rf _gh-pages/js/*
-          mkdir -p _gh-pages/js
-          cp -r docs/js/* _gh-pages/js/
+
+          # Preserve other folders and clean only jsdoc
+          rm -rf _gh-pages/jsdoc
+          mkdir -p _gh-pages/jsdoc
+
+          cp -r docs/jsdoc/* _gh-pages/jsdoc/ || echo "No jsDoc files to copy"
+
+          # Ensure main site page is preserved
+          if [ -d "docs/page" ]; then
+            mkdir -p _gh-pages/page
+            cp -r docs/page/* _gh-pages/page/
+          fi
+
           cd _gh-pages
           git config user.name "GitHub Actions"
           git config user.email "actions@github.com"

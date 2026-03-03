@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BookBox Prototype</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            height: 100dvh;
+            background: #000;
+            overflow: hidden;
+            font-family: Arial, sans-serif;
+        }
+
+        .slider-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            cursor: grab;
+            display: flex;
+            align-items: center;
+            user-select: none;
+        }
+
+        .slide {
+            min-width: 100%;
+            height: 100%;
+            object-fit: contain;
+            transition: transform 0.3s ease;
+            cursor: grab;
+            transform-origin: center center;
+            user-select: none;
+            -webkit-user-drag: none;
+        }
+
+        button.arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 40px;
+            color: white;
+            background: rgba(0, 0, 0, 0.4);
+            border: none;
+            padding: 15px 20px;
+            cursor: pointer;
+            border-radius: 8px;
+            z-index: 10;
+        }
+
+        .arrow.left {
+            left: 10px;
+        }
+
+        .arrow.right {
+            right: 10px;
+        }
+
+        .arrow:hover {
+            background: rgba(0, 0, 0, 0.7);
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="slider-container" id="slider">
+        <img src="img/prototyping/authentication-screens.png" class="slide">
+        <img src="img/prototyping/main-screens.png" class="slide">
+        <img src="img/prototyping/modals.png" class="slide">
+    </div>
+
+    <button class="arrow left" id="prev">&#10094;</button>
+    <button class="arrow right" id="next">&#10095;</button>
+
+    <script>
+        const slider = document.getElementById('slider');
+        const slides = document.querySelectorAll('.slide');
+        const prevBtn = document.getElementById('prev');
+        const nextBtn = document.getElementById('next');
+
+        let currentIndex = 0;
+        let isDragging = false;
+        let startX = 0;
+        let currentTranslate = 0;
+        let prevTranslate = 0;
+        let animationID;
+        let isAnimating = false;
+
+        const firstClone = slides[0].cloneNode(true);
+        const lastClone = slides[slides.length - 1].cloneNode(true);
+
+        slider.appendChild(firstClone);
+        slider.insertBefore(lastClone, slides[0]);
+
+        let totalSlides = slider.querySelectorAll('.slide').length;
+        currentIndex = 1;
+
+        function setSliderPosition() {
+            slider.style.transform = `translateX(${currentTranslate}px)`;
+        }
+
+        function setPositionByIndex(animated = true) {
+            if (isAnimating) return;
+
+            if (animated) {
+                isAnimating = true;
+                slider.style.transition = "transform 0.4s ease";
+            }
+
+            currentTranslate = -currentIndex * window.innerWidth;
+            prevTranslate = currentTranslate;
+            slider.style.transform = `translateX(${currentTranslate}px)`;
+        }
+
+        function startDrag(e) {
+            if (scale > 1) return;
+
+            isDragging = true;
+            startX = e.type.includes('mouse') ? e.pageX : e.touches[0].clientX;
+            slider.style.transition = "none";
+            animationID = requestAnimationFrame(animation);
+        }
+
+        function drag(e) {
+            if (!isDragging) return;
+
+            const currentX = e.type.includes('mouse') ? e.pageX : e.touches[0].clientX;
+            currentTranslate = prevTranslate + currentX - startX;
+        }
+
+        function endDrag() {
+            if (!isDragging) return;
+            isDragging = false;
+            cancelAnimationFrame(animationID);
+
+            const movedBy = currentTranslate - prevTranslate;
+
+            if (movedBy < -100 && currentIndex < slides.length - 1) {
+                resetZoom();
+                currentIndex++;
+            }
+
+            if (movedBy > 100 && currentIndex > 0) {
+                resetZoom();
+                currentIndex--;
+            }
+
+            setPositionByIndex(true);
+        }
+
+        function animation() {
+            setSliderPosition();
+            if (isDragging) requestAnimationFrame(animation);
+        }
+
+        slider.addEventListener('touchstart', startDrag);
+        slider.addEventListener('touchmove', drag);
+        slider.addEventListener('touchend', endDrag);
+
+        prevBtn.addEventListener('click', () => {
+            if (isAnimating) return;
+            resetZoom();
+            currentIndex--;
+            setPositionByIndex(true);
+        });
+
+        nextBtn.addEventListener('click', () => {
+            if (isAnimating) return;
+            resetZoom();
+            currentIndex++;
+            setPositionByIndex(true);
+        });
+
+        slider.addEventListener('transitionend', () => {
+            isAnimating = false;
+
+            const allSlides = slider.querySelectorAll('.slide');
+
+            if (allSlides[currentIndex].isSameNode(firstClone)) {
+                slider.style.transition = "none";
+                currentIndex = 1;
+                setPositionByIndex(false);
+            }
+
+            if (allSlides[currentIndex].isSameNode(lastClone)) {
+                slider.style.transition = "none";
+                currentIndex = totalSlides - 2;
+                setPositionByIndex(false);
+            }
+        });
+
+        window.addEventListener('resize', () => setPositionByIndex(false));
+
+        let scale = 1;
+        let isZoomDragging = false;
+        let startXZoom = 0;
+        let startYZoom = 0;
+        let currentX = 0;
+        let currentY = 0;
+        let lastX = 0;
+        let lastY = 0;
+
+        function getActiveSlide() {
+            return slider.querySelectorAll('.slide')[currentIndex];
+        }
+
+        function updateTransform() {
+            const img = getActiveSlide();
+            img.style.transform = `translate(${currentX}px, ${currentY}px) scale(${scale})`;
+        }
+
+        slider.addEventListener('dblclick', () => {
+            if (scale === 1) {
+                scale = 2;
+            } else {
+                scale = 1;
+                currentX = 0;
+                currentY = 0;
+            }
+
+            lastX = currentX;
+            lastY = currentY;
+
+            updateTransform();
+        });
+
+        slider.addEventListener('wheel', (e) => {
+            e.preventDefault();
+
+            scale += e.deltaY * -0.001;
+            scale = Math.min(Math.max(1, scale), 4);
+
+            if (scale === 1) {
+                currentX = 0;
+                currentY = 0;
+            }
+
+            updateTransform();
+        }, { passive: false });
+
+        slider.addEventListener('mousedown', (e) => {
+            if (scale <= 1) return;
+
+            e.preventDefault();
+
+            isZoomDragging = true;
+            startXZoom = e.clientX;
+            startYZoom = e.clientY;
+
+            slider.style.cursor = "grabbing";
+        });
+
+        window.addEventListener('mousemove', (e) => {
+            if (!isZoomDragging) return;
+
+            const dx = e.clientX - startXZoom;
+            const dy = e.clientY - startYZoom;
+
+            currentX = lastX + dx;
+            currentY = lastY + dy;
+
+            updateTransform();
+        });
+
+        window.addEventListener('mouseup', () => {
+            if (!isZoomDragging) return;
+
+            isZoomDragging = false;
+            lastX = currentX;
+            lastY = currentY;
+
+            slider.style.cursor = "grab";
+        });
+
+        function resetZoom() {
+            scale = 1;
+            currentX = 0;
+            currentY = 0;
+            lastX = 0;
+            lastY = 0;
+            isZoomDragging = false;
+
+            const allSlides = slider.querySelectorAll('.slide');
+            allSlides.forEach(slide => {
+                slide.style.transform = "translate(0px, 0px) scale(1)";
+            });
+        }
+
+        setPositionByIndex(false);
+    </script>
+
+</body>
+
+</html>

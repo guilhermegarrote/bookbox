@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BookBox</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Urbanist', sans-serif;
+            min-height: 100dvh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+
+            background:
+                linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)),
+                url("img/pattern-background.jpg") center / cover no-repeat;
+        }
+
+        .logo {
+            margin: 80px 0;
+            width: 220px;
+            max-width: 40%;
+            filter: brightness(0) invert(1);
+        }
+
+        .card {
+            width: 90%;
+            max-width: 450px;
+            background-color: #131313;
+            padding: 40px 30px;
+            border-radius: 16px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        h1 {
+            font-size: 24px;
+            color: #f0f8ff;
+            font-weight: 700;
+            text-align: center;
+        }
+
+        .buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .btn-pages {
+            padding: 14px;
+            background-color: #f0f8ff;
+            color: #252525;
+            text-align: center;
+            border-radius: 10px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: 0.25s ease;
+        }
+
+        .btn-pages:hover {
+            background-color: #dbdbdb;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn-pages:focus {
+            outline: 2px solid #ffffff;
+            outline-offset: 2px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <img src="../../public/images/logo/logotype.svg" alt="BookBox Logo" class="logo">
+
+    <div class="card">
+        <h1>Documentation</h1>
+
+        <div class="buttons">
+            <a href="prototyping.html" target="_blank" class="btn-pages">Prototype</a>
+            <a href="../doctum/index.html" target="_blank" class="btn-pages">Backend</a>
+            <a href="../jsdoc/index.html" target="_blank" class="btn-pages">Frontend</a>
+            <a href="docs/final-course-project/bookbox.pdf" target="_blank" class="btn-pages">Final Course Project</a>
+        </div>
+    </div>
+
+</body>J
+
+</html>
