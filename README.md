@@ -85,8 +85,7 @@ cd bookbox
 ## 📖 Documentation
 
 * [Installation Guide](deployment/README.md)
-* [Full Documentation](https://guilhermegarrote.github.io/bookbox/index.html)
-* REST API Documentation (Not available yet)
+* [Full Documentation](https://guilhermegarrote.github.io/bookbox/page/index.html)
 
 ---
 
